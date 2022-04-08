@@ -2651,9 +2651,9 @@ cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString & symbol, bool upda
     return watch;
 }
 
-cb::shared_ptr<cbWatch> DebuggerGDB::AddMemoryRange(wxString address, uint64_t size, bool update)
+cb::shared_ptr<cbWatch> DebuggerGDB::AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update)
 {
-    cb::shared_ptr<GDBMemoryRangeWatch> watch(new GDBMemoryRangeWatch(address, size));
+    cb::shared_ptr<GDBMemoryRangeWatch> watch(new GDBMemoryRangeWatch(address, size, symbol));
     m_memoryRanges.push_back(watch);
     m_mapWatchesToType[watch] = WatchType::MemoryRange;
 
@@ -2771,10 +2771,20 @@ bool DebuggerGDB::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString & 
 
     if (type == WatchType::MemoryRange)
     {
-        cb::shared_ptr<GDBMemoryRangeWatch> temp_watch = std::static_pointer_cast<GDBMemoryRangeWatch>(watch);
-        wxString addr = temp_watch->GetAddress();
         DebuggerDriver * driver = m_State.GetDriver();
-        driver->SetMemoryRangeValue(addr, value);
+        cb::shared_ptr<GDBMemoryRangeWatch> temp_watch = std::static_pointer_cast<GDBMemoryRangeWatch>(watch);
+        uint64_t addr = temp_watch->GetAddress();
+
+        if (addr == 0)
+        {
+            driver->SetMemoryRangeValue(addr, value);
+        }
+        else
+        {
+            wxString symbol;
+            temp_watch->GetSymbol(symbol);
+            driver->SetMemoryRangeValue(symbol, value);
+        }
     }
     else
     {

@@ -26,10 +26,265 @@ GDBBreakpointAddAction::GDBBreakpointAddAction(cb::shared_ptr<GDBBreakpoint> con
 
 GDBBreakpointAddAction::~GDBBreakpointAddAction()
 {
-    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("GDBBreakpointAddAction::destructor"), LogPaneLogger::LineType::Info);
+}
+
+bool GDBBreakpointAddAction::OnCommandOutputCodeBreakpoint(ResultParser const & result)
+{
+    // Receive ==>
+    //      10000000000^
+    //      done,
+    //      bkpt=
+    //      {
+    //          number="1",
+    //          type="breakpoint",
+    //          disp="keep",
+    //          enabled="y",
+    //          addr="0x0000000140001949",
+    //          func="main()",
+    //          file="D:\\Andrew_Development\\Z_Testing_Apps\\Printf_I64\\main.cpp",
+    //          fullname="D:\\Andrew_Development\\Z_Testing_Apps\\Printf_I64\\main.cpp",
+    //          line="125",
+    //          thread-groups=["i1"],
+    //          times="0",
+    //          original-location="D:\\Andrew_Development\\Z_Testing_Apps\\Printf_I64\\main.cpp:125"
+    //     }
+    bool finish = true;
+    const ResultValue & value = result.GetResultValue();
+    const ResultValue * number = value.GetTupleValue("bkpt.number");
+
+    if (number)
+    {
+        const wxString & number_value = number->GetSimpleValue();
+        long index;
+
+        if (number_value.ToLong(&index, 10))
+        {
+            m_breakpoint->SetIndex(index);
+
+            if (m_breakpoint->IsEnabled())
+            {
+                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Currently disabled. index is %d , result =>%s<="), index, result.MakeDebugString()), LogPaneLogger::LineType::Debug);
+            }
+            else
+            {
+                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Disabling: index is %d , result =>%s<="), index, result.MakeDebugString()), LogPaneLogger::LineType::Debug);
+                m_disable_cmd = Execute(wxString::Format("-break-disable %d", index));
+                finish = false;
+            }
+        }
+        else
+        {
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("bkpt.number not a valid number. result =>%s<="), result.MakeDebugString()), LogPaneLogger::LineType::Error);
+        }
+    }
+    else
+    {
+        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("bkpt.number invalid/missing value, id: result =>%s<="), value.MakeDebugString(), result.MakeDebugString()), LogPaneLogger::LineType::Error);
+    }
+
+    return finish;
+}
+
+bool GDBBreakpointAddAction::OnCommandOutputFunctionBreakpoint(ResultParser const & result)
+{
+    bool finish = true;
+#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+#ifdef __MINGW32__
+
+    if (IsDebuggerPresent())
+    {
+        DebugBreak();
+    }
+
+#endif // __MINGW32__
+    return finish;
+}
+
+bool GDBBreakpointAddAction::OnCommandOutputDataBreakpoint(ResultParser const & result)
+{
+    // Receive:
+    //      120000000000
+    //      ^done,
+    //      wpt=
+    //      {
+    //          number="4",
+    //          exp="btest"
+    //      }
+    bool finish = true;
+    const ResultValue & value = result.GetResultValue();
+    const ResultValue * number = value.GetTupleValue("wpt.number");
+
+    if (number)
+    {
+        const wxString & number_value = number->GetSimpleValue();
+        long index;
+
+        if (number_value.ToLong(&index, 10))
+        {
+            m_breakpoint->SetIndex(index);
+        }
+        else
+        {
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("wpt.number not a valid number,  result =>%s<="), result.MakeDebugString()), LogPaneLogger::LineType::Error);
+        }
+    }
+    else
+    {
+        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("wpt.number invalid/missing value, result =>%s<="), result.MakeDebugString()), LogPaneLogger::LineType::Error);
+    }
+
+    return finish;
 }
 
 void GDBBreakpointAddAction::OnCommandOutput(CommandID const & id, ResultParser const & result)
+{
+    if (m_initial_cmd == id)
+    {
+        bool finish = true;
+
+        if (result.GetResultClass() == ResultParser::ClassDone)
+        {
+            dbg_mi::GDBBreakpoint::BreakpointType bpType = m_breakpoint->GetType();
+
+            switch (bpType)
+            {
+                case dbg_mi::GDBBreakpoint::bptCode:
+                    finish = OnCommandOutputCodeBreakpoint(result);
+                    break;
+
+                case dbg_mi::GDBBreakpoint::bptData:
+                    finish = OnCommandOutputDataBreakpoint(result);
+                    break;
+
+                case dbg_mi::GDBBreakpoint::bptFunction:
+                    finish = OnCommandOutputFunctionBreakpoint(result);
+                    break;
+
+                default:
+                    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Unknown breakpoint type: %d",  bpType), dbg_mi::LogPaneLogger::LineType::Error);
+                    break;
+            }
+        }
+        else
+        {
+            if (result.GetResultClass() == ResultParser::ClassError)
+            {
+                const ResultValue & value = result.GetResultValue();
+                wxString message;
+
+                if (Lookup(value, "msg", message))
+                {
+                    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Error detected id: %s ==>%s<== "), id.ToString(), message), LogPaneLogger::LineType::Error);
+                }
+            }
+            else
+            {
+                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("id: %s for =>%s<=", id.ToString(), result.MakeDebugString()), LogPaneLogger::LineType::Debug);
+            }
+        }
+
+        if (finish)
+        {
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("finishing for id: %s for =>%s<=", id.ToString(), result.MakeDebugString()), LogPaneLogger::LineType::Debug);
+            Finish();
+        }
+    }
+    else
+    {
+        if (m_disable_cmd == id)
+        {
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("finishing for id: %s for =>%s<=", id.ToString(), result.MakeDebugString()), LogPaneLogger::LineType::Debug);
+            Finish();
+        }
+    }
+}
+
+void GDBBreakpointAddAction::OnStart()
+{
+    dbg_mi::GDBBreakpoint::BreakpointType type = m_breakpoint->GetType();
+
+    switch (type)
+    {
+        case dbg_mi::GDBBreakpoint::BreakpointType::bptCode:
+        {
+            wxString cmd("-break-insert ");
+
+            if (!m_breakpoint->IsEnabled())
+            {
+                cmd += "-d ";
+            }
+
+            if (m_breakpoint->HasCondition())
+            {
+                cmd += "-c " + m_breakpoint->GetCondition() + " ";
+            }
+
+            if (m_breakpoint->HasIgnoreCount())
+            {
+                cmd += "-i " + wxString::Format("%d ", m_breakpoint->GetIgnoreCount());
+            }
+
+            wxString location = m_breakpoint->GetLocation();
+            QuoteStringIfNeeded(location);
+            cmd += wxString::Format("-f %s:%d", location, m_breakpoint->GetLine());
+            m_initial_cmd = Execute(cmd);
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_initial_cmd = %s", m_initial_cmd.ToString()), LogPaneLogger::LineType::Debug);
+            break;
+        }
+
+        case dbg_mi::GDBBreakpoint::BreakpointType::bptFunction:
+        {
+#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+            break;
+        }
+
+        case dbg_mi::GDBBreakpoint::BreakpointType::bptData:
+        {
+#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+            wxString cmd("-break-watch ");
+
+            //                if (!m_breakpoint->IsEnabled())
+            //                {
+            //                    cmd += "-d ";
+            //                }
+
+            if (m_breakpoint->GetIsBreakOnRead())
+            {
+                if (m_breakpoint->GetIsBreakOnWrite())
+                {
+                    cmd += "-a ";
+                }
+                else
+                {
+                    cmd += "-r ";
+                }
+            }
+
+            cmd += wxString::Format("%s", m_breakpoint->GetBreakAddress());
+            m_initial_cmd = Execute(cmd);
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_initial_cmd = %s", m_initial_cmd.ToString()), LogPaneLogger::LineType::Debug);
+            break;
+        }
+
+        default:
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Unknown m_type of %d",  type), LogPaneLogger::LineType::Error);
+            break;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+GDBDataBreakpointDeleteAction::GDBDataBreakpointDeleteAction(cb::shared_ptr<GDBBreakpoint> const & breakpoint, LogPaneLogger * logger) :
+    m_breakpoint(breakpoint),
+    m_logger(logger)
+{
+}
+
+GDBDataBreakpointDeleteAction::~GDBDataBreakpointDeleteAction()
+{
+}
+
+void GDBDataBreakpointDeleteAction::OnCommandOutput(CommandID const & id, ResultParser const & result)
 {
     if (m_initial_cmd == id)
     {
@@ -103,24 +358,80 @@ void GDBBreakpointAddAction::OnCommandOutput(CommandID const & id, ResultParser 
     }
 }
 
-void GDBBreakpointAddAction::OnStart()
+void GDBDataBreakpointDeleteAction::OnStart()
 {
-    wxString cmd("-break-insert -f ");
+    dbg_mi::GDBBreakpoint::BreakpointType type = m_breakpoint->GetType();
 
-    if (m_breakpoint->HasCondition())
+    switch (type)
     {
-        cmd += "-c " + m_breakpoint->GetCondition() + " ";
-    }
+        case dbg_mi::GDBBreakpoint::BreakpointType::bptCode:
+        {
+            wxString cmd("-break-insert ");
 
-    if (m_breakpoint->HasIgnoreCount())
-    {
-        cmd += "-i " + wxString::Format("%d ", m_breakpoint->GetIgnoreCount());
-    }
+            if (!m_breakpoint->IsEnabled())
+            {
+                cmd += "-d ";
+            }
 
-    cmd += wxString::Format("%s:%d", m_breakpoint->GetLocation(), m_breakpoint->GetLine());
-    m_initial_cmd = Execute(cmd);
-    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("GDBBreakpointAddAction::m_initial_cmd = " + m_initial_cmd.ToString()), LogPaneLogger::LineType::Debug);
+            if (m_breakpoint->HasCondition())
+            {
+                cmd += "-c " + m_breakpoint->GetCondition() + " ";
+            }
+
+            if (m_breakpoint->HasIgnoreCount())
+            {
+                cmd += "-i " + wxString::Format("%d ", m_breakpoint->GetIgnoreCount());
+            }
+
+            wxString location = m_breakpoint->GetLocation();
+            QuoteStringIfNeeded(location);
+            cmd += wxString::Format("-f %s:%d", location, m_breakpoint->GetLine());
+            m_initial_cmd = Execute(cmd);
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_initial_cmd = %s", m_initial_cmd.ToString()), LogPaneLogger::LineType::Debug);
+            break;
+        }
+
+        case dbg_mi::GDBBreakpoint::BreakpointType::bptFunction:
+        {
+#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+            break;
+        }
+
+        case dbg_mi::GDBBreakpoint::BreakpointType::bptData:
+        {
+#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+            wxString cmd("-break-watch ");
+
+            //                if (!m_breakpoint->IsEnabled())
+            //                {
+            //                    cmd += "-d ";
+            //                }
+
+            if (m_breakpoint->GetIsBreakOnRead())
+            {
+                if (m_breakpoint->GetIsBreakOnWrite())
+                {
+                    cmd += "-a ";
+                }
+                else
+                {
+                    cmd += "-r ";
+                }
+            }
+
+            cmd += wxString::Format("%s", m_breakpoint->GetBreakAddress());
+            m_initial_cmd = Execute(cmd);
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_initial_cmd = %s", m_initial_cmd.ToString()), LogPaneLogger::LineType::Debug);
+            break;
+        }
+
+        default:
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Unknown m_type of %d",  type), LogPaneLogger::LineType::Error);
+            break;
+    }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 GDBGenerateBacktrace::GDBGenerateBacktrace(GDBSwitchToFrameInvoker * switch_to_frame, GDBBacktraceContainer & backtrace,
                                            GDBCurrentFrame & current_frame, LogPaneLogger * logger) :
@@ -307,6 +618,8 @@ void GDBGenerateBacktrace::OnStart()
     m_args_id = Execute("-stack-list-arguments 1 0 30");
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 GDBGenerateThreadsList::GDBGenerateThreadsList(GDBThreadsContainer & threads, int current_thread_id, LogPaneLogger * logger) :
     m_threads(threads),
     m_logger(logger),
@@ -402,6 +715,8 @@ void GDBGenerateThreadsList::OnStart()
     m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, "-thread-info", LogPaneLogger::LineType::Debug);
     Execute("-thread-info");
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 GDBGenerateCPUInfoRegisters::GDBGenerateCPUInfoRegisters(LogPaneLogger * logger) :
     m_bParsedRegisteryNamesReceived(false),
@@ -599,11 +914,26 @@ void GDBGenerateCPUInfoRegisters::OnStart()
     m_reg_value_data_list_request_id = Execute("-data-list-register-values x");
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 GDBGenerateExamineMemory::GDBGenerateExamineMemory(LogPaneLogger * logger) :
     m_logger(logger)
 {
     cbExamineMemoryDlg * dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
-    m_address = dialog->GetBaseAddress();
+    wxString sBaseAddress = dialog->GetBaseAddress();
+    uint64_t llBaseAddress;
+
+    if (sBaseAddress.ToULongLong(&llBaseAddress, 16))
+    {
+        m_symbol = wxEmptyString;
+        m_address = llBaseAddress;
+    }
+    else
+    {
+        m_symbol = sBaseAddress;
+        m_address = 0;
+    }
+
     m_length = dialog->GetBytes();
 }
 
@@ -766,10 +1096,22 @@ void GDBGenerateExamineMemory::OnStart()
     // GDB 11.2 manual synopsis:
     //  -data-read-memory-bytes [ -o offset ]
     //      address count
-    wxString cmd = wxString::Format("-data-read-memory-bytes %s %d", m_address, m_length);
-    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("%s", cmd), LogPaneLogger::LineType::Debug);
+    wxString cmd;
+
+    if (m_symbol.IsEmpty())
+    {
+        cmd = wxString::Format("-data-read-memory-bytes %#018llx %d", m_address, m_length);
+    }
+    else
+    {
+        cmd = wxString::Format("-data-read-memory-bytes %s %d", m_symbol, m_length);
+    }
+
+    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, cmd, LogPaneLogger::LineType::Debug);
     m_examine_memory_request_id = Execute(cmd);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 GDBDisassemble::GDBDisassemble(wxString disassemblyFlavor, LogPaneLogger * logger) :
     m_disassemblyFlavor(disassemblyFlavor),
@@ -1058,6 +1400,8 @@ void GDBDisassemble::OnStart()
     m_disassemble_data_request_id = Execute(cmdData);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void ParseWatchInfo(ResultValue const & value, int & children_count, bool & dynamic, bool & has_more)
 {
     dynamic = has_more = false;
@@ -1175,7 +1519,9 @@ void UpdateWatchesTooltipOrAll(const cb::shared_ptr<GDBWatch> & watch, LogPaneLo
 
 #endif
 }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 GDBWatchBaseAction::GDBWatchBaseAction(GDBWatchesContainer & watches, LogPaneLogger * logger) :
     m_watches(watches),
     m_logger(logger),
@@ -1406,10 +1752,13 @@ void GDBWatchBaseAction::ExecuteListCommand(wxString const & watch_id, cb::share
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-GDBWatchCreateAction::GDBWatchCreateAction(cb::shared_ptr<GDBWatch> const & watch, GDBWatchesContainer & watches, LogPaneLogger * logger) :
+
+GDBWatchCreateAction::GDBWatchCreateAction(cb::shared_ptr<GDBWatch> const & watch, GDBWatchesContainer & watches, LogPaneLogger * logger, bool bCreateVar) :
     GDBWatchBaseAction(watches, logger),
     m_watch(watch),
-    m_step(StepCreate)
+    m_step(StepCreate),
+    m_bCreateVar(bCreateVar)
+
 {
 }
 
@@ -1436,7 +1785,6 @@ void GDBWatchCreateAction::OnCommandOutput(CommandID const & id, ResultParser co
                 if (dynamic && has_more)
                 {
                     m_step = StepSetRange;
-#warning need to test this code!!!
                     Execute("-var-set-update-range \"" + m_watch->GetID() + "\" 0 100");
                     AppendNullChild(m_watch);
                 }
@@ -1467,7 +1815,14 @@ void GDBWatchCreateAction::OnCommandOutput(CommandID const & id, ResultParser co
 
             case StepSetRange:
                 m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("StepSetRange for ID: %s ==>%s<=="), id.ToString(), resultDebug), LogPaneLogger::LineType::Debug);
-#warning code to be added for this case
+#ifdef __MINGW32__
+
+                if (IsDebuggerPresent())
+                {
+                    DebugBreak();
+                }
+
+#endif // __MINGW32__
                 break;
 
             default:
@@ -1514,12 +1869,24 @@ void GDBWatchCreateAction::OnStart()
 {
     wxString symbol = m_watch->GetSymbol();
     symbol.Replace("\"", "\\\"");
-    wxString cmd = wxString::Format("-var-create - @ \"%s\"", symbol);
+    wxString cmd;
+
+    if (m_bCreateVar)
+    {
+        cmd = wxString::Format("-var-create - @ %s", symbol);   // Watch spaces
+    }
+    else
+    {
+        cmd = wxString::Format("-var-update --all-values %s", m_watch->GetID());
+    }
+
     m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Watch: %s", cmd), LogPaneLogger::LineType::UserDisplay);
     Execute(cmd);
     m_sub_commands_left = 1;
 }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 GDBWatchCreateTooltipAction::~GDBWatchCreateTooltipAction()
 {
     if (m_watch->ForTooltip())
@@ -1611,9 +1978,9 @@ void GDBMemoryRangeWatchCreateAction::OnCommandOutput(CommandID const & id, Resu
                             (!sMemoryContents.IsEmpty())
                         )
                         {
-                            if (m_watch->GetAddress().IsEmpty())
+                            if (m_watch->GetAddress() == 0)
                             {
-                                m_watch->SetAddress(sAddressBegin);
+                                m_watch->SetAddress(llAddrbegin);
                             }
 
                             m_watch->SetValue(sMemoryContents);
@@ -1665,13 +2032,13 @@ void GDBMemoryRangeWatchCreateAction::OnStart()
     // GDB 11.2 manual synopsis:
     //  -data-read-memory-bytes [ -o offset ]
     //      address count
-    wxString sAddress = m_watch->GetAddress();
     wxString sSymbol = m_watch->GetSymbol();
     wxString cmd;
 
     if (sSymbol.IsEmpty())
     {
-        cmd = wxString::Format("-data-read-memory-bytes %s %llu", sAddress, m_watch->GetSize());
+        uint64_t llAddress = m_watch->GetAddress();
+        cmd = wxString::Format("-data-read-memory-bytes %#018llx %llu", llAddress, m_watch->GetSize());
     }
     else
     {
@@ -1683,6 +2050,7 @@ void GDBMemoryRangeWatchCreateAction::OnStart()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 GDBWatchesUpdateAction::GDBWatchesUpdateAction(GDBWatchesContainer & watches, LogPaneLogger * logger) :
     GDBWatchBaseAction(watches, logger)
 {
@@ -1914,10 +2282,11 @@ void GDBWatchExpandedAction::OnCommandOutput(CommandID const & id, ResultParser 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GDBWatchCollapseAction::OnStart()
 {
-    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("-var-delete -c  ", m_collapsed_watch->GetID()), LogPaneLogger::LineType::Debug);
-    Execute(wxString::Format("-var-delete -c  ", m_collapsed_watch->GetID()));
+    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("-var-delete -c %s", m_collapsed_watch->GetID()), LogPaneLogger::LineType::Debug);
+    Execute(wxString::Format("-var-delete -c %s", m_collapsed_watch->GetID()));
 }
 
 void GDBWatchCollapseAction::OnCommandOutput(CommandID const & id, ResultParser const & result)
@@ -1932,5 +2301,132 @@ void GDBWatchCollapseAction::OnCommandOutput(CommandID const & id, ResultParser 
 
     Finish();
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+GDBStackVariables::GDBStackVariables(LogPaneLogger * logger, cb::shared_ptr<dbg_mi::GDBWatch> watchLocalsandArgs, bool bWatchFuncLocalsArgs):
+    m_WatchLocalsandArgs(watchLocalsandArgs),
+    m_bWatchFuncLocalsArgs(bWatchFuncLocalsArgs),
+    m_logger(logger)
+{
+}
+
+void GDBStackVariables::OnCommandOutput(CommandID const & id, ResultParser const & result)
+{
+    if (result.GetResultClass() != ResultParser::ClassDone)
+    {
+        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Wrong result class. Received id:%s result: - %s", id.ToString(), result.MakeDebugString()), LogPaneLogger::LineType::Error);
+    }
+    else
+    {
+        if (id == m_stack_list_variables_request_id)
+        {
+            // type: result ,
+            // ClassDone  ,
+            // { m_value results:
+            //     {
+            //         variables=
+            //         [
+            //             {name=cTest,type=char [300]},
+            //             {name=stTest,type=TestSimpleStruct},
+            //             {name=arrTest,type=TestSimpleStruct [3]},
+            //             {name=result,type=int,value=<optimized out>},
+            //             {name=btest,type=int,value=3},
+            //             {name=stlTest,type=TestSTLStruct},
+            //             {name=aStlTest,type=TestSTLStruct [5]}
+            //         ]
+            //     }
+            // }
+            if (m_WatchLocalsandArgs)
+            {
+                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("result: - %s", result.MakeDebugString()), LogPaneLogger::LineType::Debug);
+                const ResultValue * pVariableArray = result.GetResultValue().GetTupleValue("variables");
+
+                if (pVariableArray)
+                {
+                    m_WatchLocalsandArgs->MarkChildsAsRemoved();
+                    int iVariableArrayCount = pVariableArray->GetTupleSize();
+
+                    if (iVariableArrayCount == 0)
+                    {
+                        m_WatchLocalsandArgs->SetValue("-- No arguments or locals --");
+                    }
+                    else
+                    {
+                        m_WatchLocalsandArgs->SetValue(wxEmptyString);
+
+                        for (int iIndex = 0; iIndex < iVariableArrayCount; iIndex++)
+                        {
+                            const ResultValue * pVariableEntry = pVariableArray->GetTupleValueByIndex(iIndex);
+
+                            if (pVariableEntry)
+                            {
+                                const ResultValue * pVariableResultName = pVariableEntry->GetTupleValue("name");
+                                const ResultValue * pVariableResultType = pVariableEntry->GetTupleValue("type");
+
+                                if (pVariableResultName && pVariableResultType)
+                                {
+                                    const wxString & VarName = pVariableResultName->GetSimpleValue();
+
+                                    if (m_WatchLocalsandArgs)
+                                    {
+                                        cb::shared_ptr<GDBWatch> child = cb::shared_ptr<GDBWatch>(new dbg_mi::GDBWatch(m_WatchLocalsandArgs->GetProject(),
+                                                                                                  m_WatchLocalsandArgs->GetGDBLogger(),
+                                                                                                  VarName,
+                                                                                                  m_WatchLocalsandArgs->ForTooltip()
+                                                                                                                      ));
+                                        ParseWatchValueID(*child, *pVariableEntry);
+                                        cbWatch::AddChild(m_WatchLocalsandArgs, child);
+                                    }
+                                }
+                                else
+                                {
+                                    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Could not parse one of the variable entry fields. Received id:%s result: - %s", id.ToString(), result.MakeDebugString()), LogPaneLogger::LineType::Error);
+                                }
+                            }
+                            else
+                            {
+                                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Could not parse variable entry index %d field. Received id:%s result: - %s", iIndex, id.ToString(), result.MakeDebugString()), LogPaneLogger::LineType::Error);
+                            }
+                        }
+                    }
+
+                    m_WatchLocalsandArgs->RemoveMarkedChildren();
+                    // Update watches now
+                    CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
+                    event.SetInt(int(cbDebuggerPlugin::DebugWindows::Watches));
+                    Manager::Get()->ProcessEvent(event);
+                }
+                else
+                {
+                    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Could not parse variables entry fields. Received id:%s result: - %s", id.ToString(), result.MakeDebugString()), LogPaneLogger::LineType::Error);
+                }
+            }
+            else
+            {
+                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_localsWatch is nullptr. result: - %s", result.MakeDebugString()), LogPaneLogger::LineType::Error);
+            }
+        }
+    }
+
+    Finish();
+}
+
+void GDBStackVariables::OnStart()
+{
+    // GDB 11.2: Synopsis
+    //
+    // -stack-list-variables [ --no-frame-filters ] [ --skip-unavailable ] print-values
+    //
+    // Display the names of local variables and function arguments for the selected frame. If
+    // print-values is 0 or --no-values, print only the names of the variables; if it is 1 or --allvalues,
+    // print also their values; and if it is 2 or --simple-values, print the name, type and
+    // value for simple data types, and the name and type for arrays, structures and unions. If the
+    // option --no-frame-filters is supplied, then Python frame filters will not be executed.
+    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("GDB/MI comamnds \"-stack-list-variables\""), LogPaneLogger::LineType::UserDisplay);
+    m_stack_list_variables_request_id = Execute("-stack-list-variables --skip-unavailable --simple-values");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 } // namespace dbg_mi

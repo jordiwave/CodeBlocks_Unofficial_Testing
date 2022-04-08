@@ -73,7 +73,21 @@ void AddChildNode(tinyxml2::XMLNode * pNodeParent,  const wxString name, const u
 
 void AddChildNodeHex(tinyxml2::XMLNode * pNodeParent,  const wxString name, const uint64_t llValue)
 {
-    wxString value =  wxString::Format("%#018llx", llValue);// 18 = 0x + 16 digits
+    wxString value;
+#if wxCHECK_VERSION(3, 1, 5)
+
+    if (wxPlatformInfo::Get().GetBitness() == wxBITNESS_64)
+#else
+    if (wxPlatformInfo::Get().GetArchitecture() == wxARCH_64)
+#endif
+    {
+        value = wxString::Format("%#018llx", llValue);// 18 = 0x + 16 digits
+    }
+    else
+    {
+        value =  wxString::Format("%#10llx", llValue);// 10 = 0x + 8 digit
+    }
+
     AddChildNode(pNodeParent, name, value);
 }
 
@@ -202,7 +216,20 @@ void GDBBreakpoint::SetEnabled(bool flag)
 
 wxString GDBBreakpoint::GetLocation() const
 {
-    return m_filename;
+    switch (m_type)
+    {
+        case BreakpointType::bptCode:
+            return m_filename;
+
+        case BreakpointType::bptFunction:
+            return m_filename;
+
+        case BreakpointType::bptData:
+            return m_breakAddress;
+
+        default:
+            return "unknown";
+    }
 }
 
 int GDBBreakpoint::GetLine() const
@@ -217,12 +244,54 @@ wxString GDBBreakpoint::GetLineString() const
 
 wxString GDBBreakpoint::GetType() const
 {
-    return _("Code");
+    switch (m_type)
+    {
+        case BreakpointType::bptCode:
+            return "bptCode";
+
+        case BreakpointType::bptFunction:
+            return "bptFunction";
+
+        case BreakpointType::bptData:
+            return "bptData";
+
+        default:
+            return "unknown";
+    }
 }
 
 wxString GDBBreakpoint::GetInfo() const
 {
-    return wxEmptyString;
+    switch (m_type)
+    {
+        case BreakpointType::bptCode:
+            return wxEmptyString;
+
+        case BreakpointType::bptFunction:
+            return wxEmptyString;
+
+        case BreakpointType::bptData:
+        {
+            if (m_breakOnRead)
+            {
+                if (m_breakOnWrite)
+                {
+                    return "read and write";
+                }
+                else
+                {
+                    return "read only";
+                }
+            }
+            else
+            {
+                return "write only";
+            }
+        }
+
+        default:
+            return "unknown";
+    }
 }
 
 bool GDBBreakpoint::IsEnabled() const
@@ -426,13 +495,14 @@ void GDBWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_G
     }
 }
 
-GDBMemoryRangeWatch::GDBMemoryRangeWatch(cbProject * project, dbg_mi::LogPaneLogger * logger, wxString address, uint64_t size) :
+GDBMemoryRangeWatch::GDBMemoryRangeWatch(cbProject * project, dbg_mi::LogPaneLogger * logger, uint64_t address, uint64_t size, const wxString & symbol) :
     m_project(project),
     m_pLogger(logger),
     m_GDBWatchClassName("GDBMemoryRangeWatch"),
     m_address(address),
     m_size(size),
-    m_symbol(wxEmptyString)
+    m_symbol(symbol),
+    m_value(wxEmptyString)
 {
 }
 
@@ -447,24 +517,9 @@ bool GDBMemoryRangeWatch::SetValue(const wxString & value)
     return true;
 }
 
-
 wxString GDBMemoryRangeWatch::MakeSymbolToAddress() const
 {
-    wxString sAddress = GetAddress();
-    //        uint64_t llAddress = GetAddress();
-    //#if wxCHECK_VERSION(3, 1, 5)
-    //        if (wxPlatformInfo::Get().GetBitness() == wxBITNESS_64)
-    //#else
-    //        if (wxPlatformInfo::Get().GetArchitecture() == wxARCH_64)
-    //#endif
-    //        {
-    //            sAddress = wxString::Format("%#018llx", llAddress); // 18 = 0x + 16 digits
-    //        }
-    //        else
-    //        {
-    //            sAddress = wxString::Format("%#10llx", llAddress); // 10 = 0x + 8 digits
-    //        }
-    return sAddress;
+    return wxString::Format("&%s", m_symbol);
 };
 
 // Use this function to sanitize user input which might end as the last part of GDB commands.
@@ -495,7 +550,7 @@ void GDBMemoryRangeWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch,
 {
     //Only load the breakpoints that belong to the current project
     m_GDBWatchClassName = ReadChildNodewxString(pElementWatch, "GDBMemoryRangeWatch");
-    m_address = ReadChildNodewxString(pElementWatch, "address");
+    m_address = ReadChildNodeUint64(pElementWatch, "address");
     m_size = ReadChildNodeUint64(pElementWatch, "size");
     m_symbol = ReadChildNodewxString(pElementWatch, "symbol");
 

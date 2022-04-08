@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12719 $
- * $Id: app.cpp 12719 2022-02-18 19:45:18Z wh11204 $
+ * $Revision: 12783 $
+ * $Id: app.cpp 12783 2022-04-07 17:28:27Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/app.cpp $
  */
 
@@ -715,7 +715,10 @@ void CodeBlocksApp::InitLocale()
     {
         do
         {
-            m_locale.AddCatalog(moName);
+            // Extension is added unconditionally in AddCatalog() since wxWidgets
+            // commit b9a9ae7 (just before release of wx3.1.6), so file.mo is converted in file.mo.mo
+            // Removing the extension is backwards compatible (it was not supposed to be there)
+            m_locale.AddCatalog(moName.BeforeLast('.'));
         } while (dir.GetNext(&moName));
     }
 }

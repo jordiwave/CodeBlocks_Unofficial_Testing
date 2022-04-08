@@ -55,9 +55,9 @@ class DLLIMPORT cbWatch
         cbWatch();
     public:
         virtual void GetSymbol(wxString & symbol) const = 0;
-        virtual void SetSymbol(wxString & symbol) = 0;
-        virtual wxString GetAddress() const = 0;
-        virtual void SetAddress(wxString & address) = 0;
+        virtual void SetSymbol(const wxString & symbol) = 0;
+        virtual uint64_t GetAddress() const = 0;
+        virtual void SetAddress(uint64_t address) = 0;
         virtual void GetValue(wxString & value) const = 0;
         virtual bool SetValue(const wxString & value) = 0;
         virtual bool GetIsValueErrorMessage() = 0;

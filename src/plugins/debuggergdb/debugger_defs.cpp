@@ -225,7 +225,7 @@ GDBWatch::GDBWatch(wxString const & symbol) :
     m_array_count(0),
     m_is_array(false),
     m_forTooltip(false),
-    m_address(wxEmptyString)
+    m_address(0)
 {
 }
 GDBWatch::~GDBWatch()
@@ -235,15 +235,15 @@ void GDBWatch::GetSymbol(wxString & symbol) const
 {
     symbol = m_symbol;
 }
-void GDBWatch::SetSymbol(wxString & symbol)
+void GDBWatch::SetSymbol(const wxString & symbol)
 {
     m_symbol = symbol;
 }
-wxString GDBWatch::GetAddress() const
+uint64_t GDBWatch::GetAddress() const
 {
     return  m_address;
 }
-void GDBWatch::SetAddress(wxString & address)
+void GDBWatch::SetAddress(uint64_t address)
 {
     m_address = address;
 }
@@ -367,9 +367,10 @@ bool GDBWatch::GetForTooltip() const
     return m_forTooltip;
 }
 
-GDBMemoryRangeWatch::GDBMemoryRangeWatch(wxString address, uint64_t size) :
+GDBMemoryRangeWatch::GDBMemoryRangeWatch(uint64_t address, uint64_t size, const wxString & symbol) :
     m_address(address),
-    m_size(size)
+    m_size(size),
+    m_symbol(symbol)
 {
 }
 

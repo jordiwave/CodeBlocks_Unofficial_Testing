@@ -224,12 +224,12 @@ class GDBWatch : public cbWatch
     public:
         GDBWatch(wxString const & symbol);
         ~GDBWatch() override;
-    public:
 
+    public:
         void GetSymbol(wxString & symbol) const override;
-        void SetSymbol(wxString & symbol) override;
-        wxString GetAddress() const override;
-        void SetAddress(wxString & address) override;
+        void SetSymbol(const wxString & symbol) override;
+        uint64_t GetAddress() const override;
+        void SetAddress(uint64_t address) override;
         void GetValue(wxString & value) const override;
         bool SetValue(const wxString & value) override;
         bool GetIsValueErrorMessage() override;
@@ -242,6 +242,7 @@ class GDBWatch : public cbWatch
 
         wxString MakeSymbolToAddress() const override;
         bool IsPointerType() const override;
+
     public:
         void SetDebugValue(wxString const & value);
 
@@ -272,25 +273,28 @@ class GDBWatch : public cbWatch
         bool m_forTooltip;
         bool m_raw_value_is_message;   // True if the m_raw_value is a message instead of data
 
-        wxString m_address;
+        uint64_t m_address;
 };
 
 class GDBMemoryRangeWatch  : public cbWatch
 {
     public:
-        GDBMemoryRangeWatch(wxString address, uint64_t size);
+        GDBMemoryRangeWatch(uint64_t address, uint64_t size, const wxString & symbol);
 
     public:
         void GetSymbol(wxString & symbol) const override
         {
-            symbol = wxEmptyString;
+            symbol = m_symbol;
         }
-        void SetSymbol(cb_unused wxString & symbol) override {}
-        wxString GetAddress() const override
+        void SetSymbol(const wxString & symbol) override
+        {
+            m_symbol = symbol;
+        }
+        uint64_t GetAddress() const override
         {
             return m_address;
         }
-        void SetAddress(wxString & address) override
+        void SetAddress(uint64_t address) override
         {
             m_address = address;
         }
@@ -334,8 +338,9 @@ class GDBMemoryRangeWatch  : public cbWatch
         }
 
     private:
-        wxString m_address;
+        uint64_t m_address;
         uint64_t m_size;
+        wxString m_symbol;
         wxString m_value;
         bool m_ValueErrorMessage;
 };

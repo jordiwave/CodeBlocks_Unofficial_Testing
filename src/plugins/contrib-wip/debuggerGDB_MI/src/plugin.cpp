@@ -106,7 +106,7 @@ END_EVENT_TABLE()
 // constructor
 Debugger_GDB_MI::Debugger_GDB_MI() :
     cbDebuggerPlugin("GDB/MI", "gdbmi_debugger"),
-    m_project(nullptr),
+    m_pProject(nullptr),
     m_command_stream_dialog(nullptr),
     m_console_pid(-1),
     m_pid_attached(0)
@@ -266,7 +266,8 @@ void Debugger_GDB_MI::OnGDBOutput(wxCommandEvent & event)
                 // Ignore lines like ~"\032\032D:\\Andrew_Development\\Z_Testing_Apps\\Printf_I64\\main.cpp:13:220:beg:0x7ff6af41155a\n"
                 !msg.StartsWith("~\"\\032\\032") &&
                 !msg.Contains(":beg:")
-            )
+            ) &&
+            !msg.StartsWith("~\"Source directories searched: ")
        )
     {
         ParseOutput(msg);
@@ -585,7 +586,6 @@ struct Notifications
                 }
             }
             else
-            {
                 if (notifyType.IsSameAs("library-loaded"))
                 {
                     wxString  targetName;
@@ -596,7 +596,6 @@ struct Notifications
                                                             dbg_mi::LogPaneLogger::LineType::Receive_Info);
                 }
                 else
-                {
                     if (notifyType.IsSameAs("breakpoint-modified"))
                     {
                         m_plugin->GetGDBLogger()->LogGDBMsgType(__PRETTY_FUNCTION__,
@@ -605,14 +604,20 @@ struct Notifications
                                                                 dbg_mi::LogPaneLogger::LineType::Receive_Info);
                     }
                     else
-                    {
-                        m_plugin->GetGDBLogger()->LogGDBMsgType(__PRETTY_FUNCTION__,
-                                                                __LINE__,
-                                                                wxString::Format(_("Notification: %s"), parser.MakeDebugString()),
-                                                                dbg_mi::LogPaneLogger::LineType::Receive);
-                    }
-                }
-            }
+                        if (notifyType.IsSameAs("breakpoint-deleted"))
+                        {
+                            m_plugin->GetGDBLogger()->LogGDBMsgType(__PRETTY_FUNCTION__,
+                                                                    __LINE__,
+                                                                    wxString::Format(_("Notification for breakpoint-deleted: %s"), parser.MakeDebugString()),
+                                                                    dbg_mi::LogPaneLogger::LineType::Receive_Info);
+                        }
+                        else
+                        {
+                            m_plugin->GetGDBLogger()->LogGDBMsgType(__PRETTY_FUNCTION__,
+                                                                    __LINE__,
+                                                                    wxString::Format(_("Notification: %s"), parser.MakeDebugString()),
+                                                                    dbg_mi::LogPaneLogger::LineType::Receive);
+                        }
         }
 
     private:
@@ -637,7 +642,7 @@ void Debugger_GDB_MI::UpdateOnFrameChanged(bool wait)
         {
             if ((*it)->GetID().empty() && !(*it)->ForTooltip())
             {
-                m_actions.Add(new dbg_mi::GDBWatchCreateAction(*it, m_watches, m_pLogger));
+                m_actions.Add(new dbg_mi::GDBWatchCreateAction(*it, m_watches, m_pLogger, true));
             }
         }
 
@@ -672,6 +677,11 @@ void Debugger_GDB_MI::UpdateWhenStopped()
     if (dbg_manager->UpdateDisassembly())
     {
         RequestUpdate(Disassembly);
+    }
+
+    if (IsWindowReallyShown(dbg_manager->GetWatchesDialog()->GetWindow()))
+    {
+        RequestUpdate(Watches);
     }
 
     UpdateOnFrameChanged(false);
@@ -962,8 +972,7 @@ int Debugger_GDB_MI::StartDebugger(cbProject * project, StartType start_type)
                                  dbg_mi::LogPaneLogger::LineType::Debug);
     }
 
-#warning Need to add support for source directory adding, see existing code , seach for AddSourceDir "GdbCmd_AddSourceDir" and
-    int res = LaunchDebugger(debugger, debuggee, args, working_dir, 0, console, start_type);
+    int res = LaunchDebugger(project, debugger, debuggee, args, working_dir, 0, console, start_type);
 
     if (res != 0)
     {
@@ -972,7 +981,7 @@ int Debugger_GDB_MI::StartDebugger(cbProject * project, StartType start_type)
     }
 
     m_executor.SetAttachedPID(-1);
-    m_project = project;
+    m_pProject = project;
     m_hasStartUpError = false;
 
     if (oldLibPath != newLibPath)
@@ -983,7 +992,8 @@ int Debugger_GDB_MI::StartDebugger(cbProject * project, StartType start_type)
     return 0;
 }
 
-int Debugger_GDB_MI::LaunchDebugger(wxString const & debugger,
+int Debugger_GDB_MI::LaunchDebugger(cbProject * project,
+                                    wxString const & debugger,
                                     wxString const & debuggee,
                                     wxString const & args,
                                     wxString const & working_dir,
@@ -1084,6 +1094,20 @@ int Debugger_GDB_MI::LaunchDebugger(wxString const & debugger,
         DoSendCommand("catch catch");
     }
 
+    wxString directorySearchPaths = wxEmptyString;
+    const wxArrayString & pdirs = ParseSearchDirs(project);
+
+    for (size_t i = 0; i < pdirs.GetCount(); ++i)
+    {
+        directorySearchPaths.Append(pdirs[i]);
+        directorySearchPaths.Append(wxPATH_SEP);
+    }
+
+    if (!directorySearchPaths.IsEmpty())
+    {
+        DoSendCommand(wxString::Format("directory %s", directorySearchPaths));
+    }
+
     if (pid == 0)
     {
         switch (start_type)
@@ -1146,10 +1170,8 @@ void Debugger_GDB_MI::CommitWatches()
 
     if (!m_watches.empty())
     {
-        // Original Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->UpdateWatches();
         CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
         event.SetInt(int(cbDebuggerPlugin::DebugWindows::Watches));
-        //event.SetPlugin(m_pDriver->GetDebugger());
         Manager::Get()->ProcessEvent(event);
     }
 }
@@ -1385,18 +1407,51 @@ cb::shared_ptr<cbBreakpoint> Debugger_GDB_MI::AddBreakpoint(const wxString & fil
     return cb::static_pointer_cast<cbBreakpoint>(m_breakpoints.back());
 }
 
-cb::shared_ptr<cbBreakpoint> Debugger_GDB_MI::AddDataBreakpoint(const wxString & /*dataExpression*/)
+cb::shared_ptr<cbBreakpoint> Debugger_GDB_MI::AddBreakpoint(cb::shared_ptr<dbg_mi::GDBBreakpoint> bp)
 {
-#warning Debugger_GDB_MI::AddDataBreakpoint() not implemented
-#ifdef __MINGW32__
-    if (IsDebuggerPresent())
+    m_breakpoints.push_back(bp);
+
+    if (IsRunning())
     {
-        DebugBreak();
+        if (!IsStopped())
+        {
+            m_executor.Interupt();
+            m_actions.Add(new dbg_mi::GDBBreakpointAddAction(bp, m_pLogger));
+            Continue();
+        }
+        else
+        {
+            m_actions.Add(new dbg_mi::GDBBreakpointAddAction(bp, m_pLogger));
+        }
     }
 
-#endif // __MINGW32__
-    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> NOT IMPLEMENTED< BUT CALLED <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
-    return cb::shared_ptr<cbBreakpoint>();
+    return cb::static_pointer_cast<cbBreakpoint>(m_breakpoints.back());
+}
+
+cb::shared_ptr<cbBreakpoint> Debugger_GDB_MI::AddDataBreakpoint(const wxString & dataExpression)
+{
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("dataExpression : %s", dataExpression), dbg_mi::LogPaneLogger::LineType::Warning);
+    dbg_mi::DataBreakpointDlg dlg(Manager::Get()->GetAppWindow(), dataExpression, true, 1);
+    PlaceWindow(&dlg);
+
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        bool enabled = dlg.IsBreakpointEnabled();
+        const wxString & newDataExpression = dlg.GetDataExpression();
+        int sel = dlg.GetSelection();
+        cb::shared_ptr<dbg_mi::GDBBreakpoint> bp(new dbg_mi::GDBBreakpoint(m_pProject, m_pLogger));
+        bp->SetType(dbg_mi::GDBBreakpoint::BreakpointType::bptData);
+        bp->SetIsEnabled(enabled);
+        bp->SetBreakAddress(newDataExpression);
+        bp->SetIsBreakOnRead(sel != 1);
+        bp->SetIsBreakOnWrite(sel != 0);
+        AddBreakpoint(bp);
+        return bp;
+    }
+    else
+    {
+        return cb::shared_ptr<cbBreakpoint>();
+    }
 }
 
 int Debugger_GDB_MI::GetBreakpointsCount() const
@@ -1416,7 +1471,6 @@ cb::shared_ptr<const cbBreakpoint> Debugger_GDB_MI::GetBreakpoint(int index) con
 
 void Debugger_GDB_MI::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 {
-    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> WORK IN PROGRESS <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
     dbg_mi::GDBBreakpointsContainer::iterator it = std::find(m_breakpoints.begin(), m_breakpoints.end(), breakpoint);
 
     if (it == m_breakpoints.end())
@@ -1445,16 +1499,6 @@ void Debugger_GDB_MI::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 
         case dbg_mi::GDBBreakpoint::bptData:
         {
-#warning +---------------------------------------------------------------+
-#warning |        NOT COMPELTED  for dbg_mi::GDBBreakpoint::bptData      |
-#warning +---------------------------------------------------------------+
-#ifdef __MINGW32__
-            if (IsDebuggerPresent())
-            {
-                DebugBreak();
-            }
-
-#endif // __MINGW32__
             int old_sel = 0;
 
             if (bp->GetIsBreakOnRead() && bp->GetIsBreakOnWrite())
@@ -1495,12 +1539,11 @@ void Debugger_GDB_MI::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 
         if (debuggerIsRunning)
         {
-#warning to be converted
-            //            DoBreak(true);
+            m_executor.Interupt(true);
         }
 
-#warning to be converted
-        // m_State.ResetBreakpoint(bp);
+        DeleteBreakpoint(bp);
+        AddBreakpoint(bp);
 
         if (debuggerIsRunning)
         {
@@ -1519,49 +1562,51 @@ void Debugger_GDB_MI::DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
                                  __LINE__,
                                  wxString::Format(_("%s:%d"), breakpoint->GetLocation(), breakpoint->GetLine()),
                                  dbg_mi::LogPaneLogger::LineType::Debug);
-        int index = (*it)->GetIndex();
+        cb::shared_ptr<dbg_mi::GDBBreakpoint> pBrkPt = *it;
+        int index = pBrkPt->GetIndex();
 
         if (index != -1)
         {
-            if (!IsStopped())
+            dbg_mi::GDBBreakpoint::BreakpointType bpType = pBrkPt->GetType();
+
+            switch (bpType)
             {
-                m_executor.Interupt();
-                AddStringCommand(wxString::Format("-break-delete %d", index));
-                Continue();
-            }
-            else
-            {
-                AddStringCommand(wxString::Format("-break-delete %d", index));
+                case dbg_mi::GDBBreakpoint::bptCode:
+                case dbg_mi::GDBBreakpoint::bptData:
+                {
+                    if (!IsStopped())
+                    {
+                        m_executor.Interupt();
+                        AddStringCommand(wxString::Format("-break-delete %d", index));
+                        Continue();
+                    }
+                    else
+                    {
+                        AddStringCommand(wxString::Format("-break-delete %d", index));
+                    }
+
+                    break;
+                }
+
+                case dbg_mi::GDBBreakpoint::bptFunction:
+#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+#ifdef __MINGW32__
+                    if (IsDebuggerPresent())
+                    {
+                        DebugBreak();
+                    }
+
+#endif // __MINGW32__
+                    break;
+
+                default:
+                    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Unknown breakpoint type: %d",  bpType), dbg_mi::LogPaneLogger::LineType::Error);
+                    break;
             }
         }
 
         m_breakpoints.erase(it);
     }
-
-    //    for(dbg_mi::GDBBreakpointsContainer::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it)
-    //    {
-    //        dbg_mi::GDBBreakpoint &current = **it;
-    //        if(&current.Get() == breakpoint)
-    //        {
-    //            m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__,
-    //                                             __LINE__,
-    //                                             wxString::Format(_("%s:%d"), breakpoint->GetFilename(),breakpoint->GetLine() ),
-    //                                             LogPaneLogger::LineType::Debug);
-    //            if(current.GetIndex() != -1)
-    //            {
-    //                if(!IsStopped())
-    //                {
-    //                    m_executor.Interupt();
-    //                    AddStringCommand(wxString::Format("-break-delete %d", current.GetIndex()));
-    //                    Continue();
-    //                }
-    //                else
-    //                    AddStringCommand(wxString::Format("-break-delete %d", current.GetIndex()));
-    //            }
-    //            m_breakpoints.erase(it);
-    //            return;
-    //        }
-    //    }
 }
 
 void Debugger_GDB_MI::DeleteAllBreakpoints()
@@ -1723,12 +1768,12 @@ bool Debugger_GDB_MI::SwitchToThread(int thread_number)
 
 cb::shared_ptr<cbWatch> Debugger_GDB_MI::AddWatch(const wxString & symbol, cb_unused bool update)
 {
-    cb::shared_ptr<dbg_mi::GDBWatch> watch(new dbg_mi::GDBWatch(m_project, m_pLogger, symbol, false));
+    cb::shared_ptr<dbg_mi::GDBWatch> watch(new dbg_mi::GDBWatch(m_pProject, m_pLogger, symbol, false));
     m_watches.push_back(watch);
 
     if (IsRunning())
     {
-        m_actions.Add(new dbg_mi::GDBWatchCreateAction(watch, m_watches, m_pLogger));
+        m_actions.Add(new dbg_mi::GDBWatchCreateAction(watch, m_watches, m_pLogger, true));
     }
 
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Add watch for \"%s\"", watch->GetSymbol()), dbg_mi::LogPaneLogger::LineType::Debug);
@@ -1742,36 +1787,24 @@ cb::shared_ptr<cbWatch> Debugger_GDB_MI::AddWatch(dbg_mi::GDBWatch * watch, cb_u
 
     if (IsRunning())
     {
-        m_actions.Add(new dbg_mi::GDBWatchCreateAction(w, m_watches, m_pLogger));
+        m_actions.Add(new dbg_mi::GDBWatchCreateAction(w, m_watches, m_pLogger, true));
     }
 
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Add watch for \"%s\"", w->GetSymbol()), dbg_mi::LogPaneLogger::LineType::Debug);
     return w;
 }
 
-cb::shared_ptr<cbWatch> Debugger_GDB_MI::AddMemoryRange(wxString address, uint64_t size, bool update)
+cb::shared_ptr<cbWatch> Debugger_GDB_MI::AddMemoryRange(uint64_t llAddress, uint64_t llSize, const wxString & symbol, bool update)
 {
-    cb::shared_ptr<dbg_mi::GDBMemoryRangeWatch> watch(new dbg_mi::GDBMemoryRangeWatch(m_project, m_pLogger, address, size));
-    uint64_t llAddress;
-    wxString blank = wxEmptyString;
-
-    if (address.ToULongLong(&llAddress, 16))
-    {
-        watch->SetSymbol(blank);
-        watch->SetAddress(address);
-    }
-    else
-    {
-        watch->SetSymbol(address);
-        watch->SetAddress(blank);
-    }
-
+    cb::shared_ptr<dbg_mi::GDBMemoryRangeWatch> watch(new dbg_mi::GDBMemoryRangeWatch(m_pProject, m_pLogger, llAddress, llSize, symbol));
+    watch->SetSymbol(symbol);
+    watch->SetAddress(llAddress);
     m_memoryRanges.push_back(watch);
     m_mapWatchesToType[watch] = dbg_mi::GDBWatchType::MemoryRange;
 
     if (IsRunning())
     {
-        m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Adding watch for: address:%s  size:%lld", address, size), dbg_mi::LogPaneLogger::LineType::Warning);
+        m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Adding watch for: address: %#018llx  size:%lld", llAddress, llSize), dbg_mi::LogPaneLogger::LineType::Warning);
         m_actions.Add(new dbg_mi::GDBMemoryRangeWatchCreateAction(watch, m_pLogger));
     }
 
@@ -1780,7 +1813,7 @@ cb::shared_ptr<cbWatch> Debugger_GDB_MI::AddMemoryRange(wxString address, uint64
 
 void Debugger_GDB_MI::AddTooltipWatch(const wxString & symbol, wxRect const & rect)
 {
-    cb::shared_ptr<dbg_mi::GDBWatch> w(new dbg_mi::GDBWatch(m_project, m_pLogger, symbol, true));
+    cb::shared_ptr<dbg_mi::GDBWatch> w(new dbg_mi::GDBWatch(m_pProject, m_pLogger, symbol, true));
     m_watches.push_back(w);
 
     if (IsRunning())
@@ -1818,28 +1851,33 @@ void Debugger_GDB_MI::DeleteWatch(cb::shared_ptr<cbWatch> watch)
 
 bool Debugger_GDB_MI::HasWatch(cb::shared_ptr<cbWatch> watch)
 {
+    if (watch == m_WatchLocalsandArgs)
+    {
+        return true;
+    }
+
     dbg_mi::GDBWatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
     return it != m_watches.end();
 }
 
+bool Debugger_GDB_MI::IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch)
+{
+    dbg_mi::GDBMapWatchesToType::const_iterator it = m_mapWatchesToType.find(watch);
+
+    if (it == m_mapWatchesToType.end())
+    {
+        return false;
+    }
+    else
+    {
+        return (it->second == dbg_mi::GDBWatchType::MemoryRange);
+    }
+}
+
 void Debugger_GDB_MI::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 {
-#warning +-------------------------------------------------------+
-#warning |        ShowWatchProperties - WORK IN PROGRESS         |
-#warning +-------------------------------------------------------+
-#ifdef __MINGW32__
-    if (IsDebuggerPresent())
-    {
-        DebugBreak();
-    }
-
-#endif // __MINGW32__
-    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> WORK IN PROGRESS <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
     // not supported for child nodes or memory ranges!
-#warning "Following line from exisitng GDB code"
-
-    //if (watch->GetParent() || IsMemoryRangeWatch(watch))
-    if (watch->GetParent())
+    if (watch->GetParent() || IsMemoryRangeWatch(watch))
     {
         return;
     }
@@ -1850,8 +1888,7 @@ void Debugger_GDB_MI::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 
     if (dlg.ShowModal() == wxID_OK)
     {
-#warning "Following line from exisitng GDB code"
-        //        DoWatches();
+        DoWatches();
     }
 }
 
@@ -1923,17 +1960,48 @@ void Debugger_GDB_MI::CollapseWatch(cb::shared_ptr<cbWatch> watch)
 
 void Debugger_GDB_MI::UpdateWatch(cb_unused cb::shared_ptr<cbWatch> watch)
 {
-#warning Debugger_GDB_MI::UpdateWatch() this is a blank function
-    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> NOT IMPLEMENTED< BUT CALLED <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
-#ifdef __MINGW32__
+    dbg_mi::GDBWatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
 
-    if (IsDebuggerPresent())
+    if (it == m_watches.end())
     {
-        DebugBreak();
+        return;
     }
 
-#endif // __MINGW32__
+    if (IsRunning())
+    {
+        m_actions.Add(new dbg_mi::GDBWatchCreateAction(*it, m_watches, m_pLogger, false));
+    }
 }
+
+void Debugger_GDB_MI::DoWatches()
+{
+    if (!IsRunning())
+    {
+        return;
+    }
+
+    dbg_mi::DebuggerConfiguration & config = GetActiveConfigEx();
+    bool bWatchFuncLocalsArgs = config.GetFlag(dbg_mi::DebuggerConfiguration::WatchFuncLocalsArgs);
+
+    if (bWatchFuncLocalsArgs)
+    {
+        if (m_WatchLocalsandArgs == nullptr)
+        {
+            m_WatchLocalsandArgs = cb::shared_ptr<dbg_mi::GDBWatch>(new dbg_mi::GDBWatch(m_pProject, m_pLogger, "Function locals and arguments", false));
+            m_WatchLocalsandArgs->Expand(true);
+            m_WatchLocalsandArgs->MarkAsChanged(false);
+            cbWatchesDlg * watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+            watchesDialog->AddSpecialWatch(m_WatchLocalsandArgs, true);
+        }
+    }
+
+    m_actions.Add(new dbg_mi::GDBStackVariables(m_pLogger, m_WatchLocalsandArgs, bWatchFuncLocalsArgs));
+    // Update watches now
+    CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
+    event.SetInt(int(cbDebuggerPlugin::DebugWindows::Watches));
+    Manager::Get()->ProcessEvent(event);
+}
+
 
 void Debugger_GDB_MI::SendCommand(const wxString & cmd, bool debugLog)
 {
@@ -1975,7 +2043,7 @@ void Debugger_GDB_MI::DoSendCommand(const wxString & cmd)
 
 void Debugger_GDB_MI::AttachToProcess(const wxString & pid)
 {
-    m_project = NULL;
+    m_pProject = NULL;
     long number;
 
     if (!pid.ToLong(&number))
@@ -1983,7 +2051,8 @@ void Debugger_GDB_MI::AttachToProcess(const wxString & pid)
         return;
     }
 
-    LaunchDebugger(GetActiveConfigEx().GetDebuggerExecutable(),
+    LaunchDebugger(m_pProject,
+                   GetActiveConfigEx().GetDebuggerExecutable(),
                    wxEmptyString,
                    wxEmptyString,
                    wxEmptyString,
@@ -2079,15 +2148,11 @@ void Debugger_GDB_MI::RequestUpdate(DebugWindows window)
             break;
 
         case Watches:
-            m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, _("DebugWindows Watches called!!"), dbg_mi::LogPaneLogger::LineType::Warning);
-#ifdef __MINGW32__
-
-            if (IsDebuggerPresent())
+            if (IsWindowReallyShown(Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->GetWindow()))
             {
-                DebugBreak();
+                DoWatches();
             }
 
-#endif // __MINGW32__
             break;
 
         default:
@@ -2129,11 +2194,199 @@ bool Debugger_GDB_MI::ShowValueTooltip(int style)
     return true;
 }
 
-wxArrayString Debugger_GDB_MI::ParseSearchDirs(const cbProject & project)
+void Debugger_GDB_MI::StripQuotes(wxString & str)
+{
+    if ((str.GetChar(0) == '\"') && (str.GetChar(str.Length() - 1) == '\"'))
+    {
+        str = str.Mid(1, str.Length() - 2);
+    }
+}
+
+void Debugger_GDB_MI::ConvertToGDBFriendly(wxString & str)
+{
+    if (str.IsEmpty())
+    {
+        return;
+    }
+
+    str = UnixFilename(str);
+
+    while (str.Replace("\\", "/"))
+        ;
+
+    while (str.Replace("//", "/"))
+        ;
+
+    if ((str.Find(' ') != -1) && (str.GetChar(0) != '"'))
+    {
+        str = "\"" + str + "\"";
+    }
+}
+
+void Debugger_GDB_MI::ConvertToGDBDirectory(wxString & str, wxString base, bool relative)
+{
+    if (str.IsEmpty())
+    {
+        return;
+    }
+
+    ConvertToGDBFriendly(str);
+    ConvertToGDBFriendly(base);
+    StripQuotes(str);
+    StripQuotes(base);
+
+    if (platform::windows)
+    {
+        int  ColonLocation   = str.Find(':');
+        bool convert_path_83 = false;
+
+        if (ColonLocation != wxNOT_FOUND)
+        {
+            convert_path_83 = true;
+        }
+        else
+            if (!base.IsEmpty() && str.GetChar(0) != '/')
+            {
+                if (base.GetChar(base.Length()) == '/')
+                {
+                    base = base.Mid(0, base.Length() - 2);
+                }
+
+                while (!str.IsEmpty())
+                {
+                    base += "/" + str.BeforeFirst('/');
+
+                    if (str.Find('/') != wxNOT_FOUND)
+                    {
+                        str = str.AfterFirst('/');
+                    }
+                    else
+                    {
+                        str.Clear();
+                    }
+                }
+
+                convert_path_83 = true;
+            }
+
+        // If can, get 8.3 name for path (Windows only)
+        if (convert_path_83 && str.Contains(' ')) // only if has spaces
+        {
+            wxFileName fn(str); // might contain a file name, too
+            wxString path_83 = fn.GetShortPath();
+
+            if (!path_83.IsEmpty())
+            {
+                str = path_83; // construct filename again
+            }
+        }
+
+        if (ColonLocation == wxNOT_FOUND || base.IsEmpty())
+        {
+            relative = false; // Can't do it
+        }
+    }
+    else
+    {
+        if ((str.GetChar(0) != '/' && str.GetChar(0) != '~') || base.IsEmpty())
+        {
+            relative = false;
+        }
+    }
+
+    if (relative)
+    {
+        if (platform::windows)
+        {
+            if (str.Find(':') != wxNOT_FOUND)
+            {
+                str = str.Mid(str.Find(':') + 2, str.Length());
+            }
+
+            if (base.Find(':') != wxNOT_FOUND)
+            {
+                base = base.Mid(base.Find(':') + 2, base.Length());
+            }
+        }
+        else
+        {
+            if (str.GetChar(0) == '/')
+            {
+                str = str.Mid(1, str.Length());
+            }
+            else
+            {
+                if (str.GetChar(0) == '~')
+                {
+                    str = str.Mid(2, str.Length());
+                }
+            }
+
+            if (base.GetChar(0) == '/')
+            {
+                base = base.Mid(1, base.Length());
+            }
+            else
+            {
+                if (base.GetChar(0) == '~')
+                {
+                    base = base.Mid(2, base.Length());
+                }
+            }
+        }
+
+        while (!base.IsEmpty() && !str.IsEmpty())
+        {
+            if (str.BeforeFirst('/') == base.BeforeFirst('/'))
+            {
+                if (str.Find('/') == wxNOT_FOUND)
+                {
+                    str.Clear();
+                }
+                else
+                {
+                    str = str.AfterFirst('/');
+                }
+
+                if (base.Find('/') == wxNOT_FOUND)
+                {
+                    base.Clear();
+                }
+                else
+                {
+                    base = base.AfterFirst('/');
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        while (!base.IsEmpty())
+        {
+            str = "../" + str;
+
+            if (base.Find('/') == wxNOT_FOUND)
+            {
+                base.Clear();
+            }
+            else
+            {
+                base = base.AfterFirst('/');
+            }
+        }
+    }
+
+    ConvertToGDBFriendly(str);
+}
+
+
+wxArrayString Debugger_GDB_MI::ParseSearchDirs(cbProject * pProject)
 {
     // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
     wxArrayString dirs;
-    const TiXmlElement * elem = static_cast<const TiXmlElement *>(project.GetExtensionsNode());
+    const TiXmlElement * elem = static_cast<const TiXmlElement *>(pProject->GetExtensionsNode());
 
     if (elem)
     {
@@ -2147,10 +2400,12 @@ wxArrayString Debugger_GDB_MI::ParseSearchDirs(const cbProject & project)
             {
                 if (pathsElem->Attribute("add"))
                 {
-                    const wxString & dir = cbC2U(pathsElem->Attribute("add"));
+                    wxString dir = pathsElem->Attribute("add");
 
                     if (dirs.Index(dir) == wxNOT_FOUND)
                     {
+                        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dir); // apply env vars
+                        ConvertToGDBDirectory(dir, "", false);
                         dirs.Add(dir);
                     }
                 }
@@ -2610,7 +2865,7 @@ bool Debugger_GDB_MI::LoadStateFromFile(cbProject * pProject)
 
             if (GDBMemoryRangeWatchName.IsSameAs("GDBMemoryRangeWatch"))
             {
-                dbg_mi::GDBMemoryRangeWatch * memoryRangeWatch = new dbg_mi::GDBMemoryRangeWatch(pProject, m_pLogger, "", 0);
+                dbg_mi::GDBMemoryRangeWatch * memoryRangeWatch = new dbg_mi::GDBMemoryRangeWatch(pProject, m_pLogger, 0, 0, wxEmptyString);
                 memoryRangeWatch->LoadWatchFromXML(pWatchElement, this);
             }
         }

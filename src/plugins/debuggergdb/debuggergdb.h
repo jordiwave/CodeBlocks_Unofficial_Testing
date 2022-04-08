@@ -97,7 +97,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         }
 
         cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol, bool update) override;
-        cb::shared_ptr<cbWatch> AddMemoryRange(wxString address, uint64_t size, bool update) override;
+        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update) override;
         void DeleteWatch(cb::shared_ptr<cbWatch> watch) override;
         bool HasWatch(cb::shared_ptr<cbWatch> watch) override;
         bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch);

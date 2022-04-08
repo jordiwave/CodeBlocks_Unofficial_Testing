@@ -25,8 +25,7 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
         enum Flags
         {
             DisableInit,
-            WatchFuncArgs,
-            WatchLocals,
+            WatchFuncLocalsArgs,
             CatchExceptions,
             EvalExpression,
             AddOtherProjectDirs,

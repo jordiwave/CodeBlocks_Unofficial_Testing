@@ -799,6 +799,14 @@ class DLLIMPORT cbProject : public CompileTargetBase
             return m_Files;
         }
 
+        /** Some cbProjects need to turn off its notification events. Eg., Clangd_client
+            needs to avoid confusing plugins with its management of files not contained by a project.
+          */
+        virtual void SetNotifications(bool onOrOff)
+        {
+            m_Notifications = onOrOff;
+        }
+
     private:
         void Open();
         void ExpandVirtualBuildTargetGroup(const wxString & alias, wxArrayString & result) const;
@@ -847,6 +855,9 @@ class DLLIMPORT cbProject : public CompileTargetBase
         // copy of <Extensions> element, in case certain plugins are disabled
         // so that the contents are not lost
         TiXmlElement * m_pExtensionsElement;
+
+        // Turn event notifications for this cbProject on or off (default on)
+        bool     m_Notifications;
 
         // This is for not showing the select target option dialog
         static int iSelectTargetSelection;

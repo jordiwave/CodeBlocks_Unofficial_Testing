@@ -444,12 +444,46 @@ void GDB_driver::SetVarValue(const wxString & var, const wxString & value)
     QueueCommand(new DebuggerCmd(this, wxString::Format(_T("set variable %s=%s"), var.c_str(), cleanValue.c_str())));
 }
 
-void GDB_driver::SetMemoryRangeValue(wxString addr, const wxString & value)
+void GDB_driver::SetMemoryRangeValue(uint64_t addr, const wxString & value)
+{
+    const size_t size = value.size();
+
+    if (size == 0)
+    {
+        return;
+    }
+
+    wxString dataStr = wxT("{");
+    const wxCharBuffer & data = value.To8BitData();
+
+    for (size_t i = 0; i < size; i++)
+    {
+        if (i != 0)
+        {
+            dataStr << wxT(",");
+        }
+
+        dataStr << wxString::Format(wxT("0x%x"), uint8_t(data[i]));
+    }
+
+    dataStr << wxT("}");
+    wxString commandStr;
+    // Check if build is for WX MS Windows
+#ifdef __WXMSW__
+    commandStr.Printf(wxT("set {char [%ul]} 0x%" PRIx64 "="), size, addr);
+#else
+    commandStr.Printf(wxT("set {char [%zu]} 0x%" PRIx64 "="), size, addr);
+#endif // __WXMSW__
+    commandStr << dataStr;
+    QueueCommand(new DebuggerCmd(this, commandStr));
+}
+
+void GDB_driver::SetMemoryRangeValue(wxString address, const wxString & value)
 {
     const size_t size = value.size();
     uint64_t llAddres;
 
-    if ((size == 0) || (!addr.ToULongLong(&llAddres, 16)))
+    if ((size == 0) || (!address.ToULongLong(&llAddres, 16)))
     {
         return;
     }

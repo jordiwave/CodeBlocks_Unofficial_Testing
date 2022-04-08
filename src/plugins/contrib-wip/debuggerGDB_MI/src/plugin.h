@@ -84,6 +84,7 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
 
         // breakpoints calls
         virtual cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString & filename, int line);
+        cb::shared_ptr<cbBreakpoint> AddBreakpoint(cb::shared_ptr<dbg_mi::GDBBreakpoint> bp);
         virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString & dataExpression);
         virtual int GetBreakpointsCount() const;
         virtual cb::shared_ptr<cbBreakpoint> GetBreakpoint(int index);
@@ -102,10 +103,11 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
         // watches
         virtual cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol, bool update);
         virtual cb::shared_ptr<cbWatch> AddWatch(dbg_mi::GDBWatch * watch, cb_unused bool update);
-        cb::shared_ptr<cbWatch> AddMemoryRange(wxString address, uint64_t size, bool update) override;
+        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update) override;
         void AddTooltipWatch(const wxString & symbol, wxRect const & rect);
         virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch);
         virtual bool HasWatch(cb::shared_ptr<cbWatch> watch);
+        bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch);
         virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch);
         virtual bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString & value);
         virtual void ExpandWatch(cb::shared_ptr<cbWatch> watch);
@@ -120,7 +122,10 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
         virtual void OnValueTooltip(const wxString & token, const wxRect & evalRect);
         virtual bool ShowValueTooltip(int style);
 
-        wxArrayString ParseSearchDirs(const cbProject & project);
+        void StripQuotes(wxString & str);
+        void ConvertToGDBFriendly(wxString & str);
+        void ConvertToGDBDirectory(wxString & str, wxString base = "", bool relative = true);
+        wxArrayString ParseSearchDirs(cbProject * project);
         TiXmlElement * GetElementForSaving(cbProject & project, const char * elementsToClear);
         void SetSearchDirs(cbProject & project, const wxArrayString & dirs);
 
@@ -155,11 +160,11 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
         virtual void ConvertDirectory(wxString & /*str*/, wxString /*base*/, bool /*relative*/);
         virtual cbProject * GetProject()
         {
-            return m_project;
+            return m_pProject;
         }
         virtual void ResetProject()
         {
-            m_project = NULL;
+            m_pProject = NULL;
         }
         virtual void CleanupWhenProjectClosed(cbProject * project);
         virtual bool CompilerFinished(bool compilerFailed, StartType startType);
@@ -190,10 +195,8 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
         void OnTimer(wxTimerEvent & event);
         void OnIdle(wxIdleEvent & event);
         void OnMenuInfoCommandStream(wxCommandEvent & event);
-        int LaunchDebugger(wxString const & debugger, wxString const & debuggee, wxString const & args,
+        int LaunchDebugger(cbProject * project, wxString const & debugger, wxString const & debuggee, wxString const & args,
                            wxString const & working_dir, int pid, bool console, StartType start_type);
-
-    private:
         void AddStringCommand(wxString const & command);
         void DoSendCommand(const wxString & cmd);
         void RunQueue();
@@ -208,19 +211,23 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
         void OnProjectClosed(CodeBlocksEvent & event);
         bool SaveStateToFile(cbProject * prj);
         bool LoadStateFromFile(cbProject * prj);
+        void DoWatches();
 
     private:
         wxTimer m_timer_poll_debugger;
-        cbProject * m_project;
+        cbProject * m_pProject;
 
         dbg_mi::GDBExecutor m_executor;
         dbg_mi::ActionsMap  m_actions;
         dbg_mi::LogPaneLogger * m_pLogger;
-        dbg_mi::GDBBreakpointsContainer m_breakpoints;              // XML data save and load done
+        dbg_mi::GDBBreakpointsContainer m_breakpoints;
         dbg_mi::GDBBreakpointsContainer m_temporary_breakpoints;
         dbg_mi::GDBBacktraceContainer m_backtrace;
         dbg_mi::GDBThreadsContainer m_threads;
-        dbg_mi::GDBWatchesContainer m_watches;                      // XML data save and load done
+        dbg_mi::GDBWatchesContainer m_watches;
+
+        cb::shared_ptr<dbg_mi::GDBWatch> m_WatchLocalsandArgs;
+
         dbg_mi::GDBMemoryRangeWatchesContainer m_memoryRanges;
         dbg_mi::GDBMapWatchesToType m_mapWatchesToType;
         dbg_mi::GDBTextInfoWindow * m_command_stream_dialog;

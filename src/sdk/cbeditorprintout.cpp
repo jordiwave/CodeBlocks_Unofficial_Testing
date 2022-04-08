@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12776 $
- * $Id: cbeditorprintout.cpp 12776 2022-04-01 06:50:41Z wh11204 $
+ * $Revision: 12780 $
+ * $Id: cbeditorprintout.cpp 12780 2022-04-06 10:42:33Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/cbeditorprintout.cpp $
  */
 
@@ -164,15 +164,13 @@ void cbEditorPrintout::GetPageInfo(int * minPage, int * maxPage, int * selPageFr
         }
     }
 
-    *maxPage = m_pages.size();
-
-    if (*maxPage > 0)
+    if (!m_pages.empty())
     {
         *minPage = 1;
+        *maxPage = m_pages.size();
+        *selPageFrom = *minPage;
+        *selPageTo = *maxPage;
     }
-
-    *selPageFrom = *minPage;
-    *selPageTo = *maxPage;
 }
 
 bool cbEditorPrintout::OnBeginDocument(int startPage, int endPage)
