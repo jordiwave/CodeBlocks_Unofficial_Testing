@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12304 $
- * $Id: debugger_defs.cpp 12304 2021-03-16 23:28:31Z fuscated $
+ * $Revision: 12795 $
+ * $Id: debugger_defs.cpp 12795 2022-04-16 03:47:18Z ollydbg $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/debuggergdb/debugger_defs.cpp $
  */
 

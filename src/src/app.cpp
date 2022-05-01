@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12783 $
- * $Id: app.cpp 12783 2022-04-07 17:28:27Z wh11204 $
+ * $Revision: 12785 $
+ * $Id: app.cpp 12785 2022-04-09 10:17:38Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/app.cpp $
  */
 
@@ -51,7 +51,6 @@
 #include "sdk_events.h"
 #include "splashscreen.h"
 #include "uservarmanager.h"
-#include "autorevision.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
     #include <sys/param.h>
@@ -500,7 +499,7 @@ bool CodeBlocksApp::LoadConfig()
     if (data.IsEmpty())
     {
         data.assign(GetAppPath());  // fallback
-        data.Replace(_T("/bin"), _T(""));
+        data.Replace("/bin", "");
     }
 
     if (!m_Prefix.IsEmpty())        // --prefix command line switch overrides builtin value
@@ -510,7 +509,7 @@ bool CodeBlocksApp::LoadConfig()
     else                            // also, check for environment
     {
         wxString env;
-        wxGetEnv(_T("CODEBLOCKS_DATA_DIR"), &env);
+        wxGetEnv("CODEBLOCKS_DATA_DIR", &env);
 
         if (!env.IsEmpty())
         {
@@ -518,15 +517,7 @@ bool CodeBlocksApp::LoadConfig()
         }
     }
 
-    if (platform::windows)
-    {
-        data.append(_T("\\share\\CodeBlocks"));
-    }
-    else
-    {
-        data.append(_T("/share/codeblocks"));
-    }
-
+    data.append(wxString::Format("%cshare%cCodeBlocks", wxFILE_SEP_PATH, wxFILE_SEP_PATH));
     // Make sure the path to our resources is always an absolute path, because resource loading
     // would fail with a relative path if some part of the code changes the current working
     // directory.
@@ -538,7 +529,7 @@ bool CodeBlocksApp::LoadConfig()
     }
 
     data = filename.GetFullPath();
-    cfg->Write(_T("data_path"), data);
+    cfg->Write("data_path", data);
     return true;
 }
 
@@ -599,22 +590,23 @@ void CodeBlocksApp::InitExceptionHandler()
 {
 #ifdef __WXMSW__
     ExcHndlInit();
-    wxString appdir = ConfigManager::GetFolder(sdBase);
-    wxDateTime datetimeNow  =  wxDateTime::Now();
-    wxString dtDisplay = datetimeNow.Format("%d-%b-%Y_%H%M%S");
+    const wxString appdir = ConfigManager::GetFolder(sdBase);
+    const wxString dtDisplay = wxDateTime::Now().Format("%Y%m%d_%H%M%S_%d%b%Y");
+    int iReleaseVersion = ConfigManager::GetRevisionNumber();
 
-    if (appdir.Contains("Program Files"))
+    // If the executable folder is not writable, as it happens with releases installed under Program Files,
+    // move crash report to the configuration folder.
+    // Also give the crash report a more useful name
+    if (wxFileName::IsDirWritable(appdir))
     {
-        m_CrashReportFileName = wxString::Format("%s\\CodeBlocks_%s_SVN_%d.rpt", ConfigManager::GetFolder(sdConfig), dtDisplay, autorevision::svn_revision);
+        m_CrashReportFileName = wxString::Format("%s\\CodeBlocks_%s_SVN_%d.rpt", appdir, dtDisplay, iReleaseVersion);
     }
     else
     {
-        m_CrashReportFileName = wxString::Format("%s\\CodeBlocks_%s_SVN_%d.rpt", appdir, dtDisplay, autorevision::svn_revision);
+        m_CrashReportFileName = wxString::Format("%s\\CodeBlocks_%s_SVN_%d.rpt", ConfigManager::GetFolder(sdConfig), dtDisplay, iReleaseVersion);
     }
 
     ExcHndlSetLogFileNameA(m_CrashReportFileName.c_str());
-    LogManager * log = Manager::Get()->GetLogManager();
-    log->Log(wxString::Format(_("Setting the crash report file to: %s"), m_CrashReportFileName));
 #endif
 }
 
@@ -1079,6 +1071,34 @@ bool CodeBlocksApp::OnInit()
         CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
         Manager::Get()->ProcessEvent(event);
         log->Log(wxString::Format(_("Setting the crash report file to: %s"), m_CrashReportFileName));
+#if 1
+        log->Log(wxString::Format("\n\n--------------------------------------------------------------------------------"));
+        log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetDataDir():             %s"), wxStandardPathsBase::Get().GetDataDir()));
+        log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetUserDataDir():         %s"), wxStandardPathsBase::Get().GetUserDataDir()));
+        log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetLocalDataDir():        %s"), wxStandardPathsBase::Get().GetLocalDataDir()));
+        log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetConfigDir():           %s"), wxStandardPathsBase::Get().GetConfigDir()));
+        log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetUserConfigDir():       %s"), wxStandardPathsBase::Get().GetUserConfigDir()));
+        log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetUserLocalDataDir():    %s"), wxStandardPathsBase::Get().GetUserLocalDataDir()));
+        log->Log(wxString::Format("-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -"));
+        log->Log(wxString::Format(_("System-wide temp folder - (sdTemp):             %s"), ConfigManager::GetFolder(sdTemp)));
+        log->Log(wxString::Format("-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -"));
+        log->Log(wxString::Format(_("User's home directory - (sdHome):               %s"), ConfigManager::GetFolder(sdHome)));
+        //log->Log(wxString::Format(_("All dirs in the PATH environment variable - (sdPath): %s"), ConfigManager::GetFolder(sdPath)));
+        log->Log(wxString::Format(_("Config folder - (sdConfig):                     %s"), ConfigManager::GetFolder(sdConfig)));
+        //        log->Log(wxString::Format(_("Current working folder - (sdCurrent): %s"), ConfigManager::GetFolder(sdCurrent)));
+        log->Log(wxString::Format(_("Plugins folder in user's dir - (sdPluginsUser): %s"), ConfigManager::GetFolder(sdPluginsUser)));
+        log->Log(wxString::Format(_("Scripts folder in user's dir - (sdScriptsUser): %s"), ConfigManager::GetFolder(sdScriptsUser)));
+        log->Log(wxString::Format(_("Data folder in user's dir - (sdDataUser):       %s"), ConfigManager::GetFolder(sdDataUser)));
+        //log->Log(wxString::Format(_("Convenience value meaning <all sd*User values> - (sdAllUser): %s"), ConfigManager::GetFolder(sdAllUser)));
+        log->Log(wxString::Format("-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -"));
+        log->Log(wxString::Format(_("Code::Blocks' installation base - (sdBase):     %s"), ConfigManager::GetFolder(sdBase)));
+        log->Log(wxString::Format(_("Plugins folder in base dir - (sdPluginsGlobal): %s"), ConfigManager::GetFolder(sdPluginsGlobal)));
+        log->Log(wxString::Format(_("Scripts folder in base dir - (sdScriptsGlobal): %s"), ConfigManager::GetFolder(sdScriptsGlobal)));
+        log->Log(wxString::Format(_("Data folder in base dir - (sdDataGlobal):       %s"), ConfigManager::GetFolder(sdDataGlobal)));
+        //log->Log(wxString::Format(_("Convenience value meaning <all sd*Global values> - (sdAllGlobal): %s"), ConfigManager::GetFolder(sdAllGlobal)));
+        //log->Log(wxString::Format(_("All known dirs (i.e. all of the above) - (sdAllKnown): %s"), ConfigManager::GetFolder(sdAllKnown)));
+        log->Log(wxString::Format("--------------------------------------------------------------------------------\n\n"));
+#endif
         return true;
     }
     catch (cbException & exception)

@@ -7,13 +7,13 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbNSIS" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/cbNSIS" />
+				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbNSIS" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbNSIS" />
 				<Option platforms="Windows;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
+				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
@@ -22,8 +22,8 @@
 					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip" />
 					<Add after="cmd /c if exist cbNSIS.zip del cbNSIS.zip" />
 
-					<Add after="zip -j9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip manifest.xml" />
-					<Add after="zip -j9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip dummy.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip manifest.xml" />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip dummy.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -49,11 +49,11 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
-			<Add directory="$(#CB_BUILD)/src" />
+			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
+			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
+			<Add directory="$(#CB_BUILD)\src" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
 		</Compiler>
 		<Linker>
@@ -61,9 +61,9 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-Wl,--no-undefined" />
 			<Add option="-mthreads" />
-			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
 			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 		</Linker>
 		<Unit filename="AddComp.cpp" />

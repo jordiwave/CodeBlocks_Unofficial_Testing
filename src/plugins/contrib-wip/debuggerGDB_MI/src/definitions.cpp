@@ -127,7 +127,7 @@ long ReadChildNodeLong(tinyxml2::XMLElement * pElementParent,  const wxString ch
 uint64_t ReadChildNodeUint64(tinyxml2::XMLElement * pElementParent,  const wxString childName)
 {
     wxString value = ReadChildNodewxString(pElementParent, childName);
-    uint64_t result;
+    long long unsigned int result;
     value.ToULongLong(&result, 10);
     return result;
 }
@@ -135,7 +135,7 @@ uint64_t ReadChildNodeUint64(tinyxml2::XMLElement * pElementParent,  const wxStr
 uint64_t ReadChildNodeHex(tinyxml2::XMLElement * pElementParent,  const wxString childName)
 {
     wxString value = ReadChildNodewxString(pElementParent, childName);
-    uint64_t result;
+    long long unsigned int result;
     value.ToULongLong(&result, 16);
     return result;
 }

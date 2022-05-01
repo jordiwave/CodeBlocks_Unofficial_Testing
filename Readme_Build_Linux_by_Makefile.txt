@@ -46,7 +46,7 @@ Requirements:
         # Optional step 9:
         sudo apt install -y subversion git
         # Optional step 10:
-        sudo apt install -y libbz2-dev debhelper cdbs xsltproc
+        sudo apt install -y libbz2-dev debhelper cdbs xsltproc fakeroot
 
  
 To build Code::Blocks:
@@ -59,7 +59,7 @@ To build Code::Blocks:
          directory you uncompressed the snapshot into.
 
     4) Instead of performing steps 6 through 8 you can run the following script:
-        ./codeblocks_build.sh
+        ./Build_Helper_Files/codeblocks_build.sh
        
         The codeblocks_build.sh script checks for errors and if something fails please look at the script to find which
           log file to check to see what failure occured so you can fix it.
@@ -130,6 +130,8 @@ Additional Notes/Info:
         "--with-boost-libdir=LIB_DIR"
        NOTE: Depending on your system, LIB_DIR might be "/usr/lib" or "/usr/lib64".
 
+3) To clean the build and bootstrap files etc run the following command:
+        ./Build_Helper_Files/codeblocks_cleanup.sh
 
 
 Building WxWidget

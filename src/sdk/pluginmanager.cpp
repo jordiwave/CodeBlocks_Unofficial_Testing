@@ -865,16 +865,27 @@ bool PluginManager::ReadManifestFile(const wxString & pluginFilename,
         wxString actual = fname.GetFullName();
 
         // remove 'lib' prefix from plugin name (if any)
-        if (!platform::windows && actual.StartsWith(_T("lib")))
+        if (
+            !platform::windows          &&
+            actual.StartsWith("lib")    &&
+            !actual.StartsWith("lib_")
+        )
         {
             actual.Remove(0, 3);
         }
 
+        wxString actualSearched(actual);
         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
 
         if (actual.IsEmpty())
         {
-            Manager::Get()->GetLogManager()->LogError(_T("Plugin resource not found: ") + fname.GetFullName());
+            LogManager * log = Manager::Get()->GetLogManager();
+            log->LogError(wxString::Format(_("Plugin data file not found: %s (original filename: %s)"), actualSearched, fname.GetFullName()));
+            log->LogError(_("Directories searched:"));
+            log->LogError(wxString::Format(_("                      Plugins folder in user's dir - (sdPluginsUser): %s"), ConfigManager::GetFolder(sdPluginsUser)));
+            log->LogError(wxString::Format(_("                      Data folder in user's dir - (sdDataUser):       %s"), ConfigManager::GetFolder(sdDataUser)));
+            log->LogError(wxString::Format(_("                      Plugins folder in base dir - (sdPluginsGlobal): %s"), ConfigManager::GetFolder(sdPluginsGlobal)));
+            log->LogError(wxString::Format(_("                      Data folder in base dir - (sdDataGlobal):       %s"), ConfigManager::GetFolder(sdDataGlobal)));
             return false; // not found
         }
 
@@ -1061,16 +1072,27 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString & pluginFilena
     wxString actual = fname.GetFullName();
 
     // remove 'lib' prefix from plugin name (if any)
-    if (!platform::windows && actual.StartsWith(_T("lib")))
+    if (
+        !platform::windows          &&
+        actual.StartsWith("lib")    &&
+        !actual.StartsWith("lib_")
+    )
     {
         actual.Remove(0, 3);
     }
 
+    wxString actualSearched(actual);
     actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
 
     if (actual.IsEmpty())
     {
-        Manager::Get()->GetLogManager()->LogError(_T("Plugin resource not found: ") + fname.GetFullName());
+        LogManager * log = Manager::Get()->GetLogManager();
+        log->LogError(wxString::Format(_("Plugin data file not found: %s (original filename: %s)"), actualSearched, fname.GetFullName()));
+        log->LogError(_("Directories searched:"));
+        log->LogError(wxString::Format(_("                      Plugins folder in user's dir - (sdPluginsUser): %s"), ConfigManager::GetFolder(sdPluginsUser)));
+        log->LogError(wxString::Format(_("                      Data folder in user's dir - (sdDataUser):       %s"), ConfigManager::GetFolder(sdDataUser)));
+        log->LogError(wxString::Format(_("                      Plugins folder in base dir - (sdPluginsGlobal): %s"), ConfigManager::GetFolder(sdPluginsGlobal)));
+        log->LogError(wxString::Format(_("                      Data folder in base dir - (sdDataGlobal):       %s"), ConfigManager::GetFolder(sdDataGlobal)));
         return; // not found
     }
 

@@ -7,7 +7,7 @@
 		<Build>
 			<Target title="default">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/cb_koders" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/cb_koders" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/cb_koders" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
@@ -41,7 +41,7 @@
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cb_koders.zip manifest.xml" />
+			<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cb_koders.zip manifest.xml" />
 		</ExtraCommands>
 		<Unit filename="cb_koders.cpp" />
 		<Unit filename="cb_koders.h" />

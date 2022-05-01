@@ -32,8 +32,8 @@
 					<Add directory="$(#cb)/devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 codechecker.zip manifest.xml" />
-					<Add after="zip -j9 codechecker.cbplugin libcodechecker.so codechecker.zip" />
+					<Add after="zip -jq9 codechecker.zip manifest.xml" />
+					<Add after="zip -jq9 codechecker.cbplugin libcodechecker.so codechecker.zip" />
 					<Add after="/bin/cp codechecker.zip $(#cb)/devel/share/codeblocks" />
 					<Add after="/bin/cp libcodechecker.so $(#cb)/devel/share/codeblocks/plugins" />
 					<Mode after="always" />

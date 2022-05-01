@@ -1,314 +1,138 @@
-@echo off
+@echo on
 
-@set DEBUG=Off
+@set DEBUG=On
 @rem @set DEBUG=On
 
 @REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
-setlocal
+@setlocal
 
 @rem SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION  
-SETLOCAL ENABLEEXTENSIONS
+@SETLOCAL ENABLEEXTENSIONS
 
-@if "%1" == "" (
-    @echo "Missing first target parameter, use '31_32' for wxWidgets 3.1 in 32 bits mode or '31_64' for wxWidgets 3.1 in 64 bits mode"
-    GOTO:EOF
+@REM =============================================
+
+@SET CurrentDir="%CD%"
+@if exist ..\..\..\bootstrap cd ..\..\..
+@if exist ..\..\bootstrap cd ..\..
+@if exist ..\bootstrap cd ..
+@if not exist bootstrap (
+    @ECHO Cannot find bootstrap. Exiting
+    @goto Finish
 )
 
-set STRIP_EXE=%2\bin\strip.exe
+@REM =============================================
+
+@echo C::B Root Directory is: %CD%
+
+@REM =============================================
+
+@set BUILD_BITS=%1
+@if exist "src\devel31_%BUILD_BITS%" goto BuildBits_Okay
+@if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+@if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+@if exist "src\devel31_32" set BUILD_BITS=32
+@if exist "src\devel31_64" set BUILD_BITS=64
+@if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+@if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+@goto BuildBitError
+
+:BuildBits_Okay
+
+@echo Coniguring for: %BUILD_BITS% bits
+
+@REM =============================================
+
 
 @rem WATCH this as you need to  have the set outside the second if for it to work!!!!
-if "%2" == ""  set STRIP_EXE=strip.exe
 
-if "%2" == "" (
-    if NOT exist "%STRIP_EXE%" (
-        @echo "ERROR: Cannot find %STRIP_EXE%. It is not on the path. You can supply a second paramter to specify the GCC root directory or update the path and try again."
-        @GOTO:EOF
-    )
+@if "%2" == "" (
+    set STRIP_EXE=strip.exe
 ) else (
-    if not exist %STRIP_EXE% (
-        @echo "ERROR: Cannot find %STRIP_EXE%. Please check the that strip.exe is in the "%2\bin" dierectory and try again."
-        @GOTO:EOF
-    )
+   set STRIP_EXE=%2\bin\strip.exes
 )
 
+@if NOT exist "%STRIP_EXE%"  @if exist C:\msys64\mingw64\bin\strip.exe  set STRIP_EXE=C:\msys64\mingw64\bin\strip.exe
+@if NOT exist "%STRIP_EXE%"  @if exist C:\msys64\mingw32\bin\strip.exe  set STRIP_EXE=C:\msys64\mingw32\bin\strip.exe
+@if NOT exist "%STRIP_EXE%"  @if exist C:\mingw64\bin\strip.exe         set STRIP_EXE=C:\mingw64\bin\strip.exe
+@if NOT exist "%STRIP_EXE%"  @if exist C:\mingw32\bin\strip.exe         set STRIP_EXE=C:\mingw32\bin\strip.exe
 
-if "%DEBUG%" == "On" echo "Creating output directory tree"
+@if NOT exist "%STRIP_EXE%" (
+    @echo "ERROR: Cannot find %STRIP_EXE%. It is not on the path. You can supply a second paramter to specify the GCC root directory or update the path and try again."
+    @goto Finish
+)
 
+@REM =============================================
+@set CB_ROOT=%CD%
+@set CB_DEVEL_DIR=%CB_ROOT%\src\devel31_%BUILD_BITS%
+@set CB_OUTPUT_DIR=%CB_ROOT%\src\output31_%BUILD_BITS%
+@set CB_DEVEL_RESDIR=%CB_DEVEL_DIR%\share\CodeBlocks
+@set CB_OUTPUT_RESDIR=%CB_OUTPUT_DIR%\share\CodeBlocks
 
-set CB_DEVEL_DIR=devel%1
-set CB_OUTPUT_DIR=output%1
-set CB_DEVEL_RESDIR=%CB_DEVEL_DIR%\share\CodeBlocks
-set CB_OUTPUT_RESDIR=%CB_OUTPUT_DIR%\share\CodeBlocks
-set CB_DOC_DIR=setup
+@REM =============================================
+
+@if not exist %CB_DEVEL_DIR% (
+    @echo "ERROR: The developemnt directory does not exist: %CB_DEVEL_DIR% . Please fix and try again."
+    @goto Finish
+)
+
+@if exist %CB_OUTPUT_DIR% (
+    @echo "The output %CB_OUTPUT_DIR% exists, dleteing it."
+    rmdir /s /q %CB_OUTPUT_DIR%
+)
+
+@REM =============================================
+
+@if "%DEBUG%" == "On" echo "Creating output directory and copying the dev tree to the output"
+@call :mkdirSilent "%CB_OUTPUT_DIR%"
+@xcopy /S /D /y "%CB_DEVEL_DIR%\*" "%CB_OUTPUT_DIR%\"  > nul     
+
+@REM =============================================
+@if "%DEBUG%" == "On" echo "Striping EXE and DLL files in the output directory tree"
+@for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.exe" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
+@for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.dll" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
+
+@REM =============================================
 
 @rem Use the correct files for the version of windows being used
-for /f "tokens=4-7 delims=[.] " %%i in ('ver') do (if %%i==Version (set WIN_Version=%%j.%%k) else (set WIN_Version=%%i.%%j))
-if "%WIN_Version%" == "10.0" set CB_HANDLER_WIN_DIR=Win_10
-if "%WIN_Version%" ==  "6.3" set CB_HANDLER_WIN_DIR=Win_7
-if "%WIN_Version%" ==  "6.2" set CB_HANDLER_WIN_DIR=Win_7
-if "%WIN_Version%" ==  "5.2" set CB_HANDLER_WIN_DIR=Win_XP
-if "%WIN_Version%" ==  "5.1" set CB_HANDLER_WIN_DIR=Win_XP
-if "%CB_HANDLER_WIN_DIR%" == "" set CB_HANDLER_WIN_DIR=Win_7
+@for /f "tokens=4-7 delims=[.] " %%i in ('ver') do @(@if %%i==Version (set WIN_Version=%%j.%%k) else (set WIN_Version=%%i.%%j))
+@if "%WIN_Version%" == "10.0"       set CB_HANDLER_WIN_DIR=Win_10
+@if "%WIN_Version%" ==  "6.3"       set CB_HANDLER_WIN_DIR=Win_7
+@if "%WIN_Version%" ==  "6.2"       set CB_HANDLER_WIN_DIR=Win_7
+@if "%WIN_Version%" ==  "5.2"       set CB_HANDLER_WIN_DIR=Win_XP
+@if "%WIN_Version%" ==  "5.1"       set CB_HANDLER_WIN_DIR=Win_XP
+@if "%CB_HANDLER_WIN_DIR%" == ""    set CB_HANDLER_WIN_DIR=Win_7
 
-set CB_HANDLER_DIR=exchndl\%CB_HANDLER_WIN_DIR%\win32\bin
-set TARGET=%1
-set TARGET_CUT=%TARGET:_64=%
-if NOT "%TARGET%" == "" if NOT "%TARGET%" == "%TARGET_CUT%" set CB_HANDLER_DIR=exchndl\%CB_HANDLER_WIN_DIR%\win64\bin
+@REM Copy these files after stripping symbols otherwise CB will not start as the files will be corrupted
+@set CB_HANDLER_DIR=%CB_ROOT%\src\exchndl\%CB_HANDLER_WIN_DIR%\win%BUILD_BITS%\bin
+@if exist "%CB_HANDLER_DIR%" xcopy /y "%CB_HANDLER_DIR%\*.dll" "%CB_OUTPUT_DIR%\" > nul
 
-call :mkdirSilent "%CB_DEVEL_RESDIR%\compilers"
-call :mkdirSilent "%CB_DEVEL_RESDIR%\lexers"
-call :mkdirSilent "%CB_DEVEL_RESDIR%\images"
-call :mkdirSilent "%CB_DEVEL_RESDIR%\images\settings"
-call :mkdirSilent "%CB_DEVEL_RESDIR%\plugins"
-call :mkdirSilent "%CB_DEVEL_RESDIR%\templates"
-call :mkdirSilent "%CB_DEVEL_RESDIR%\templates\wizard"
-call :mkdirSilent "%CB_DEVEL_RESDIR%\scripts"
-call :mkdirSilent "%CB_DEVEL_RESDIR%\scripts\tests"
+@REM =============================================
 
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\compilers"
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\lexers"
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\images"
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\images\settings"
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\plugins"
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\templates"
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\templates\wizard"
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\scripts"
-call :mkdirSilent "%CB_OUTPUT_RESDIR%\scripts\tests"
+@goto Finish
 
-rem exit /b
-
-set ZIPCMD=zip
-
-if "%DEBUG%" == "On" echo "Compressing core UI resources"
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\manager_resources.zip"       sdk\resources\*.xrc sdk\resources\images\*.png > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\resources.zip"               src\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\start_here.zip"              src\resources\start_here\* > nul
-if "%DEBUG%" == "On" echo "Compressing plugins UI resources"
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\Astyle.zip"                  plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\autosave.zip"                plugins\autosave\manifest.xml plugins\autosave\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\classwizard.zip"             plugins\classwizard\resources\manifest.xml plugins\classwizard\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\codecompletion.zip"          plugins\codecompletion\resources\manifest.xml plugins\codecompletion\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\compiler.zip"                plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\debugger.zip"                plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\defaultmimehandler.zip"      plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\occurrenceshighlighting.zip" plugins\occurrenceshighlighting\resources\*.xrc plugins\occurrenceshighlighting\resources\manifest.xml > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\openfileslist.zip"           plugins\openfileslist\manifest.xml > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\projectsimporter.zip"        plugins\projectsimporter\resources\*.xrc plugins\projectsimporter\resources\manifest.xml > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\scriptedwizard.zip"          plugins\scriptedwizard\resources\manifest.xml > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\todo.zip"                    plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\abbreviations.zip"           plugins\abbreviations\resources\manifest.xml plugins\abbreviations\resources\*.xrc > nul
-"%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\xpmanifest.zip"              plugins\xpmanifest\manifest.xml > nul
-if "%DEBUG%" == "On" echo "Packing core UI bitmaps"
-cd src\resources
-"%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\resources.zip" ^
-    images\*.png ^
-    images\16x16\*.png ^
-    images\20x20\*.png ^
-    images\24x24\*.png ^
-    images\28x28\*.png ^
-    images\32x32\*.png ^
-    images\40x40\*.png ^
-    images\48x48\*.png ^
-    images\56x56\*.png ^
-    images\64x64\*.png ^
-    images\tree\16x16\*.png ^
-    images\tree\20x20\*.png ^
-    images\tree\24x24\*.png ^
-    images\tree\28x28\*.png ^
-    images\tree\32x32\*.png ^
-    images\tree\40x40\*.png ^
-    images\tree\48x48\*.png ^
-    images\tree\56x56\*.png ^
-    images\tree\64x64\*.png ^
-    images\infopane\16x16\*.png ^
-    images\infopane\20x20\*.png ^
-    images\infopane\24x24\*.png ^
-    images\infopane\28x28\*.png ^
-    images\infopane\32x32\*.png ^
-    images\infopane\40x40\*.png ^
-    images\infopane\48x48\*.png ^
-    images\infopane\56x56\*.png ^
-    images\infopane\64x64\*.png ^
-    > nul
-cd ..\..\sdk\resources
-"%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\manager_resources.zip" ^
-    images\*.png ^
-    images\8x8\*.png ^
-    images\10x10\*.png ^
-    images\12x12\*.png ^
-    images\16x16\*.png ^
-    images\20x20\*.png ^
-    images\24x24\*.png ^
-    images\28x28\*.png ^
-    images\32x32\*.png ^
-    images\40x40\*.png ^
-    images\48x48\*.png ^
-    images\56x56\*.png ^
-    images\64x64\*.png ^
-    > nul
-if "%DEBUG%" == "On" echo "Packing plugins UI bitmaps"
-cd ..\..\plugins\compilergcc\resources
-"%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\compiler.zip" ^
-    images\16x16\*.png ^
-    images\20x20\*.png ^
-    images\24x24\*.png ^
-    images\28x28\*.png ^
-    images\32x32\*.png ^
-    images\40x40\*.png ^
-    images\48x48\*.png ^
-    images\56x56\*.png ^
-    images\64x64\*.png ^
-    > nul
-cd ..\..\..\plugins\codecompletion\resources
-"%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\codecompletion.zip" ^
-    images\16x16\*.png ^
-    images\20x20\*.png ^
-    images\24x24\*.png ^
-    images\28x28\*.png ^
-    images\32x32\*.png ^
-    images\40x40\*.png ^
-    images\48x48\*.png ^
-    images\56x56\*.png ^
-    images\64x64\*.png ^
-    > nul
-cd ..\..\..\plugins\abbreviations\resources
-"%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\abbreviations.zip" ^
-    images\16x16\*.png ^
-    images\20x20\*.png ^
-    images\24x24\*.png ^
-    images\28x28\*.png ^
-    images\32x32\*.png ^
-    images\40x40\*.png ^
-    images\48x48\*.png ^
-    images\56x56\*.png ^
-    images\64x64\*.png ^
-    > nul
-cd ..\..\..
-
-if "%DEBUG%" == "On" echo "Copying default files"
-REM  Create an exclude pattern file
-echo \.svn\      >  excludes%TARGET%.txt
-echo Makefile    >> excludes%TARGET%.txt
-echo Makefile.am >> excludes%TARGET%.txt
-echo Makefile.in >> excludes%TARGET%.txt
-
-xcopy /D /y sdk\resources\lexers\lexer_*                  "%CB_DEVEL_RESDIR%\lexers\" > nul
-xcopy /D /y src\resources\images\*.png                    "%CB_DEVEL_RESDIR%\images\" > nul
-xcopy /D /y src\resources\images\settings\*.png           "%CB_DEVEL_RESDIR%\images\settings\" > nul
-xcopy /D /y plugins\compilergcc\resources\compilers\*.xml "%CB_DEVEL_RESDIR%\compilers\" > nul
-xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_DEVEL_RESDIR%\templates\wizard\" /EXCLUDE:excludes%TARGET%.txt > nul
-xcopy /D /y templates\common\*                            "%CB_DEVEL_RESDIR%\templates\"        /EXCLUDE:excludes%TARGET%.txt > nul
-xcopy /D /y templates\win32\*                             "%CB_DEVEL_RESDIR%\templates\"        /EXCLUDE:excludes%TARGET%.txt > nul
-xcopy /D /y scripts\*                                     "%CB_DEVEL_RESDIR%\scripts\"          /EXCLUDE:excludes%TARGET%.txt > nul
-xcopy /D /y scripts\tests\*                               "%CB_DEVEL_RESDIR%\scripts\tests\"    /EXCLUDE:excludes%TARGET%.txt > nul
-
-xcopy /D /y "%CB_DEVEL_RESDIR%\*.zip"                     "%CB_OUTPUT_RESDIR%\" > nul
-xcopy /D /y sdk\resources\lexers\lexer_*                  "%CB_OUTPUT_RESDIR%\lexers\" > nul
-xcopy /D /y src\resources\images\*.png                    "%CB_OUTPUT_RESDIR%\images\" > nul
-xcopy /D /y src\resources\images\settings\*.png           "%CB_OUTPUT_RESDIR%\images\settings\" > nul
-xcopy /D /y plugins\compilergcc\resources\compilers\*.xml "%CB_OUTPUT_RESDIR%\compilers\" > nul
-xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_OUTPUT_RESDIR%\templates\wizard\" /EXCLUDE:excludes%TARGET%.txt > nul
-xcopy /D /y templates\common\*                            "%CB_OUTPUT_RESDIR%\templates\"        /EXCLUDE:excludes%TARGET%.txt > nul
-xcopy /D /y templates\win32\*                             "%CB_OUTPUT_RESDIR%\templates\"        /EXCLUDE:excludes%TARGET%.txt > nul
-xcopy /D /y scripts\*                                     "%CB_OUTPUT_RESDIR%\scripts\"          /EXCLUDE:excludes%TARGET%.txt > nul
-xcopy /D /y scripts\tests\*                               "%CB_OUTPUT_RESDIR%\scripts\tests\"    /EXCLUDE:excludes%TARGET%.txt > nul
-
-del excludes%TARGET%.txt
-
-REM several contrib plugins
-if "%DEBUG%" == "On" echo "Copying files of several contrib plugins"
-if exist "%CB_DEVEL_RESDIR%\images\codesnippets" (
-    call :mkdirSilent "%CB_OUTPUT_RESDIR%\images\codesnippets"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\codesnippets\*.png" "%CB_OUTPUT_RESDIR%\images\codesnippets\" > nul
-)
-
-if exist "%CB_DEVEL_RESDIR%\images\fortranproject" (
-    call :copyImageFiles "%CB_DEVEL_RESDIR%\images\fortranproject" "%CB_OUTPUT_RESDIR%\images\fortranproject"
-)
-
-if exist "%CB_DEVEL_RESDIR%\images\wxsmith" (
-    call :mkdirSilent "%CB_OUTPUT_RESDIR%\images\wxsmith"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\wxsmith\*.png" "%CB_OUTPUT_RESDIR%\images\wxsmith\" > nul
-)
-
-if exist "%CB_DEVEL_RESDIR%\lib_finder" (
-    call :mkdirSilent "%CB_OUTPUT_RESDIR%\lib_finder"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\lib_finder\*.xml" "%CB_OUTPUT_RESDIR%\lib_finder\" > nul
-)
-
-if exist "%CB_DEVEL_RESDIR%\SpellChecker" (
-    call :mkdirSilent "%CB_OUTPUT_RESDIR%\SpellChecker"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\SpellChecker\*.xml" "%CB_OUTPUT_RESDIR%\SpellChecker\" > nul
-    call :copyImageFiles "%CB_DEVEL_RESDIR%\SpellChecker" "%CB_OUTPUT_RESDIR%\SpellChecker"
-)
-
-if exist "%CB_DEVEL_RESDIR%\gdb_pretty_printers" (
-    call :mkdirSilent "%CB_OUTPUT_RESDIR%\gdb_pretty_printers"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\gdb_pretty_printers\*.*" "%CB_OUTPUT_RESDIR%\gdb_pretty_printers\" > nul
-)
-
-REM misc. contrib plugin settings:
-if "%DEBUG%" == "On" echo "Copying files of several contrib plugins settings"
-xcopy /D /y "%CB_DEVEL_RESDIR%\images\settings\*.png" "%CB_OUTPUT_RESDIR%\images\settings\" > nul
-
-REM =============================================
-REM =============================================
-REM =============================================
-REM =============================================
-
-copy tips.txt "%CB_DEVEL_RESDIR%" > nul
-copy tips.txt "%CB_OUTPUT_RESDIR%" > nul
-
-copy "%CB_DEVEL_DIR%\cb_console_runner.exe" "%CB_OUTPUT_DIR%\cb_console_runner.exe" > nul
-
-if "%DEBUG%" == "On" echo "Transferring executable files from devel to output folder"
-xcopy /D /y "%CB_DEVEL_DIR%\*.exe" "%CB_OUTPUT_DIR%\" > nul
-if "%DEBUG%" == "On" echo "Transferring DLL files from devel to output folder"
-xcopy /D /y "%CB_DEVEL_DIR%\*.dll" "%CB_OUTPUT_DIR%\" > nul
-if "%DEBUG%" == "On" echo "Transferring LIB files from devel to output folder"
-xcopy /D /y "%CB_DEVEL_DIR%\*.a" "%CB_OUTPUT_DIR%" > nul
-if "%DEBUG%" == "On" echo "Transferring DLL plugin files from devel to output folder"
-xcopy /D /y "%CB_DEVEL_RESDIR%\plugins\*.dll" "%CB_OUTPUT_RESDIR%\plugins" > nul
-
-if "%DEBUG%" == "On" echo Stripping debug info from output tree
-@rem %STRIP_EXE% "%CB_OUTPUT_DIR%\*.exe"             > nul
-@rem %STRIP_EXE% "%CB_OUTPUT_DIR%\*.dll"             > nul
-@rem %STRIP_EXE% "%CB_OUTPUT_RESDIR%\plugins\*.dll"  > nul
-
-if "%DEBUG%" == "On" echo Copying help files
-if not exist "%CB_OUTPUT_RESDIR%\docs" md "%CB_OUTPUT_RESDIR%\docs" > nul
-if exist "%CB_DOC_DIR%\codeblocks-en.chm" xcopy /D /y "%CB_DOC_DIR%\codeblocks-en.chm" "%CB_OUTPUT_RESDIR%\docs" > nul
-if exist "%CB_DOC_DIR%\index.ini"         xcopy /D /y "%CB_DOC_DIR%\index.ini"         "%CB_OUTPUT_RESDIR%\docs" > nul
-
-REM Copy these files later as stripping symbols would corrupt them
-if "%DEBUG%" == "On" echo "Copying crash handler files"
-xcopy /y "%CB_HANDLER_DIR%\*.dll" "%CB_DEVEL_DIR%\"  > nul
-xcopy /y "%CB_HANDLER_DIR%\*.yes" "%CB_DEVEL_DIR%\"  > nul
-xcopy /y "%CB_HANDLER_DIR%\*.dll" "%CB_OUTPUT_DIR%\" > nul
-xcopy /y "%CB_HANDLER_DIR%\*.yes" "%CB_OUTPUT_DIR%\" > nul
+:BuildBitError
+@echo.
+@echo ^+-------------------------------------------------------^+
+@echo ^| Error: Could not detect either of the followinf dirs: ^|
+@echo ^|          - src\devel31_32                             ^|
+@echo ^|          - src\devel31_64                             ^|
+@echo ^|        Please fix and try again                       ^|
+@echo ^+-------------------------------------------------------^+
+@echo.
+@goto Finish
 
 ::--------------------------------------------------------
 ::-- Function section starts below here
 ::--------------------------------------------------------
-GOTO:EOF
-
 rem create a directory if it doesn't exists
 :mkdirSilent
-if "%DEBUG%" == "On" echo "Make dir %~1"
-if not exist "%~1" mkdir "%~1"
-GOTO:EOF
+@if "%DEBUG%" == "On" echo "Make dir %~1"
+@if not exist "%~1" mkdir "%~1"
+@GOTO:EOF
 
-@rem create a directory and copy image files to it
-:copyImageFiles
-setlocal
-if "%DEBUG%" == "On" echo "Copy image files from %~1 to %~1"
-REM call mkdirSilent %~2
-for %%g in (16x16,20x20,24x24,28x28,32x32,40x40,48x48,56x56,64x64) do (
-    if "%DEBUG%" == "On" echo "From %~1\%%g to %~2\%%g"
-    call :mkdirSilent %~2\%%g
-    xcopy /D /y %~1\%%g\*.png %~2\%%g\ > nul
-)
-REM     call :mkdirSilent "%CB_OUTPUT_RESDIR%\images\ThreadSearch\32x32"
-REM     xcopy /D /y "%CB_DEVEL_RESDIR%\images\ThreadSearch\32x32\*.png" "%CB_OUTPUT_RESDIR%\images\ThreadSearch\32x32" > nul
-endlocal
-GOTO:EOF
+::--------------------------------------------------------
+
+:Finish
+@echo Done
+@cd /d %CurrentDir%
+@endlocal

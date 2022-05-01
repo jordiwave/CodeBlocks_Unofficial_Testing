@@ -6,8 +6,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/ThreadSearch" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/ThreadSearch" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/ThreadSearch" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/ThreadSearch" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxcustombutton.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -15,11 +15,20 @@
 				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
-					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ; fi" />
-					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/ThreadSearch.zip manifest.xml" />
-					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/ThreadSearch.zip manifest.xml" />
-					<Add after="cd src/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/ThreadSearch.zip images &amp;&amp; cd ../.." />
+					<!-- Create output directory -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ; fi" />
+					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
 					<Mode before="always" />
+
+					<!-- Create plugin zip file-->
+					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ThreadSearch.zip manifest.xml" />
+					<Add after="cd resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ThreadSearch.zip images &amp;&amp; cd ../.." />
+	
+					<!-- Copy Spellchecker image files -->
+					<Add after="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+					<Add after="cp ./resources/*.png $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/ > /dev/null 2> /dev/null" />
+
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -45,17 +54,10 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
-			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add library="wxcustombutton" />
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
-		<ExtraCommands>
-			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/settings ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/settings ; fi" />
-			<Add after="cp ./resources/*.png $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/settings/ > /dev/null 2> /dev/null" />
-			<Mode before="always" />
-			<Mode after="always" />
-		</ExtraCommands>
 		<Unit filename="DirectoryParamsPanel.cpp" />
 		<Unit filename="DirectoryParamsPanel.h" />
 		<Unit filename="InsertIndexManager.cpp" />

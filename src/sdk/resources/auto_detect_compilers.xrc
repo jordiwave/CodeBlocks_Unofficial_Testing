@@ -8,7 +8,7 @@
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT2">
-					<label>Note: After auto-detection either the default compiler was not detected or the path to it was empty.&#x0A;In the compiler list below select another compiler if it was found or select an invalid compiler.&#x0A;If you select an invalid compiler you will need to change it&apos;s path later in the compiler options,&#x0A;which is done via the Settings-&gt;Compiler... menu selection.&#x0A;If you have not setup a compiler please select the &quot;*No Compiler*&quot; option.&#x0A;&#x0A;Select your default compiler from the list below:</label>
+					<label>Note: After auto-detection either the default compiler was not detected or the path to it was empty.&#x0A;In the compiler list below select another compiler if it was found or select an invalid compiler.&#x0A;If you select an invalid compiler you will need to change it&apos;s path later in the compiler options,&#x0A;which is done via the Settings-&gt;Compiler... menu selection.&#x0A;If you have not setup a compiler please select the &quot;*No Compiler*&quot; option.&#x0A;&#x0A;Select the default compiler from the list below you want to use:</label>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>

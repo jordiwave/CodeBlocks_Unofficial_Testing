@@ -54,10 +54,6 @@ download $CODEBLOCKS_SVN_URL $CODEBLOCKS_LOCAL_DIR
 echo "change directory to $CODEBLOCKS_LOCAL_DIR"
 cd $CODEBLOCKS_LOCAL_DIR
 
-# update Changelog
-echo "update Changelog"
-./updateChangeLog.sh
-
 # run bootstrap
 echo "update/create Makefile's and configure-script"
 ./bootstrap

@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12425 $
- * $Id: sc_consts.cpp 12425 2021-05-09 12:50:46Z fuscated $
+ * $Revision: 12794 $
+ * $Id: sc_consts.cpp 12794 2022-04-14 22:34:58Z bluehazzard $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/scripting/bindings/sc_consts.cpp $
  */
 
@@ -56,6 +56,9 @@ void Register_Constants(ScriptingManager * manager)
     BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_MAJOR, "PLUGIN_SDK_VERSION_MAJOR");
     BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_MINOR, "PLUGIN_SDK_VERSION_MINOR");
     BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_RELEASE, "PLUGIN_SDK_VERSION_RELEASE");
+    BIND_INT_CONSTANT_NAMED(2, "SCRIPTING_VERSION_MAJOR");
+    BIND_INT_CONSTANT_NAMED(0, "SCRIPTING_VERSION_MINOR");
+    BIND_INT_CONSTANT_NAMED(0, "SCRIPTING_VERSION_RELEASE");
     // path separator for filenames
     BIND_WXSTR_CONSTANT_NAMED(s_PathSep, "wxFILE_SEP_PATH");
     // dialog buttons

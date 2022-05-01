@@ -23,8 +23,8 @@
 					<Add option="`wx-config --libs`" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PermissionsPreserver.zip manifest.xml" />
-					<Add after="zip -j9 PermissionsPreserver.cbplugin PermissionsPreserver.so PermissionsPreserver.zip" />
+					<Add after="zip -jq9 PermissionsPreserver.zip manifest.xml" />
+					<Add after="zip -jq9 PermissionsPreserver.cbplugin PermissionsPreserver.so PermissionsPreserver.zip" />
 				</ExtraCommands>
 			</Target>
 		</Build>

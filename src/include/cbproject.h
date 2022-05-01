@@ -859,8 +859,8 @@ class DLLIMPORT cbProject : public CompileTargetBase
         // Turn event notifications for this cbProject on or off (default on)
         bool     m_Notifications;
 
-        // This is for not showing the select target option dialog
-        static int iSelectTargetSelection;
+        // This is for not showing the select target option dialog if the selction or config has not changed
+        static wxString m_sSelectTargetSelection;
 };
 
 /// Returns a string valid to be used as LD_LIBRARY_PATH (or equivalent).

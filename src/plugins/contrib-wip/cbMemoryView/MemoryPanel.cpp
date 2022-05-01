@@ -67,7 +67,7 @@ void MemoryPanel::OnTextEnter(wxCommandEvent & event)
 
             if (sSize.ToULongLong(&m_llSize, 10))
             {
-                uint64_t llAddress;
+                unsigned long long int llAddress;
 
                 if (m_sAddress.ToULongLong(&llAddress, 16))
                 {

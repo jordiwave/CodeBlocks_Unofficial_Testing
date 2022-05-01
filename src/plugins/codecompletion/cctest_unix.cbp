@@ -37,7 +37,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,propgrid`" />
-			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
@@ -77,7 +76,7 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="cctest/cctest_app.cpp" main="-- None --" init_handlers="never" language="CPP" />
 				<resources>
-					<wxFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest\cctest_frame.cpp" hdr="cctest\cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
+					<wxFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest/cctest_frame.cpp" hdr="cctest/cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
 				</resources>
 			</wxsmith>
 			<debugger />

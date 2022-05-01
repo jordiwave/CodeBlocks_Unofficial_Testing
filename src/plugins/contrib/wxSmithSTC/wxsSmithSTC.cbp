@@ -93,7 +93,7 @@
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithSTC.zip manifest.xml" />
+					<Add after="zip -jq9 ..\..\..\devel\share\CodeBlocks\wxSmithSTC.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

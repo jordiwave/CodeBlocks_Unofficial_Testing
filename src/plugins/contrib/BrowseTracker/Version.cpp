@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: Version.cpp 12539 2021-11-27 22:53:18Z pecanh $
+// RCS-ID: $Id: Version.cpp 12797 2022-04-17 19:47:12Z pecanh $
 
 #include "Version.h"
 
@@ -284,6 +284,8 @@ AppVersion::~AppVersion()
 //           Something has changed such that the EditorManager no longer knows the EditorBase* with:
 //           ProjectManager::GetEditor(filename) during the Editor activated event.
 //           Cf., https://forums.codeblocks.org/index.php?topic=24716.msg168611#msg168611
+// 1.2.113   Add sink event cbEVT_WORKSPACE_CHANGED to clear waiting load/close conditions
+//
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.

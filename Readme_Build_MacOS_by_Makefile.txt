@@ -19,45 +19,39 @@ Code::Blocks build instructions:
 This section outlines the requirements and process to build Code::Blocks from source code.
 
 Requirements:
-    1) Brew installer - https://brew.sh
-    2) Optional: A recent Code::Blocks nightly build installed (http://www.codeblocks.org/nightly).
-TBA-    3) A working GNU GCC C & C++ compiler.
-TBA-    4) wxWidget and wxGTK3 development environment
-    5) autotools environment (autoconf, automake, libtool, make, etc)
-    6) GTK2 or GTK3 (preferred) development environment
-    7) Boost development environment
-    8) Hunspell development environment
-TBA-    9) Gamin development environment
-    10) Optional: SVN and/or GIT.
-    11) CoreUntils
+    1) A working CLANG compiler.
+    2) Brew installer - https://brew.sh
+    3) Optional: 
+        a) The latest official Code::Blocks MacOS release
+        b) Recent Code::Blocks nightly build installed (http://www.codeblocks.org/nightly).
+    4) autotools environment (autoconf, automake, libtool, make, etc)
+    5) GTK2 or GTK3 (preferred) development environment
+    6) Boost development environment
+    7) Hunspell development environment
+    8) SVN and optionally GIT.
+    9) CoreUntils
     
     To install the items above the following are the commands to use for MacOS Big Sir (11.01):
         # Step 2:
             brew install wxwidgets
-TBA-        sudo apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev
-TBA-        # Step 3:
-TBA-        sudo apt install -y build-essential
-        # Step 5:
+        # Step 4:
             brew install libtool automake autoconf
-        # Step 6:
+        # Step 5:
             brew install gtk+3
-        # Step 7 & 8:
+        # Step 6 & 7:
             brew install boost hunspell
-TBA-        step 9:
-TBA-        TB
-        # Optional step 10:
+        # Step 8:
             brew install subversion git
-        # Step 11:
+        # Step 9:
             brew install coreutils
 
- 
 To build Code::Blocks:
-    1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or via GIT or
+    1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or
         by downloading a snapshot.
 
     2) Make sure the source code directory does not have spaces or any non ASCII characters.
 
-    3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or GIT or the 
+    3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or the 
          directory you uncompressed the snapshot into.
 
     4) Instead of performing steps 6 through 8 you can run the following script:

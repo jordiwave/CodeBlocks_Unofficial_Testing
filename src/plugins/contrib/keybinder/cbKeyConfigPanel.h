@@ -5,7 +5,7 @@
  * Copyright: (c) Pecan Heber
  * License:   GPL
  **************************************************************/
-// RCS-ID:      $Id: cbkeybinder.h 11580 2019-03-31 16:55:24Z pecanh $
+// RCS-ID:      $Id: cbKeybinder.h 11580 2019-03-31 16:55:24Z pecanh $
 //
 #ifndef CBKEYCONFIGPANEL_H
 #define CBKEYCONFIGPANEL_H

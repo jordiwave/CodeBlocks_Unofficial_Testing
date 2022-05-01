@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        keybinder.cpp
+// Name:        Keybinder.cpp
 // Purpose:     wxKeyBind, wxCmd, wxKeyBinder, wxKeyConfigPanel
 // Author:      Aleksandras Gluchovas
 // Modified by: Francesco Montorsi
@@ -8,7 +8,7 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-// RCS-ID:      $Id: keybinder.cpp 12304 2021-03-16 23:28:31Z fuscated $
+// RCS-ID:      $Id: Keybinder.cpp 12304 2021-03-16 23:28:31Z fuscated $
 
 // Modified Keybinder for CodeBlocks KeyBnder v2.0 2019/04/8
 
@@ -20,7 +20,7 @@
 #include <wx/menuitem.h>
 #include <wx/string.h>
 #include "wx/statline.h"
-#include "keybinder.h"
+#include "Keybinder.h"
 #include "menuutils.h"
 #include "wx/config.h"
 #include "wx/tokenzr.h"

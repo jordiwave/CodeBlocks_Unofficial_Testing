@@ -26,7 +26,7 @@
 					<Add directory="$(#cb)/devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 $(#cb)/devel/share/codeblocks/PythonInterpreter.zip manifest.xml" />
+					<Add after="zip -jq9 $(#cb)/devel/share/codeblocks/PythonInterpreter.zip manifest.xml" />
 					<Add after='bash -c &quot;cp --parents python/interp.py $(#cb)/devel/share/codeblocks&quot;' />
 				</ExtraCommands>
 			</Target>
@@ -52,8 +52,8 @@
 					<Add directory="$(#cb)/devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonInterpreter.zip manifest.xml" />
-					<Add after="zip -r9 PythonInterpreter.cbplugin PythonInterpreter.so PythonInterpreter.zip python/interp.py" />
+					<Add after="zip -jq9 PythonInterpreter.zip manifest.xml" />
+					<Add after="zip -rq9 PythonInterpreter.cbplugin PythonInterpreter.so PythonInterpreter.zip python/interp.py" />
 				</ExtraCommands>
 			</Target>
 			<Target title="cbplugin">
@@ -75,8 +75,8 @@
 					<Add library="XmlRpcEmbedder" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonInterpreter.zip manifest.xml" />
-					<Add after="zip -r9 PythonInterpreter.cbplugin PythonInterpreter.so PythonInterpreter.zip python/interp.py" />
+					<Add after="zip -jq9 PythonInterpreter.zip manifest.xml" />
+					<Add after="zip -rq9 PythonInterpreter.cbplugin PythonInterpreter.so PythonInterpreter.zip python/interp.py" />
 				</ExtraCommands>
 			</Target>
 			<Environment>

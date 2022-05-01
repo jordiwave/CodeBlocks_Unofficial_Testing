@@ -74,41 +74,41 @@ void CBuildUnit::Read(const TiXmlElement * UnitRoot)
 
         if (0 != option)
         {
-            char * value = 0;
+            char * value_ex = 0;
 
-            if ((value = (char *)option->Attribute("compilerVar")))
+            if ((value_ex = (char *)option->Attribute("compilerVar")))
             {
-                m_CompilerVariable = value;
+                m_CompilerVariable = value_ex;
             }
 
-            if ((value = (char *)option->Attribute("compiler")))
+            if ((value_ex = (char *)option->Attribute("compiler")))
             {
-                m_CompilerVariable = value;
+                m_CompilerVariable = value_ex;
             }
 
-            if ((value = (char *)option->Attribute("compile")))
+            if ((value_ex = (char *)option->Attribute("compile")))
             {
-                m_DoCompile = StringToBoolean(value);
+                m_DoCompile = StringToBoolean(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("link")))
+            if ((value_ex = (char *)option->Attribute("link")))
             {
-                m_DoLink = StringToBoolean(value);
+                m_DoLink = StringToBoolean(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("target")))
+            if ((value_ex = (char *)option->Attribute("target")))
             {
-                m_Targets.Insert(value);
+                m_Targets.Insert(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("weight")))
+            if ((value_ex = (char *)option->Attribute("weight")))
             {
-                m_Weight = StringToInteger(value);
+                m_Weight = StringToInteger(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("buildCommand")))
+            if ((value_ex = (char *)option->Attribute("buildCommand")))
             {
-                m_CustomBuildCommand = value;
+                m_CustomBuildCommand = value_ex;
                 m_CustomBuildCommand = FindReplaceStr(m_CustomBuildCommand, "\\n", "\n\t");
             }
         }

@@ -58,7 +58,9 @@ CString CBuildTarget::TargetTypeName(const TargetType Type)
 
         case CBuildTarget::ttCommands:
             return "commands";
-            //case CBuildTarget::tt: return "";
+
+        default:
+            return "";
     }
 
     return "";
@@ -84,7 +86,9 @@ CString CBuildTarget::OptionsRelationName(const OptionsRelation Relation)
 
         case CBuildTarget::orProjectTarget:
             return "project target";
-            //case CBuildTarget::or: return "";
+
+        default:
+            return "";
     }
 
     return "";
@@ -95,6 +99,9 @@ CString CBuildTarget::AutoFilePrefix(const CPlatform::OS_Type OS)
     switch (OS)
     {
         default:
+        case CPlatform::OS_Count: // fall-through
+        case CPlatform::OS_Other: // fall-through
+        case CPlatform::OS_MSys:  // fall-through
         case CPlatform::OS_Unix:
         {
             switch (m_Type)
@@ -129,7 +136,8 @@ CString CBuildTarget::AutoFilePrefix(const CPlatform::OS_Type OS)
                     return "";
                 }
 
-                    //case CBuildTarget::tt: { break; }
+                default:
+                    return "";
             }
 
             break;
@@ -169,7 +177,8 @@ CString CBuildTarget::AutoFilePrefix(const CPlatform::OS_Type OS)
                     return "";
                 }
 
-                    //case CBuildTarget::tt: { break; }
+                default:
+                    return "";
             }
 
             break;
@@ -209,7 +218,8 @@ CString CBuildTarget::AutoFilePrefix(const CPlatform::OS_Type OS)
                     return "";
                 }
 
-                    //case CBuildTarget::tt: { break; }
+                default:
+                    return "";
             }
 
             break;
@@ -224,6 +234,8 @@ CString CBuildTarget::AutoFileExtension(const CPlatform::OS_Type OS, const CBuil
     switch (OS)
     {
         default:
+        case CPlatform::OS_Count: // fall-though
+        case CPlatform::OS_Other: // fall-though
         case CPlatform::OS_Unix:
         {
             switch (Type)
@@ -258,7 +270,8 @@ CString CBuildTarget::AutoFileExtension(const CPlatform::OS_Type OS, const CBuil
                     return "";
                 }
 
-                    //case CBuildTarget::tt: { break; }
+                default:
+                    return "";
             }
 
             break;
@@ -299,7 +312,8 @@ CString CBuildTarget::AutoFileExtension(const CPlatform::OS_Type OS, const CBuil
                     return "";
                 }
 
-                    //case CBuildTarget::tt: { break; }
+                default:
+                    return "";
             }
 
             break;
@@ -339,7 +353,8 @@ CString CBuildTarget::AutoFileExtension(const CPlatform::OS_Type OS, const CBuil
                     return "";
                 }
 
-                    //case CBuildTarget::tt: { break; }
+                default:
+                    return "";
             }
 
             break;
@@ -538,11 +553,6 @@ void CBuildTarget::Clear(void)
     m_AfterBuildCommands.Clear();
     m_ForceBeforeBuildCommands = false;
     m_ForceAfterBuildCommands = false;
-    m_BeforeCleanExtraCommands.Clear();
-    m_AfterCleanExtraCommands.Clear();
-    m_ForceBeforeCleanExtraCommands = false;
-    m_ForceAfterCleanExtraCommands = false;
-    m_InstallExtraCommands.Clear();
     m_CompilerOptionsRelation = orProjectTarget;
     m_LinkerOptionsRelation = orProjectTarget;
     m_IncludeDirectoriesRelation = orProjectTarget;
@@ -569,11 +579,11 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
 
         if (0 != option)
         {
-            char * value = 0;
+            char * value_ex = 0;
 
-            if ((value = (char *)option->Attribute("platforms")))
+            if ((value_ex = (char *)option->Attribute("platforms")))
             {
-                ParseStr(value, ';', m_Platforms);
+                ParseStr(value_ex, ';', m_Platforms);
                 m_Platforms.RemoveEmpty();
 
                 if (m_Platforms.FindString("Windows") != INVALID_INDEX
@@ -583,78 +593,71 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
                 }
             }
 
-            if ((value = (char *)option->Attribute("output")))
+            if ((value_ex = (char *)option->Attribute("output")))
             {
-                m_Output = value;
+                m_Output = value_ex;
             }
 
-            if ((value = (char *)option->Attribute("prefix_auto")))
+            if ((value_ex = (char *)option->Attribute("prefix_auto")))
             {
-                m_AutoPrefix = StringToBoolean(value);
+                m_AutoPrefix = StringToBoolean(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("extension_auto")))
+            if ((value_ex = (char *)option->Attribute("extension_auto")))
             {
-                m_AutoExtension = StringToBoolean(value);
+                m_AutoExtension = StringToBoolean(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("working_dir")))
+            if ((value_ex = (char *)option->Attribute("working_dir")))
             {
-                m_WorkingDirectory = value;
+                m_WorkingDirectory = value_ex;
             }
 
-            if ((value = (char *)option->Attribute("object_output")))
+            if ((value_ex = (char *)option->Attribute("object_output")))
             {
-                m_ObjectOutput = value;
+                m_ObjectOutput = value_ex;
             }
 
-            if ((value = (char *)option->Attribute("external_deps")))
+            if ((value_ex = (char *)option->Attribute("external_deps")))
             {
-                ParseStr(value, ';', m_ExternalDependencies);
+                ParseStr(value_ex, ';', m_ExternalDependencies);
                 m_ExternalDependencies.RemoveEmpty();
             }
 
-            if ((value = (char *)option->Attribute("type")))
+            if ((value_ex = (char *)option->Attribute("type")))
             {
-                m_Type = (CBuildTarget::TargetType)StringToInteger(value);
+                m_Type = (CBuildTarget::TargetType)StringToInteger(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("compiler")))
+            if ((value_ex = (char *)option->Attribute("compiler")))
             {
-                m_Compiler = value;
+                m_Compiler = value_ex;
             }
 
-            if ((value = (char *)option->Attribute("projectCompilerOptionsRelation")))
+            if ((value_ex = (char *)option->Attribute("projectCompilerOptionsRelation")))
             {
-                m_CompilerOptionsRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
+                m_CompilerOptionsRelation = (CBuildTarget::OptionsRelation)StringToInteger(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("projectLinkerOptionsRelation")))
+            if ((value_ex = (char *)option->Attribute("projectLinkerOptionsRelation")))
             {
-                m_LinkerOptionsRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
+                m_LinkerOptionsRelation = (CBuildTarget::OptionsRelation)StringToInteger(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("projectIncludeDirsRelation")))
+            if ((value_ex = (char *)option->Attribute("projectIncludeDirsRelation")))
             {
-                m_IncludeDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
+                m_IncludeDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("projectResourceIncludeDirsRelation")))
+            if ((value_ex = (char *)option->Attribute("projectResourceIncludeDirsRelation")))
             {
-                m_ResourceIncludeDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
+                m_ResourceIncludeDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value_ex);
             }
 
-            if ((value = (char *)option->Attribute("projectLibDirsRelation")))
+            if ((value_ex = (char *)option->Attribute("projectLibDirsRelation")))
             {
-                m_LibraryDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
+                m_LibraryDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value_ex);
             }
-
-            /*
-            if ((value = (char *)option->Attribute("")))
-            {
-              = value;
-            }
-            */
         }
 
         _option = (TiXmlNode *)TargetRoot->IterateChildren(_option);
@@ -664,28 +667,28 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
 
     if (0 != _compiler)
     {
-        TiXmlNode * _option = (TiXmlNode *)_compiler->FirstChild("Add");
+        TiXmlNode * _option_ex = (TiXmlNode *)_compiler->FirstChild("Add");
 
-        while (0 != _option)
+        while (0 != _option_ex)
         {
-            TiXmlElement * option = _option->ToElement();
+            TiXmlElement * option = _option_ex->ToElement();
 
             if (0 != option)
             {
-                char * value = 0;
+                char * value_ex = 0;
 
-                if ((value = (char *)option->Attribute("option")))
+                if ((value_ex = (char *)option->Attribute("option")))
                 {
-                    m_CompilerOptions.Insert(value);
+                    m_CompilerOptions.Insert(value_ex);
                 }
 
-                if ((value = (char *)option->Attribute("directory")))
+                if ((value_ex = (char *)option->Attribute("directory")))
                 {
-                    m_CompilerDirectories.Insert(value);
+                    m_CompilerDirectories.Insert(value_ex);
                 }
             }
 
-            _option = (TiXmlNode *)_compiler->IterateChildren(_option);
+            _option_ex = (TiXmlNode *)_compiler->IterateChildren(_option_ex);
         } // option
     } // compiler
 
@@ -693,23 +696,23 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
 
     if (0 != _res_compiler)
     {
-        TiXmlNode * _option = (TiXmlNode *)_res_compiler->FirstChild("Add");
+        TiXmlNode * _option_ex = (TiXmlNode *)_res_compiler->FirstChild("Add");
 
         while (0 != _option)
         {
-            TiXmlElement * option = _option->ToElement();
+            TiXmlElement * option = _option_ex->ToElement();
 
             if (0 != option)
             {
-                char * value = 0;
+                char * value_ex = 0;
 
-                if ((value = (char *)option->Attribute("directory")))
+                if ((value_ex = (char *)option->Attribute("directory")))
                 {
-                    m_ResourceCompilerDirectories.Insert(value);
+                    m_ResourceCompilerDirectories.Insert(value_ex);
                 }
             }
 
-            _option = (TiXmlNode *)_res_compiler->IterateChildren(_option);
+            _option_ex = (TiXmlNode *)_res_compiler->IterateChildren(_option_ex);
         } // option
     } // resource compiler
 
@@ -717,11 +720,11 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
 
     if (0 != _linker)
     {
-        TiXmlNode * _option = (TiXmlNode *)_linker->FirstChild("Add");
+        TiXmlNode * _option_ex = (TiXmlNode *)_linker->FirstChild("Add");
 
-        while (0 != _option)
+        while (0 != _option_ex)
         {
-            TiXmlElement * option = _option->ToElement();
+            TiXmlElement * option = _option_ex->ToElement();
 
             if (0 != option)
             {
@@ -730,25 +733,25 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
                     break;
                 }
 
-                char * value = 0;
+                char * value_ex = 0;
 
-                if ((value = (char *)option->Attribute("option")))
+                if ((value_ex = (char *)option->Attribute("option")))
                 {
-                    m_LinkerOptions.Insert(value);
+                    m_LinkerOptions.Insert(value_ex);
                 }
 
-                if ((value = (char *)option->Attribute("directory")))
+                if ((value_ex = (char *)option->Attribute("directory")))
                 {
-                    m_LinkerDirectories.Insert(value);
+                    m_LinkerDirectories.Insert(value_ex);
                 }
 
-                if ((value = (char *)option->Attribute("library")))
+                if ((value_ex = (char *)option->Attribute("library")))
                 {
-                    m_LinkerLibraries.Insert(value);
+                    m_LinkerLibraries.Insert(value_ex);
                 }
             }
 
-            _option = (TiXmlNode *)_linker->IterateChildren(_option);
+            _option_ex = (TiXmlNode *)_linker->IterateChildren(_option_ex);
         } // option
     } // linker
 
@@ -756,11 +759,11 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
 
     if (0 != _extra_cmd)
     {
-        TiXmlNode * _option = (TiXmlNode *)_extra_cmd->FirstChild("Add");
+        TiXmlNode * _option_ex = (TiXmlNode *)_extra_cmd->FirstChild("Add");
 
-        while (0 != _option)
+        while (0 != _option_ex)
         {
-            TiXmlElement * option = _option->ToElement();
+            TiXmlElement * option = _option_ex->ToElement();
 
             if (0 != option)
             {
@@ -769,27 +772,27 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
                     break;
                 }
 
-                char * value = 0;
+                char * value_ex = 0;
 
-                if ((value = (char *)option->Attribute("before")))
+                if ((value_ex = (char *)option->Attribute("before")))
                 {
-                    m_BeforeBuildCommands.Insert(value);
+                    m_BeforeBuildCommands.Insert(value_ex);
                 }
 
-                if ((value = (char *)option->Attribute("after")))
+                if ((value_ex = (char *)option->Attribute("after")))
                 {
-                    m_AfterBuildCommands.Insert(value);
+                    m_AfterBuildCommands.Insert(value_ex);
                 }
             }
 
-            _option = (TiXmlNode *)_extra_cmd->IterateChildren(_option);
+            _option_ex = (TiXmlNode *)_extra_cmd->IterateChildren(_option_ex);
         } // option
 
-        _option = (TiXmlNode *)_extra_cmd->FirstChild("Mode");
+        _option_ex = (TiXmlNode *)_extra_cmd->FirstChild("Mode");
 
-        while (0 != _option)
+        while (0 != _option_ex)
         {
-            TiXmlElement * option = _option->ToElement();
+            TiXmlElement * option = _option_ex->ToElement();
 
             if (0 != option)
             {
@@ -798,114 +801,22 @@ void CBuildTarget::Read(const TiXmlElement * TargetRoot)
                     break;
                 }
 
-                char * value = 0;
+                char * value_ex = 0;
 
-                if ((value = (char *)option->Attribute("before")))
+                if ((value_ex = (char *)option->Attribute("before")))
                 {
-                    m_ForceBeforeBuildCommands = (strcmp(value, "always") == 0);
+                    m_ForceBeforeBuildCommands = (strcmp(value_ex, "always") == 0);
                 }
 
-                if ((value = (char *)option->Attribute("after")))
+                if ((value_ex = (char *)option->Attribute("after")))
                 {
-                    m_ForceAfterBuildCommands = (strcmp(value, "always") == 0);
+                    m_ForceAfterBuildCommands = (strcmp(value_ex, "always") == 0);
                 }
             }
 
-            _option = (TiXmlNode *)_extra_cmd->IterateChildren(_option);
+            _option_ex = (TiXmlNode *)_extra_cmd->IterateChildren(_option_ex);
         } // option
     } // extra commands
-
-    TiXmlNode * _clean_extra_cmd = (TiXmlNode *)TargetRoot->FirstChild("CleanExtraCommands");
-
-    if (0 != _clean_extra_cmd)
-    {
-        TiXmlNode * _option = (TiXmlNode *)_clean_extra_cmd->FirstChild("Add");
-
-        while (0 != _option)
-        {
-            TiXmlElement * option = _option->ToElement();
-
-            if (0 != option)
-            {
-                if (strcmp(option->Value(), "Add"))
-                {
-                    break;
-                }
-
-                char * value = 0;
-
-                if ((value = (char *)option->Attribute("before")))
-                {
-                    m_BeforeCleanExtraCommands.Insert(value);
-                }
-
-                if ((value = (char *)option->Attribute("after")))
-                {
-                    m_AfterCleanExtraCommands.Insert(value);
-                }
-            }
-
-            _option = (TiXmlNode *)_clean_extra_cmd->IterateChildren(_option);
-        } // option
-
-        _option = (TiXmlNode *)_clean_extra_cmd->FirstChild("Mode");
-
-        while (0 != _option)
-        {
-            TiXmlElement * option = _option->ToElement();
-
-            if (0 != option)
-            {
-                if (strcmp(option->Value(), "Mode"))
-                {
-                    break;
-                }
-
-                char * value = 0;
-
-                if ((value = (char *)option->Attribute("before")))
-                {
-                    m_ForceBeforeCleanExtraCommands = (strcmp(value, "always") == 0);
-                }
-
-                if ((value = (char *)option->Attribute("after")))
-                {
-                    m_ForceAfterCleanExtraCommands = (strcmp(value, "always") == 0);
-                }
-            }
-
-            _option = (TiXmlNode *)_clean_extra_cmd->IterateChildren(_option);
-        } // option
-    } // clean extra commands
-
-    TiXmlNode * _install_extra_cmd = (TiXmlNode *)TargetRoot->FirstChild("InstallExtraCommands");
-
-    if (0 != _install_extra_cmd)
-    {
-        TiXmlNode * _option = (TiXmlNode *)_install_extra_cmd->FirstChild("Add");
-
-        while (0 != _option)
-        {
-            TiXmlElement * option = _option->ToElement();
-
-            if (0 != option)
-            {
-                if (strcmp(option->Value(), "Add"))
-                {
-                    break;
-                }
-
-                char * value = 0;
-
-                if ((value = (char *)option->Attribute("step")))
-                {
-                    m_InstallExtraCommands.Insert(value);
-                }
-            }
-
-            _option = (TiXmlNode *)_install_extra_cmd->IterateChildren(_option);
-        } // option
-    } // install extra commands
 
     // decorate target name
     {
@@ -985,22 +896,12 @@ void CBuildTarget::Show(void)
     ShowStringList("Linker options", "Option", m_LinkerOptions);
     ShowStringList("Linker directories", "Directory", m_LinkerDirectories);
     ShowStringList("Linked libraries", "Library", m_LinkerLibraries);
-    // Build extra commands
     ShowStringList("Before-build commands", "Command", m_BeforeBuildCommands);
     std::cout << "Force before-build commands: "
               << BooleanToYesNoString(m_ForceBeforeBuildCommands).GetCString() << std::endl;
     ShowStringList("After-build commands", "Command", m_AfterBuildCommands);
     std::cout << "Force after-build commands: "
               << BooleanToYesNoString(m_ForceAfterBuildCommands).GetCString() << std::endl;
-    // Clean extra commands
-    ShowStringList("Before-Clean commands", "Command", m_BeforeCleanExtraCommands);
-    std::cout << "Force before-Clean commands: "
-              << BooleanToYesNoString(m_ForceBeforeCleanExtraCommands).GetCString() << std::endl;
-    ShowStringList("After-Clean commands", "Command", m_AfterCleanExtraCommands);
-    std::cout << "Force after-Clean commands: "
-              << BooleanToYesNoString(m_ForceAfterCleanExtraCommands).GetCString() << std::endl;
-    // Install extra commands
-    ShowStringList("Install commands", "Command", m_InstallExtraCommands);
 }
 
 //------------------------------------------------------------------------------

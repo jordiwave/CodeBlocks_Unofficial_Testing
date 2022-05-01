@@ -46,31 +46,37 @@ Requirements:
         # Optional step 9:
         sudo apt install -y subversion git
         # step 10:
-        sudo apt install -y libbz2-dev debhelper cdbs xsltproc
+        sudo apt install -y libbz2-dev debhelper cdbs xsltproc fakeroot zip libjpeg-dev libtiff-dev
 
- 
 To build Code::Blocks:
-    1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or via GIT or
-        by downloading a snapshot.
-    2) Make sure the source code directory does not have spaces or any non ASCII characters.
-    3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or GIT or the 
-         directory you uncompressed the snapshot into.
-TBA: ./update_revision.sh          
-    4) Run the following to configure the project files for your environment:
-        ./bootstrap
+    1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via the following 
+        terminal (bash) command:
+            git svn checkout http://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
 
+    2) Make sure the source code directory does not have spaces or any non ASCII characters.
+
+    3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or GIT or the 
+        directory you uncompressed the snapshot into run the following:
+            ./update_revision.sh
+
+    4) Run the following to configure the project files for your environment:
+            ./bootstrap
         NOTE: This only needs to be done once.
+
     5) To configure for building the debian deb packages run the following script:
-        ./debian/setup_control.sh
-    6) Run the following to build Code::Blocks and create teh Debain deb files:
-        dpkg-buildpackage -us -uc
+            ./debian/setup_control.sh
+
+    6) Run the following to build Code::Blocks and create the Debain deb files:
+            dpkg-buildpackage -us -uc
 
 
     To rebuild Code::Blocks run the following commands:
         TBA - unknown , please supply if known 
 
 NOTES:
-1) If the NassiShneiderman-plugin fails to build with a boost error then try the following:
+1) There are issues with building the Debian packages under MS WSL2 due to file permission change issues.
+    If you have a fix for this please post or followup with the solution.
+2) If the NassiShneiderman-plugin fails to build with a boost error then try the following:
     a) Check you have install the libboost-dev package by running the following command:
         dpkg -l | grep libboost | grep dev
 
@@ -119,6 +125,34 @@ NOTES:
     
 3) I also do NOT recommend using TortoiseSVN on Windows to do the initial checkout as you may encounter issues with 
      EOL if you transfer the files to Linux
+
+Microsoft Windows Subsystem for Linux 2
+========================================
+MS WSL2 NOTES:
+1. By default you cannot build the Debian files on MS WSL2 on a NTFS file system
+     as the permissions on files cannot be changed, so the build will fail.
+
+2. To fix the permission issue do the following:
+
+   a) Create an /etc/wsl.conf file (as sudo) with the following contents:
+
+   [automount]
+   enabled=true
+   options=metadata,uid=1000,gid=1000,umask=022
+
+   b) Exit WSL
+
+   c) Terminate the instance (wsl --terminate <distroname>)
+       or
+      shut it down (wsl --shutdown)
+
+   d) Restart WSL
+
+3. The following error has not been resolved yet:
+        dpkg-source: info: using source format '3.0 (native)'
+        dpkg-source: info: building codeblocks in codeblocks_22.04.23.tar.xz
+        dpkg-source: error: unable to change permission of 'codeblocks_22.04.23.tar.xz': No such file or directory
+        dpkg-buildpackage: error: dpkg-source -b . subprocess returned exit status 2
 
 
 

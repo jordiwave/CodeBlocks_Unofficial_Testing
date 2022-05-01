@@ -1,35 +1,33 @@
-#!/bin/sh
+#!/bin/bash
 
-#
-# This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
-# http://www.gnu.org/licenses/gpl-3.0.html
-#
-# $Revision: 12020 $
-# $Id: update_revision.sh 12020 2020-04-04 15:06:34Z fuscated $
-# $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/update_revision.sh $
-#
+# --------------------------------------------------------------------------------------#
+#                                                                                       #
+# This file is part of the Code::Blocks IDE and licensed under the                      #
+#  GNU General Public License, version 3. http://www.gnu.org/licenses/gpl-3.0.html      #
+#                                                                                       #
+# --------------------------------------------------------------------------------------#
 
+if [ "$(id -u)" == "0" ]; then
+    echo "You are root. Please run again as a normal user!!!"
+    exit 1
+fi
+
+# -----------------------------------------------------------------------------
 
 # make sure [git-]svn answers in english
 export LC_ALL="C"
 
 REV_FILE=./revision.m4
+SF_CB_SVN_REPO=https://svn.code.sf.net/p/codeblocks/code/trunk
 
-# let's import OLD_REV (if there)
-if [ -f ./.last_revision ]; then
-	. ./.last_revision
-else
-	OLD_REV=0
-fi
-
-if svn --xml info >/dev/null 2>&1; then
-	echo "Using 'svn --xml info' to get the revision"
-	REV=`svn --xml info | tr -d '\r\n' | sed -e 's/.*<commit.*revision="\([0-9]*\)".*<\/commit>.*/\1/'`
-	LCD=`svn --xml info | tr -d '\r\n' | sed -e 's/.*<commit.*<date>\([0-9\-]*\)\T\([0-9\:]*\)\..*<\/date>.*<\/commit>.*/\1 \2/'`
-elif svn --info >/dev/null 2>&1; then
-	echo "Using 'svn info' to get the revision"
-	REV=`svn info | grep "^Revision:" | cut -d" " -f2`
-	LCD=`svn info | grep "^Last Changed Date:" | cut -d" " -f4,5`
+if svn --xml info $SF_CB_SVN_REPO >/dev/null 2>&1; then
+	echo "Using 'svn --xml info $SF_CB_SVN_REPO' to get the revision"
+	REV=`svn --xml info $SF_CB_SVN_REPO | tr -d '\r\n' | sed -e 's/.*<commit.*revision="\([0-9]*\)".*<\/commit>.*/\1/'`
+	LCD=`svn --xml info $SF_CB_SVN_REPO | tr -d '\r\n' | sed -e 's/.*<commit.*<date>\([0-9\-]*\)\T\([0-9\:]*\)\..*<\/date>.*<\/commit>.*/\1 \2/'`
+elif svn --info $SF_CB_SVN_REPO >/dev/null 2>&1; then
+	echo "Using 'svn info $SF_CB_SVN_REPO' to get the revision"
+	REV=`svn info $SF_CB_SVN_REPO | grep "^Revision:" | cut -d" " -f2`
+	LCD=`svn info $SF_CB_SVN_REPO | grep "^Last Changed Date:" | cut -d" " -f4,5`
 #elif git svn --version >/dev/null 2>&1; then
 #	echo "Using 'git svn info' to get the revision"
 #	REV=`git svn info | grep "^Revision:" | cut -d" " -f2`
@@ -45,27 +43,11 @@ fi
 
 echo "Found revision: '${REV}' '${LCD}'"
 
-if [ "x$REV" != "x$OLD_REV" -o ! -r $REV_FILE ]; then
-	echo "m4_define([SVN_REV], $REV)" > $REV_FILE
-	echo "m4_define([SVN_REVISION], 20.03svn$REV)" >> $REV_FILE
-	echo "m4_define([SVN_DATE], $LCD)" >> $REV_FILE
-
-	# Also change the revision number in debian/changelog for package versioning
-	DCH=`which dch 2> /dev/null`
-	if [ "x$DCH" != "x" ]; then
-		if [ -x "$DCH" ]; then
-			AKT_REV=`sed -e 's/.*svn\([0-9]*\).*/\1/' -e 'q' < debian/changelog`
-			if [ $REV -gt $AKT_REV ]; then
-				dch -v 20.03svn$REV "New svn revision"
-			fi
-		fi
-	else
-		mv debian/changelog debian/changelog.tmp
-		sed "1 s/(20.03svn[^-)]*/(20.03svn$REV/" < debian/changelog.tmp > debian/changelog
-		rm debian/changelog.tmp
-	fi
+if [ "x$REV" != "x$0" -o ! -r $REV_FILE ]; then
+	CURRENTDATE=$(date +"%Y.%m.%d")
+	echo "m4_define([SVN_REV], ${REV})" > $REV_FILE
+	echo "m4_define([SVN_REVISION], ${CURRENTDATE}svn${REV})" >> $REV_FILE
+	echo "m4_define([SVN_DATE], ${LCD})" >> $REV_FILE
 fi
-
-echo "OLD_REV=$REV" > ./.last_revision
 
 exit 0

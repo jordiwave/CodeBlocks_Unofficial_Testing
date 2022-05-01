@@ -43,7 +43,7 @@
 					<Add directory="$(#wx.lib)/gcc_dll" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 $(#cb)\devel\share\codeblocks\PythonDebugger.zip manifest.xml Resources\*.xrc" />
+					<Add after="zip -jq9 $(#cb)\devel\share\codeblocks\PythonDebugger.zip manifest.xml Resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -84,8 +84,8 @@
 					<Add directory="$(#wx.lib)/gcc_dll" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonDebugger.zip manifest.xml Resources\*.xrc" />
-					<Add after="zip -j9 PythonDebugger.cbplugin PythonDebugger.dll PythonDebugger.zip" />
+					<Add after="zip -jq9 PythonDebugger.zip manifest.xml Resources\*.xrc" />
+					<Add after="zip -jq9 PythonDebugger.cbplugin PythonDebugger.dll PythonDebugger.zip" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

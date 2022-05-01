@@ -70,7 +70,7 @@ To build Code::Blocks:
         a) Check you have install the libboost-dev package by running the following command:
             dpkg -l | grep libboost | grep dev
 
-        b) Explicitly set the boost-libdirby adding the following line to the configure-line above:
+        b) Explicitly set the boost-libdir by adding the following line to the configure-line above:
             "--with-boost-libdir=LIB_DIR"
            NOTE: Depending on your system, LIB_DIR might be "/usr/lib" or "/usr/lib64".
 
@@ -85,7 +85,7 @@ Run Code::Blocks you built:
       file will be created that you should open as is a trace file that shows the functions called when
       the crash occurred.
     To run Code::Blocks open one of the following appropriate files:
-        devel30\codeblocks
+        devel31_64\codeblocks
         output30\codeblocks
         
     

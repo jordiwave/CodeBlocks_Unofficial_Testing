@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12759 $
- * $Id: debuggergdb.cpp 12759 2022-03-21 18:06:12Z wh11204 $
+ * $Revision: 12803 $
+ * $Id: debuggergdb.cpp 12803 2022-04-24 21:49:16Z bluehazzard $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/debuggergdb/debuggergdb.cpp $
  */
 
@@ -115,6 +115,7 @@ long idGDBProcess = wxNewId();
 long idTimerPollDebugger = wxNewId();
 
 long idMenuWatchDereference = wxNewId();
+long idMenuWatchSymbol = wxNewId();
 
 // this auto-registers the plugin
 PluginRegistrant<DebuggerGDB> reg(_T("Debugger"));
@@ -128,6 +129,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_MENU(idMenuInfoSignals, DebuggerGDB::OnInfoSignals)
 
     EVT_MENU(idMenuWatchDereference, DebuggerGDB::OnMenuWatchDereference)
+    EVT_MENU(idMenuWatchSymbol, DebuggerGDB::OnMenuWatchSymbol)
 
     EVT_PIPEDPROCESS_STDOUT(idGDBProcess, DebuggerGDB::OnGDBOutput)
     EVT_PIPEDPROCESS_STDERR(idGDBProcess, DebuggerGDB::OnGDBError)
@@ -2984,6 +2986,28 @@ void DebuggerGDB::MarkAllWatchesAsUnchanged()
     }
 }
 
+namespace
+{
+wxString createSymbolFromWatch(const cbWatch & watch)
+{
+    wxString symbol;
+    watch.GetSymbol(symbol);
+    cb::shared_ptr<const cbWatch> parentWatch = watch.GetParent();
+
+    if (parentWatch)
+    {
+        wxString parent = createSymbolFromWatch(*parentWatch);
+
+        if (!parent.IsEmpty())
+        {
+            return parent + "." + symbol;
+        }
+    }
+
+    return symbol;
+}
+}   // anonymous namespace
+
 void DebuggerGDB::OnWatchesContextMenu(wxMenu & menu, const cbWatch & watch, wxObject * property, int & disabledMenus)
 {
     wxString type, symbol;
@@ -3005,6 +3029,9 @@ void DebuggerGDB::OnWatchesContextMenu(wxMenu & menu, const cbWatch & watch, wxO
         disabledMenus |= WatchesDisabledMenuItems::Delete;
         disabledMenus |= WatchesDisabledMenuItems::AddDataBreak;
         disabledMenus |= WatchesDisabledMenuItems::ExamineMemory;
+        menu.InsertSeparator(0);
+        menu.Insert(0, idMenuWatchSymbol, _("Watch ") + symbol);
+        m_watchToAddSymbol = createSymbolFromWatch(watch);
     }
 }
 
@@ -3020,6 +3047,19 @@ void DebuggerGDB::OnMenuWatchDereference(cb_unused wxCommandEvent & event)
     watches->RenameWatch(m_watchToDereferenceProperty, wxT("*") + m_watchToDereferenceSymbol);
     m_watchToDereferenceProperty = NULL;
     m_watchToDereferenceSymbol = wxEmptyString;
+}
+
+void DebuggerGDB::OnMenuWatchSymbol(cb_unused wxCommandEvent & event)
+{
+    cbWatchesDlg * watches = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+
+    if (!watches)
+    {
+        return;
+    }
+
+    watches->AddWatch(AddWatch(m_watchToAddSymbol, true));
+    m_watchToAddSymbol = wxEmptyString;
 }
 
 void DebuggerGDB::AttachToProcess(const wxString & pid)

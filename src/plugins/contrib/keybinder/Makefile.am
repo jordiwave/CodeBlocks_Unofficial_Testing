@@ -21,24 +21,24 @@ libkeybinder_la_LIBADD = \
 			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
 
 libkeybinder_la_SOURCES = \
-			cbkeybinder.cpp \
+			cbKeybinder.cpp \
 			cbKeyConfigPanel.cpp \
 			cJSON.cpp \
 			clKeyboardBindingConfig.cpp \
 			clKeyboardManager.cpp \
 			json_node.cpp \
-			keybinder.cpp \
+			Keybinder.cpp \
 			menuutils.cpp
 
 noinst_HEADERS = \
-			cbkeybinder.h \
+			cbKeybinder.h \
 			cbKeyConfigPanel.h \
 			cJSON.h \
 			clKeyboardBindingConfig.h \
 			clKeyboardManager.h \
 			debugging.h \
 			json_node.h \
-			keybinder.h \
+			Keybinder.h \
 			macros.h \
 			menuutils.h
 
@@ -47,6 +47,7 @@ EXTRA_DIST = \
 
 pkgdata_DATA = \
 			keybinder.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 

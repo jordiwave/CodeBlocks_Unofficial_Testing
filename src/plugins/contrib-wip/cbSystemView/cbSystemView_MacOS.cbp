@@ -24,9 +24,9 @@
 					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbSystemView.zip manifest.xml" />
-					<Add after="zip -9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbSystemView.zip images/*" />
-					<Add after="zip -j9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbSystemView.zip res/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbSystemView.zip manifest.xml" />
+					<Add after="zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbSystemView.zip images/*" />
+					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbSystemView.zip res/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -46,10 +46,10 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="mkdir -p plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-					<Add after="zip -j9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.zip manifest.xml" />
-					<Add after="zip -9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.zip images/*" />
-					<Add after="zip -j9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.zip res/*" />
-					<Add after="zip -j9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.cbplugin $(TARGET_OUTPUT_FILE) plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.zip" />
+					<Add after="zip -jq9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.zip manifest.xml" />
+					<Add after="zip -rq9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.zip images/*" />
+					<Add after="zip -jq9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.zip res/*" />
+					<Add after="zip -jq9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.cbplugin $(TARGET_OUTPUT_FILE) plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView.zip" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

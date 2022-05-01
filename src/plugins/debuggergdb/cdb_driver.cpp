@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12753 $
- * $Id: cdb_driver.cpp 12753 2022-03-15 09:04:34Z wh11204 $
+ * $Revision: 12795 $
+ * $Id: cdb_driver.cpp 12795 2022-04-16 03:47:18Z ollydbg $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/debuggergdb/cdb_driver.cpp $
  */
 

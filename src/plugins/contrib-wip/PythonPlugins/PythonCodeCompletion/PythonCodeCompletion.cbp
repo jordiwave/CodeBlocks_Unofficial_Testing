@@ -40,7 +40,7 @@
 					<Add directory="$(#cb)/devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonCodeCompletion.zip manifest.xml" />
+					<Add after="zip -jq9 PythonCodeCompletion.zip manifest.xml" />
 					<Add after="cmd /c xcopy /y PythonCodeCompletion.zip $(#cb)\devel\share\codeblocks\" />
 					<Add after="cmd /c xcopy /y python\python_completion_server.py $(#cb)\devel\share\codeblocks\python\" />
 					<Mode after="always" />
@@ -79,8 +79,8 @@
 					<Add directory="$(#cb)/devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonCodeCompletion.zip manifest.xml" />
-					<Add after="zip -r9 PythonCodeCompletion.cbplugin PythonCodeCompletion.dll PythonCodeCompletion.zip python/python_completion_server.py" />
+					<Add after="zip -jq9 PythonCodeCompletion.zip manifest.xml" />
+					<Add after="zip -rq9 PythonCodeCompletion.cbplugin PythonCodeCompletion.dll PythonCodeCompletion.zip python/python_completion_server.py" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

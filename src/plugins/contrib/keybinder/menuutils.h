@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        keybinder.h
+// Name:        Keybinder.h
 // Purpose:     Classes for binding keypresses to commands.
 // Author:      Francesco Montorsi
 // Modified:    for Code::Blocks by Pecan Heber
@@ -21,7 +21,7 @@
 #include "wx/listbox.h"
 #include "wx/treectrl.h"
 #include "wx/string.h"
-#include "keybinder.h"
+#include "Keybinder.h"
 
 //! Returns the ID of the first menu item with the given name which
 //! is found inside the given menu bar.

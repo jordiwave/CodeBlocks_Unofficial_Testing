@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12736 $
- * $Id: compileroptionsdlg.cpp 12736 2022-03-03 20:12:16Z wh11204 $
+ * $Revision: 12786 $
+ * $Id: compileroptionsdlg.cpp 12786 2022-04-12 11:13:07Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/compilergcc/compileroptionsdlg.cpp $
  */
 
@@ -383,17 +383,32 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow * parent, CompilerGCC * compiler
     // compiler independent (so settings these ones is sufficient)
     DoFillOthers();
     DoFillTree();
-    int compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
+    int compilerIdx = -1;
 
     if (m_pTarget)
     {
         compilerIdx = CompilerFactory::GetCompilerIndex(m_pTarget->GetCompilerID());
     }
     else
+    {
         if (m_pProject)
         {
             compilerIdx = CompilerFactory::GetCompilerIndex(m_pProject->GetCompilerID());
         }
+        else
+        {
+            cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+            if (pProject)
+            {
+                compilerIdx = CompilerFactory::GetCompilerIndex(pProject->GetCompilerID());
+            }
+            else
+            {
+                compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
+            }
+        }
+    }
 
     bool detected = CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected;
 
@@ -627,15 +642,6 @@ void CompilerOptionsDlg::DoFillCompilerSets(int compilerIdx)
         }
     }
 
-    //    int compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
-    //    if (m_pTarget)
-    //        compilerIdx = CompilerFactory::GetCompilerIndex(m_pTarget->GetCompilerID());
-    //    else if (m_pProject)
-    //        compilerIdx = CompilerFactory::GetCompilerIndex(m_pProject->GetCompilerID());
-
-    //    if (!CompilerFactory::GetCompiler(compilerIdx))
-    //        compilerIdx = 0;
-    //    m_Options = CompilerFactory::GetCompiler(compilerIdx)->GetOptions();
     if (compilerIdx != -1)
     {
         Compiler * compiler = CompilerFactory::GetCompiler(compilerIdx);

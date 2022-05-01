@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: BrowseTracker.cpp 12648 2022-01-13 20:06:39Z wh11204 $
+// RCS-ID: $Id: BrowseTracker.cpp 12797 2022-04-17 19:47:12Z pecanh $
 
 // Notes:
 //
@@ -373,6 +373,7 @@ void BrowseTracker::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnProjectOpened));
     // EVT_PROJECT_CLOSE
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnProjectClosing));
+    Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_CHANGED, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnWorkspaceChanged));
     // EVT_PROJECT_ACTIVATE
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnProjectActivatedEvent));
     // hook to project loading procedure
@@ -2610,6 +2611,14 @@ void BrowseTracker::OnProjectOpened(CodeBlocksEvent & event)
     //	it->second->Dump();
     event.Skip();
 }//OnProjectOpened
+// ----------------------------------------------------------------------------
+void BrowseTracker::OnWorkspaceChanged(CodeBlocksEvent & event)
+// ----------------------------------------------------------------------------
+{
+    // Clear all waiting conditions
+    m_bProjectClosing   = false;
+    m_bProjectIsLoading = false;
+}
 // ----------------------------------------------------------------------------
 void BrowseTracker::OnProjectClosing(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------

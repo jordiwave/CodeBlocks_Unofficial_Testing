@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: BrowseTracker.h 12539 2021-11-27 22:53:18Z pecanh $
+// RCS-ID: $Id: BrowseTracker.h 12797 2022-04-17 19:47:12Z pecanh $
 
 
 #ifndef BROWSETRACKER_H_INCLUDED
@@ -269,6 +269,7 @@ class BrowseTracker : public cbPlugin
         void OnProjectClosing(CodeBlocksEvent & event);
         void OnProjectActivatedEvent(CodeBlocksEvent & event);
         void OnProjectLoadingHook(cbProject * project, TiXmlElement * elem, bool loading);
+        void OnWorkspaceChanged(CodeBlocksEvent & event);
 
         void OnStartShutdown(CodeBlocksEvent & event);
         void OnAppStartupDone(CodeBlocksEvent & event);

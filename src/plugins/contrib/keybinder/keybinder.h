@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        keybinder.h
+// Name:        Keybinder.h
 // Purpose:     Classes for binding keypresses to commands.
 // Author:      Aleksandras Gluchovas
 // Modified by: Francesco Montorsi (6/1/2004)
@@ -7,7 +7,7 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-// RCS-ID:      $Id: keybinder.h 12165 2020-06-01 15:58:11Z pecanh $
+// RCS-ID:      $Id: Keybinder.h 12165 2020-06-01 15:58:11Z pecanh $
 
 // Modified Keybinder for CodeBlocks KeyBnder v2.0 2019/04/8
 

@@ -1,12 +1,9 @@
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
- *
- * $Revision: 12767 $
- * $Id: compilergcc.cpp 12767 2022-03-28 20:17:20Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/compilergcc/compilergcc.cpp $
  */
-//#define LOG_DEBUG_STATE_MACHINE_INFO
+
+// #define LOG_DEBUG_STATE_MACHINE_INFO
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
@@ -343,6 +340,7 @@ CompilerGCC::CompilerGCC() :
     m_NextBuildState(bsNone),
     m_pLastBuildingProject(nullptr),
     m_pLastBuildingTarget(nullptr),
+    m_BuildStartType(bstIdle),
     m_Clean(false),
     m_Build(false),
     m_Install(false),
@@ -384,6 +382,7 @@ void CompilerGCC::OnAttach()
     m_NotifiedMaxErrors = false;
     m_pBuildingProject = nullptr;
     m_BuildJob = bjIdle;
+    m_BuildStartType = bstIdle;
     m_NextBuildState = bsNone;
     m_pLastBuildingProject = nullptr;
     m_pLastBuildingTarget = nullptr;
@@ -692,6 +691,16 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu * menu, const Fi
     else
         if (data && data->GetKind() == FileTreeData::ftdkProject)
         {
+            bool enableWorkspaceEntries = false;
+
+            if (cbWorkspace * wsp = Manager::Get()->GetProjectManager()->GetWorkspace())
+            {
+                if (wsp->IsOK())
+                {
+                    enableWorkspaceEntries = true;
+                }
+            }
+
             // popup menu on a project
             wxMenuItem * itm = menu->FindItemByPosition(menu->GetMenuItemCount() - 1);
 
@@ -700,11 +709,21 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu * menu, const Fi
                 menu->AppendSeparator();
             }
 
-            menu->Append(idMenuCompileFromProjectManager,  _("Build"));
-            menu->Append(idMenuRebuildFromProjectManager,  _("Rebuild"));
-            menu->Append(idMenuCleanFromProjectManager,    _("Clean"));
-            menu->Append(idMenuInstallFromProjectManager,  _("Install"));
+            menu->Append(idMenuCompileFromProjectManager,  _("Build target"));
+            menu->Append(idMenuRebuildFromProjectManager,  _("Rebuild target"));
+            menu->Append(idMenuCleanFromProjectManager,    _("Clean target"));
+            menu->Append(idMenuInstallFromProjectManager,  _("Install  target"));
             menu->AppendSeparator();
+
+            if (enableWorkspaceEntries)
+            {
+                menu->Append(idMenuBuildWorkspace,      _("Build workspace"));
+                menu->Append(idMenuRebuildWorkspace,    _("Rebuild workspace"));
+                menu->Append(idMenuCleanWorkspace,      _("Clean workspace"));
+                menu->Append(idMenuInstallWorkspace,    _("Install workspace"));
+                menu->AppendSeparator();
+            }
+
             menu->Append(idMenuProjectCompilerOptionsFromProjectManager, _("Build options..."));
             cbPlugin * otherRunning = Manager::Get()->GetProjectManager()->GetIsRunning();
 
@@ -714,6 +733,15 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu * menu, const Fi
                 menu->Enable(idMenuRebuildFromProjectManager, false);
                 menu->Enable(idMenuCleanFromProjectManager,   false);
                 menu->Enable(idMenuInstallFromProjectManager, false);
+
+                if (enableWorkspaceEntries)
+                {
+                    menu->Enable(idMenuBuildWorkspace, false);
+                    menu->Enable(idMenuRebuildWorkspace, false);
+                    menu->Enable(idMenuCleanWorkspace, false);
+                    menu->Enable(idMenuInstallWorkspace, false);
+                }
+
                 menu->Enable(idMenuProjectCompilerOptionsFromProjectManager, false);
             }
         }
@@ -3663,12 +3691,12 @@ void CompilerGCC::CalculateProjectDependencies(cbProject * prj, wxArrayInt & dep
     int prjidx = Manager::Get()->GetProjectManager()->GetProjects()->Index(prj);
     const ProjectsArray * arr = Manager::Get()->GetProjectManager()->GetDependenciesForProject(prj);
 
-    if (!arr || !arr->GetCount())
+    if (!arr || !arr->GetCount() || (m_BuildStartType == bstTarget))
     {
         // no dependencies; add the project in question and exit
         if (deps.Index(prjidx) == wxNOT_FOUND)
         {
-            //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str()));
+            //          Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str()));
             deps.Add(prjidx);
         }
 
@@ -4146,7 +4174,12 @@ void CompilerGCC::OnCompile(wxCommandEvent & event)
     {
         // we 're called from a menu in ProjectManager
         // let's check the selected project...
+        m_BuildStartType = bstTarget;
         DoSwitchProjectTemporarily();
+    }
+    else
+    {
+        m_BuildStartType = bstWorkspace;
     }
 
     ProjectBuildTarget * target = nullptr;
@@ -4250,7 +4283,12 @@ void CompilerGCC::OnRebuild(wxCommandEvent & event)
     {
         // we 're called from a menu in ProjectManager
         // let's check the selected project...
+        m_BuildStartType = bstTarget;
         DoSwitchProjectTemporarily();
+    }
+    else
+    {
+        m_BuildStartType = bstWorkspace;
     }
 
     ProjectBuildTarget * target = nullptr;
@@ -4331,7 +4369,12 @@ void CompilerGCC::OnClean(wxCommandEvent & event)
     {
         // we 're called from a menu in ProjectManager
         // let's check the selected project...
+        m_BuildStartType = bstTarget;
         DoSwitchProjectTemporarily();
+    }
+    else
+    {
+        m_BuildStartType = bstWorkspace;
     }
 
     ProjectBuildTarget * target = nullptr;
@@ -5287,6 +5330,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
     }
 
     m_BuildJob = bjIdle;
+    m_BuildStartType = bstIdle;
 
     if (showNothingToBeDone && m_Errors.GetCount(cltError) == 0)
     {

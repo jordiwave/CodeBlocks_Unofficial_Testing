@@ -33,7 +33,6 @@ EXTRA_DIST = \
 			Readme_License_GPL3.TXT
 			Readme_Release_Checklist.txt
 			$(srcdir)/update* \
-			ChangeLog.xsl \
 			codeblocks.appdata.xml \
 			codeblocks-contrib.metainfo.xml \
 			debian

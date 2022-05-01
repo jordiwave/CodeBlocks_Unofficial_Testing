@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Name:        wx-config{.in,}
 # Purpose:     wx configuration search and query tool {template,}

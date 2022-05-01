@@ -22,6 +22,13 @@ class ProjectManager;
 class ScriptingManager;
 class UserVariableManager;
 
+class TiXmlAttribute;
+class TiXmlDocument;
+class TiXmlElement;
+class TiXmlHandle;
+class TiXmlNode;
+class TiXmlPrinter;
+
 /// @file
 /// This file contains type traits for all C++ classes/structs known to Squirrel through our
 /// binding.
@@ -67,6 +74,13 @@ enum class TypeTag : uint32_t
     ProjectManager,
     ScriptingManager,
     UserVariableManager,
+
+    TiXmlAttribute,
+    TiXmlDocument,
+    TiXmlElement,
+    TiXmlHandle,
+    TiXmlNode,
+    TiXmlPrinter,
 
     Last
 };
@@ -246,6 +260,54 @@ struct TypeInfo<UserVariableManager>
 {
     static const uint32_t typetag = uint32_t(TypeTag::UserVariableManager);
     static constexpr const SQChar * className = _SC("UserVariableManager");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<TiXmlNode>
+{
+    static const uint32_t typetag = uint32_t(TypeTag::TiXmlNode);
+    static constexpr const SQChar * className = _SC("TiXmlNode");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<TiXmlPrinter>
+{
+    static const uint32_t typetag = uint32_t(TypeTag::TiXmlPrinter);
+    static constexpr const SQChar * className = _SC("TiXmlPrinter");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<TiXmlDocument>
+{
+    static const uint32_t typetag = uint32_t(TypeTag::TiXmlDocument);
+    static constexpr const SQChar * className = _SC("TiXmlDocument");
+    using baseClass = TiXmlNode;
+};
+
+template<>
+struct TypeInfo<TiXmlElement>
+{
+    static const uint32_t typetag = uint32_t(TypeTag::TiXmlElement);
+    static constexpr const SQChar * className = _SC("TiXmlElement");
+    using baseClass = TiXmlNode;
+};
+
+template<>
+struct TypeInfo<TiXmlHandle>
+{
+    static const uint32_t typetag = uint32_t(TypeTag::TiXmlHandle);
+    static constexpr const SQChar * className = _SC("TiXmlHandle");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<TiXmlAttribute>
+{
+    static const uint32_t typetag = uint32_t(TypeTag::TiXmlAttribute);
+    static constexpr const SQChar * className = _SC("TiXmlAttribute");
     using baseClass = void;
 };
 

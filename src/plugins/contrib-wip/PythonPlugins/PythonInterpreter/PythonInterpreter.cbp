@@ -41,7 +41,7 @@
 					<Add directory="$(#wx.lib)/gcc_dll" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonInterpreter.zip manifest.xml" />
+					<Add after="zip -jq9 PythonInterpreter.zip manifest.xml" />
 					<Add after="cmd /c xcopy /y PythonInterpreter.zip $(#cb)\devel\share\codeblocks\" />
 					<Add after="cmd /c xcopy /y python\interp.py $(#cb)\devel\share\codeblocks\python\" />
 					<Mode after="always" />
@@ -86,8 +86,8 @@
 					<Add directory="$(#cb)/devel/share/CodeBlocks/plugins" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonInterpreter.zip manifest.xml" />
-					<Add after="zip -r9 PythonInterpreter.cbplugin PythonInterpreter.zip PythonInterpreter.dll python/interp.py" />
+					<Add after="zip -jq9 PythonInterpreter.zip manifest.xml" />
+					<Add after="zip -rq9 PythonInterpreter.cbplugin PythonInterpreter.zip PythonInterpreter.dll python/interp.py" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -125,8 +125,8 @@
 					<Add directory="$(#wx.lib)/gcc_dll" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonInterpreter.zip manifest.xml" />
-					<Add after="zip -r9 PythonInterpreter.cbplugin PythonInterpreter.zip PythonInterpreter.dll python/interp.py" />
+					<Add after="zip -jq9 PythonInterpreter.zip manifest.xml" />
+					<Add after="zip -rq9 PythonInterpreter.cbplugin PythonInterpreter.zip PythonInterpreter.dll python/interp.py" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

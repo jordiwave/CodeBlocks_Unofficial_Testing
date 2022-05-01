@@ -1,11 +1,11 @@
 SUBDIRS = gizmosled/include/wx/gizmos lcdWindow/include/wx led/include/wx led/include/xrc ledpanel/include/wx
 
 AM_CPPFLAGS = \
-			-I$(srcdir)/gizmosled/include \
 			$(WX_CXXFLAGS) \
 			-I$(srcdir)/ledpanel/include \
 			-I$(srcdir)/lcdWindow/include \
-			-I$(srcdir)/led/include
+			-I$(srcdir)/led/include \
+			-I$(srcdir)/gizmosled/include
 
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \

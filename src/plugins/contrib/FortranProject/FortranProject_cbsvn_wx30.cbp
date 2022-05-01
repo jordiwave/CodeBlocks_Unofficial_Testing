@@ -51,10 +51,10 @@
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel30\share\codeblocks\FortranProject.zip manifest.xml resources\settings.xrc resources\fortranprojecttoolbar.xrc" />
-			<Add after="zip -j9 ..\..\..\devel30\share\codeblocks\FortranProject.zip resources\changecase.xrc resources\tab2space.xrc" />
-			<Add after="zip -j9 ..\..\..\devel30\share\codeblocks\FortranProject.zip resources\project_settings_fortran.xrc resources\calltreeview.xrc" />
-			<Add after="zip -r9 ..\..\..\devel30\share\codeblocks\FortranProject.zip images" />
+			<Add after="zip -jq9 ..\..\..\devel30\share\codeblocks\FortranProject.zip manifest.xml resources\settings.xrc resources\fortranprojecttoolbar.xrc" />
+			<Add after="zip -jq9 ..\..\..\devel30\share\codeblocks\FortranProject.zip resources\changecase.xrc resources\tab2space.xrc" />
+			<Add after="zip -jq9 ..\..\..\devel30\share\codeblocks\FortranProject.zip resources\project_settings_fortran.xrc resources\calltreeview.xrc" />
+			<Add after="zip -rq9 ..\..\..\devel30\share\codeblocks\FortranProject.zip images" />
 			<Add after=".\update30.bat" />
 		</ExtraCommands>
 		<Unit filename="adddirparserthread.cpp" />

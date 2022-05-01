@@ -9,19 +9,28 @@
 		<Build>
 			<Target title="default">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/DoxyBlocks" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/DoxyBlocks" />
+				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\DoxyBlocks" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\DoxyBlocks" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
+				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ResourceCompiler>
 					<Add directory="$(#WXWIDGETS.include)" />
 				</ResourceCompiler>
 				<ExtraCommands>
-					<Add after="zip -j9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\DoxyBlocks.zip manifest.xml" />
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\DoxyBlocks.zip manifest.xml" />
 					<Add after="zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\DoxyBlocks.zip .\images" />
+
+					<Add after="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings > nul" />
+					<Add after="cmd /c copy *.png $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ > nul" />
+
+					<Add after="cmd /c if not exist $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings > nul" />
+					<Add after="cmd /c copy *.png $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ > nul" />
+
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -47,25 +56,21 @@
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
-			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
+			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
+			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add directory="$(#WXWIDGETS.lib)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
 		</Linker>
-		<ExtraCommands>
-			<Add after="update$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS).bat" />
-			<Mode after="always" />
-		</ExtraCommands>
 		<Unit filename="AutoDoc.cpp" />
 		<Unit filename="ChangeLog.txt" />
 		<Unit filename="Config.cpp" />
@@ -82,10 +87,9 @@
 		<Unit filename="Expressions.h" />
 		<Unit filename="ExtractDocs.cpp" />
 		<Unit filename="manifest.xml" />
-		<Unit filename="update31" />
-		<Unit filename="update$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS).bat" />
-		<Unit filename="version.h" />
-		<Unit filename="wxsmith/ConfigPanel.wxs" />
+		<Unit filename="update" />
+		<Unit filename="update30" />
+		<Unit filename="wxsmith\ConfigPanel.wxs" />
 		<Extensions>
 			<AutoVersioning>
 				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
@@ -104,7 +108,7 @@
 			</DoxyBlocks>
 			<wxsmith version="1">
 				<resources>
-					<wxPanel wxs="wxsmith/ConfigPanel.wxs" src="ConfigPanel.cpp" hdr="ConfigPanel.h" fwddecl="0" i18n="1" name="ConfigPanel" language="CPP" />
+					<wxPanel wxs="wxsmith\ConfigPanel.wxs" src="ConfigPanel.cpp" hdr="ConfigPanel.h" fwddecl="0" i18n="1" name="ConfigPanel" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

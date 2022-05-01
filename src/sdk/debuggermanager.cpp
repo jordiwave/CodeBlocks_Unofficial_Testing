@@ -498,35 +498,102 @@ void cbDebuggerCommonConfig::SetPerspective(int perspective)
     c->Write(wxT("/common/perspective"), perspective);
 }
 
-wxString cbDetectDebuggerExecutable(const wxString & exeName)
+wxString cbDetectDebuggerExecutable(const wxString & exeNameParam)
 {
-    wxString exeExt(platform::windows ? wxT(".exe") : wxEmptyString);
-    wxString exePath = cbFindFileInPATH(exeName);
-    wxChar sep = wxFileName::GetPathSeparator();
+    wxFileName exeName(exeNameParam);
+
+    if (platform::windows)
+    {
+        if (exeName.GetExt().empty())
+        {
+            exeName.SetExt("exe");
+        }
+    }
+
+    // Check Project default compiler path to see if file in it
+    cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+    if (pProject)
+    {
+        // First check project global compiler is valid
+        int compilerIdx = CompilerFactory::GetCompilerIndex(pProject->GetCompilerID());
+
+        if (compilerIdx != -1)
+        {
+            Compiler * prjCompiler = CompilerFactory::GetCompiler(compilerIdx);
+
+            if (prjCompiler)
+            {
+                wxString mPath = prjCompiler->GetMasterPath();
+
+                if (!mPath.empty() && wxDirExists(mPath + wxFILE_SEP_PATH + "bin"))
+                {
+                    wxFileName exeNameSearch(mPath + wxFILE_SEP_PATH + "bin", exeName.GetFullName());
+
+                    if (exeNameSearch.Exists())
+                    {
+                        return exeNameSearch.GetFullPath();
+                    }
+                }
+            }
+        }
+    }
+
+    // Check default compiler path to see if file in it
+    Compiler * defaultCompiler = CompilerFactory::GetDefaultCompiler();
+
+    if (defaultCompiler)
+    {
+        wxString mPath = defaultCompiler->GetMasterPath();
+
+        if (!mPath.empty() && wxDirExists(mPath + wxFILE_SEP_PATH + "bin"))
+        {
+            wxFileName exeNameSearch(mPath + wxFILE_SEP_PATH + "bin", exeName.GetFullName());
+
+            if (exeNameSearch.Exists())
+            {
+                return exeNameSearch.GetFullPath();
+            }
+        }
+    }
+
+    wxString exePath = cbFindFileInPATH(exeName.GetFullName());
 
     if (exePath.empty())
     {
-        if (!platform::windows)
-        {
-            exePath = wxT("/usr/bin/") + exeName + exeExt;
-        }
-        else
+        if (platform::windows)
         {
             const wxString & cbInstallFolder = ConfigManager::GetExecutableFolder();
+            exePath = cbInstallFolder + wxFILE_SEP_PATH + "MINGW" + wxFILE_SEP_PATH + "bin";
 
-            if (wxFileExists(cbInstallFolder + sep + wxT("MINGW") + sep + wxT("bin") + sep + exeName + exeExt))
+            if (!wxFileExists(exePath + wxFILE_SEP_PATH + exeName.GetFullName()))
             {
-                exePath = cbInstallFolder + sep + wxT("MINGW") + sep + wxT("bin");
-            }
-            else
-            {
-                exePath = wxT("C:\\MinGW\\bin");
+                exePath = "C:\\MinGW\\bin";
 
                 if (!wxDirExists(exePath))
                 {
-                    exePath = wxT("C:\\MinGW32\\bin");
+                    exePath = "C:\\MinGW32\\bin";
+                }
+
+                if (!wxDirExists(exePath))
+                {
+                    exePath = "C:\\MinGW64\\bin";
+                }
+
+                if (!wxDirExists(exePath))
+                {
+                    exePath = "C:\\mingw-w32\\bin";
+                }
+
+                if (!wxDirExists(exePath))
+                {
+                    exePath = "C:\\mingw-w64\\bin";
                 }
             }
+        }
+        else
+        {
+            exePath = "/usr/bin/" + exeName.GetFullName();
         }
     }
 
@@ -535,7 +602,7 @@ wxString cbDetectDebuggerExecutable(const wxString & exeName)
         return wxEmptyString;
     }
 
-    return exePath + wxFileName::GetPathSeparator() + exeName + exeExt;
+    return exePath + wxFILE_SEP_PATH + exeName.GetFullName();
 }
 
 uint64_t cbDebuggerStringToAddress(const wxString & address)

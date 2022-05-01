@@ -38,13 +38,22 @@ enum ErrorType
     etWarning
 };
 
+/// Helper enum for build type
+enum BuildStartType
+{
+    bstIdle = 0,     ///< No build type
+    bstWorkspace,    ///< High level build type is a workspace
+    bstTarget        ///< High level build type is a target
+};
+
+
 /// Helper enum for compiler's state. This state signifies the kind of build the compiler is working on.
 enum BuildJob
 {
-    bjIdle = 0, ///< Not currently building
-    bjWorkspace, ///< Building the workspace
-    bjProject, ///< Building the project
-    bjTarget ///< Building the target
+    bjIdle = 0,     ///< Not currently building
+    bjWorkspace,    ///< Building the workspace
+    bjProject,      ///< Building the project
+    bjTarget        ///< Building the target
 };
 
 /// Defines the current state of the compiler.
@@ -337,6 +346,8 @@ class CompilerGCC : public cbCompilerPlugin
         BuildState          m_NextBuildState;
         cbProject     *     m_pLastBuildingProject;
         ProjectBuildTarget * m_pLastBuildingTarget;
+        BuildStartType      m_BuildStartType;
+
         // Clean and Build and install
         bool m_Clean;
         bool m_Build;

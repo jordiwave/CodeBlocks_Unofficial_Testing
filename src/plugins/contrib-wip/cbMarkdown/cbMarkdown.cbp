@@ -26,10 +26,10 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist plugin_wx31_64 mkdir plugin_wx31_64" />
-					<Add after="zip -j9 plugin_wx31_64\cbMarkdown.zip manifest.xml" />
-					<Add after="zip -9  plugin_wx31_64\cbMarkdown.zip images\*" />
-					<Add after="zip -j9 plugin_wx31_64\cbMarkdown.zip res\*" />
-					<Add after="zip -j9 plugin_wx31_64\cbMarkdown.cbplugin $(TARGET_OUTPUT_FILE) plugin_wx31_64\cbMarkdown.zip" />
+					<Add after="zip -jq9 plugin_wx31_64\cbMarkdown.zip manifest.xml" />
+					<Add after="zip -rq9  plugin_wx31_64\cbMarkdown.zip images\*" />
+					<Add after="zip -jq9 plugin_wx31_64\cbMarkdown.zip res\*" />
+					<Add after="zip -jq9 plugin_wx31_64\cbMarkdown.cbplugin $(TARGET_OUTPUT_FILE) plugin_wx31_64\cbMarkdown.zip" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -53,8 +53,8 @@
 					<Add directory="$(#cb)/devel31_64" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 $(#cb)\devel31_64\share\codeblocks\cbMarkdown.zip res\*" />
-					<Add after="zip -j9 $(#cb)\devel31_64\share\codeblocks\cbMarkdown.zip manifest.xml" />
+					<Add after="zip -jq9 $(#cb)\devel31_64\share\codeblocks\cbMarkdown.zip res\*" />
+					<Add after="zip -jq9 $(#cb)\devel31_64\share\codeblocks\cbMarkdown.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

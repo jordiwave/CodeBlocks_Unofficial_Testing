@@ -41,9 +41,6 @@
 			<Add directory="lib/tinyxml" />
 			<Add directory="src" />
 		</Compiler>
-		<Linker>
-			<Add option="-Wl,--no-undefined" />
-		</Linker>
 		<Unit filename="lib/doc/macros.dox">
 			<Option target="Doxygen" />
 		</Unit>

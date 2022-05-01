@@ -3,77 +3,64 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="cbBuildTools Unix" />
+		<Option default_target="cbBuildTools_cbplugin" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="cbBuildTools_build">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/cbBuildTools" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbBuildTools" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
-				<Option run_host_application_in_terminal="0" />
-				<Compiler>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-				</Compiler>
-				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
-					<Add library="codeblocks" />
-					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
-				</Linker>
-				<ExtraCommands>
-					<Add after="zip -j9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbBuildTools.zip manifest.xml" />
-					<Add after="zip -9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbBuildTools.zip images/*" />
-					<Add after="zip -j9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbBuildTools.zip res/*.xrc" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
 			<Target title="cbBuildTools_cbplugin">
-				<Option output="output/wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbBuildTools" prefix_auto="0" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbBuildTools_Plugin" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbBuildTools" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/cbBuildTools" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
-				<Compiler>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-				</Compiler>
-				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
-					<Add library="codeblocks" />
-					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
-				</Linker>
 				<ExtraCommands>
-					<Add after="mkdir -p plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-					<Add after="zip -j9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbBuildTools.zip manifest.xml" />
-					<Add after="zip -9  plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbBuildTools.zip images/*" />
-					<Add after="zip -j9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbBuildTools.zip res/*" />
-					<Add after="zip -j9 plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbBuildTools.cbplugin $(TARGET_OUTPUT_FILE) plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbBuildTools.zip" />
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+
+					<Add after="if [ -f $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip; fi" />
+					<Add after="zip -qj9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip manifest.xml res/*" />
+					<Add after="zip -qr9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ./images" />
+
+					<Add after="if [ -f $(TARGET_OUTPUT_BASENAME).cbplugin ] ; then rm $(TARGET_OUTPUT_BASENAME).cbplugin ; fi" />
+					<Add after="if [ -f $(TARGET_OUTPUT_BASENAME).zip      ] ; then rm $(TARGET_OUTPUT_BASENAME).zip      ; fi" />
+					<Add after="if [ -f $(TARGET_OUTPUT_FILENAME)          ] ; then rm $(TARGET_OUTPUT_FILENAME)          ; fi" />
+
+					<Add after="cp $(TARGET_OUTPUT_FILE) ." />
+					<Add after="strip $(TARGET_OUTPUT_FILENAME)" />
+					<Add after="zip -qj9 $(TARGET_OUTPUT_BASENAME).zip manifest.xml res/*" />
+					<Add after="zip -qr9 $(TARGET_OUTPUT_BASENAME).zip ./images" />
+					<Add after="zip -qj9 $(TARGET_OUTPUT_BASENAME).cbplugin $(TARGET_OUTPUT_FILENAME) $(TARGET_OUTPUT_BASENAME).zip" />
+
+					<Add after="if [ -f $(TARGET_OUTPUT_FILENAME) ] ; then rm $(TARGET_OUTPUT_FILENAME) ; fi" />
+					<Add after="if [ -f $(TARGET_OUTPUT_BASENAME).zip ] ; then rm $(TARGET_OUTPUT_BASENAME).zip; fi" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cbBuildTools_build;cbBuildTools_cbplugin;" />
+			<Add alias="All" targets="cbBuildTools_cbplugin;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-fPIC" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
 			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="./include" />
 		</Compiler>
 		<Linker>
-			<Add option="-Wl,--no-undefined" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
+			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
+			<Add library="codeblocks" />
 		</Linker>
 		<Unit filename="cbBuildTools.cpp" />
 		<Unit filename="cbBuildTools.h" />
@@ -84,7 +71,6 @@
 			<code_completion />
 			<envvars />
 			<debugger />
-			<LibClang />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

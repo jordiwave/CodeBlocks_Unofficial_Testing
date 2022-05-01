@@ -33,7 +33,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,propgrid`" />
-			<Add option="-Wl,--no-undefined" />
 			<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GLIB) --libs`" />
 			<Add library="txml" />
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />

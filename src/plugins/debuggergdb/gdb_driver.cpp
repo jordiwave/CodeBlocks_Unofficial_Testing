@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12608 $
- * $Id: gdb_driver.cpp 12608 2021-12-23 09:13:18Z wh11204 $
+ * $Revision: 12801 $
+ * $Id: gdb_driver.cpp 12801 2022-04-23 11:53:51Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/debuggergdb/gdb_driver.cpp $
  */
 
@@ -481,7 +481,7 @@ void GDB_driver::SetMemoryRangeValue(uint64_t addr, const wxString & value)
 void GDB_driver::SetMemoryRangeValue(wxString address, const wxString & value)
 {
     const size_t size = value.size();
-    uint64_t llAddres;
+    wxULongLong_t llAddres;
 
     if ((size == 0) || (!address.ToULongLong(&llAddres, 16)))
     {
@@ -505,9 +505,9 @@ void GDB_driver::SetMemoryRangeValue(wxString address, const wxString & value)
     wxString commandStr;
     // Check if build is for WX MS Windows
 #ifdef __WXMSW__
-    commandStr.Printf(wxT("set {char [%ul]} 0x%" PRIx64 "="), size, llAddres);
+    commandStr.Printf(wxT("set {char [%ul]} 0x%" PRIx64 "="), size, uint64_t(llAddres));
 #else
-    commandStr.Printf(wxT("set {char [%zu]} 0x%" PRIx64 "="), size, llAddres);
+    commandStr.Printf(wxT("set {char [%zu]} 0x%" PRIx64 "="), size, uint64_t(llAddres));
 #endif // __WXMSW__
     commandStr << dataStr;
     QueueCommand(new DebuggerCmd(this, commandStr));

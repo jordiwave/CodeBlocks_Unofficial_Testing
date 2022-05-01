@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_compiler>
 <CodeBlocks_compiler name="LLVM Clang Compiler"
                      id="clang"
@@ -9,9 +9,27 @@
         <if platform="windows">
             <Search path="%ProgramFiles%\LLVM"
                     for="C"/>
+            <Search path="C:\LLVM"
+                    for="C"/>
+            <Search path="C:\msys64\clang64"
+                for="C"/>
+            <Search path="C:\msys64\clang32"
+                for="C"/>
+            <Search path="C:\MinGW64"
+                for="C"/>
+            <Search path="C:\MinGW-64"
+                for="C"/>
+            <Search path="C:\MinGW32"
+                for="C"/>
+            <Search path="C:\MinGW-32"
+                for="C"/>
             <Fallback path="C:\MinGW"/>
         </if>
         <else>
+            <Search path="~/llvm"
+                    for="C"/>
+            <Search path="~/llvm/build"
+                    for="C"/>
             <Fallback path="/usr"/>
         </else>
     </Path>

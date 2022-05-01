@@ -21,7 +21,8 @@ libabbreviations_la_LDFLAGS = \
 			-avoid-version
 
 libabbreviations_la_LIBADD = \
-			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
+			$(WX_LIBS)
 
 libabbreviations_la_SOURCES = \
 			abbreviations.cpp \

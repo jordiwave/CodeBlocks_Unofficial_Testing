@@ -3,6 +3,20 @@ AM_CPPFLAGS = \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT
+AM_CPPFLAGS += \
+			-DWXUSINGDLL \
+			-DwxUSE_UNICODE \
+			-D_WIN64 \
+			-DWXUSINGDLL \
+			-D__WXMSW__ \
+			-DBUILDING_PLUGIN \
+			-DHAVE_W32API_H \
+			-pipe \
+			-fmessage-length=0 \
+			-fexceptions
+endif
+
 noinst_LTLIBRARIES = \
 			libwxsmith_wxwidgets_defitems.la
 

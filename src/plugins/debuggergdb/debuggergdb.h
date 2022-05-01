@@ -97,7 +97,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         }
 
         cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol, bool update) override;
-        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update) override;
+        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size,
+                                               const wxString & symbol, bool update) override;
         void DeleteWatch(cb::shared_ptr<cbWatch> watch) override;
         bool HasWatch(cb::shared_ptr<cbWatch> watch) override;
         bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch);
@@ -194,6 +195,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnInfoSignals(wxCommandEvent & event);
 
         void OnMenuWatchDereference(wxCommandEvent & event);
+        void OnMenuWatchSymbol(cb_unused wxCommandEvent & event);
 
         void OnUpdateTools(wxUpdateUIEvent & event);
         void OnPrintElements(wxCommandEvent & event);
@@ -231,6 +233,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         cb::shared_ptr<GDBWatch> m_localsWatch, m_funcArgsWatch;
         wxString m_watchToDereferenceSymbol;
         wxObject * m_watchToDereferenceProperty;
+
+        wxString m_watchToAddSymbol;
 
         friend struct TestIfBelongToProject;
 

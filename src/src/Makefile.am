@@ -23,7 +23,7 @@ if CODEBLOCKS_NT
 AM_CPPFLAGS += \
 			-DDEPSLIB_WINDOWS \
 			-DBUILDING_PLUGIN \
-			-I../exchndl/win64/include
+			-I../exchndl/win_10/win64/include
 endif
 
 bin_PROGRAMS = codeblocks
@@ -46,7 +46,7 @@ codeblocks_LDADD = \
 codeblocks_LDFLAGS = \
 			-no-undefined \
 			-L../sdk/.libs \
-			-L../exchndl/win64/lib \
+			-L../exchndl/win_10/win64/lib \
 			-L../sdk/scripting/squirrel/.libs
 else
 # wxAUI uses GTK+ libraries on wxGTK

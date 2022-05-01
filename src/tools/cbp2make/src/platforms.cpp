@@ -91,10 +91,12 @@ CString CPlatform::Name(const OS_Type PlatformOS)
 {
     switch (PlatformOS)
     {
+        case CPlatform::OS_Count: // fall-though
+        case CPlatform::OS_Other: // fall-though
         default:
-        case CPlatform::OS_Other:
-        case CPlatform::OS_Count:
-        { }
+        {
+            return "Other";
+        }
 
         case CPlatform::OS_Unix:
         {
@@ -284,6 +286,8 @@ void CPlatform::Reset(const CPlatform::OS_Type OS)
 
     switch (m_OS_Type)
     {
+        case CPlatform::OS_Other: // fall-through
+        case CPlatform::OS_Count: // fall-through
         default:
         case CPlatform::OS_Unix:
         {

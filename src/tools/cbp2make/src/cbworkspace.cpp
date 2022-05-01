@@ -386,25 +386,39 @@ bool CCodeBlocksWorkspace::GenerateMakefile
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            rule_all.Dependencies().Insert(m_TargetNames[i]);
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
+
+            if (target_selected)
+            {
+                rule_all.Dependencies().Insert(target_name);
+            }
         }
 
         section++;
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            CString makefile_path = m_MakefilePaths[i];
-            CMakefileRule & rule_target = m_Makefile.AddRule(m_TargetNames[i], section);
-            rule_target.Dependencies().Insert(m_TargetDeps[i]);
-            line = "$(MAKE)";
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
 
-            if (!makefile_path.IsEmpty())
+            if (target_selected)
             {
-                line += " -C " + pl->ProtectPath(pl->Pd(makefile_path), Config.QuotePathMode());
-            }
+                CString makefile_path_ex = m_MakefilePaths[i];
+                CMakefileRule & rule_target = m_Makefile.AddRule(target_name, section);
+                rule_target.Dependencies().Insert(m_TargetDeps[i]);
+                line = "$(MAKE)";
 
-            line += " all -f " + pl->ProtectPath(pl->Pd(m_MakefileNames[i]) + platform_suffix, Config.QuotePathMode());
-            rule_target.Commands().Insert(line);
+                if (!makefile_path_ex.IsEmpty())
+                {
+                    line += " -C " + pl->ProtectPath(pl->Pd(makefile_path_ex), Config.QuotePathMode());
+                }
+
+                line += " all -f " + pl->ProtectPath(pl->Pd(m_MakefileNames[i]) + platform_suffix, Config.QuotePathMode());
+                rule_target.Commands().Insert(line);
+            }
         }
 
         section++;
@@ -413,24 +427,38 @@ bool CCodeBlocksWorkspace::GenerateMakefile
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            rule_clean.Dependencies().Insert("clean_" + m_TargetNames[i]);
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
+
+            if (target_selected)
+            {
+                rule_clean.Dependencies().Insert("clean_" + target_name);
+            }
         }
 
         section++;
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            CString makefile_path = m_MakefilePaths[i];
-            CMakefileRule & rule_clean_target = m_Makefile.AddRule("clean_" + m_TargetNames[i], section);
-            line = "$(MAKE)";
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
 
-            if (!makefile_path.IsEmpty())
+            if (target_selected)
             {
-                line += " -C " + pl->ProtectPath(pl->Pd(makefile_path), Config.QuotePathMode());
-            }
+                CString makefile_path_ex = m_MakefilePaths[i];
+                CMakefileRule & rule_clean_target = m_Makefile.AddRule("clean_" + target_selected, section);
+                line = "$(MAKE)";
 
-            line += " clean -f " + pl->ProtectPath(pl->Pd(m_MakefileNames[i]) + platform_suffix, Config.QuotePathMode());
-            rule_clean_target.Commands().Insert(line);
+                if (!makefile_path_ex.IsEmpty())
+                {
+                    line += " -C " + pl->ProtectPath(pl->Pd(makefile_path_ex), Config.QuotePathMode());
+                }
+
+                line += " clean -f " + pl->ProtectPath(pl->Pd(m_MakefileNames[i]) + platform_suffix, Config.QuotePathMode());
+                rule_clean_target.Commands().Insert(line);
+            }
         }
 
         // save makefile
@@ -548,7 +576,14 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString & FileName,
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            line.Append(" ").Append(m_TargetNames[i]);
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
+
+            if (target_selected)
+            {
+                line.Append(" ").Append(target_name);
+            }
         }
 
         m_MakefileText.Insert(line);
@@ -556,19 +591,26 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString & FileName,
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            CString makefile_path = m_MakefilePaths[i];
-            line = m_TargetNames[i] + ":";
-            m_MakefileText.Insert(line);
-            line = "\t$(MAKE)";
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
 
-            if (!makefile_path.IsEmpty())
+            if (target_selected)
             {
-                line += " -C " + pl->ProtectPath(pl->Pd(makefile_path), Config.QuotePathMode());
-            }
+                CString makefile_path_ex = m_MakefilePaths[i];
+                line = target_name + ":";
+                m_MakefileText.Insert(line);
+                line = "\t$(MAKE)";
 
-            line += " all -f " + pl->ProtectPath(pl->Pd(m_MakefileNames[i]) + platform_suffix, Config.QuotePathMode());
-            m_MakefileText.Insert(line);
-            m_MakefileText.Insert("");
+                if (!makefile_path_ex.IsEmpty())
+                {
+                    line += " -C " + pl->ProtectPath(pl->Pd(makefile_path_ex), Config.QuotePathMode());
+                }
+
+                line += " all -f " + pl->ProtectPath(pl->Pd(m_MakefileNames[i]) + platform_suffix, Config.QuotePathMode());
+                m_MakefileText.Insert(line);
+                m_MakefileText.Insert("");
+            }
         }
 
         //
@@ -576,7 +618,14 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString & FileName,
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            line.Append(" clean_").Append(m_TargetNames[i]);
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
+
+            if (target_selected)
+            {
+                line.Append(" clean_").Append(target_name);
+            }
         }
 
         m_MakefileText.Insert(line);
@@ -584,19 +633,26 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString & FileName,
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            CString makefile_path = m_MakefilePaths[i];
-            line = "clean_" + m_TargetNames[i] + ":";
-            m_MakefileText.Insert(line);
-            line = "\t$(MAKE)";
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
 
-            if (!makefile_path.IsEmpty())
+            if (target_selected)
             {
-                line += " -C " + pl->ProtectPath(pl->Pd(makefile_path), Config.QuotePathMode());
-            }
+                CString makefile_path_ex = m_MakefilePaths[i];
+                line = "clean_" + target_name + ":";
+                m_MakefileText.Insert(line);
+                line = "\t$(MAKE)";
 
-            line += " clean -f " + pl->ProtectPath(pl->Pd(m_MakefileNames[i]) + platform_suffix, Config.QuotePathMode());
-            m_MakefileText.Insert(line);
-            m_MakefileText.Insert("");
+                if (!makefile_path_ex.IsEmpty())
+                {
+                    line += " -C " + pl->ProtectPath(pl->Pd(makefile_path_ex), Config.QuotePathMode());
+                }
+
+                line += " clean -f " + pl->ProtectPath(pl->Pd(m_MakefileNames[i]) + platform_suffix, Config.QuotePathMode());
+                m_MakefileText.Insert(line);
+                m_MakefileText.Insert("");
+            }
         }
 
         //
@@ -604,8 +660,15 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString & FileName,
 
         for (int i = 0; i < m_TargetNames.GetCount(); i++)
         {
-            line.Append(" ").Append(m_TargetNames[i]);
-            line.Append(" clean_").Append(m_TargetNames[i]);
+            CString target_name = m_TargetNames[i];
+            bool target_selected = ((Config.Targets().GetCount() == 0) ||
+                                    ((Config.Targets().GetCount() > 0) && (Config.Targets().FindString(target_name) >= 0)));
+
+            if (target_selected)
+            {
+                line.Append(" ").Append(target_name);
+                line.Append(" clean_").Append(target_name);
+            }
         }
 
         m_MakefileText.Insert(line);

@@ -6,7 +6,6 @@ AM_CPPFLAGS = \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/include/tinyxml \
 			-Isrc \
-			-Isrc/LSPclient/include \
 			-Isrc/LSPclient \
 			-Isrc/codecompletion
 
@@ -86,7 +85,7 @@ libclangd_client_la_SOURCES = \
 			src/codecompletion/parser/tokentree.cpp \
 			src/codecompletion/selectincludefile.cpp \
 			src/codecompletion/wxsmith/CCTestFrame.wxs \
-			src/LSPclient/src/client.cpp \
+			src/LSPclient/client.cpp \
 			src/LSPclient/lspdiagresultslog.cpp
 			
 
@@ -139,11 +138,11 @@ noinst_HEADERS = \
 			src/codecompletion/parser/tokenizer.h \
 			src/codecompletion/parser/tokentree.h \
 			src/codecompletion/selectincludefile.h \
-			src/LSPclient/include/client.h \
-			src/LSPclient/include/json.hpp \
-			src/LSPclient/include/protocol.h \
-			src/LSPclient/include/transport.h \
-			src/LSPclient/include/uri.h \
+			src/LSPclient/client.h \
+			src/LSPclient/json.hpp \
+			src/LSPclient/protocol.h \
+			src/LSPclient/transport.h \
+			src/LSPclient/uri.h \
 			src/LSPclient/lspdiagresultslog.h \
 			src/LSP_SymbolKind.h
 

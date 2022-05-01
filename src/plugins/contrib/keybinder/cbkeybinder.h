@@ -1,11 +1,11 @@
 /***************************************************************
- * Name:      cbkeybinder.h
+ * Name:      cbKeybinder.h
  * Purpose:   Code::Blocks plugin
  * Author:    Pecan Heber
  * Copyright: (c) Pecan Heber
  * License:   GPL
  **************************************************************/
-// RCS-ID:      $Id: cbkeybinder.h 12189 2020-07-15 19:25:10Z pecanh $
+// RCS-ID:      $Id: cbKeybinder.h 12189 2020-07-15 19:25:10Z pecanh $
 //cause a commit 2020/04/7
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
@@ -17,7 +17,7 @@
 #include "cbplugin.h" // the base class we 're inheriting
 #include "configurationpanel.h"
 #include "clKeyboardManager.h"
-#include "keybinder.h"
+#include "Keybinder.h"
 #include "cbKeyConfigPanel.h"
 
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
@@ -389,7 +389,7 @@ class cbKeyBinder : public cbPlugin
 // -----------------------------------------------------------------------------
 //  fixed   2006/04/22 v0.4.17
 //          Appease linux gcc 4.0.2 compiler by putting extra ()'s
-//          around keybinder.cpp 2219 if(assignment statement)
+//          around Keybinder.cpp 2219 if(assignment statement)
 //          Removed RC2 code and references
 //          Fixed duplicate menu items not being updated by using the menu bar
 //          as the source to search the keybinder array rather than the reverse.

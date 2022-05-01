@@ -19,8 +19,8 @@ Preparations for a release:
 
 5.) Make relevant changes in specific files, set new version number in:
     [C::B]\codeblocks.plist.in
-    [C::B]\codeblocks.spec.in    <- careful here: don't change the changelog
-    [C::B]\codeblocks.spec.fedora.in    <- careful here: don't change the changelog
+    [C::B]\codeblocks.spec.in
+    [C::B]\codeblocks.spec.fedora.in
     [C::B]\README
     [C::B]\update_revision.sh
     [C::B]\debian\get-orig-source

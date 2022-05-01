@@ -142,7 +142,11 @@ CString CBuildTool::TypeName(const CBuildTool::ToolType Type)
             return "Native binary linker";
         }
 
-            //case CBuildTool::btBuildManager,
+        case CBuildTool::btDependencyGenerator: // fall-through
+        case CBuildTool::btBuildManager:        // fall-through
+        {
+            return "Other";
+        }
     }
 
     return "Other";
@@ -200,7 +204,11 @@ CString CBuildTool::AbbrevTypeName(const CBuildTool::ToolType Type)
             return "nl";
         }
 
-            //case CBuildTool::btBuildManager,
+        case CBuildTool::btDependencyGenerator: // fall-through
+        case CBuildTool::btBuildManager:        // fall-through
+        {
+            return "bt";
+        }
     }
 
     return "bt";
@@ -649,6 +657,8 @@ void CDynamicLinker::Reset(const CPlatform::OS_Type OS)
 
     switch (OS)
     {
+        case CPlatform::OS_Count: // fall-through
+        case CPlatform::OS_Other: // fall-through
         default:
         case CPlatform::OS_Unix:
         {

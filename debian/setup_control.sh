@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Run this in the root of the project. The current working dir should have
 # the "debian" folder in it.

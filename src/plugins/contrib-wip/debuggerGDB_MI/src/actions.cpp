@@ -4,12 +4,15 @@
  *
 */
 
+// System and library includes
 #include <wx/platinfo.h>
 
+// CB includes
 #include <cbdebugger_interfaces.h>
 #include <cbplugin.h>
 #include <logmanager.h>
 
+// GDB/MI include files
 #include "actions.h"
 #include "cmd_result_parser.h"
 #include "frame.h"
@@ -921,7 +924,7 @@ GDBGenerateExamineMemory::GDBGenerateExamineMemory(LogPaneLogger * logger) :
 {
     cbExamineMemoryDlg * dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
     wxString sBaseAddress = dialog->GetBaseAddress();
-    uint64_t llBaseAddress;
+    unsigned long long int llBaseAddress;
 
     if (sBaseAddress.ToULongLong(&llBaseAddress, 16))
     {
@@ -1004,7 +1007,7 @@ void GDBGenerateExamineMemory::OnCommandOutput(CommandID const & id, ResultParse
                         wxString sAddressOffset = pMemoryAddressOffset->GetSimpleValue();
                         wxString sAddressEnd    = pMemoryAddressEnd->GetSimpleValue();
                         wxString sMemoryContents = pMemoryContents->GetSimpleValue();
-                        uint64_t llAddrbegin, llAddrOffset, llAddrEnd;
+                        unsigned long long int llAddrbegin, llAddrOffset, llAddrEnd;
 
                         if (
                             (sAddressBegin.ToULongLong(&llAddrbegin, 16)) &&
@@ -1537,54 +1540,43 @@ GDBWatchBaseAction::~GDBWatchBaseAction()
 bool GDBWatchBaseAction::ParseListCommand(CommandID const & id, ResultValue const & value)
 {
     bool error = false;
-    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__,
-                            __LINE__,
-                            wxString::Format(_("GDBWatchBaseAction::ParseListCommand - steplistchildren for id: %s ==>%s>=="), id.ToString(), value.MakeDebugString()),
-                            LogPaneLogger::LineType::Debug);
+    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("steplistchildren for id: %s ==>%s>=="), id.ToString(), value.MakeDebugString()), LogPaneLogger::LineType::Debug);
     ListCommandParentMap::iterator it = m_parent_map.find(id);
 
     if (it == m_parent_map.end() || !it->second)
     {
-        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__,
-                                __LINE__,
-                                wxString::Format(_("GDBWatchBaseAction::ParseListCommand - no parent for id: ==>%s<=="), id.ToString()),
-                                LogPaneLogger::LineType::Debug);
+        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("no parent for id: ==>%s<=="), id.ToString()), LogPaneLogger::LineType::Error);
         return false;
-    }
-
-    struct DisplayHint
-    {
-        enum Enum { None = 0, Array, Map };
-    };
-
-    DisplayHint::Enum displayHint = DisplayHint::None;
-
-    wxString strDisplayHint;
-
-    if (Lookup(value, "displayhint", strDisplayHint))
-    {
-        if (strDisplayHint == "map")
-        {
-            displayHint = DisplayHint::Map;
-        }
-        else
-        {
-            if (strDisplayHint == "array")
-            {
-                displayHint = DisplayHint::Array;
-            }
-        }
     }
 
     ResultValue const * children = value.GetTupleValue("children");
 
     if (children)
     {
+        struct DisplayHint
+        {
+            enum Enum { None = 0, Array, Map };
+        };
+        DisplayHint::Enum displayHint = DisplayHint::None;
+        wxString strDisplayHint;
+
+        if (Lookup(value, "displayhint", strDisplayHint))
+        {
+            if (strDisplayHint == "map")
+            {
+                displayHint = DisplayHint::Map;
+            }
+            else
+            {
+                if (strDisplayHint == "array")
+                {
+                    displayHint = DisplayHint::Array;
+                }
+            }
+        }
+
         int count = children->GetTupleSize();
-        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__,
-                                __LINE__,
-                                wxString::Format(_("GDBWatchBaseAction::ParseListCommand - children %d"), count),
-                                LogPaneLogger::LineType::Debug);
+        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("children count: %d"), count), LogPaneLogger::LineType::Debug);
         cb::shared_ptr<GDBWatch> parent_watch = it->second;
         wxString strMapKey;
 
@@ -1673,11 +1665,7 @@ bool GDBWatchBaseAction::ParseListCommand(CommandID const & id, ResultValue cons
 
                                 child = AddChild(parent_watch, *child_value, (mapValue ? strMapKey : symbol), m_watches);
                                 AppendNullChild(child);
-                                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__,
-                                                        __LINE__,
-                                                        wxString::Format(_("GDBWatchBaseAction::ParseListCommand - adding child ==>%s<== to ==>%s<=="), child->GetDebugString(),  parent_watch->GetDebugString()),
-                                                        LogPaneLogger::LineType::Debug
-                                                       );
+                                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("adding child ==>%s<== to ==>%s<=="), child->GetDebugString(),  parent_watch->GetDebugString()), LogPaneLogger::LineType::Debug);
                                 child = cb::shared_ptr<GDBWatch>();
                             }
                             else
@@ -1694,14 +1682,15 @@ bool GDBWatchBaseAction::ParseListCommand(CommandID const & id, ResultValue cons
             }
             else
             {
-                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__,
-                                        __LINE__,
-                                        wxString::Format(_("GDBWatchBaseAction::ParseListCommand - can't find child in ==>%s<=="), children->GetTupleValueByIndex(ii)->MakeDebugString()),
-                                        LogPaneLogger::LineType::Debug);
+                m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("can't find child in ==>%s<=="), children->GetTupleValueByIndex(ii)->MakeDebugString()), LogPaneLogger::LineType::Error);
             }
         }
 
         parent_watch->RemoveMarkedChildren();
+    }
+    else
+    {
+        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("NO children found! id: %s ==>%s>=="), id.ToString(), value.MakeDebugString()), LogPaneLogger::LineType::Error);
     }
 
     return !error;
@@ -1792,13 +1781,34 @@ void GDBWatchCreateAction::OnCommandOutput(CommandID const & id, ResultParser co
                 {
                     if (children > 0)
                     {
-                        if (children > 1)
+                        long varAddress = -1;
+                        const ResultValue * rvVarValue = value.GetTupleValue("value");
+
+                        if (rvVarValue)
                         {
-                            m_watch->SetRangeArray(0, children);
+                            const wxString & wsVarValue = rvVarValue->GetSimpleValue();
+
+                            if (!wsVarValue.ToLong(&varAddress, 16))
+                            {
+                                varAddress = -1;
+                            }
                         }
 
-                        m_step = StepListChildren;
-                        AppendNullChild(m_watch);
+                        if (varAddress == 0)
+                        {
+                            // If there are children and then the value is an address, which if 0x00 then the pointer is NULL, so cannot show children!!!!
+                            m_watch->RemoveChildren();
+                        }
+                        else
+                        {
+                            if (children > 1)
+                            {
+                                m_watch->SetRangeArray(0, children);
+                            }
+
+                            m_step = StepListChildren;
+                            AppendNullChild(m_watch);
+                        }
                     }
                     else
                     {
@@ -2239,6 +2249,18 @@ void GDBWatchesUpdateAction::OnCommandOutput(CommandID const & id, ResultParser 
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+GDBWatchExpandedAction::GDBWatchExpandedAction(cb::shared_ptr<GDBWatch> parent_watch, cb::shared_ptr<GDBWatch> expanded_watch,
+                                               GDBWatchesContainer & watches, LogPaneLogger * logger) :
+    GDBWatchBaseAction(watches, logger),
+    m_watch(parent_watch),
+    m_expanded_watch(expanded_watch)
+{
+}
+
 void GDBWatchExpandedAction::OnStart()
 {
     m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("-var-update %s", m_watch->GetID()), LogPaneLogger::LineType::Debug);
@@ -2248,28 +2270,49 @@ void GDBWatchExpandedAction::OnStart()
 
 void GDBWatchExpandedAction::OnCommandOutput(CommandID const & id, ResultParser const & result)
 {
-    if (id == m_update_id)
+    if ((id == m_update_id) && (result.GetResultClass() != ResultParser::ClassError))
     {
         return;
     }
 
+    if (result.GetResultClass() == ResultParser::ClassError)
+    {
+#ifdef __MINGW32__
+
+        if (IsDebuggerPresent())
+        {
+            DebugBreak();
+        }
+
+#endif // __MINGW32__
+        const ResultValue & value = result.GetResultValue();
+        wxString message;
+
+        if (Lookup(value, "msg", message))
+        {
+            m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Error detected id: %s ==>%s<== "), id.ToString(), message), LogPaneLogger::LineType::Error);
+        }
+
+        m_watch->SetValue("Malformed debugger response");
+        m_expanded_watch->RemoveChildren();
+        UpdateWatchesTooltipOrAll(m_expanded_watch, m_logger);
+        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, "Calling Finished()", LogPaneLogger::LineType::Debug);
+        Finish();
+        return;
+    }
+
     --m_sub_commands_left;
-    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__,
-                            __LINE__,
-                            wxString::Format(_("GDBWatchExpandedAction::Output - ==>%s<<=="), result.GetResultValue().MakeDebugString()),
-                            LogPaneLogger::LineType::Debug);
+    m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("id: %s result: ==>%s<<=="),  id.ToString(), result.GetResultValue().MakeDebugString()), LogPaneLogger::LineType::Debug);
 
     if (!ParseListCommand(id, result.GetResultValue()))
     {
-        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__,
-                                __LINE__,
-                                wxString::Format(_("GDBWatchExpandedAction::Output - error in command ==>%s<<=="), id.ToString()),
-                                LogPaneLogger::LineType::Debug);
+        m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Parse failure in: id: %s result: ==>%s<<=="),  id.ToString(), result.GetResultValue().MakeDebugString()), LogPaneLogger::LineType::Error);
         // Update the watches even if there is an error, so some partial information can be displayed.
         UpdateWatchesTooltipOrAll(m_expanded_watch, m_logger);
         Finish();
     }
     else
+    {
         if (m_sub_commands_left == 0)
         {
             m_logger->LogGDBMsgType(__PRETTY_FUNCTION__,
@@ -2279,6 +2322,7 @@ void GDBWatchExpandedAction::OnCommandOutput(CommandID const & id, ResultParser 
             UpdateWatchesTooltipOrAll(m_expanded_watch, m_logger);
             Finish();
         }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

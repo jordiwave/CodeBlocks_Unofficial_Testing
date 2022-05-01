@@ -58,9 +58,9 @@
 			<Add directory="$(#wx.lib)/gcc_dll" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 FortranProject.zip manifest.xml resources\workspacebrowserf.xrc resources\settings.xrc resources\fortranprojecttoolbar.xrc resources\changecase.xrc resources\tab2space.xrc" />
-			<Add after="zip -r9  FortranProject.zip images" />
-			<Add after="zip -j9 FortranProject.cbplugin FortranProject.dll FortranProject.zip" />
+			<Add after="zip -jq9 FortranProject.zip manifest.xml resources\workspacebrowserf.xrc resources\settings.xrc resources\fortranprojecttoolbar.xrc resources\changecase.xrc resources\tab2space.xrc" />
+			<Add after="zip -rq9  FortranProject.zip images" />
+			<Add after="zip -jq9 FortranProject.cbplugin FortranProject.dll FortranProject.zip" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="bufferparserthread.cpp" />

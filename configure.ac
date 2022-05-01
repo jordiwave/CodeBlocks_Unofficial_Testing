@@ -491,6 +491,7 @@ AC_CONFIG_FILES([Makefile
     src/plugins/contrib/ToolsPlus/Resources/Makefile
     src/plugins/contrib/Valgrind/Makefile
     src/plugins/contrib/Valgrind/resources/Makefile
+    src/plugins/contrib/wxContribItems/Makefile
     src/plugins/contrib/wxContribItems/cb_wxchartctrl.pc
     src/plugins/contrib/wxContribItems/cb_wxcontrib.pc
     src/plugins/contrib/wxContribItems/cb_wxcustombutton.pc
@@ -500,23 +501,22 @@ AC_CONFIG_FILES([Makefile
     src/plugins/contrib/wxContribItems/cb_wxled.pc
     src/plugins/contrib/wxContribItems/cb_wxmathplot.pc
     src/plugins/contrib/wxContribItems/cb_wxspeedbutton.pc
-    src/plugins/contrib/wxContribItems/KWIC/include/wx/KWIC/Makefile
-    src/plugins/contrib/wxContribItems/KWIC/include/wx/xrc/Makefile
-    src/plugins/contrib/wxContribItems/KWIC/Makefile
-    src/plugins/contrib/wxContribItems/Makefile
+    src/plugins/contrib/wxContribItems/wxsmith-contrib.pc
     src/plugins/contrib/wxContribItems/wxchart/Makefile
     src/plugins/contrib/wxContribItems/wxFlatNotebook/Makefile
     src/plugins/contrib/wxContribItems/wxImagePanel/Makefile
+    src/plugins/contrib/wxContribItems/wxthings/Makefile
+    src/plugins/contrib/wxContribItems/wxSpeedButton/Makefile
+    src/plugins/contrib/wxContribItems/KWIC/Makefile
+    src/plugins/contrib/wxContribItems/KWIC/include/wx/KWIC/Makefile
+    src/plugins/contrib/wxContribItems/KWIC/include/wx/xrc/Makefile
+    src/plugins/contrib/wxContribItems/wxled/Makefile
     src/plugins/contrib/wxContribItems/wxled/gizmosled/include/wx/gizmos/Makefile
     src/plugins/contrib/wxContribItems/wxled/lcdWindow/include/wx/Makefile
     src/plugins/contrib/wxContribItems/wxled/led/include/wx/Makefile
     src/plugins/contrib/wxContribItems/wxled/led/include/xrc/Makefile
     src/plugins/contrib/wxContribItems/wxled/ledpanel/include/wx/Makefile
-    src/plugins/contrib/wxContribItems/wxled/Makefile
     src/plugins/contrib/wxContribItems/wxmathplot/Makefile
-    src/plugins/contrib/wxContribItems/wxsmith-contrib.pc
-    src/plugins/contrib/wxContribItems/wxSpeedButton/Makefile
-    src/plugins/contrib/wxContribItems/wxthings/Makefile
     src/plugins/contrib/wxSmith/Makefile
     src/plugins/contrib/wxSmith/plugin/Makefile
     src/plugins/contrib/wxSmith/properties/Makefile

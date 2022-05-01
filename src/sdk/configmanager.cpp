@@ -81,6 +81,10 @@ namespace
 {
 wxString DetermineExecutablePath()
 {
+#if 1
+    wxFileName f(wxStandardPaths::Get().GetExecutablePath());
+    return f.GetPath();
+#else
 #ifdef __WXMSW__
     wxChar name[MAX_PATH];
     GetModuleFileName(0L, name, MAX_PATH);
@@ -110,6 +114,7 @@ wxString DetermineExecutablePath()
     return fname.GetPath(wxPATH_GET_VOLUME);
 #else
     return _T(".");
+#endif
 #endif
 #endif
 }
@@ -579,7 +584,7 @@ wxString ConfigManager::GetProxy()
 
 wxString ConfigManager::GetFolder(SearchDirs dir)
 {
-    static bool once = 1;
+    static bool once = true;
 
     if (once)
     {
@@ -633,40 +638,29 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
 inline wxString ConfigManager::GetUserDataFolder()
 {
-    if (has_alternate_user_data_path)
+    if (ConfigManager::has_alternate_user_data_path)
     {
         return alternate_user_data_path;
     }
 
+#ifdef CB_EXPERIMENTAL_BUILD
+    wxString CB_Directory("CodeBlocks-Experimental");
+#else
+    wxString CB_Directory("CodeBlocks");
+#endif
 #ifdef __WINDOWS__
     TCHAR buffer[MAX_PATH];
 
-    if (!ConfigManager::has_alternate_user_data_path && ::GetEnvironmentVariable(_T("APPDATA"), buffer, MAX_PATH))
-#ifdef CB_EXPERIMENTAL_BUILD
-        return wxString::Format("%s\\CodeBlocks-Experimental", buffer);
-
-#else
-        return wxString::Format("%s\\CodeBlocks", buffer);
-#endif
-    else
+    if (GetEnvironmentVariable(_T("APPDATA"), buffer, MAX_PATH))
     {
-        return wxStandardPathsBase::Get().GetUserDataDir();
+        return wxString::Format("%s\\%s", buffer, CB_Directory);
     }
 
-#else
-#ifdef __linux__
-#ifdef CB_EXPERIMENTAL_BUILD
-    gchar * filename = g_build_filename(g_get_user_config_dir(), "codeblocks_experimental", nullptr);
-#else
-    gchar * filename = g_build_filename(g_get_user_config_dir(), "codeblocks", nullptr);
-#endif
-    wxString result = wxString::FromUTF8(filename);
-    g_free(filename);
-    return result;
-#else
-    return wxStandardPathsBase::Get().GetUserDataDir();
-#endif // __linux__
 #endif // __WINDOWS__
+#ifdef __linux__
+    return wxString::Format("%s/%s", g_get_user_config_dir(), CB_Directory);
+#endif // __linux__
+    return wxStandardPathsBase::Get().GetUserDataDir();
 }
 
 
@@ -1683,10 +1677,9 @@ void ConfigManager::InitPaths()
     ConfigManager::config_folder = ConfigManager::GetUserDataFolder();
     ConfigManager::home_folder = wxStandardPathsBase::Get().GetUserConfigDir();
     ConfigManager::app_path = ::DetermineExecutablePath();
-    wxString res_path = ::DetermineResourcesPath();
 
     // if non-empty, the app has overriden it (e.g. "--prefix" was passed in the command line)
-    if (data_path_global.IsEmpty())
+    if (ConfigManager::data_path_global.IsEmpty())
     {
         if (platform::windows)
         {
@@ -1695,6 +1688,7 @@ void ConfigManager::InitPaths()
         else
             if (platform::macosx)
             {
+                wxString res_path = ::DetermineResourcesPath();
                 ConfigManager::data_path_global = res_path + _T("/share/codeblocks");
             }
             else
@@ -1704,60 +1698,68 @@ void ConfigManager::InitPaths()
     }
     else
     {
-        ConfigManager::data_path_global = UnixFilename(data_path_global);
+        ConfigManager::data_path_global = UnixFilename(ConfigManager::data_path_global);
     }
 
-    if (plugin_path_global.IsEmpty())
+    if (ConfigManager::plugin_path_global.IsEmpty())
     {
-        if (platform::windows)
+        if (wxDirExists(ConfigManager::data_path_global + wxFILE_SEP_PATH + "plugins"))
         {
-            if (wxDirExists(ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("plugins")))
-            {
-                ConfigManager::plugin_path_global = ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("plugins");
-            }
-            else
-            {
-                ConfigManager::plugin_path_global = ConfigManager::data_path_global;
-            }
+            ConfigManager::plugin_path_global = ConfigManager::data_path_global + wxFILE_SEP_PATH + "plugins";
         }
         else
-            if (platform::macosx)
+        {
+            if (!platform::windows)
             {
-                ConfigManager::plugin_path_global = data_path_global + _T("/plugins");
-            }
-            else
-            {
-#ifdef __WXGTK__
-                // It seems we can not longer rely on wxStandardPathsBase::Get().GetPluginsDir(),
-                // because its behaviour has changed on some systems (at least Fedora 14 64-bit).
-                // So we create the pathname manually
-                ConfigManager::plugin_path_global = ((const wxStandardPaths &)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib/codeblocks/plugins");
+                // Check for non windows makefile build plugin directory.
+                wxString sPluginTestDir = wxString::Format("%s%c..%clib%ccodeblocks%cplugins", ConfigManager::app_path, wxFILE_SEP_PATH, wxFILE_SEP_PATH, wxFILE_SEP_PATH, wxFILE_SEP_PATH);
+                wxFileName fnPluginTestDir(sPluginTestDir);
+                fnPluginTestDir.MakeAbsolute();
 
-                // first assume, we use standard-paths
-                if (!wxDirExists(ConfigManager::plugin_path_global) && wxIsPlatform64Bit())
+                if (wxDirExists(sPluginTestDir))
                 {
-                    // if standard-path does not exist and we are on 64-bit system, use lib64 instead
-                    ConfigManager::plugin_path_global = ((const wxStandardPaths &)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib64/codeblocks/plugins");
+                    ConfigManager::plugin_path_global = fnPluginTestDir.GetFullPath();
+                }
+            }
+
+            if (ConfigManager::plugin_path_global.IsEmpty())
+            {
+                if (wxDirExists(ConfigManager::data_path_global))
+                {
+                    ConfigManager::plugin_path_global = ConfigManager::data_path_global;
                 }
 
-#else
-                ConfigManager::plugin_path_global = ConfigManager::data_path_global;
+#ifdef __WXGTK__
+                else
+                {
+                    // It seems we can not longer rely on wxStandardPathsBase::Get().GetPluginsDir(),
+                    // because its behaviour has changed on some systems (at least Fedora 14 64-bit).
+                    // So we create the pathname manually
+                    ConfigManager::plugin_path_global = ((const wxStandardPaths &)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib/codeblocks/plugins");
+
+                    // first assume, we use standard-paths
+                    if (!wxDirExists(ConfigManager::plugin_path_global) && wxIsPlatform64Bit())
+                    {
+                        // if standard-path does not exist and we are on 64-bit system, use lib64 instead
+                        ConfigManager::plugin_path_global = ((const wxStandardPaths &)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib64/codeblocks/plugins");
+                    }
+                }
+
 #endif // __WXGTK__
             }
+        }
     }
 
-    wxString dataPathUser = ConfigManager::config_folder + wxFILE_SEP_PATH + _T("share");
+    wxString dataPathUser = ConfigManager::config_folder + wxFILE_SEP_PATH + "share";
 #ifdef __linux__
 
     if (!has_alternate_user_data_path)
     {
-        gchar * filename = g_build_filename(g_get_user_data_dir(), nullptr);
-        dataPathUser = wxString::FromUTF8(filename);
-        g_free(filename);
+        dataPathUser  = wxString::Format("%s", g_get_user_data_dir());
     }
 
 #endif // __linux__
-    ConfigManager::data_path_user = dataPathUser + wxFILE_SEP_PATH + _T("codeblocks");
+    ConfigManager::data_path_user = dataPathUser + wxFILE_SEP_PATH + "CodeBlocks";
 
     // if user- and global-datapath are the same (can happen in portable mode) we run in conflicts
     // so we extend the user-datapath with the users name
@@ -1767,8 +1769,8 @@ void ConfigManager::InitPaths()
     }
 
     CreateDirRecursively(ConfigManager::config_folder);
-    CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins/"));
-    CreateDir(ConfigManager::data_path_user   + _T("/scripts/"));
+    CreateDirRecursively(ConfigManager::data_path_user + wxFILE_SEP_PATH + "plugins" + wxFILE_SEP_PATH);
+    CreateDir(ConfigManager::data_path_user  + wxFILE_SEP_PATH + "scripts" + wxFILE_SEP_PATH);
     ConfigManager::temp_folder = wxStandardPathsBase::Get().GetTempDir();
 }
 
@@ -1784,7 +1786,7 @@ void ConfigManager::MigrateFolders()
 
     // ConfigManager::config_folder might be the portable-path but we want to migrate the standard-conform folder,
     // but only if it not already exists
-    wxString newConfigFolder = wxString::FromUTF8(g_build_filename(g_get_user_config_dir(), "codeblocks", nullptr));
+    wxString newConfigFolder = wxString::Format("%s/%s", g_get_user_config_dir(), "CodeBlocks");
 
     // if the new config folder already exist, we step out immediately
     if (wxDirExists(newConfigFolder))
@@ -1794,7 +1796,7 @@ void ConfigManager::MigrateFolders()
 
     wxString oldConfigFolder = wxStandardPaths::Get().GetUserDataDir();
     wxString oldDataFolder = oldConfigFolder + wxFILE_SEP_PATH + _T("share") + wxFILE_SEP_PATH + _T("codeblocks");
-    wxString newDataFolder = wxString::FromUTF8(g_build_filename(g_get_user_data_dir(), nullptr)) + wxFILE_SEP_PATH + _T("codeblocks");
+    wxString newDataFolder = wxString::FromUTF8(g_build_filename(g_get_user_data_dir(), nullptr)) + wxFILE_SEP_PATH + _T("CodeBlocks");
     wxString msg;
     msg = F(_("The places where the configuration files and user-data files are stored\n"
               "have been changed to be more standard-conform.\n"

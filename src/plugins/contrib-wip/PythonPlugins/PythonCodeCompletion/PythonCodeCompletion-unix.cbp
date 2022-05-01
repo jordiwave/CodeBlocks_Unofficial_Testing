@@ -28,7 +28,7 @@
 					<Add directory="$(#cb)/devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 $(#cb)/devel/share/codeblocks/PythonCodeCompletion.zip manifest.xml" />
+					<Add after="zip -jq9 $(#cb)/devel/share/codeblocks/PythonCodeCompletion.zip manifest.xml" />
 					<Add after='bash -c &quot;cp --parents python/python_completion_server.py $(#cb)/devel/share/codeblocks&quot;' />
 					<Mode after="always" />
 				</ExtraCommands>
@@ -56,8 +56,8 @@
 					<Add directory="../XmlRpcEmbedder" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 PythonCodeCompletion.zip manifest.xml" />
-					<Add after="zip -r9 PythonCodeCompletion.cbplugin PythonCodeCompletion.so PythonCodeCompletion.zip python/python_completion_server.py" />
+					<Add after="zip -jq9 PythonCodeCompletion.zip manifest.xml" />
+					<Add after="zip -rq9 PythonCodeCompletion.cbplugin PythonCodeCompletion.so PythonCodeCompletion.zip python/python_completion_server.py" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

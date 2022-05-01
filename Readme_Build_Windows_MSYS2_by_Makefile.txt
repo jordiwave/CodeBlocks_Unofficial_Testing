@@ -46,7 +46,7 @@ Requirements:
                 NOTE: If you are asked to "To complete this update all MSYS2 processes including this terminal will be closed. Confirm to proceed [Y/n]"
                  then do NOT press Y or N, but close the bash window by clicking on the [X] on the top right of the window and then open the C:\mssy64\msys2.exe
                  again and run the "pacman -Syu" command again and again until no updates are available.
-    2) A local build of wxWidgets 3.1.5 for Code::Blocks. If you have not built wxWidgetas for Code::Blocks before have a look at the following
+    2) A local build of wxWidgets 3.1.5 or 3.1.6 for Code::Blocks. If you have not built wxWidgetas for Code::Blocks before have a look at the following
        files or check out the https://forums.wxwidgets.org/viewtopic.php?t=42817 thread.
             - Andrew_Build_Helper_Files\Libraries_Windows\build_WXWidget_3.1.5_win32.bat
             - Andrew_Build_Helper_Files\Libraries_Windows\build_WXWidget_3.1.5_win64.bat
@@ -64,7 +64,7 @@ To build Code::Blocks:
 
     5) Instead of performing steps 6 through 13 you can run the following script after checking the exported environment 
         variables for your setup and updating if applicable:
-        ./codeblocks_build.sh
+        ./Build_Helper_Files/codeblocks_build.sh
        
         The codeblocks_build.sh script checks for errors and if something fails please look at the script to find which
           log file to check to see what failure occured so you can fix it.
@@ -72,7 +72,7 @@ To build Code::Blocks:
 
     6) In the bash shell set the following environment variables:
             export WX_CONFIG_NAME=$PWD/wx-config-cb-win64
-            export WX_CB_BUILD_DIR="/d/Andrew_Development/Libraries/wxWidgets-3.1.5_win64"
+            export WX_CB_BUILD_DIR="/d/Andrew_Development/Libraries/wxWidgets-3.1.6_win64"
             export BOOST_ROOT=/mingw64
 
         NOTES: 

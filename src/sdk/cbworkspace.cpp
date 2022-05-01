@@ -51,7 +51,11 @@ cbWorkspace::cbWorkspace(const wxString & filename) :
         m_IsDefault = false;
     }
 
-    if (!filename.IsEmpty())
+    if (filename.IsEmpty())
+    {
+        m_IsOK = false;
+    }
+    else
     {
         Load();
     }

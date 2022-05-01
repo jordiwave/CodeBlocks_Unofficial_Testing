@@ -7,14 +7,27 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Plugin - Win32">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/codesnippets.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/codesnippets/plugin/" />
+				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\codesnippets\plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
+				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
+				<ExtraCommands>
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip manifest.xml" />
+
+					<Add after="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets" />
+					<Add after="cmd /c copy .\resources\*.png $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets\ > nul" />
+
+					<Add after="cmd /c if not exist $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets mkdir $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets" />
+					<Add after="cmd /c copy .\resources\*.png $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets\ > nul" />
+
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
@@ -39,11 +52,11 @@
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
-			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-			<Add directory="$(#CB_BUILD)/src" />
+			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
+			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
+			<Add directory="$(#CB_BUILD)\src" />
 			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 			<Add directory="Search" />
 			<Add directory="editor" />
 			<Add directory="." />
@@ -53,13 +66,9 @@
 			<Add option="-mthreads" />
 			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
+			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
 		</Linker>
-		<ExtraCommands>
-			<Add after="update$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS).bat" />
-			<Mode after="always" />
-		</ExtraCommands>
 		<Unit filename="Makefile.am" />
 		<Unit filename="codesnippets.cpp" />
 		<Unit filename="codesnippets.h" />
@@ -73,17 +82,17 @@
 		</Unit>
 		<Unit filename="manifest.xml" />
 		<Unit filename="menuidentifiers.h" />
-		<Unit filename="resources/Makefile.am" />
-		<Unit filename="resources/allsnippets.png" />
-		<Unit filename="resources/category.png" />
-		<Unit filename="resources/findf.png" />
-		<Unit filename="resources/findfdisabled.png" />
-		<Unit filename="resources/manifest.xml" />
-		<Unit filename="resources/options.png" />
-		<Unit filename="resources/optionsdisabled.png" />
-		<Unit filename="resources/snippet.png" />
-		<Unit filename="resources/stop.png" />
-		<Unit filename="resources/stopdisabled.png" />
+		<Unit filename="resources\Makefile.am" />
+		<Unit filename="resources\allsnippets.png" />
+		<Unit filename="resources\category.png" />
+		<Unit filename="resources\findf.png" />
+		<Unit filename="resources\findfdisabled.png" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\options.png" />
+		<Unit filename="resources\optionsdisabled.png" />
+		<Unit filename="resources\snippet.png" />
+		<Unit filename="resources\stop.png" />
+		<Unit filename="resources\stopdisabled.png" />
 		<Unit filename="settingsdlg.cpp" />
 		<Unit filename="settingsdlg.h" />
 		<Unit filename="settingsdlgform.cpp" />
@@ -102,8 +111,8 @@
 		</Unit>
 		<Unit filename="snippetsimages.cpp" />
 		<Unit filename="snippetsimages.h" />
-		<Unit filename="update$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-		<Unit filename="update$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS).bat" />
+		<Unit filename="update" />
+		<Unit filename="update30" />
 		<Unit filename="version.cpp" />
 		<Unit filename="version.h" />
 		<Extensions>

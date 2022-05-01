@@ -15,28 +15,28 @@
 				<Compiler>
 					<Add option="-Wshadow" />
 					<Add option="-Wall" />
-					<Add option="-std=c++11" />
-					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+					<Add option="$(#CB_BUILD.CFLAGS)" />
 					<Add option="-fPIC" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
-					<Add option="`wx-config --version=2.8 --cflags`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
-					<Add directory="$(#cb)/include" />
-					<Add directory="$(#cb)/sdk/wxscintilla/include" />
+					<Add directory="$(#CB_BUILD.INCLUDE)" />
+					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --version=2.8 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
 					<Add library="codeblocks" />
-					<Add directory="$(#cb)/devel" />
+					<Add directory="$(#CB_BUILD)/devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 FortranProject.zip manifest.xml resources/workspacebrowserf.xrc resources/settings.xrc resources/fortranprojecttoolbar.xrc resources/changecase.xrc resources/tab2space.xrc" />
-					<Add after="zip -j9  FortranProject.zip resources/project_settings_fortran.xrc" />
-					<Add after="zip -r9  FortranProject.zip images" />
-					<Add after="zip -j9 FortranProject.cbplugin FortranProject.so FortranProject.zip" />
+					<Add after="zip -jq9 FortranProject.zip manifest.xml resources/workspacebrowserf.xrc resources/settings.xrc resources/fortranprojecttoolbar.xrc resources/changecase.xrc resources/tab2space.xrc" />
+					<Add after="zip -jq9  FortranProject.zip resources/project_settings_fortran.xrc" />
+					<Add after="zip -rq9  FortranProject.zip images" />
+					<Add after="zip -jq9 FortranProject.cbplugin FortranProject.so FortranProject.zip" />
 				</ExtraCommands>
 			</Target>
 		</Build>

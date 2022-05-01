@@ -330,7 +330,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 
 %files libs
 %defattr(-,root,root)
-%{_libdir}/libcodeblocks.so.*
+%{_libdir}/libcodeblocks.so
 %doc Readme_Build_Debian_deb_packages.txt Readme_Build_Linux_by_Makefile.txt Readme_Build_Linux_by_Workspace.txt Readme_Build_Windows_by_Workspace.txt Readme_Build_Windows_MSYS2_by_Makefile.txt Readme_License_GPL3.TXT Readme_Release_Checklist.txt
 
 %files contrib
@@ -434,9 +434,11 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 
 %files contrib-libs
 %defattr(-,root,root)
-%{_libdir}/libwxsmithlib.so.*
+#%{_libdir}/libwxsmithlib.so.*
+%{_libdir}/libwxsmithlib.so
 %{pkglibdir}/wxContribItems/*.so.*
 %doc Readme_Build_Debian_deb_packages.txt Readme_Build_Linux_by_Makefile.txt Readme_Build_Linux_by_Workspace.txt Readme_Build_Windows_by_Workspace.txt Readme_Build_Windows_MSYS2_by_Makefile.txt Readme_License_GPL3.TXT Readme_Release_Checklist.txt
+
 %files devel
 %defattr(-,root,root)
 %{_libdir}/libcodeblocks.so
@@ -456,93 +458,3 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %changelog
 * Thu Feb 20 2020 Teodor Petrov <tpetrov@codeblocks.org>
 - Changes for release 20.03.
-* Tue Dec 23 2014 jens <jens@codeblocks.org>
-- do not try to build Spellchecker-plugin on CentOS/RedHat < 6, because the
-  hunspell packages are only available from a thirdparty repo (atomicorp),
-  therefore an automatic build is not possible and the users are forced to
-  enable this repo.
-- fix determining of redhat and fedora release-numbers
-* Tue Dec 24 2013 Jens Lody <jens@codeblocks.org>
-- Changes for release 13.12.
-* Sun Dec 08 2013 Jens Lody <jens@codeblocks.org>
-- Second release candidate of release 13.12.
-* Sun Nov 17 2013 Jens Lody <jens@codeblocks.org>
-- First release candidate of release 13.12.
-* Fri Jun 08 2012 jens <jens@codeblocks.org>
-- partly reverted last change, to keep the package layout more clear
-- do not try to build NassiShneiderman-plugin on CentOS/RedHat < 6, because the
-  boost packages are too old (based on changes of oBFusCATed)
-- move some build-dependencies to the contrib-plugins package, because they are
-  only needed there, thanks oBFusCATed
-* Sat May 26 2012 jens <jens@codeblocks.org>
-- split packages in binaries, arch-independent, development- and header-packages,
-  similar to the debian package-layout
-* Fri May 25 2012 jens <jens@codeblocks.org>
-- Fixed: missing build-dependencies
-- Fixed: RPM build error, because of new contrib-packages
-- Layout changes in codeblocks.spec.in, to enhance readability
-* Sat Feb 20 2010 Biplab <bkmodak@gmail.com>
-- Fixed typos: In wxSmithAui generated files.
-- Fixed: RPM build error due to inclusion of contrib plugins twice.
-- Fixed: Copystrings plugin was not included properly in rpm.
-- Fixed: Pkgconfig macros of wxsmithaui and wxsmith-contrib were not included.
-- Moved: libwxsmithlib.so to contrib package.
-- Removed: 'lynx' as a dependency.
-* Thu Feb 18 2010 Biplab <bkmodak@gmail.com>
-- Changed source tarball extension to .bz2
-- Fixed: broken rpm build due to path change from icons/gnome/* to icons/hicolor/*
-* Sun Dec 14 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- some fixes for changes in rev 5334
-* Sat Jul 26 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- moved libwxsmithlib.so and .la into devel package
-- removed selfprovide codeblocks
-- removed subversion dependency
-- changed release and version tag (version now only contains version + revision)
-- added libValgrind.* to file list
-* Thu Jan 03 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- added missing files to file list (libfinder)
-- changed dependencies for mandriva
-- some clean-ups
-* Wed Nov 14 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- added new plugin to file list
-- added make job number "detection"
-* Sun Oct 14 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- applied changes made on opensuse buildservice
-* Mon Apr 16 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- added wxsmithcontribitems files to filelist
-* Fri Jan  5 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- changed prefix on suse to default (from /opt/gnome to /usr)
-* Sat Dec  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- Added RegExTestbed plugin to filelist
-* Sun Nov  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- applied patch #1605
-- renamed _mandriva to _mandrake
-* Wed Oct 11 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- Added cb_share_config to filelist
-* Sun Aug 20 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- Added missing files to filelist
-* Sat Jul 22 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- adapted versioning to autotools
-* Fri Jul 14 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- added man pages to filelist
-* Tue Jul 11 2006 Yiannis Mandravellos <mandrav@codeblocks.org>
-- removed pluginwizard files
-- replaced libprojectwizard by libscriptedwizard (renamed)
-* Tue Jul 11 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- removed libwxscintilla from filelist
-* Mon Jul 10 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- fixed wrong path of fedora-release file
-- fixed mixed cases in one description macro call
-- removed and added finally again libwxscintilla from/to filelist
-- added versions to some buildrequires
-- added byogames plugin to filelist
-* Sun Mar  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- rewrite of release tag setting
-* Thu Jan  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- had to add Mandriva specific requires
-* Mon Jan  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- simplified the changes made before
-* Sun Jan  1 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
-- added distribution check (SuSE, Fedora, Mandriva/Mandrake)
-- added distribution specific Requires and BuildRequires
-- added run of update-mime-database if installed

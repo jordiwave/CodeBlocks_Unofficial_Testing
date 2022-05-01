@@ -71,7 +71,10 @@ CBuildTool * CToolChain::CreateBuildTool(const CBuildTool::ToolType Type)
     switch (Type)
     {
         default:
-        case CBuildTool::btCount:
+        case CBuildTool::btCount:               // fall-through
+        case CBuildTool::btNativeLinker:        // fall-through
+        case CBuildTool::btDependencyGenerator: // fall-through
+        case CBuildTool::btBuildManager:        // fall-through
         case CBuildTool::btOther:
         {
             return 0; //break;
@@ -132,8 +135,6 @@ CBuildTool * CToolChain::CreateBuildTool(const CBuildTool::ToolType Type)
             m_BuildTools.push_back(bt);
             return bt; //break;
         }
-
-            //case CBuildTool::btBuildManager,
     }
 
     return 0;
@@ -279,17 +280,17 @@ void CToolChain::Read(const TiXmlElement * ToolChainRoot)
 
         if (0 != tool_root)
         {
-            char * value = 0;
+            char * value_ex = 0;
             CString type_name, alias;
 
-            if ((value = (char *)tool_root->Attribute("type")))
+            if ((value_ex = (char *)tool_root->Attribute("type")))
             {
-                type_name = value;
+                type_name = value_ex;
             }
 
-            if ((value = (char *)tool_root->Attribute("alias")))
+            if ((value_ex = (char *)tool_root->Attribute("alias")))
             {
-                alias = value;
+                alias = value_ex;
             }
 
             Read(ToolChainRoot, "generic_switch", m_GenericSwitch);
@@ -480,8 +481,11 @@ std::vector<CBuildTool *> * CToolChain::GetTools(const CBuildTool::ToolType Type
             return (std::vector<CBuildTool *> *)&m_ResourceCompilers;
 
         //case CBuildTool::btBuildManager,
-        case CBuildTool::btOther: // fall-through
-        case CBuildTool::btCount: // fall-through
+        case CBuildTool::btNativeLinker:        // fall-through
+        case CBuildTool::btDependencyGenerator: // fall-through
+        case CBuildTool::btBuildManager:        // fall-through
+        case CBuildTool::btOther:               // fall-through
+        case CBuildTool::btCount:               // fall-through
         default:
             break;
     }

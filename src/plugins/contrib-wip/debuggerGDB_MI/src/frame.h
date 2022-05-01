@@ -43,7 +43,7 @@ class Frame
         {
             return m_function;
         }
-        unsigned long int GetAddress() const
+        unsigned long long int GetAddress() const
         {
             return m_address;
         }

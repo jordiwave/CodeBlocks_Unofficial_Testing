@@ -52,9 +52,9 @@ Update Code::Blocks Build to add DLL's etc:
       directories to copy the needed files. To do they update run the appropriate file below from the src directory
       in a command window:
         a) x86 (32 bit)
-            update31.bat
+            update.bat 31_32
         b) x64 (64 bit)
-            update31_64.bat
+            update.bat 31_64
 
 Run Code::Blocks you built:
     If everything has succeeded then you can run Code::Blocks from either the devel or output directories. 

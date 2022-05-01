@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 10927 $
- * $Id: mainframe.cpp 10927 2016-12-04 06:14:19Z mortenmacfly $
+ * $Revision: 12787 $
+ * $Id: mainframe.cpp 12787 2022-04-12 16:10:00Z mortenmacfly $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/tools/cb_share_config/mainframe.cpp $
  */
 
@@ -37,8 +37,8 @@
 //***********************************************************************
 
 //(*InternalHeaders(MainFrame)
-#include <wx/settings.h>
 #include <wx/intl.h>
+#include <wx/settings.h>
 #include <wx/string.h>
 //*)
 
@@ -72,12 +72,12 @@ MainFrame::MainFrame(wxWindow * parent, wxWindowID id) :
     mFileDst(wxT("")), mCfgDst(0), mCfgDstValid(false), mNodesDst()
 {
     //(*Initialize(MainFrame)
-    wxButton * btnSave;
     wxButton * btnClose;
     wxButton * btnExport;
     wxButton * btnExportAll;
-    wxButton * btnUncheck;
+    wxButton * btnSave;
     wxButton * btnTransfer;
+    wxButton * btnUncheck;
     Create(parent, id, _("Welcome to Code::Blocks Share Config"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxDEFAULT_DIALOG_STYLE | wxSYSTEM_MENU | wxRESIZE_BORDER | wxCLOSE_BOX | wxMINIMIZE_BOX, _T("id"));
     SetMinSize(wxSize(640, 480));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
@@ -134,14 +134,13 @@ MainFrame::MainFrame(wxWindow * parent, wxWindowID id) :
     btnSave->SetToolTip(_("Save the selection on the right into the C::B destination config file."));
     grsAction->Add(btnSave, 0, wxLEFT | wxALIGN_LEFT | wxALIGN_TOP, 5);
     grsAction->Add(-1, -1, 1, wxEXPAND, 0);
-    grsAction->Add(0, 0, 0, wxEXPAND, 0);
+    grsAction->Add(-1, -1, 0, wxEXPAND, 0);
     btnClose = new wxButton(this, ID_BTN_CLOSE, _("Close"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_CLOSE"));
     btnClose->SetToolTip(_("Close the application."));
     grsAction->Add(btnClose, 0, wxALIGN_RIGHT | wxALIGN_TOP, 0);
     bszMain->Add(grsAction, 0, wxLEFT | wxRIGHT | wxEXPAND, 5);
     SetSizer(bszMain);
-    bszMain->Fit(this);
-    bszMain->SetSizeHints(this);
+    Fit();
     Center();
     Connect(ID_BTN_FILE_SRC, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnBtnFileSrcClick));
     Connect(ID_BTN_FILE_DST, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnBtnFileDstClick));
@@ -298,76 +297,26 @@ void MainFrame::OnBtnExportAllClick(wxCommandEvent & /*event*/)
                      "The backup files only contain some nodes for transferring them using cb_share_config.\n"
                      "WARNING: Existing files in the target directory will be OVERWRITTEN."),
                  wxT("Information"), wxICON_INFORMATION);
-    wxDirDialog dlg(this, wxT("Choose target directory"), wxEmptyString,
-                    wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-    if (wxID_OK != dlg.ShowModal())
-    {
-        return;    // Cancel
-    }
-
-    wxString dirname = dlg.GetPath();
-    size_t   errors  = 0;
+    bool items_selected = false;
 
     for (unsigned int i = 0; i < clbCfgSrc->GetCount(); ++i)
     {
-        TiXmlDocument * doc = new TiXmlDocument();
-
-        if (!doc)
+        if (clbCfgSrc->IsChecked(i))
         {
-            wxMessageBox(wxT("Cannot create empty XML document...?!"),
-                         wxT("Error"), wxICON_EXCLAMATION | wxOK);
-            return;
+            items_selected = true;
+            break;
         }
-
-        TiXmlDeclaration * decl = new TiXmlDeclaration("1.0", "UTF-8", "yes");
-        TiXmlElement   *  root = new TiXmlElement("CodeBlocksConfig");
-        // NOTE (Morten#1#): This has to be in sync with C::B SDK (configmanager)!
-        root->SetAttribute("version", 1);
-        doc->LinkEndChild(decl);
-        doc->LinkEndChild(root);
-
-        if (mNodesSrc.size() <= i)
-        {
-            continue;
-        }
-
-        AttachNode(i, root);
-        wxString      path     = clbCfgSrc->GetString(i);
-        wxArrayString path_arr = PathToArray(path);
-        wxString filename = dirname
-                            + wxFileName::GetPathSeparator()
-                            + path_arr.Item(0);
-
-        for (size_t p = 1; p < path_arr.GetCount(); p++)
-        {
-            filename += wxT("_") + path_arr.Item(p);
-        }
-
-        filename += wxT(".conf");
-
-        if (filename.IsEmpty())
-        {
-            continue;
-        }
-
-        if (!TiXmlSaveDocument(filename, doc))
-        {
-            errors++;
-        }
-
-        delete doc;
     }// for
 
-    if (errors)
+    if (items_selected)
     {
-        wxMessageBox(wxT("Could not save all backup configuration files."),
-                     wxT("Warning"), wxICON_EXCLAMATION | wxOK);
+        bool selected_only = (wxYES == wxMessageBox(wxT("DO you want to export only the selected nodes?"),
+                                                    wxT("Question"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT));
+        DoExport(selected_only);
     }
     else
     {
-        wxMessageBox(wxT("Backup configuration files have been saved."),
-                     wxT("Information"), wxICON_INFORMATION | wxOK);
+        DoExport(false);
     }
 }// OnBtnExportAllClick
 
@@ -987,6 +936,88 @@ void MainFrame::AttachNode(size_t idx, TiXmlElement * root)
     TiXmlNode * parent_node = element->Parent();
     parent_node->ReplaceChild(element, *node);
 }// AttachNode
+
+//***********************************************************************
+
+void MainFrame::DoExport(bool selected_only)
+{
+    wxDirDialog dlg(this, wxT("Choose target directory"), wxEmptyString,
+                    wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+    if (wxID_OK != dlg.ShowModal())
+    {
+        return;    // Cancel
+    }
+
+    wxString dirname = dlg.GetPath();
+    size_t   errors  = 0;
+
+    for (unsigned int i = 0; i < clbCfgSrc->GetCount(); ++i)
+    {
+        if (selected_only && !clbCfgSrc->IsChecked(i))
+        {
+            continue;
+        }
+
+        TiXmlDocument * doc = new TiXmlDocument();
+
+        if (!doc)
+        {
+            wxMessageBox(wxT("Cannot create empty XML document...?!"),
+                         wxT("Error"), wxICON_EXCLAMATION | wxOK);
+            return;
+        }
+
+        TiXmlDeclaration * decl = new TiXmlDeclaration("1.0", "UTF-8", "yes");
+        TiXmlElement   *  root = new TiXmlElement("CodeBlocksConfig");
+        // NOTE (Morten#1#): This has to be in sync with C::B SDK (configmanager)!
+        root->SetAttribute("version", 1);
+        doc->LinkEndChild(decl);
+        doc->LinkEndChild(root);
+
+        if (mNodesSrc.size() <= i)
+        {
+            continue;
+        }
+
+        AttachNode(i, root);
+        wxString      path     = clbCfgSrc->GetString(i);
+        wxArrayString path_arr = PathToArray(path);
+        wxString filename = dirname
+                            + wxFileName::GetPathSeparator()
+                            + path_arr.Item(0);
+
+        for (size_t p = 1; p < path_arr.GetCount(); p++)
+        {
+            filename += wxT("_") + path_arr.Item(p);
+        }
+
+        filename += wxT(".conf");
+
+        if (filename.IsEmpty())
+        {
+            continue;
+        }
+
+        if (!TiXmlSaveDocument(filename, doc))
+        {
+            errors++;
+        }
+
+        delete doc;
+    }// for
+
+    if (errors)
+    {
+        wxMessageBox(wxT("Could not save all backup configuration files."),
+                     wxT("Warning"), wxICON_EXCLAMATION | wxOK);
+    }
+    else
+    {
+        wxMessageBox(wxT("Backup configuration files have been saved."),
+                     wxT("Information"), wxICON_INFORMATION | wxOK);
+    }
+}// DoExport
 
 //***********************************************************************
 

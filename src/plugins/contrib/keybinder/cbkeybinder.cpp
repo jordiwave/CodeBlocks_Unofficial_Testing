@@ -1,11 +1,11 @@
 /***************************************************************
- * Name:      cbkeybinder.cpp
+ * Name:      cbKeybinder.cpp
  * Purpose:   Code::Blocks plugin
  * Author:    Pecan
  * Copyright: (c) Pecan Heber etal.
  * License:   GPL
  **************************************************************/
-// RCS-ID:      $Id: cbkeybinder.cpp 12250 2020-12-22 14:39:11Z fuscated $
+// RCS-ID:      $Id: cbKeybinder.cpp 12250 2020-12-22 14:39:11Z fuscated $
 
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
@@ -43,7 +43,7 @@
     #include "debugging.h"
 #endif
 #include "menuutils.h"
-#include "cbkeybinder.h"
+#include "cbKeybinder.h"
 #include "clKeyboardManager.h"
 #include "cbKeyConfigPanel.h"
 

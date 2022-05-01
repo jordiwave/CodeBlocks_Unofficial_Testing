@@ -15,6 +15,24 @@
 				<Compiler>
 					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 				</Compiler>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+				</ExtraCommands>
+			</Target>
+			<Target title="tinyXML2">
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tinyxml2" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml2" />
+				</Compiler>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+				</ExtraCommands>
 			</Target>
 			<Target title="AutoRevision">
 				<Option output="$(TARGET_OBJECT_DIR)/autorevision" prefix_auto="1" extension_auto="1" />
@@ -27,9 +45,12 @@
 					<Add directory="$(#CB_BUILD.INCLUDE)" />
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--no-undefined" />
 					<Add library="txml" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+				</ExtraCommands>
 			</Target>
 			<Target title="ConsoleRunner">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cb_console_runner" prefix_auto="1" extension_auto="1" />
@@ -41,9 +62,10 @@
 				<Compiler>
 					<Add option="-Os" />
 				</Compiler>
-				<Linker>
-					<Add option="-Wl,--no-undefined" />
-				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Squirrel">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/squirrel" prefix_auto="1" extension_auto="1" />
@@ -54,6 +76,10 @@
 				<Compiler>
 					<Add directory="$(#CB_BUILD.INCLUDE)/scripting/include" />
 				</Compiler>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+				</ExtraCommands>
 			</Target>
 			<Target title="scintilla">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
@@ -75,12 +101,16 @@
 				<ResourceCompiler>
 					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 				</ResourceCompiler>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+				</ExtraCommands>
 			</Target>
 			<Target title="sdk">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxscintilla_cb.a;" />
+				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxscintilla_cb.a" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -108,7 +138,18 @@
 					<Add library="squirrel" />
 				</Linker>
 				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ; fi" />
+
 					<Add before="$(TARGET_OBJECT_DIR)/autorevision +wx +int +t .. include/autorevision.h" />
+
+					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/manager_resources.zip sdk/resources/*.xrc" />
+					<Add after="cd sdk/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/manager_resources.zip images" />
+
+					<!-- lexers -->
+					<Add after="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers; fi" />
+					<Add after="cp -f sdk/resources/lexers/lexer_* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers/" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -118,20 +159,34 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug --prefix=/mnt/d/Andrew_Development/Work_Installers/CodeBLocks_Private_Experimental/src/devel31_64/" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-DENABLE_BINRELOC" />
-					<Add option="-DUSE_GTK_NOTEBOOK" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />
 					<Add directory="$(#CB_BUILD.INCLUDE)/scripting/include" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip src/resources/*.xrc" />
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/start_here.zip src/resources/start_here/*.html src/resources/start_here/*.png" />
+					<Add after="cd src/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip images" />
+
+					<!-- images -->
+					<Add after="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+					<Add after="cp -f src/resources/images/*.png devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/" />
+					<Add after="cp -f src/resources/images/settings/*.png devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings" />
+
+					<Add after="cp /f $(#CB_BUILD)/tips.txt devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Abbreviations">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -146,12 +201,18 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="AStyle">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/Astyle" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/Astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -166,12 +227,18 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/astyle.zip plugins/astyle/resources/manifest.xml plugins/astyle/resources/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Autosave">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -185,9 +252,15 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/autosave.zip plugins/autosave/manifest.xml plugins/autosave/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Compiler depslib">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/depslib" prefix_auto="1" extension_auto="1" />
@@ -199,12 +272,16 @@
 					<Add option="-fno-strict-aliasing" />
 					<Add option="-DDEPSLIB_UNIX" />
 				</Compiler>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Compiler">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libdepslib.a;" />
+				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libdepslib.a" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -218,13 +295,23 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,propgrid`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add library="depslib" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/compiler.zip plugins/compilergcc/resources/manifest.xml plugins/compilergcc/resources/*.xrc" />
+					<Add after="cd plugins/compilergcc/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/compiler.zip images" />
+
+					<Add after="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/compilers ] ; then mkdir $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/compilers ; fi" />
+					<Add after="cp -f plugins/compilergcc/resources/compilers/* $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/compilers/" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Debugger">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -238,12 +325,19 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/debugger.zip plugins/debuggergdb/resources/manifest.xml plugins/debuggergdb/resources/*.xrc" />
+					<Add after="if [ ! -d plugins/debuggergdb/gdb_pretty_printers ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/gdb_pretty_printers &amp;&amp; cp -fR plugins/debuggergdb/gdb_pretty_printers/*.* $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/gdb_pretty_printers/ ; fi" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Code-completion">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -257,12 +351,20 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,aui`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/codecompletion.zip plugins/codecompletion/resources/manifest.xml plugins/codecompletion/resources/*.xrc" />
+					<Add after="cd plugins/codecompletion/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/codecompletion.zip ./images" />
+		
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Clangd_Client">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -272,6 +374,9 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
+					<Add option="-DCC_NO_COLLAPSE_ITEM" />
+					<Add option="-DLOGGING" />
+					<Add option="-DDONT_SHOW_SERVER_CONSOLE" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />
 					<Add directory="$(#CB_BUILD)/plugins/clangd_client/src" />
 					<Add directory="$(#CB_BUILD)/plugins/clangd_client/src/LSPclient" />
@@ -280,24 +385,23 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,aui,propgrid`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
-					
+
 					<!-- Create the clangd_client.zip file -->
 					<Add after="if [ -e %PROJECTDIR%plugins/clangd_client/clangd_client.zip ] ; then  rm %PROJECTDIR%plugins/clangd_client/clangd_client.zip; fi;" />
 					<Add after="zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/manifest.xml" />
 					<Add after="zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/*.xrc" />
 					<Add after="cd %PROJECTDIR%plugins/clangd_client/src/resources &amp;&amp; zip -rq9 ../../clangd_client.zip images;" />
-					<Add after="cp %PROJECTDIR%plugins/clangd_client/clangd_client.zip devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks" />
+					<Add after="cp %PROJECTDIR%plugins/clangd_client/clangd_client.zip devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Class wizard">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -311,12 +415,18 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/classwizard.zip plugins/classwizard/resources/manifest.xml plugins/classwizard/resources/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Default MIME handler">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -330,12 +440,18 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/defaultmimehandler.zip plugins/defaultmimehandler/resources/manifest.xml plugins/defaultmimehandler/resources/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Occurrences Highlighting">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -350,12 +466,18 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/OccurrencesHighlighting.zip plugins/occurrenceshighlighting/resources/manifest.xml plugins/occurrenceshighlighting/resources/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Open files list">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -369,12 +491,18 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/openfileslist.zip plugins/openfileslist/manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Projects-workspaces importer">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -388,12 +516,18 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/projectsimporter.zip plugins/projectsimporter/resources/manifest.xml plugins/projectsimporter/resources/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Scripted wizard">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -408,12 +542,21 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml" />
+
+					<Add before="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates/wizard ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates/wizard ; fi" />
+					<Add after="cd plugins/scriptedwizard/resources &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates/wizard " />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="To-do">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/todo" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/todo" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option type="3" />
@@ -427,15 +570,21 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
-					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/todo.zip plugins/todo/resources/manifest.xml plugins/todo/resources/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="XP look &amp; feel">
 				<Option platforms="Windows;" />
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/xpmanifest" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -451,6 +600,13 @@
 					<Add library="codeblocks" />
 					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+
+					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/xpmanifest.zip plugins/xpmanifest/manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
@@ -471,15 +627,27 @@
 			<Add option="`pkg-config --cflags $(#CB_BUILD.PKG_CONFIG_GTKPLUS)`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
+			<Add option="-DUSE_GTK_NOTEBOOK" />
+			<Add option="-DENABLE_BINRELOC" />
 			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,aui,propgrid`" />
 			<Add option="`pkg-config --libs $(#CB_BUILD.PKG_CONFIG_GTKPLUS)`" />
-			<Add option="-Wl,--no-undefined" />
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
+		<ExtraCommands>
+			<!-- Templates -->
+			<Add after="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates ; fi" />
+			<Add after="cd templates/common &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates " />
+			<Add after="cd templates/win32  &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates " />
+
+			<!-- scripts -->
+			<Add after="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scripts/tests ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scripts/tests ; fi" />
+			<Add after="cd scripts &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scripts " />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />
 		</Unit>
@@ -807,7 +975,7 @@
 		<Unit filename="include/sdk.h">
 			<Option compile="1" />
 			<Option weight="1" />
-			<Option target="sdk" />
+			<Option target="src" />
 		</Unit>
 		<Unit filename="include/sdk_common.h">
 			<Option target="sdk" />
@@ -840,6 +1008,9 @@
 		</Unit>
 		<Unit filename="include/tinyxml/tinyxml.h">
 			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="include/tinyxml2/tinyxml.h">
+			<Option target="tinyXML2" />
 		</Unit>
 		<Unit filename="include/toolsmanager.h">
 			<Option target="sdk" />
@@ -3223,6 +3394,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_progress.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/scripting/bindings/sc_tinyxml.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_util_dialogs.cpp">
