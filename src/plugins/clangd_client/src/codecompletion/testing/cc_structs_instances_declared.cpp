@@ -1,7 +1,6 @@
 // Code::Blocks / Tickets / #762 Code completion fails on struct instances declared on same statement
 // — https://sourceforge.net/p/codeblocks/tickets/762/
-struct Point
-{
+struct Point {
     int x;
     int y;
 };

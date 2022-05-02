@@ -7,38 +7,38 @@
 
 class NativeParserTest : public NativeParserBase
 {
-    public:
-        NativeParserTest();
-        ~NativeParserTest();
+public:
+    NativeParserTest();
+    ~NativeParserTest();
 
-        bool TestExpression(wxString     &     expression,
-                            const TokenIdxSet & searchScope,
-                            TokenIdxSet    &   result);
+    bool TestExpression(wxString&          expression,
+                        const TokenIdxSet& searchScope,
+                        TokenIdxSet&       result);
 
-        bool Parse(wxString & file, bool isLocalFile);
+    bool Parse(wxString& file, bool isLocalFile);
 
-        void PrintList();
+    void PrintList();
 
-        wxString SerializeTree();
+    wxString SerializeTree();
 
-        void PrintTokenTree(Token * token);
+    void PrintTokenTree(Token* token);
 
-        void PrintTree();
+    void PrintTree();
 
-        /** clear the token tree */
-        void Clear();
+    /** clear the token tree */
+    void Clear();
 
-        /** set the include search paths and the macro replacement rules of the parser */
-        void Init();
+    /** set the include search paths and the macro replacement rules of the parser */
+    void Init();
 
-        /** parse and run test on the file
-         * @param file this can be either a file name, which is a file name in hard disk or a file
-         * contents.
-         * @param isLocalFile true if is is a file name otherwise it is a file contents (buffer).
-         */
-        bool ParseAndCodeCompletion(wxString file, bool isLocalFile = true);
+    /** parse and run test on the file
+     * @param file this can be either a file name, which is a file name in hard disk or a file
+     * contents.
+     * @param isLocalFile true if is is a file name otherwise it is a file contents (buffer).
+     */
+    bool ParseAndCodeCompletion(wxString file, bool isLocalFile = true);
 
-        ParserBase m_Parser;
+    ParserBase m_Parser;
 };
 
 #endif //NATIVEPARSERTEST_H

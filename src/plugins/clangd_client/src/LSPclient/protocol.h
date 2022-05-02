@@ -21,14 +21,13 @@
 #define FROM_KEY(KEY) if (j.contains(#KEY)) j.at(#KEY).get_to(value.KEY);
 #define JSON_SERIALIZE(Type, TO, FROM) \
     namespace nlohmann { \
-    template <> struct adl_serializer<Type> { \
-        static void to_json(json& j, const Type& value) TO \
-        static void from_json(const json& j, Type& value) FROM \
-    }; \
+        template <> struct adl_serializer<Type> { \
+            static void to_json(json& j, const Type& value) TO \
+            static void from_json(const json& j, Type& value) FROM \
+        }; \
     }
 using TextType = string_ref;
-enum class ErrorCode
-{
+enum class ErrorCode {
     // Defined by JSON RPC.
     ParseError = -32700,
     InvalidRequest = -32600,
@@ -40,113 +39,92 @@ enum class ErrorCode
     // Defined by the protocol.
     RequestCancelled = -32800,
 };
-class LSPError
-{
-    public:
-        std::string Message;
-        ErrorCode Code;
-        static char ID;
-        LSPError(std::string Message, ErrorCode Code)
+class LSPError {
+public:
+    std::string Message;
+    ErrorCode Code;
+    static char ID;
+    LSPError(std::string Message, ErrorCode Code)
             : Message(std::move(Message)), Code(Code) {}
 };
 JSON_SERIALIZE(URIForFile, {j = value.file;}, {value.file = j.get<std::string>();});
-struct TextDocumentIdentifier
-{
+struct TextDocumentIdentifier {
     /// The text document's URI.
     DocumentUri uri;
 };
 JSON_SERIALIZE(TextDocumentIdentifier, MAP_JSON(MAP_KEY(uri)), {});
 
-struct VersionedTextDocumentIdentifier : public TextDocumentIdentifier
-{
+struct VersionedTextDocumentIdentifier : public TextDocumentIdentifier {
     int version = 0;
 };
 JSON_SERIALIZE(VersionedTextDocumentIdentifier, MAP_JSON(MAP_KEY(uri), MAP_KEY(version)), {});
 
-struct Position
-{
+struct Position {
     /// Line position in a document (zero-based).
     int line = 0;
     /// Character offset on a line in a document (zero-based).
     /// WARNING: this is in UTF-16 codepoints, not bytes or characters!
     /// Use the functions in SourceCode.h to construct/interpret Positions.
     int character = 0;
-    friend bool operator==(const Position & LHS, const Position & RHS)
-    {
+    friend bool operator==(const Position &LHS, const Position &RHS) {
         return std::tie(LHS.line, LHS.character) ==
                std::tie(RHS.line, RHS.character);
     }
-    friend bool operator!=(const Position & LHS, const Position & RHS)
-    {
+    friend bool operator!=(const Position &LHS, const Position &RHS) {
         return !(LHS == RHS);
     }
-    friend bool operator<(const Position & LHS, const Position & RHS)
-    {
+    friend bool operator<(const Position &LHS, const Position &RHS) {
         return std::tie(LHS.line, LHS.character) <
                std::tie(RHS.line, RHS.character);
     }
-    friend bool operator<=(const Position & LHS, const Position & RHS)
-    {
+    friend bool operator<=(const Position &LHS, const Position &RHS) {
         return std::tie(LHS.line, LHS.character) <=
                std::tie(RHS.line, RHS.character);
     }
 };
-JSON_SERIALIZE(Position, MAP_JSON(MAP_KEY(line), MAP_KEY(character)), {FROM_KEY(line); FROM_KEY(character)});
+JSON_SERIALIZE(Position, MAP_JSON(MAP_KEY(line), MAP_KEY(character)), {FROM_KEY(line);FROM_KEY(character)});
 
-struct Range
-{
+struct Range {
     /// The range's start position.
     Position start;
 
     /// The range's end position.
     Position end;
 
-    friend bool operator==(const Range & LHS, const Range & RHS)
-    {
+    friend bool operator==(const Range &LHS, const Range &RHS) {
         return std::tie(LHS.start, LHS.end) == std::tie(RHS.start, RHS.end);
     }
-    friend bool operator!=(const Range & LHS, const Range & RHS)
-    {
+    friend bool operator!=(const Range &LHS, const Range &RHS) {
         return !(LHS == RHS);
     }
-    friend bool operator<(const Range & LHS, const Range & RHS)
-    {
+    friend bool operator<(const Range &LHS, const Range &RHS) {
         return std::tie(LHS.start, LHS.end) < std::tie(RHS.start, RHS.end);
     }
-    bool contains(Position Pos) const
-    {
-        return start <= Pos && Pos < end;
-    }
-    bool contains(Range Rng) const
-    {
+    bool contains(Position Pos) const { return start <= Pos && Pos < end; }
+    bool contains(Range Rng) const {
         return start <= Rng.start && Rng.end <= end;
     }
 };
-JSON_SERIALIZE(Range, MAP_JSON(MAP_KEY(start), MAP_KEY(end)), {FROM_KEY(start); FROM_KEY(end)});
+JSON_SERIALIZE(Range, MAP_JSON(MAP_KEY(start), MAP_KEY(end)), {FROM_KEY(start);FROM_KEY(end)});
 
-struct Location
-{
+struct Location {
     /// The text document's URI.
     std::string uri;
     Range range;
 
-    friend bool operator==(const Location & LHS, const Location & RHS)
-    {
+    friend bool operator==(const Location &LHS, const Location &RHS) {
         return LHS.uri == RHS.uri && LHS.range == RHS.range;
     }
-    friend bool operator!=(const Location & LHS, const Location & RHS)
-    {
+    friend bool operator!=(const Location &LHS, const Location &RHS) {
         return !(LHS == RHS);
     }
-    friend bool operator<(const Location & LHS, const Location & RHS)
-    {
+    friend bool operator<(const Location &LHS, const Location &RHS) {
         return std::tie(LHS.uri, LHS.range) < std::tie(RHS.uri, RHS.range);
     }
 };
-JSON_SERIALIZE(Location, MAP_JSON(MAP_KEY(uri), MAP_KEY(range)), {FROM_KEY(uri); FROM_KEY(range)});
+JSON_SERIALIZE(Location, MAP_JSON(MAP_KEY(uri), MAP_KEY(range)), {FROM_KEY(uri);FROM_KEY(range)});
 
-struct TextEdit
-{
+struct TextEdit {
     /// The range of the text document to be manipulated. To insert
     /// text into a document create a range where start === end.
     Range range;
@@ -155,10 +133,9 @@ struct TextEdit
     /// empty string.
     std::string newText;
 };
-JSON_SERIALIZE(TextEdit, MAP_JSON(MAP_KEY(range), MAP_KEY(newText)), {FROM_KEY(range); FROM_KEY(newText);});
+JSON_SERIALIZE(TextEdit, MAP_JSON(MAP_KEY(range), MAP_KEY(newText)), {FROM_KEY(range);FROM_KEY(newText);});
 
-struct TextDocumentItem
-{
+struct TextDocumentItem {
     /// The text document's URI.
     DocumentUri uri;
 
@@ -172,16 +149,14 @@ struct TextDocumentItem
     string_ref text;
 };
 JSON_SERIALIZE(TextDocumentItem, MAP_JSON(
-                   MAP_KEY(uri), MAP_KEY(languageId), MAP_KEY(version), MAP_KEY(text)), {});
+                MAP_KEY(uri), MAP_KEY(languageId), MAP_KEY(version), MAP_KEY(text)), {});
 
-enum class TraceLevel
-{
+enum class TraceLevel {
     Off = 0,
     Messages = 1,
     Verbose = 2,
 };
-enum class TextDocumentSyncKind
-{
+enum class TextDocumentSyncKind {
     /// Documents should not be synced at all.
     None = 0,
     /// Documents are synced by always sending the full content of the document.
@@ -190,8 +165,7 @@ enum class TextDocumentSyncKind
     /// only incremental updates to the document are send.
     Incremental = 2,
 };
-enum class CompletionItemKind
-{
+enum class CompletionItemKind {
     Missing = 0,
     Text = 1,
     Method = 2,
@@ -219,8 +193,7 @@ enum class CompletionItemKind
     Operator = 24,
     TypeParameter = 25,
 };
-enum class SymbolKind
-{
+enum class SymbolKind {
     File = 1,
     Module = 2,
     Namespace = 3,
@@ -248,8 +221,7 @@ enum class SymbolKind
     Operator = 25,
     TypeParameter = 26
 };
-enum class OffsetEncoding
-{
+enum class OffsetEncoding {
     // Any string is legal on the wire. Unrecognized encodings parse as this.
     UnsupportedEncoding,
     // Length counts code units of UTF-16 encoded text. (Standard LSP behavior).
@@ -259,52 +231,44 @@ enum class OffsetEncoding
     // Length counts codepoints in unicode text. (Clangd extension).
     UTF32,
 };
-enum class MarkupKind
-{
+enum class MarkupKind {
     PlainText,
     Markdown,
 };
-enum class ResourceOperationKind
-{
+enum class ResourceOperationKind {
     Create,
     Rename,
     Delete
 };
-enum class FailureHandlingKind
-{
+enum class FailureHandlingKind {
     Abort,
     Transactional,
     Undo,
     TextOnlyTransactional
 };
-NLOHMANN_JSON_SERIALIZE_ENUM(OffsetEncoding,
-{
+NLOHMANN_JSON_SERIALIZE_ENUM(OffsetEncoding, {
     {OffsetEncoding::UnsupportedEncoding, "unspported"},
     {OffsetEncoding::UTF8, "utf-8"},
     {OffsetEncoding::UTF16, "utf-16"},
     {OffsetEncoding::UTF32, "utf-32"},
 })
-NLOHMANN_JSON_SERIALIZE_ENUM(MarkupKind,
-{
+NLOHMANN_JSON_SERIALIZE_ENUM(MarkupKind, {
     {MarkupKind::PlainText, "plaintext"},
     {MarkupKind::Markdown, "markdown"},
 })
-NLOHMANN_JSON_SERIALIZE_ENUM(ResourceOperationKind,
-{
+NLOHMANN_JSON_SERIALIZE_ENUM(ResourceOperationKind, {
     {ResourceOperationKind::Create, "create"},
     {ResourceOperationKind::Rename, "rename"},
     {ResourceOperationKind::Delete, "dename"}
 })
-NLOHMANN_JSON_SERIALIZE_ENUM(FailureHandlingKind,
-{
+NLOHMANN_JSON_SERIALIZE_ENUM(FailureHandlingKind, {
     {FailureHandlingKind::Abort, "abort"},
     {FailureHandlingKind::Transactional, "transactional"},
     {FailureHandlingKind::Undo, "undo"},
     {FailureHandlingKind::TextOnlyTransactional, "textOnlyTransactional"}
 })
 
-struct ClientCapabilities
-{
+struct ClientCapabilities {
     /// The supported set of SymbolKinds for workspace/symbol.
     /// workspace.symbol.symbolKind.valueSet
     std::vector<SymbolKind> WorkspaceSymbolKinds;
@@ -355,51 +319,46 @@ struct ClientCapabilities
 
     bool ApplyEdit = false;
     bool DocumentChanges = false;
-    ClientCapabilities()
-    {
-        for (int i = 1; i <= 26; ++i)
-        {
+    ClientCapabilities() {
+        for (int i = 1; i <= 26; ++i) {
             WorkspaceSymbolKinds.push_back((SymbolKind) i);
         }
-
-        for (int i = 0; i <= 25; ++i)
-        {
+        for (int i = 0; i <= 25; ++i) {
             CompletionItemKinds.push_back((CompletionItemKind) i);
         }
     }
 };
-JSON_SERIALIZE(ClientCapabilities, MAP_JSON(
-                   MAP_KV("textDocument",
-                          MAP_KV("publishDiagnostics", // PublishDiagnosticsClientCapabilities
-                                 MAP_TO("categorySupport", DiagnosticCategory),
-                                 MAP_TO("codeActionsInline", DiagnosticFixes),
-                                 MAP_TO("relatedInformation", DiagnosticRelatedInformation),
-                                ),
-                          MAP_KV("completion", // CompletionClientCapabilities
-                                 MAP_KV("completionItem",
-                                        MAP_TO("snippetSupport", CompletionSnippets),
-                                        MAP_TO("deprecatedSupport", CompletionDeprecated)),
-                                 MAP_KV("completionItemKind", MAP_TO("valueSet", CompletionItemKinds)),
-                                 MAP_TO("editsNearCursor", CompletionFixes)
-                                ),
-                          MAP_KV("codeAction", MAP_TO("codeActionLiteralSupport", CodeActionStructure)),
-                          MAP_KV("documentSymbol", MAP_TO("hierarchicalDocumentSymbolSupport", HierarchicalDocumentSymbol)),
-                          MAP_KV("semanticTokens", MAP_TO("dynamicRegistration", SemanticTokensSupport)),       //(ph 2021/03/16)
+JSON_SERIALIZE(ClientCapabilities,MAP_JSON(
+            MAP_KV("textDocument",
+                MAP_KV("publishDiagnostics", // PublishDiagnosticsClientCapabilities
+                        MAP_TO("categorySupport", DiagnosticCategory),
+                        MAP_TO("codeActionsInline", DiagnosticFixes),
+                        MAP_TO("relatedInformation", DiagnosticRelatedInformation),
+                ),
+                MAP_KV("completion", // CompletionClientCapabilities
+                        MAP_KV("completionItem",
+                                MAP_TO("snippetSupport", CompletionSnippets),
+                                MAP_TO("deprecatedSupport", CompletionDeprecated)),
+                        MAP_KV("completionItemKind", MAP_TO("valueSet", CompletionItemKinds)),
+                        MAP_TO("editsNearCursor", CompletionFixes)
+                ),
+                MAP_KV("codeAction", MAP_TO("codeActionLiteralSupport", CodeActionStructure)),
+                MAP_KV("documentSymbol", MAP_TO("hierarchicalDocumentSymbolSupport", HierarchicalDocumentSymbol)),
+                MAP_KV("semanticTokens", MAP_TO("dynamicRegistration",SemanticTokensSupport)),        //(ph 2021/03/16)
 
-                          MAP_KV("hover",  //HoverClientCapabilities
-                                 MAP_TO("contentFormat", HoverContentFormat)),
-                          MAP_KV("signatureHelp", MAP_KV("signatureInformation", MAP_KV("parameterInformation", MAP_TO("labelOffsetSupport", OffsetsInSignatureHelp))))),
-                   MAP_KV("workspace", // WorkspaceEditClientCapabilities
-                          MAP_KV("symbol", // WorkspaceSymbolClientCapabilities
-                                 MAP_KV("symbolKind",
-                                        MAP_TO("valueSet", WorkspaceSymbolKinds))),
-                          MAP_TO("applyEdit", ApplyEdit),
-                          MAP_KV("workspaceEdit", // WorkspaceEditClientCapabilities
-                                 MAP_TO("documentChanges", DocumentChanges))),
-                   MAP_TO("offsetEncoding", offsetEncoding)), {});
+                MAP_KV("hover",  //HoverClientCapabilities
+                        MAP_TO("contentFormat", HoverContentFormat)),
+                MAP_KV("signatureHelp", MAP_KV("signatureInformation", MAP_KV("parameterInformation", MAP_TO("labelOffsetSupport", OffsetsInSignatureHelp))))),
+            MAP_KV("workspace", // WorkspaceEditClientCapabilities
+                    MAP_KV("symbol", // WorkspaceSymbolClientCapabilities
+                            MAP_KV("symbolKind",
+                                    MAP_TO("valueSet", WorkspaceSymbolKinds))),
+                    MAP_TO("applyEdit", ApplyEdit),
+                    MAP_KV("workspaceEdit", // WorkspaceEditClientCapabilities
+                            MAP_TO("documentChanges", DocumentChanges))),
+            MAP_TO("offsetEncoding", offsetEncoding)), {});
 
-struct ServerCapabilities
-{
+struct ServerCapabilities {
     json capabilities;
     /**
      * Defines how text documents are synced. Is either a detailed structure defining each notification or
@@ -411,21 +370,16 @@ struct ServerCapabilities
     std::vector<std::string> signatureHelpTrigger;
     std::vector<std::string> formattingTrigger;
     std::vector<std::string> completionTrigger;
-    bool hasProvider(std::string & name)
-    {
-        if (capabilities.contains(name))
-        {
-            if (capabilities[name].type() == json::value_t::boolean)
-            {
+    bool hasProvider(std::string &name) {
+        if (capabilities.contains(name)) {
+            if (capabilities[name].type() == json::value_t::boolean) {
                 return capabilities["name"];
             }
         }
-
         return false;
     }
 };
-JSON_SERIALIZE(ServerCapabilities, {},
-{
+JSON_SERIALIZE(ServerCapabilities, {}, {
     value.capabilities = j;
     FROM_KEY(textDocumentSync);
     j["documentOnTypeFormattingProvider"]["firstTriggerCharacter"].get_to(value.formattingTrigger);
@@ -434,24 +388,21 @@ JSON_SERIALIZE(ServerCapabilities, {},
     j["executeCommandProvider"]["commands"].get_to(value.executeCommands);
 });
 
-struct ClangdCompileCommand
-{
+struct ClangdCompileCommand {
     TextType workingDirectory;
     std::vector<TextType> compilationCommand;
 };
-JSON_SERIALIZE(ClangdCompileCommand, MAP_JSON(
-                   MAP_KEY(workingDirectory), MAP_KEY(compilationCommand)), {});
+JSON_SERIALIZE(ClangdCompileCommand,MAP_JSON(
+        MAP_KEY(workingDirectory), MAP_KEY(compilationCommand)), {});
 
-struct ConfigurationSettings
-{
+struct ConfigurationSettings {
     // Changes to the in-memory compilation database.
     // The key of the map is a file name.
     std::map<std::string, ClangdCompileCommand> compilationDatabaseChanges;
 };
 JSON_SERIALIZE(ConfigurationSettings, MAP_JSON(MAP_KEY(compilationDatabaseChanges)), {});
 
-struct InitializationOptions
-{
+struct InitializationOptions {
     // What we can change throught the didChangeConfiguration request, we can
     // also set through the initialize request (initializationOptions field).
     ConfigurationSettings configSettings;
@@ -466,13 +417,12 @@ struct InitializationOptions
     bool clangdFileStatus = false;
 };
 JSON_SERIALIZE(InitializationOptions, MAP_JSON(
-                   MAP_KEY(configSettings),
-                   MAP_KEY(compilationDatabasePath),
-                   MAP_KEY(fallbackFlags),
-                   MAP_KEY(clangdFileStatus)), {});
+                MAP_KEY(configSettings),
+                MAP_KEY(compilationDatabasePath),
+                MAP_KEY(fallbackFlags),
+                MAP_KEY(clangdFileStatus)), {});
 
-struct InitializeParams
-{
+struct InitializeParams {
     unsigned processId = 0;
     ClientCapabilities capabilities;
     option<DocumentUri> rootUri;
@@ -480,25 +430,23 @@ struct InitializeParams
     InitializationOptions initializationOptions;
 };
 JSON_SERIALIZE(InitializeParams, MAP_JSON(
-                   MAP_KEY(processId),
-                   MAP_KEY(capabilities),
-                   MAP_KEY(rootUri),
-                   MAP_KEY(initializationOptions),
-                   MAP_KEY(rootPath)), {});
+        MAP_KEY(processId),
+        MAP_KEY(capabilities),
+        MAP_KEY(rootUri),
+        MAP_KEY(initializationOptions),
+        MAP_KEY(rootPath)), {});
 
-enum class MessageType
-{
+enum class MessageType {
     /// An error message.
-    Error = 1,
+            Error = 1,
     /// A warning message.
-    Warning = 2,
+            Warning = 2,
     /// An information message.
-    Info = 3,
+            Info = 3,
     /// A log message.
-    Log = 4,
+            Log = 4,
 };
-struct ShowMessageParams
-{
+struct ShowMessageParams {
     /// The message type.
     MessageType type = MessageType::Info;
     /// The actual message.
@@ -506,8 +454,7 @@ struct ShowMessageParams
 };
 JSON_SERIALIZE(ShowMessageParams, {}, {FROM_KEY(type); FROM_KEY(message)});
 
-struct Registration
-{
+struct Registration {
     /**
      * The id used to register the request. The id can be used to deregister
      * the request again.
@@ -520,34 +467,29 @@ struct Registration
 };
 JSON_SERIALIZE(Registration, MAP_JSON(MAP_KEY(id), MAP_KEY(method)), {});
 
-struct RegistrationParams
-{
+struct RegistrationParams {
     std::vector<Registration> registrations;
 };
 JSON_SERIALIZE(RegistrationParams, MAP_JSON(MAP_KEY(registrations)), {});
 
-struct UnregistrationParams
-{
+struct UnregistrationParams {
     std::vector<Registration> unregisterations;
 };
 JSON_SERIALIZE(UnregistrationParams, MAP_JSON(MAP_KEY(unregisterations)), {});
 
-struct DidOpenTextDocumentParams
-{
-    /// The document that was opened.
+struct DidOpenTextDocumentParams {
+/// The document that was opened.
     TextDocumentItem textDocument;
 };
 JSON_SERIALIZE(DidOpenTextDocumentParams, MAP_JSON(MAP_KEY(textDocument)), {});
 
-struct DidCloseTextDocumentParams
-{
+struct DidCloseTextDocumentParams {
     /// The document that was closed.
     TextDocumentIdentifier textDocument;
 };
 JSON_SERIALIZE(DidCloseTextDocumentParams, MAP_JSON(MAP_KEY(textDocument)), {});
 
-struct TextDocumentContentChangeEvent
-{
+struct TextDocumentContentChangeEvent {
     /// The range of the document that changed.
     option<Range> range;
 
@@ -558,8 +500,7 @@ struct TextDocumentContentChangeEvent
 };
 JSON_SERIALIZE(TextDocumentContentChangeEvent, MAP_JSON(MAP_KEY(range), MAP_KEY(rangeLength), MAP_KEY(text)), {});
 
-struct DidChangeTextDocumentParams
-{
+struct DidChangeTextDocumentParams {
     /// The document that did change. The version number points
     /// to the version after all provided content changes have
     /// been applied.
@@ -576,17 +517,15 @@ struct DidChangeTextDocumentParams
 };
 JSON_SERIALIZE(DidChangeTextDocumentParams, MAP_JSON(MAP_KEY(textDocument), MAP_KEY(contentChanges), MAP_KEY(wantDiagnostics)), {});
 
-enum class FileChangeType
-{
+enum class FileChangeType {
     /// The file got created.
-    Created = 1,
+            Created = 1,
     /// The file got changed.
-    Changed = 2,
+            Changed = 2,
     /// The file got deleted.
-    Deleted = 3
+            Deleted = 3
 };
-struct FileEvent
-{
+struct FileEvent {
     /// The file's URI.
     URIForFile uri;
     /// The change type.
@@ -594,21 +533,18 @@ struct FileEvent
 };
 JSON_SERIALIZE(FileEvent, MAP_JSON(MAP_KEY(uri), MAP_KEY(type)), {});
 
-struct DidChangeWatchedFilesParams
-{
+struct DidChangeWatchedFilesParams {
     /// The actual file events.
     std::vector<FileEvent> changes;
 };
 JSON_SERIALIZE(DidChangeWatchedFilesParams, MAP_JSON(MAP_KEY(changes)), {});
 
-struct DidChangeConfigurationParams
-{
+struct DidChangeConfigurationParams {
     ConfigurationSettings settings;
 };
 JSON_SERIALIZE(DidChangeConfigurationParams, MAP_JSON(MAP_KEY(settings)), {});
 
-struct DocumentRangeFormattingParams
-{
+struct DocumentRangeFormattingParams {
     /// The document to format.
     TextDocumentIdentifier textDocument;
 
@@ -617,8 +553,7 @@ struct DocumentRangeFormattingParams
 };
 JSON_SERIALIZE(DocumentRangeFormattingParams, MAP_JSON(MAP_KEY(textDocument), MAP_KEY(range)), {});
 
-struct DocumentOnTypeFormattingParams
-{
+struct DocumentOnTypeFormattingParams {
     /// The document to format.
     TextDocumentIdentifier textDocument;
 
@@ -630,28 +565,24 @@ struct DocumentOnTypeFormattingParams
 };
 JSON_SERIALIZE(DocumentOnTypeFormattingParams, MAP_JSON(MAP_KEY(textDocument), MAP_KEY(position), MAP_KEY(ch)), {});
 
-struct FoldingRangeParams
-{
+struct FoldingRangeParams {
     /// The document to format.
     TextDocumentIdentifier textDocument;
 };
 JSON_SERIALIZE(FoldingRangeParams, MAP_JSON(MAP_KEY(textDocument)), {});
 
-enum class FoldingRangeKind
-{
+enum class FoldingRangeKind {
     Comment,
     Imports,
     Region,
 };
-NLOHMANN_JSON_SERIALIZE_ENUM(FoldingRangeKind,
-{
+NLOHMANN_JSON_SERIALIZE_ENUM(FoldingRangeKind, {
     {FoldingRangeKind::Comment, "comment"},
     {FoldingRangeKind::Imports, "imports"},
     {FoldingRangeKind::Region, "region"}
 })
 
-struct FoldingRange
-{
+struct FoldingRange {
     /**
      * The zero-based line number from where the folded range starts.
      */
@@ -673,8 +604,7 @@ struct FoldingRange
 
     FoldingRangeKind kind;
 };
-JSON_SERIALIZE(FoldingRange, {},
-{
+JSON_SERIALIZE(FoldingRange, {}, {
     FROM_KEY(startLine);
     FROM_KEY(startCharacter);
     FROM_KEY(endLine);
@@ -682,57 +612,47 @@ JSON_SERIALIZE(FoldingRange, {},
     FROM_KEY(kind);
 });
 
-struct SelectionRangeParams
-{
+struct SelectionRangeParams {
     /// The document to format.
     TextDocumentIdentifier textDocument;
     std::vector<Position> positions;
 };
 JSON_SERIALIZE(SelectionRangeParams, MAP_JSON(MAP_KEY(textDocument), MAP_KEY(positions)), {});
 
-struct SelectionRange
-{
+struct SelectionRange {
     Range range;
     std::unique_ptr<SelectionRange> parent;
 };
-JSON_SERIALIZE(SelectionRange, {},
-{
+JSON_SERIALIZE(SelectionRange, {}, {
     FROM_KEY(range);
-
-    if (j.contains("parent"))
-    {
-        value.parent = std::make_unique<SelectionRange>
-        ();
+    if (j.contains("parent")) {
+        value.parent = std::make_unique<SelectionRange>();
         j.at("parent").get_to(*value.parent);
     }
 });
 
-struct DocumentFormattingParams
-{
+struct DocumentFormattingParams {
     /// The document to format.
     TextDocumentIdentifier textDocument;
 };
 JSON_SERIALIZE(DocumentFormattingParams, MAP_JSON(MAP_KEY(textDocument)), {});
 
-struct DocumentSymbolParams
-{
+struct DocumentSymbolParams {
     // The text document to find symbols in.
     TextDocumentIdentifier textDocument;
 };
 JSON_SERIALIZE(DocumentSymbolParams, MAP_JSON(MAP_KEY(textDocument)), {});
 
-struct DiagnosticRelatedInformation
-{
+struct DiagnosticRelatedInformation {
     /// The location of this related diagnostic information.
     Location location;
     /// The message of this related diagnostic information.
     std::string message;
 };
-JSON_SERIALIZE(DiagnosticRelatedInformation, MAP_JSON(MAP_KEY(location), MAP_KEY(message)), {FROM_KEY(location); FROM_KEY(message);});
+JSON_SERIALIZE(DiagnosticRelatedInformation, MAP_JSON(MAP_KEY(location), MAP_KEY(message)), {FROM_KEY(location);FROM_KEY(message);});
 struct CodeAction;
 
-struct Diagnostic
-{
+struct Diagnostic {
     /// The range at which the message applies.
     Range range;
 
@@ -765,32 +685,28 @@ struct Diagnostic
     /// (These actions can also be obtained using textDocument/codeAction).
     option<std::vector<CodeAction>> codeActions;
 };
-JSON_SERIALIZE(Diagnostic, {/*NOT REQUIRED*/}, {FROM_KEY(range); FROM_KEY(code); FROM_KEY(source); FROM_KEY(message);
-                                                FROM_KEY(relatedInformation); FROM_KEY(category); FROM_KEY(codeActions);
-                                               });
+JSON_SERIALIZE(Diagnostic, {/*NOT REQUIRED*/},{FROM_KEY(range);FROM_KEY(code);FROM_KEY(source);FROM_KEY(message);
+                FROM_KEY(relatedInformation);FROM_KEY(category);FROM_KEY(codeActions);});
 
-struct PublishDiagnosticsParams
-{
+struct PublishDiagnosticsParams {
     /**
      * The URI for which diagnostic information is reported.
      */
     std::string uri;
     /**
-     * An array of diagnostic information items.
-     */
+	 * An array of diagnostic information items.
+	 */
     std::vector<Diagnostic> diagnostics;
 };
-JSON_SERIALIZE(PublishDiagnosticsParams, {}, {FROM_KEY(uri); FROM_KEY(diagnostics);});
+JSON_SERIALIZE(PublishDiagnosticsParams, {}, {FROM_KEY(uri);FROM_KEY(diagnostics);});
 
-struct CodeActionContext
-{
+struct CodeActionContext {
     /// An array of diagnostics.
     std::vector<Diagnostic> diagnostics;
 };
 JSON_SERIALIZE(CodeActionContext, MAP_JSON(MAP_KEY(diagnostics)), {});
 
-struct CodeActionParams
-{
+struct CodeActionParams {
     /// The document in which the command was invoked.
     TextDocumentIdentifier textDocument;
 
@@ -802,8 +718,7 @@ struct CodeActionParams
 };
 JSON_SERIALIZE(CodeActionParams, MAP_JSON(MAP_KEY(textDocument), MAP_KEY(range), MAP_KEY(context)), {});
 
-struct WorkspaceEdit
-{
+struct WorkspaceEdit {
     /// Holds changes to existing resources.
     option<std::map<std::string, std::vector<TextEdit>>> changes;
 
@@ -812,8 +727,7 @@ struct WorkspaceEdit
 };
 JSON_SERIALIZE(WorkspaceEdit, MAP_JSON(MAP_KEY(changes)), {FROM_KEY(changes);});
 
-struct TweakArgs
-{
+struct TweakArgs {
     /// A file provided by the client on a textDocument/codeAction request.
     std::string file;
     /// A selection provided by the client on a textDocument/codeAction request.
@@ -821,10 +735,9 @@ struct TweakArgs
     /// ID of the tweak that should be executed. Corresponds to Tweak::id().
     std::string tweakID;
 };
-JSON_SERIALIZE(TweakArgs, MAP_JSON(MAP_KEY(file), MAP_KEY(selection), MAP_KEY(tweakID)), {FROM_KEY(file); FROM_KEY(selection); FROM_KEY(tweakID);});
+JSON_SERIALIZE(TweakArgs, MAP_JSON(MAP_KEY(file), MAP_KEY(selection), MAP_KEY(tweakID)), {FROM_KEY(file);FROM_KEY(selection);FROM_KEY(tweakID);});
 
-struct ExecuteCommandParams
-{
+struct ExecuteCommandParams {
     std::string command;
     // Arguments
     option<WorkspaceEdit> workspaceEdit;
@@ -832,15 +745,13 @@ struct ExecuteCommandParams
 };
 JSON_SERIALIZE(ExecuteCommandParams, MAP_JSON(MAP_KEY(command), MAP_KEY(workspaceEdit), MAP_KEY(tweakArgs)), {});
 
-struct LspCommand : public ExecuteCommandParams
-{
+struct LspCommand : public ExecuteCommandParams {
     std::string title;
 };
 JSON_SERIALIZE(LspCommand, MAP_JSON(MAP_KEY(command), MAP_KEY(workspaceEdit), MAP_KEY(tweakArgs), MAP_KEY(title)),
-{FROM_KEY(command); FROM_KEY(workspaceEdit); FROM_KEY(tweakArgs); FROM_KEY(title);});
+        {FROM_KEY(command);FROM_KEY(workspaceEdit);FROM_KEY(tweakArgs);FROM_KEY(title);});
 
-struct CodeAction
-{
+struct CodeAction {
     /// A short, human-readable, title for this code action.
     std::string title;
 
@@ -858,10 +769,9 @@ struct CodeAction
     option<LspCommand> command;
 };
 JSON_SERIALIZE(CodeAction, MAP_JSON(MAP_KEY(title), MAP_KEY(kind), MAP_KEY(diagnostics), MAP_KEY(edit), MAP_KEY(command)),
-{FROM_KEY(title); FROM_KEY(kind); FROM_KEY(diagnostics); FROM_KEY(edit); FROM_KEY(command)});
+        {FROM_KEY(title);FROM_KEY(kind);FROM_KEY(diagnostics);FROM_KEY(edit);FROM_KEY(command)});
 
-struct SymbolInformation
-{
+struct SymbolInformation {
     /// The name of this symbol.
     std::string name;
     /// The kind of this symbol.
@@ -871,10 +781,9 @@ struct SymbolInformation
     /// The name of the symbol containing this symbol.
     std::string containerName;
 };
-JSON_SERIALIZE(SymbolInformation, MAP_JSON(MAP_KEY(name), MAP_KEY(kind), MAP_KEY(location), MAP_KEY(containerName)), {FROM_KEY(name); FROM_KEY(kind); FROM_KEY(location); FROM_KEY(containerName)});
+JSON_SERIALIZE(SymbolInformation, MAP_JSON(MAP_KEY(name), MAP_KEY(kind), MAP_KEY(location), MAP_KEY(containerName)), {FROM_KEY(name);FROM_KEY(kind);FROM_KEY(location);FROM_KEY(containerName)});
 
-struct SymbolDetails
-{
+struct SymbolDetails {
     TextType name;
     TextType containerName;
     /// Unified Symbol Resolution identifier
@@ -886,21 +795,18 @@ struct SymbolDetails
     option<TextType> ID;
 };
 
-struct WorkspaceSymbolParams
-{
+struct WorkspaceSymbolParams {
     /// A non-empty query string
     TextType query;
 };
 JSON_SERIALIZE(WorkspaceSymbolParams, MAP_JSON(MAP_KEY(query)), {});
 
-struct ApplyWorkspaceEditParams
-{
+struct ApplyWorkspaceEditParams {
     WorkspaceEdit edit;
 };
 JSON_SERIALIZE(ApplyWorkspaceEditParams, MAP_JSON(MAP_KEY(edit)), {});
 
-struct TextDocumentPositionParams
-{
+struct TextDocumentPositionParams {
     /// The text document.
     TextDocumentIdentifier textDocument;
 
@@ -909,19 +815,17 @@ struct TextDocumentPositionParams
 };
 JSON_SERIALIZE(TextDocumentPositionParams, MAP_JSON(MAP_KEY(textDocument), MAP_KEY(position)), {});
 
-enum class CompletionTriggerKind
-{
+enum class CompletionTriggerKind {
     /// Completion was triggered by typing an identifier (24x7 code
     /// complete), manual invocation (e.g Ctrl+Space) or via API.
-    Invoked = 1,
+            Invoked = 1,
     /// Completion was triggered by a trigger character specified by
     /// the `triggerCharacters` properties of the `CompletionRegistrationOptions`.
-    TriggerCharacter = 2,
+            TriggerCharacter = 2,
     /// Completion was re-triggered as the current completion list is incomplete.
-    TriggerTriggerForIncompleteCompletions = 3
+            TriggerTriggerForIncompleteCompletions = 3
 };
-struct CompletionContext
-{
+struct CompletionContext {
     /// How the completion was triggered.
     CompletionTriggerKind triggerKind = CompletionTriggerKind::Invoked;
     /// The trigger character (a single character) that has trigger code complete.
@@ -930,21 +834,18 @@ struct CompletionContext
 };
 JSON_SERIALIZE(CompletionContext, MAP_JSON(MAP_KEY(triggerKind), MAP_KEY(triggerCharacter)), {});
 
-struct CompletionParams : TextDocumentPositionParams
-{
+struct CompletionParams : TextDocumentPositionParams {
     option<CompletionContext> context;
 };
 JSON_SERIALIZE(CompletionParams, MAP_JSON(MAP_KEY(context), MAP_KEY(textDocument), MAP_KEY(position)), {});
 
-struct MarkupContent
-{
+struct MarkupContent {
     MarkupKind kind = MarkupKind::PlainText;
     std::string value;
 };
-JSON_SERIALIZE(MarkupContent, {}, {FROM_KEY(kind); FROM_KEY(value)});
+JSON_SERIALIZE(MarkupContent, {}, {FROM_KEY(kind);FROM_KEY(value)});
 
-struct Hover
-{
+struct Hover {
     /// The hover's content
     MarkupContent contents;
 
@@ -952,13 +853,12 @@ struct Hover
     /// that is used to visualize a hover, e.g. by changing the background color.
     option<Range> range;
 };
-JSON_SERIALIZE(Hover, {}, {FROM_KEY(contents); FROM_KEY(range)});
+JSON_SERIALIZE(Hover, {}, {FROM_KEY(contents);FROM_KEY(range)});
 
-enum class InsertTextFormat
-{
+enum class InsertTextFormat {
     Missing = 0,
     /// The primary text to be inserted is treated as a plain string.
-    PlainText = 1,
+            PlainText = 1,
     /// The primary text to be inserted is treated as a snippet.
     ///
     /// A snippet can define tab stops and placeholders with `$1`, `$2`
@@ -968,10 +868,9 @@ enum class InsertTextFormat
     ///
     /// See also:
     /// https//github.com/Microsoft/vscode/blob/master/src/vs/editor/contrib/snippet/common/snippet.md
-    Snippet = 2,
+            Snippet = 2,
 };
-struct CompletionItem
-{
+struct CompletionItem {
     /// The label of this completion item. By default also the text that is
     /// inserted when selecting this completion.
     std::string label;
@@ -1024,8 +923,7 @@ struct CompletionItem
     // data?: any - A data entry field that is preserved on a completion item
     //              between a completion and a completion resolve request.
 };
-JSON_SERIALIZE(CompletionItem, {},
-{
+JSON_SERIALIZE(CompletionItem, {}, {
     FROM_KEY(label);
     FROM_KEY(kind);
     FROM_KEY(detail);
@@ -1038,8 +936,7 @@ JSON_SERIALIZE(CompletionItem, {},
     FROM_KEY(additionalTextEdits);
 });
 
-struct CompletionList
-{
+struct CompletionList {
     /// The list is not complete. Further typing should result in recomputing the
     /// list.
     bool isIncomplete = false;
@@ -1047,14 +944,12 @@ struct CompletionList
     /// The completion items.
     std::vector<CompletionItem> items;
 };
-JSON_SERIALIZE(CompletionList, {},
-{
+JSON_SERIALIZE(CompletionList, {}, {
     FROM_KEY(isIncomplete);
     FROM_KEY(items);
 });
 
-struct ParameterInformation
-{
+struct ParameterInformation {
 
     /// The label of this parameter. Ignored when labelOffsets is set.
     std::string labelString;
@@ -1068,14 +963,12 @@ struct ParameterInformation
     /// The documentation of this parameter. Optional.
     std::string documentation;
 };
-JSON_SERIALIZE(ParameterInformation, {},
-{
+JSON_SERIALIZE(ParameterInformation, {}, {
     FROM_KEY(labelString);
     FROM_KEY(labelOffsets);
     FROM_KEY(documentation);
 });
-struct SignatureInformation
-{
+struct SignatureInformation {
 
     /// The label of this signature. Mandatory.
     std::string label;
@@ -1086,14 +979,12 @@ struct SignatureInformation
     /// The parameters of this signature.
     std::vector<ParameterInformation> parameters;
 };
-JSON_SERIALIZE(SignatureInformation, {},
-{
+JSON_SERIALIZE(SignatureInformation, {}, {
     FROM_KEY(label);
     FROM_KEY(documentation);
     FROM_KEY(parameters);
 });
-struct SignatureHelp
-{
+struct SignatureHelp {
     /// The resulting signatures.
     std::vector<SignatureInformation> signatures;
     /// The active signature.
@@ -1107,15 +998,13 @@ struct SignatureHelp
     /// not currently serialized for the LSP.
     Position argListStart;
 };
-JSON_SERIALIZE(SignatureHelp, {},
-{
+JSON_SERIALIZE(SignatureHelp, {}, {
     FROM_KEY(signatures);
     FROM_KEY(activeParameter);
     FROM_KEY(argListStart);
 });
 
-struct RenameParams
-{
+struct RenameParams {
     /// The document that was opened.
     TextDocumentIdentifier textDocument;
 
@@ -1129,29 +1018,25 @@ JSON_SERIALIZE(RenameParams, MAP_JSON(MAP_KEY(textDocument), MAP_KEY(position), 
 
 enum class DocumentHighlightKind { Text = 1, Read = 2, Write = 3 };
 
-struct DocumentHighlight
-{
+struct DocumentHighlight {
     /// The range this highlight applies to.
     Range range;
     /// The highlight kind, default is DocumentHighlightKind.Text.
     DocumentHighlightKind kind = DocumentHighlightKind::Text;
-    friend bool operator<(const DocumentHighlight & LHS,
-                          const DocumentHighlight & RHS)
-    {
+    friend bool operator<(const DocumentHighlight &LHS,
+                          const DocumentHighlight &RHS) {
         int LHSKind = static_cast<int>(LHS.kind);
         int RHSKind = static_cast<int>(RHS.kind);
         return std::tie(LHS.range, LHSKind) < std::tie(RHS.range, RHSKind);
     }
-    friend bool operator==(const DocumentHighlight & LHS,
-                           const DocumentHighlight & RHS)
-    {
+    friend bool operator==(const DocumentHighlight &LHS,
+                           const DocumentHighlight &RHS) {
         return LHS.kind == RHS.kind && LHS.range == RHS.range;
     }
 };
 enum class TypeHierarchyDirection { Children = 0, Parents = 1, Both = 2 };
 
-struct TypeHierarchyParams : public TextDocumentPositionParams
-{
+struct TypeHierarchyParams : public TextDocumentPositionParams {
     /// The hierarchy levels to resolve. `0` indicates no level.
     int resolve = 0;
 
@@ -1160,8 +1045,7 @@ struct TypeHierarchyParams : public TextDocumentPositionParams
 };
 JSON_SERIALIZE(TypeHierarchyParams, MAP_JSON(MAP_KEY(resolve), MAP_KEY(direction), MAP_KEY(textDocument), MAP_KEY(position)), {});
 
-struct TypeHierarchyItem
-{
+struct TypeHierarchyItem {
     /// The human readable name of the hierarchy item.
     std::string name;
 
@@ -1205,13 +1089,11 @@ struct TypeHierarchyItem
     /// so don't declare it.
 };
 
-struct ReferenceParams : public TextDocumentPositionParams
-{
+struct ReferenceParams : public TextDocumentPositionParams {
     // For now, no options like context.includeDeclaration are supported.
 };
 JSON_SERIALIZE(ReferenceParams, MAP_JSON(MAP_KEY(textDocument), MAP_KEY(position)), {});
-struct FileStatus
-{
+struct FileStatus {
     /// The text document's URI.
     DocumentUri uri;
     /// The human-readable string presents the current state of the file, can be

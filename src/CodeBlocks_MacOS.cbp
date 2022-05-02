@@ -8,8 +8,8 @@
 		<Build>
 			<Target title="tinyXML">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/txml" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/txml" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -17,9 +17,9 @@
 				</Compiler>
 			</Target>
 			<Target title="tinyXML2">
-				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tinyxml2" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tinyxml2" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tinyxml2" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -28,7 +28,8 @@
 			</Target>
 			<Target title="AutoRevision">
 				<Option output="$(TARGET_OBJECT_DIR)/autorevision" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/autorevision" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option parameters="+wx +int +t .. include/autorevision.h" />
@@ -42,8 +43,8 @@
 			</Target>
 			<Target title="ConsoleRunner">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cb_console_runner" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="tools/ConsoleRunner" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cb_console_runner" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -53,8 +54,8 @@
 			</Target>
 			<Target title="Squirrel">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/squirrel" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/squirrel" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -63,8 +64,8 @@
 			</Target>
 			<Target title="scintilla">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxscintilla_cb" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -84,7 +85,7 @@
 			<Target title="sdk">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -116,7 +117,7 @@
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ; fi" />
 
-					<Add before="$(TARGET_OBJECT_DIR)/autorevision +wx +int +t .. include/autorevision.h" />
+					<Add before="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/autorevision/autorevision +wx +int +t .. include/autorevision.h" />
 
 					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/manager_resources.zip sdk/resources/*.xrc" />
 					<Add after="cd sdk/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/manager_resources.zip images" />
@@ -126,7 +127,7 @@
 			<Target title="src">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -144,14 +145,14 @@
 					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/start_here.zip src/resources/start_here/*.html src/resources/start_here/*.png" />
 					<Add after="cd src/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/resources.zip images" />
 
-					<Add after="cp /f $(#CB_BUILD)/tips.txt devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks" />
+					<Add after="cp -f $(#CB_BUILD)/tips.txt devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Abbreviations">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/abbreviations" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -177,7 +178,7 @@
 			<Target title="AStyle">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/Astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/Astyle" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -203,7 +204,7 @@
 			<Target title="Autosave">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/autosave" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -227,8 +228,8 @@
 			</Target>
 			<Target title="Compiler depslib">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/depslib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/depslib" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -239,7 +240,7 @@
 			<Target title="Compiler">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/compiler" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libdepslib.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -272,7 +273,7 @@
 			<Target title="Debugger">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/debugger" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -298,7 +299,7 @@
 			<Target title="Code-completion">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/codecompletion" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -323,7 +324,7 @@
 			<Target title="Clangd_Client">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/clangd_client" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance --no-splash-screen --verbose -p debug --no-ipc " />
@@ -337,7 +338,7 @@
 					<Add directory="$(#CB_BUILD.INCLUDE)" />
 					<Add directory="$(#CB_BUILD)/plugins/clangd_client/src" />
 					<Add directory="$(#CB_BUILD)/plugins/clangd_client/src/LSPclient" />
-					<Add directory="$(#CB_BUILD)/plugins/clangd_client/src/LSPclient/include" />
+					<Add directory="$(#CB_BUILD)/plugins/clangd_client/src/codecompletion" />
 					<Add directory="$(#CB_BUILD)/plugins/clangd_client/src/unixprocess" />
 				</Compiler>
 				<Linker>
@@ -360,7 +361,7 @@
 			<Target title="Class wizard">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/classwizard" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -385,7 +386,7 @@
 			<Target title="Default MIME handler">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/defaultmimehandler" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -410,7 +411,7 @@
 			<Target title="Occurrences Highlighting">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/occurrenceshighlighting" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -436,7 +437,7 @@
 			<Target title="Open files list">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/openfileslist" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -461,7 +462,7 @@
 			<Target title="Projects-workspaces importer">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/projectsimporter" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -486,7 +487,7 @@
 			<Target title="Scripted wizard">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/scriptedwizard" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -512,7 +513,7 @@
 			<Target title="To-do">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/todo" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/todo" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -538,7 +539,7 @@
 				<Option platforms="Windows;" />
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/xpmanifest" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -1065,28 +1066,28 @@
 		<Unit filename="plugins/clangd_client/src/LSP_SymbolKind.h">
 			<Option target="Clangd_Client" />
 		</Unit>
-		<Unit filename="plugins/clangd_client/src/LSPclient/include/client.h">
+		<Unit filename="plugins/clangd_client/src/LSPclient/client.cpp">
 			<Option target="Clangd_Client" />
 		</Unit>
-		<Unit filename="plugins/clangd_client/src/LSPclient/include/json.hpp">
+		<Unit filename="plugins/clangd_client/src/LSPclient/client.h">
 			<Option target="Clangd_Client" />
 		</Unit>
-		<Unit filename="plugins/clangd_client/src/LSPclient/include/protocol.h">
+		<Unit filename="plugins/clangd_client/src/LSPclient/json.hpp">
 			<Option target="Clangd_Client" />
 		</Unit>
-		<Unit filename="plugins/clangd_client/src/LSPclient/include/transport.h">
+		<Unit filename="plugins/clangd_client/src/LSPclient/protocol.h">
 			<Option target="Clangd_Client" />
 		</Unit>
-		<Unit filename="plugins/clangd_client/src/LSPclient/include/uri.h">
+		<Unit filename="plugins/clangd_client/src/LSPclient/transport.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/uri.h">
 			<Option target="Clangd_Client" />
 		</Unit>
 		<Unit filename="plugins/clangd_client/src/LSPclient/lspdiagresultslog.cpp">
 			<Option target="Clangd_Client" />
 		</Unit>
 		<Unit filename="plugins/clangd_client/src/LSPclient/lspdiagresultslog.h">
-			<Option target="Clangd_Client" />
-		</Unit>
-		<Unit filename="plugins/clangd_client/src/LSPclient/src/client.cpp">
 			<Option target="Clangd_Client" />
 		</Unit>
 		<Unit filename="plugins/clangd_client/src/Version.h">

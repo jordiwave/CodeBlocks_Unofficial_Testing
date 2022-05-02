@@ -1,4 +1,4 @@
-// test case for SF #178 CC doesn't work for element access functions/operators belonging to STL containers.
+// test case for SF #178 CC doesn't work for element access functions/operators belonging to STL containers. 
 // https://sourceforge.net/p/codeblocks/tickets/178/
 
 #include <vector>
@@ -22,16 +22,16 @@ class info
 
 class mycomp
 {
-    public:
-        bool operator()(const info & lhs, const info & rhs) const
-        {
-            return (lhs.m_aaa < rhs.m_aaa);
-        }
+public:
+    bool operator() (const info& lhs, const info&rhs) const
+    {
+        return (lhs.m_aaa<rhs.m_aaa);
+    }
 };
 
 
 std::vector<info> vec;
-std::vector<info *> vec_ptr;
+std::vector<info*> vec_ptr;
 std::deque<info> deq;
 std::forward_list<info> frw;
 std::list<info> lis;

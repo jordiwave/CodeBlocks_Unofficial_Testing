@@ -5,8 +5,8 @@
 
 class AsyncThreadTypes
 {
-        AsyncThreadTypes();
-        ~AsyncThreadTypes();
+    AsyncThreadTypes();
+    ~AsyncThreadTypes();
 };
 
 wxDECLARE_EXPORTED_EVENT(, wxEVT_ASYNC_PROCESS_OUTPUT, wxThreadEvent);

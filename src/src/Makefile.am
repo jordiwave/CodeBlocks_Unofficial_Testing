@@ -11,19 +11,17 @@ GTK_NOTEBOOK_FLAGS = \
 			-DUSE_GTK_NOTEBOOK
 endif
 
-if CODEBLOCKS_LINUX
-AM_CPPFLAGS += \
-			-DENABLE_BINRELOC \
-			-DAPP_PREFIX="\"@prefix@\"" \
-			$(WX_GTK_CFLAGS) \
-			$(GTK_NOTEBOOK_FLAGS)
-endif
-
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
 			-DDEPSLIB_WINDOWS \
 			-DBUILDING_PLUGIN \
 			-I../exchndl/win_10/win64/include
+else
+AM_CPPFLAGS += \
+			-DENABLE_BINRELOC \
+			-DAPP_PREFIX="\"@prefix@\"" \
+			$(WX_GTK_CFLAGS) \
+			$(GTK_NOTEBOOK_FLAGS)
 endif
 
 bin_PROGRAMS = codeblocks

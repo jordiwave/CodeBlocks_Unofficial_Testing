@@ -9,23 +9,23 @@ class info
 
 namespace ns1
 {
-namespace ns2
-{
-class cs
-{
-    public:
-        int m_bbb;
-};
-}
+    namespace ns2
+    {
+        class cs
+        {
+        public:
+            int m_bbb;
+        };
+    }
 }
 
 namespace ns3
 {
-template<typename T> class vec
-{
+    template<typename T> class vec
+    {
     public:
-        T & at();
-};
+        T& at();
+    };
 }
 
 typedef info AAA;

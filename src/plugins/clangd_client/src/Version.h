@@ -30,14 +30,14 @@
 
 #define LOGIT wxLogDebug
 #if defined(LOGGING)
-    #define LOGGING 1
-    #undef LOGIT
-    #define LOGIT wxLogMessage
-    #define TRAP asm("int3")
+ #define LOGGING 1
+ #undef LOGIT
+ #define LOGIT wxLogMessage
+ #define TRAP asm("int3")
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.17.99 2022/02/25")
+#define VERSION wxT("0.2.23 2022/04/23-2")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -47,19 +47,13 @@ class AppVersion
 // ----------------------------------------------------------------------------
 {
     public:
-        AppVersion()
-        {
-            m_version = VERSION;
-        }
-        ~AppVersion() {};
+        AppVersion() { m_version = VERSION;}
+       ~AppVersion(){};
 
-        wxString GetVersion()
-        {
-            return m_version;
-        }
+    wxString GetVersion(){return m_version;}
 
-        wxString m_version;
-        wxString m_AppName;
+    wxString m_version;
+    wxString m_AppName;
     protected:
     private:
 };
@@ -68,13 +62,90 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
-//0.2.17.99     2022/03/02 ac - Experimental
-//          Major refactor of auto detection code
-//          Major refactor of aclangLocator class
-//          Refactor code to use code in clangLocator class allot more
-//          Modified the clsettings.xrc to show cland and clangd executables and their versions and also
-//            include clang directory
-//          Auto-detect runs on the plugin startup if it has not been configured.
+//0.2.23-2  2022/04/24 commit ph
+//          2022/04/23-2 ph
+//          Code sanity check for calls to Lock/IdleTimeCallbacks to log any loops.
+//              It sets the max Lockout/callbacks to 8 and issues a DebugLogError()
+//          2022/04/23 ph
+//          Force ProxyParser to ReadOptions() not ReReadOptions() else options with
+//              no project loaded are incorrect or missing.
+//0.2.22
+//          2022/04/21 ph
+//          Fix a crash when clangd master path is invalid. cf., OnAppStartupDone()
+//          Remove a wxSleep() call during clangd allocation. Appears no longer needed.
+//          2022/04/20 ph
+//          Comment out TimerRealtimeParsing timer and needReparse. Might be useful later.
+//          At OnStartupDone() freeze flashing Start page when ProxyProject is closed.
+//          Use timer to delay startup done work to allow splash page to close.
+//          ParseManager::CreateParser() check for ProxyParser like TempParser
+//              in order to update ClassBrowserView() to newly created parser.
+//          2022/04/16 ph
+//          Create a ProxyProject, ProxyClient, and ProxyParser in OnAppDoneStartup() to
+//          use for parsing non-project associated files.
+//          Do an idle time callback in OnAppDoneStartup() to allow splash to clear.
+//          2022/04/15 ph
+//          Revert back to using stand-alone cbProject to avoid workspace and plugin event interference.
+//          IE., don't leave a loaded ProxyProject cbProject open. It interferes with the workspace tree.
+//          Strategy: 1) create a new raw stand-alone cbProject. 2)Load an empty project 3)Clone (copy)the loaded project to
+//              the stand-alone hidden cbProject. 4)Close the loaded project to clear any plugin events and he workspace tree.
+//              Use the stand-alone hidden cbProject as a ProxyProject for clangd_client parsing of non-project files.
+//          This moves previous ProxyProjects from Parsers to a single ParseManager ProxyProject.
+//          The One-and-only hidden ProxyProject is used by all projects to manage non-project files
+//              being parsed by clangd_client.
+//0.2.21
+//          2022/04/9 ph
+//          When clangd reports nonexistent files in reference responses
+//              if cbDEBUG not defined, write filenames to log, then ignore them.
+//              It's caused by opening a file (like cbPlugin.h) with GoToDeclaration() then
+//              finding references within that file.
+//              Eg.: In Codecompletion.cpp, find declaration of cbPlugin then goto (about)
+//              cbPlugin.h line 1030 and find references to PluginRegistrant.
+//              For me, I'm getting files that used to exist, but were deleted.
+//              The references are neither in the current projects .cache nor compile_command.json .
+//              Deleting the .cache and compile_commands.json for the current project didn't help.
+//              Solution: delete the .cache and .json from the folder that used to contain the nonexistent references.
+//                  This must be caused by clangd walking up the directory structure.
+//          2022/04/7 ph
+//          For now, don't add proxyProject files to the compile_commands.json clangd database.
+//              Let clangd search for the closest file match and use its compile flags.
+//              This also avoids broadcasting compile flag changes to all plugins
+//              (cbEVT_COMPILER_SET_BUILD_OPTIONS) in CompileCommandGenerator:114 & 151
+//          2022/04/4 ph
+//          Add SetNotifications(onOrOff); to cbProject class to avoid screwing up
+//              other plugins. 'Proxy project' must not broadcast project changes.
+//          2022/04/2 ph
+//          Set compile flag when adding files to proxy project
+//          Copy only ProjectBuildTargets to ProxyProject. Not ProjectFiles;
+//              We only need the build compiler info for clangd.
+//          Don't allow UpdateClassBrowser() to use ProxyProject files.
+//          Check access of TokenTree in ClassBrowserBuilderThread to avoid crash.
+//          2022/04/1 ph
+//          Reworked avoiding problems when user enables both CodeCompletion and Clangd_client.
+//          2022/03/31 ph
+//          Create hidden cbProject "proxy project" to manage non-project files
+//          The ProxyProject is cloned from the active project with its compile flags.
+//0.2.20
+//          2022/03/24 ph
+//          Rework OnAttach() to handle "Manage plugins" dialog better (when enabling CodeCompletion and Clangd_client).
+//          2022/03/23 ph
+//          Expand macros in user specified path of clangd.exe aka .conf entry "/LLVM_MasterPath"
+//          Remove wxFileExists() check for LLVM_MasterPath since it might contain unknowable macros like $(TARGET_COMPILER_DIR)
+//          Add additional sanity checks in ClangLocator.cpp for missing clangd.exe responses.
+//          Add check for m_InitDone from cbEVT_APP_STARTUP_DONE event to avoid freezing CB in OnPluginAttached().
+//              Waiting MsgBoxes can get stuck behind the splash screen.
+//0.2.19
+//          2022/03/5 OnLSP_GoTo{Prev|Next}FunctionResponse - add missing functions
+//              via Parser::LSP_GetSymbolsByType() & Parser::WalkDocumentSymbols()
+//          2022/03/2 Restructure the LSPclient folder removing unnecessary src/include/ dirs
+//          2022/03/1
+//          Add "how to enable clangd_client" to OnAttach() cbMessageBox.
+//0.2.18    Commit 47 2022/02/28
+//           ccoptionsdlg - Correct typos Waring to Warning
+//0.2.18    Commit 46 2022/02/27
+//          2022/02/26 ph
+//          Write a DebugLogError when the clangd version is < 13.
+//          Add constructor/destructor/namespace to Goto_Prev/next function targets list
+//              for OnLSP_GotoPrevFunctionResponse() and OnLSP_GotoNextFunctionRespoinse()
 //0.2.17    Commit rev 45
 //          2022/02/22  2022/02/24 ph gd_on
 //          Set more strings translatable (gd_on)

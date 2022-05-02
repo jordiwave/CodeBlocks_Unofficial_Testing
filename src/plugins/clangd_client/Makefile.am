@@ -9,11 +9,6 @@ AM_CPPFLAGS = \
 			-Isrc/LSPclient \
 			-Isrc/codecompletion
 
-if CODEBLOCKS_LINUX
-AM_CPPFLAGS += \
-			-Isrc/unixprocess
-endif
-
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
 			-Isrc/winprocess \
@@ -23,6 +18,9 @@ AM_CPPFLAGS += \
 			-DCC_NO_COLLAPSE_ITEM \
 			-DLOGGING \
 			-DDONT_SHOW_SERVER_CONSOLE
+else            
+AM_CPPFLAGS += \
+			-Isrc/unixprocess
 endif
 
 if CODEBLOCKS_NT_BUILD_INSTALLER
@@ -88,16 +86,6 @@ libclangd_client_la_SOURCES = \
 			src/LSPclient/client.cpp \
 			src/LSPclient/lspdiagresultslog.cpp
 			
-
-if CODEBLOCKS_LINUX
-libclangd_client_la_SOURCES += \
-			src/unixprocess/asyncprocess/UnixProcess.cpp \
-			src/unixprocess/asyncThreadTypes.cpp \
-			src/unixprocess/fileutils.cpp \
-			src/unixprocess/procutils.cpp \
-			src/unixprocess/StringUtils.cpp
-endif
-
 if CODEBLOCKS_NT
 libclangd_client_la_SOURCES += \
 			src/winprocess/asyncprocess/StringUtils.cpp \
@@ -107,6 +95,13 @@ libclangd_client_la_SOURCES += \
 			src/winprocess/asyncprocess/winprocess.cpp \
 			src/winprocess/asyncprocess/winprocess_impl.cpp \
 			src/winprocess/misc/fileutils.cpp
+else
+libclangd_client_la_SOURCES += \
+			src/unixprocess/asyncprocess/UnixProcess.cpp \
+			src/unixprocess/asyncThreadTypes.cpp \
+			src/unixprocess/fileutils.cpp \
+			src/unixprocess/procutils.cpp \
+			src/unixprocess/StringUtils.cpp
 endif
 
 noinst_HEADERS = \
@@ -144,17 +139,8 @@ noinst_HEADERS = \
 			src/LSPclient/transport.h \
 			src/LSPclient/uri.h \
 			src/LSPclient/lspdiagresultslog.h \
-			src/LSP_SymbolKind.h
-
-if CODEBLOCKS_LINUX
-noinst_HEADERS += \
-			src/unixprocess/asyncprocess/UnixProcess.h \
-			src/unixprocess/asyncThreadTypes.h \
-			src/unixprocess/fileutils.h \
-			src/unixprocess/procutils.h \
-			src/unixprocess/StringUtils.h \
+			src/LSP_SymbolKind.h \
 			src/Version.h
-endif
 
 if CODEBLOCKS_NT
 noinst_HEADERS += \
@@ -167,6 +153,14 @@ noinst_HEADERS += \
 			src/winprocess/asyncprocess/winprocess_impl.h \
 			src/winprocess/misc/fileutils.h \
 			src/winprocess/misc/wxStringHash.h
+else
+noinst_HEADERS += \
+			src/unixprocess/asyncprocess/UnixProcess.h \
+			src/unixprocess/asyncThreadTypes.h \
+			src/unixprocess/fileutils.h \
+			src/unixprocess/procutils.h \
+			src/unixprocess/StringUtils.h \
+			src/unixprocess/wxStringHash.h
 endif
 
 EXTRA_DIST = \

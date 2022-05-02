@@ -37,7 +37,7 @@ enum TestEnum
     teFirst,
     teSecond = 5,
     teThird,
-    teFourth = 3 + 7
+    teFourth = 3+7
 };
 
 #define OFFSET 15

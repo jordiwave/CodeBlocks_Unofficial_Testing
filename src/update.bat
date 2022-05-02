@@ -88,8 +88,8 @@
 
 @REM =============================================
 @if "%DEBUG%" == "On" echo "Striping EXE and DLL files in the output directory tree"
-@for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.exe" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
-@for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.dll" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
+@rem @for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.exe" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
+@rem @for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.dll" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
 
 @REM =============================================
 

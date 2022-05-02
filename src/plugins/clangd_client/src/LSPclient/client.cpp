@@ -7,26 +7,41 @@
 #include <tuple>
 #include <chrono>
 
-#include <wx/gauge.h>
-#include <wx/sizer.h>
-#include "wx/xrc/xmlres.h"
-#include "wx/textfile.h"        //(ph 2021/01/21) to modify .Clangd file
-#include <wx/event.h>
-#include <wx/debug.h>
-#include <wx/utils.h>
+#include <sdk.h>
 
-#include "logmanager.h"
-#include "compilerfactory.h" //(ph 2020/12/2)
-#include "compilercommandgenerator.h" //(ph 2020/12/2)
-#include "loggers.h"
-#include <configmanager.h>      //LSP diagnostics log
-#include "loggers.h"
-#include "encodingdetector.h"   //(ph 2021/04/10)
+#ifndef CB_PRECOMP
+    #include <wx/gauge.h>
+    #include <wx/sizer.h>
+    #include "wx/xrc/xmlres.h"
+    #include <wx/event.h>
+    #include <wx/debug.h>
+    #include <wx/utils.h>
 
-#include <../lspdiagresultslog.h>   //(ph 2020/10/25) LSP diagnostics log
-#include "../asyncprocess\procutils.h" //(ph 2021/02/12) GetProcessNameByPid(pid)
-#include "../ClangLocator.h"
+    #include "logmanager.h"
+    #include "compilerfactory.h"
+    #include "loggers.h"
+    #include "configmanager.h"      //LSP diagnostics log
+    #include "loggers.h"
+    #include "encodingdetector.h"
+    #include "globals.h"
+#endif
 
+#include "macrosmanager.h"
+#include "compilercommandgenerator.h"
+#include "wx/textfile.h"        //to modify .Clangd file containing log and cache file lock
+
+#include <lspdiagresultslog.h>   // LSP diagnostics log
+
+#if defined(_WIN32)
+    #include "winprocess/asyncprocess/procutils.h" // GetProcessNameByPid(pid)
+#endif
+#if not defined(_WIN32) //unix
+    #include "procutils.h"
+    #include "unixprocess/asyncprocess/UnixProcess.h"
+    #include "unixprocess/asyncThreadTypes.h"
+#endif
+
+#include "ClangLocator.h"
 #include "client.h"
 
 // ----------------------------------------------------------------------------
@@ -34,22 +49,18 @@ namespace //annonymous
 // ----------------------------------------------------------------------------
 {
     wxString fileSep = wxFILE_SEP_PATH;
-    const char STX = '\u0002';
+    // unused const char STX = '\u0002';
     int an_SavedFileMethod = 0;
 
     const int idBuildLog = wxNewId();
-    // ----------------------------------------------------------------------------
-    void replace_substring(std::string& s, const std::string& f,
-                                  const std::string& t)
-    // ----------------------------------------------------------------------------
-    {
-        assert(not f.empty());
-        for (auto pos = s.find(f);                // find first occurrence of f
-                pos != std::string::npos;         // make sure f was found
-                s.replace(pos, f.size(), t),      // replace with t, and
-                pos = s.find(f, pos + t.size()))  // find next occurrence of f
-        {}
-    }
+
+    #if defined(_WIN32)
+        wxString clangexe("clang.exe");
+        wxString clangdexe("clangd.exe");
+    #else
+        wxString clangexe("clang");
+        wxString clangdexe("clangd");
+    #endif
 
     // ----------------------------------------------------------------------------
     void std_ReplaceAll(std::string& str, const std::string& from, const std::string& to)
@@ -64,7 +75,21 @@ namespace //annonymous
         }
         return;
     }
-  #if (saveTheseFunctionsTillNeeded)
+
+   #if (saveTheseFunctionsTillNeeded)
+    // ----------------------------------------------------------------------------
+    void replace_substring(std::string& s, const std::string& f,
+                                  const std::string& t)
+    // ----------------------------------------------------------------------------
+    {
+        assert(not f.empty());
+        for (auto pos = s.find(f);                // find first occurrence of f
+                pos != std::string::npos;         // make sure f was found
+                s.replace(pos, f.size(), t),      // replace with t, and
+                pos = s.find(f, pos + t.size()))  // find next occurrence of f
+        {}
+    }
+
     // ----------------------------------------------------------------------------
     void std_MakeLower(std::string& data)
     // ----------------------------------------------------------------------------
@@ -116,13 +141,14 @@ namespace //annonymous
   #endif
 
     bool wxFound(int result){return result != wxNOT_FOUND;};
+    bool stdFound(size_t result){return result != std::string::npos;}
 
 }//end namespace
 // ----------------------------------------------------------------------------
 namespace ClientHelp
 // ----------------------------------------------------------------------------
 {
-    // Log declarations taken from directcommands.cpp   //(ph 2020/12/2)
+    // Log declarations taken from directcommands.cpp
     const wxString COMPILER_SIMPLE_LOG = _T("SLOG:");
     const wxString COMPILER_NOTE_LOG(_T("SLOG:NLOG:"));
     /// Print a NOTE log message to the build log, without advancing the progress counter
@@ -141,43 +167,77 @@ namespace ClientHelp
 }//namespace clientHelp
 
 // ----------------------------------------------------------------------------
-ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const char *program, const char *arguments)
+ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const char* program, const char* arguments)
 // ----------------------------------------------------------------------------
 {
+    LogManager* pLogMgr = Manager::Get()->GetLogManager();
     m_LSP_responseStatus = false;
-    pLSPClient           = this;
 
-
-    // Find number of running Clangd servers and use that number as part of next log name
-    wxString sep = wxFileName::GetPathSeparator();
     wxString tempDir = wxFileName::GetTempDir();
 
-    // Locate folders for Clang and Clangd
-    ClangLocator clangLocator;
-    wxString clangLocation = clangLocator.Locate_Clang();
-    wxString clangdLocation = clangLocator.Locate_Clangd();
-    wxString clangResourceDir = clangLocator.Locate_ResourceDir();
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+    wxString cfgClangdMasterPath = cfg->Read("/LLVM_MasterPath", wxString());
+    if (cfgClangdMasterPath.Length())
+    {
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(cfgClangdMasterPath);
+        if (not wxFileExists(cfgClangdMasterPath))
+        {
+            wxString msg; msg << _("The clangd path:\n") << cfgClangdMasterPath << _(" does not exist.");
+            msg << _("\nClangd_Client will attempt to find it in some know locations.");
+                cbMessageBox(msg, _("ERROR: Clangd client") );
+        }
+    }
 
-    if (clangLocation.empty())
+    // Locate folder for Clangd
+    ClangLocator clangLocator;
+    wxString clangd_Dir;
+
+    wxFileName fnClangdMasterPath(cfgClangdMasterPath);
+    if (not fnClangdMasterPath.Exists())
     {
-        wxString msg; msg << __FUNCTION__ << "() Could not find clang installation.";
+        // User did not specify a valid path to clangd
+        fnClangdMasterPath.Clear();
+        cfgClangdMasterPath.Empty();
+    }
+    // clang master path was obtained from settings clangd_client config
+    if (cfgClangdMasterPath.Length())
+        clangd_Dir = fnClangdMasterPath.GetPath();
+    else clangd_Dir = clangLocator.Locate_ClangdDir();
+
+    if (cfgClangdMasterPath.empty() and clangd_Dir.length() )
+    {
+        fnClangdMasterPath.AssignDir(clangd_Dir);
+        fnClangdMasterPath.SetFullName(clangdexe);
+    }
+
+    wxString clangdResourceDir = clangLocator.Locate_ResourceDir(fnClangdMasterPath);
+    if (clangd_Dir.empty() or clangdResourceDir.empty())
+    {
+        wxString msg; msg << "clangd_client plugin could not auto detect a clangd installation.";
+        msg << "\nPlease enter the location of clangd using";
+        msg << "\n MainMenu->Settings->Editor->clangd_client/C/C++ parser(tab)";
+        msg << "\n 'clangd's installation location' using the button to the left";
+        msg << "\n of 'Auto detect' to locate the clangd executable file";
         cbMessageBox( msg, "Error");
+
+        msg.Empty(); msg << "Error: " << __FUNCTION__ << "() Could not find clangd installation.";
+        if (clangd_Dir.empty()) msg << " clangd dir not found.";
+        if (clangdResourceDir.empty()) msg << " clangd Resource dir not found.";
+        pLogMgr->LogError(msg);
+        pLogMgr->DebugLogError(msg);
         return;
     }
-    if (clangdLocation.empty())
-    {
-        wxString msg; msg << __FUNCTION__ << "() Could not find clangd installation.";
-        cbMessageBox( msg, "Error");
-        return;
-    }
+
+    // Set the clangd --query-dirver parameter
     Compiler* pCompiler = CompilerFactory::GetCompiler(pProject->GetCompilerID());
     if (not pCompiler)
     {
-        wxString msg; msg << __FUNCTION__ << "() Could not find projects' compiler installation.";
-        cbMessageBox( msg, "Error");
+        wxString msg; msg << "Error: " << __FUNCTION__ << "() Could not find projects' compiler installation.";
+        pLogMgr->Log(msg);
         return;
     }
     wxString masterPath = pCompiler ? pCompiler->GetMasterPath() : "";
+
     // get the first char of executable name from the compiler toolchain
     CompilerPrograms toolchain = pCompiler->GetPrograms();
     wxString toolchainCPP = toolchain.CPP.Length() ? wxString(toolchain.CPP[0]) : "";
@@ -185,60 +245,56 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
     wxString queryDriver = masterPath + fileSep + "**" + fileSep + toolchainCPP + "*";
     if (not platform::windows) queryDriver.Replace("\\","/");
 
-    // clangd 10
-    //wxString command = wxString("F:\\user\\programs\\msys64\\mingw64\\bin\\clangd.exe") + " --log=verbose";
-    //wxString command = wxString("f:\\usr\\Proj\\Clangd_Client\\bin\\clangd.exe") + " --log=verbose";
-    // clangd 12
-    //-wxString command = wxString("f:\\User\\Programs\\LLVM\\bin\\clangd.exe") + " --log=verbose";
+    wxString pgmExec = clangd_Dir + fileSep + clangdexe;
+    QuoteStringIfNeeded(pgmExec);
 
-    wxString command = clangdLocation + fileSep + "clangd.exe" + " --log=verbose";
-    //command += " --query-driver=f:\\usr\\MinGW810_64seh\\**\\g*";
+    wxString command = pgmExec + " --log=verbose";
+
+    // Use users settings path of clangd if present (Settings=>editor=>clangd_client=>c/c++ parser=>clangd's installation location)
+    if (fnClangdMasterPath.Exists())
+    {
+        pgmExec = fnClangdMasterPath.GetFullPath();
+        QuoteStringIfNeeded(pgmExec);
+        command = pgmExec + " --log=verbose";
+    }
+
+    QuoteStringIfNeeded(queryDriver);
     command += " --query-driver=" + queryDriver;
 
     // suggestion: -j=# should be no more than half of processors
     int max_parallel_processes = std::max(1, wxThread::GetCPUCount());
     if (max_parallel_processes > 1) max_parallel_processes = max_parallel_processes >> 1; //use only half of cpus
 
-    //(ph 2021/09/10) Don't use this code
-    //  Need more than 1 thread available, else 1 is completely used up by parsing
-    //  and we don't have one for on-the-fly requests such as completions or Get decl/defs etc.
-    //ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
-    //int cfg_parallel_processes = std::max(cfg->ReadInt("/max_threads", 1), 1);            //don't allow 0
-    //max_parallel_processes = std::min(max_parallel_processes, cfg_parallel_processes);
+    // I dont think I want to set "maximum usable threads" to the same as "max parsing threads". Some threads should
+    // be availablle to clangd for immediate foreground find/goto functions etc. while editors parse in the backgound.
+    // Currently, the parser (OnLSP_BatchTimer) is limiting parallel parsing to the user specified config max.
+    // I've been runnng 8 months with max usable threads set to 4 and max parsing threads set to 2 on my HP laptop (i7/2.5GHZ)
+    // It works well. (only runs the fan when compiling and banging on clangd at the same time.)
+    //? int cfg_parallel_processes = std::max(cfg->ReadInt("/max_threads", 1), 1);  //user specified config max, don't allow 0
+    //? max_parallel_processes = std::min(max_parallel_processes, cfg_parallel_processes);
 
-    command += " -j=" + std::to_string(max_parallel_processes) ;                          // Number of async workers used by clangd. Background index also uses this many workers.
+    command += " -j=" + std::to_string(max_parallel_processes) ;  // Number of async workers used by clangd. Background index also uses this many workers.
 
+    // Some other parameter maybe useful in the future
     //?command += " --completion-style=bundled";   // Similar completion items (e.g. function overloads) are combined. Type information shown where possible
     //?command += " --background-index";           // Index project code in the background and persist index on disk.
     //-command += " --suggest-missing-includes";   // Attempts to fix diagnostic errors caused by missing includes using index
 
+    // use --compile-commands-dir=<path> to restrict compilation database search to to <path>
+    //https://clangd.llvm.org/faq#how-do-i-fix-errors-i-get-when-opening-headers-outside-of-my-project-directory
+
     command += " --limit-results=20";              // Limit the number of results returned by clangd. 0 means no limit (default=100)
 
-    if (wxDirExists(clangResourceDir))
-        command += " --resource-dir=" + clangResourceDir;  // Directory for system includes
-    else
-        command += " --resource-dir=F:\\User\\Programs\\msys64-2\\mingw64\\lib\\clang\\11.0.0";  // Directory for system
-
-    wxString oldEnvPath;
-    wxGetEnv("PATH", &oldEnvPath);
-
-    // clear path of any unnecessary directories to avoid dll conflicts. // FIXME (ph#): Is this really necessary?
-    wxString newEnvPath = oldEnvPath;
-    if (masterPath.Length())
+    if (wxDirExists(clangdResourceDir))
     {
-        masterPath += "\\bin";
-        if (not platform::windows) masterPath.Replace("\\", "/");
-        //-wxSetEnv("PATH", masterPath);
-        wxGetEnv("PATH", &newEnvPath);
+        QuoteStringIfNeeded(clangdResourceDir);
+        command += " --resource-dir=" + clangdResourceDir;  // Directory for system includes
     }
 
     // Show clangd start command in Code::Blocks Debug log
-    LogManager* pLogMgr = Manager::Get()->GetLogManager();
     pLogMgr->DebugLog("Clangd start command:" + command);
 
-    // override clang resource with --init='{"clang": {"resourceDir": "/usr/local/clang/7.0.0"}}'
-    //?command.Append( wxT(" --init=\"{\\\"clang\\\": {\\\"resourceDir\\\": \\\"f:/User/Programs/msys64-2/mingw64/lib/clang/11.0.0\ \\\"}}"));
-
+  #if defined(_WIN32)  //<<------------windows only -------------------
     /** Info:
      * @brief start process
      * @param parent the parent. all events will be sent to this object
@@ -253,7 +309,7 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
     //                                            const wxString& workingDir = wxEmptyString,
     //                                            const clEnvList_t* env = nullptr);
     //-#define SHOW_SERVER_CONSOLE
-    pServerProcess = ::CreateAsyncProcess(this,
+    m_pServerProcess = ::CreateAsyncProcess(this,
                     command,
                     #if defined(SHOW_SERVER_CONSOLE)
                     IProcessCreateConsole |
@@ -262,40 +318,62 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
                     wxGetCwd()
                                            );
 
-    wxMilliSleep(1000);
+    //-wxMilliSleep(1000); // **Debugging**
 
-    // Restore the modified PATH variable
-    wxSetEnv("PATH", oldEnvPath) ;
+  #else // _nix //<<------------------------unix only -------------------------------
+    wxArrayString argsArrayString = GetArrayFromString(command, " ");
+    m_pServerProcess = new UnixProcess(this, argsArrayString);
 
-    if ( (not pServerProcess) or (not pServerProcess->IsAlive()) )
+    if (not m_pServerProcess)
     {
-        cbMessageBox(wxString("Starting server for client failed:\n") + command.wx_str() );
+        wxString msg = wxString::Format("%s: The child process for clangd failed allocation.", __PRETTY_FUNCTION__);
+        //cbMessageBox(msg, "ERROR");
+        pLogMgr->DebugLogError(msg);
+    }
+  #endif //_WIN32 vs _nix
+
+    if ( (not m_pServerProcess) or (not IsAlive()) )
+    {
+        wxString msg = "Starting server for client failed:\n";
+        msg << command ;
+        msg << "\n\nTry entering the location of clangd using Setting->Editor->clangd_client C/C++ parser";
+        cbMessageBox(msg, "clangd_client Error");
         return;
     }
 
-    processServerPID = pServerProcess->GetPid();
+    processServerPID =  m_pServerProcess->GetPid();
 
     // -------------------------------------------------------
     // if logging, open a client log file
     // -------------------------------------------------------
-    wxString logFilename = CreateLSPClientLogName(processServerPID, pProject); //(ph 2021/02/12)
-    if (logFilename.Length())
+    wxString logFilename;
+    bool isClientLogging = cfg->ReadBool("/logClangdClient_check", false);
+    if (isClientLogging)
     {
-        wxString clientLogFilename = logFilename;
-        lspClientLogFile.Open( clientLogFilename,"w" );
-        if (not lspClientLogFile.IsOpened())
-            cbMessageBox(wxString::Format(wxT("Failed to open %s"), clientLogFilename ));
-        // write the project title to the log for identification
-        wxString logLine = "Project: " + pProject->GetTitle() + ": " + pProject->GetFilename();
-        writeClientLog(logLine);
-        logLine = "SystemPath: " + newEnvPath;
-        writeClientLog(logLine);
+        logFilename = CreateLSPClientLogName(processServerPID, pProject); //(ph 2021/02/12)
+        if (logFilename.Length())
+        {
+            wxString clientLogFilename = logFilename;
+            lspClientLogFile.Open( clientLogFilename,"w" );
+            if (not lspClientLogFile.IsOpened())
+                cbMessageBox(wxString::Format(wxT("Failed to open %s"), clientLogFilename ));
+            // write the project title to the log for identification
+            wxString logLine = "Project: " + pProject->GetTitle() + ": " + pProject->GetFilename();
+            writeClientLog(logLine);
+            wxString envPath;
+            wxGetEnv("PATH", &envPath);
+            logLine = "SystemPath: " + envPath;
+            writeClientLog(logLine);
 
+        }
     }
 
     // if logging, open a server log file
-    if (logFilename.Length())
+    bool isServerLogging = cfg->ReadBool("/logClangdServer_check", false);
+    if (isServerLogging)
     {
+        if (logFilename.empty())
+            logFilename = CreateLSPClientLogName(processServerPID, pProject);
         wxString serverLogFilename = logFilename;
         serverLogFilename.Replace("client", "server");
         lspServerLogFile.Open( serverLogFilename,  "w" );
@@ -304,17 +382,18 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
         // write the project title to the log for identification
         wxString logLine = "Project: " + pProject->GetTitle() + ": " + pProject->GetFilename()+ "\n";
         writeServerLog(logLine);
-        logLine = "SystemPath: " + newEnvPath + "\n";
+        wxString envPath;
+        wxGetEnv("PATH", &envPath);
+        logLine = "SystemPath: " + envPath + "\n";
         writeServerLog(logLine);
-
     }
 
     Manager::Get()->GetAppFrame()->PushEventHandler(this);
-    Bind(wxEVT_ASYNC_PROCESS_OUTPUT, &ProcessLanguageClient::OnLSP_ResponseStdOut, this);
-    Bind(wxEVT_ASYNC_PROCESS_STDERR, &ProcessLanguageClient::OnLSP_stderr, this);
+    Bind(wxEVT_ASYNC_PROCESS_OUTPUT, &ProcessLanguageClient::OnClangd_stdout, this);
+    Bind(wxEVT_ASYNC_PROCESS_STDERR, &ProcessLanguageClient::OnClangd_stderr, this);
     Bind(wxEVT_ASYNC_PROCESS_TERMINATED, &ProcessLanguageClient::OnLSP_Terminated, this);
     //-Connect(GetLSP_ID(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ProcessLanguageClient::OnLSP_Response), nullptr, this);
-    Connect(GetLSP_ID(), wxEVT_COMMAND_MENU_SELECTED, wxThreadEventHandler(ProcessLanguageClient::OnLSP_Response), nullptr, this);
+    Connect(GetLSP_EventID(), wxEVT_COMMAND_MENU_SELECTED, wxThreadEventHandler(ProcessLanguageClient::OnLSP_Response), nullptr, this);
     Connect(wxEVT_IDLE, wxIdleEventHandler(ProcessLanguageClient::OnLSP_Idle) );
 
     if (not m_pDiagnosticsLog)
@@ -324,12 +403,16 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
     // ----------------------------------------------------------------------------
     // Thread: start Language Server Process input reader
     // ----------------------------------------------------------------------------
-    MapMsgHndlr.SetLSP_ID(GetLSP_ID());
-    //std::thread thread([&] {
-    /*std::thread* */
-    pInputThread = new std::thread([&] {
-        loop(MapMsgHndlr);
+    // The pipe to clangd has it's own thread. This one is the json analyzer.
+    // the pipe thread stuffs data in the buffer while this thread takes it out.
+    // The two can fight locking the buffer while the GUI thread takes events.
+    // The GUI thread gets it's jason data from a wxThreadEvent issued by this
+    // MapMsgHndlr thread via transport.h
+    m_MapMsgHndlr.SetLSP_EventID(GetLSP_EventID());
+    m_pJsonReadThread = new std::thread([&] {
+        loop(m_MapMsgHndlr);
     });
+
 }//end ProcessLanguageClient()
 // ----------------------------------------------------------------------------
 ProcessLanguageClient::~ProcessLanguageClient()
@@ -337,21 +420,21 @@ ProcessLanguageClient::~ProcessLanguageClient()
 {
     // dtor
 
-    terminateLSP = true; //tell the read thread to terminate
-    MapMsgHndlr.SetLSP_TerminateFlag(true);
+    m_terminateLSP = true; //tell the read thread to terminate
+    m_MapMsgHndlr.SetLSP_TerminateFlag(1);
 
-    if (pServerProcess)
-        pServerProcess->Detach(); //ignore any further messages //(ph 2021/07/8)
+    if (m_pServerProcess)
+        m_pServerProcess->Detach(); //ignore any further messages //(ph 2021/07/8)
 
     lspClientLogFile.Close();
     lspServerLogFile.Close();
 
 
-    Unbind(wxEVT_ASYNC_PROCESS_OUTPUT, &ProcessLanguageClient::OnLSP_ResponseStdOut, this);
-    Unbind(wxEVT_ASYNC_PROCESS_STDERR, &ProcessLanguageClient::OnLSP_stderr, this);
+    Unbind(wxEVT_ASYNC_PROCESS_OUTPUT, &ProcessLanguageClient::OnClangd_stdout, this);
+    Unbind(wxEVT_ASYNC_PROCESS_STDERR, &ProcessLanguageClient::OnClangd_stderr, this);
     Unbind(wxEVT_ASYNC_PROCESS_TERMINATED, &ProcessLanguageClient::OnLSP_Terminated, this);
     //-Disconnect(GetLSP_ID(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ProcessLanguageClient::OnLSP_Response), nullptr, this);
-    Disconnect(GetLSP_ID(), wxEVT_COMMAND_MENU_SELECTED, wxThreadEventHandler(ProcessLanguageClient::OnLSP_Response), nullptr, this);
+    Disconnect(GetLSP_EventID(), wxEVT_COMMAND_MENU_SELECTED, wxThreadEventHandler(ProcessLanguageClient::OnLSP_Response), nullptr, this);
     Disconnect(wxEVT_IDLE, wxIdleEventHandler(ProcessLanguageClient::OnLSP_Idle) );
     if (FindEventHandler(this))
         Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
@@ -385,29 +468,46 @@ ProcessLanguageClient::~ProcessLanguageClient()
         m_pDiagnosticsLog = nullptr; //LSPDiagnosticsLog was deleted by ProcessEvent()
     }
 
-
-//    if (pServerProcess and pServerProcess->IsAlive() ) {
-//        pServerProcess->Terminate();
-//        wxMilliSleep(500);
-//    }
-    if (pServerProcess and pServerProcess->IsAlive()) {
+     if (m_pServerProcess and IsAlive()) {
         writeClientLog("~ProcessLanguageClient: Teminate process error!\n");
     }
-    if ( pInputThread and (not TerminateThread((HANDLE)pInputThread->native_handle(), 0)) )
+    int jsonTerminationThreadRC = m_MapMsgHndlr.GetLSP_TerminateFlag();
+    if ( m_pJsonReadThread and (jsonTerminationThreadRC < 2) )
     {
-        pInputThread->join();
-        printf("terminate read thread error\n");
+        // This occurs when this dtor executes before ReadJson() can process the clangd shutdown command.
+        // Give the pipe (producer) and jsonRead (consumer) threads a chance to terminate
+        for (int ii=10; (ii > 0) and (jsonTerminationThreadRC < 2); --ii)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            jsonTerminationThreadRC = m_MapMsgHndlr.GetLSP_TerminateFlag();
+        }
+    }
+    if ( m_pJsonReadThread and (jsonTerminationThreadRC < 2) )
+    {
+        // return should have been 2 //0=running; 1=terminateRequested; 2=Terminated
+        m_pJsonReadThread->join();
+        wxString msg = wxString::Format("%s() Json read thread termination error rc:%d\n", __FUNCTION__, int(jsonTerminationThreadRC) );
+        Manager::Get()->GetLogManager()->DebugLogError(msg);
     }
 
     // setting terminateLSP above should have already caused read thread to exit.
-    if (pInputThread and ( pInputThread->joinable()) )
-        pInputThread->join();
-
-    if (pServerProcess)
+    if (m_pJsonReadThread and m_pJsonReadThread->joinable() )
+        m_pJsonReadThread->join();
+    if (m_pJsonReadThread)
     {
-        IProcess* pIProcess = pServerProcess;
-        pServerProcess = nullptr;
-        delete pIProcess;
+        delete m_pJsonReadThread;
+        m_pJsonReadThread = nullptr;
+    }
+
+    if (m_pServerProcess)
+    {
+        #if defined(_WIN32)
+        IProcess* pProcess = m_pServerProcess;
+        #else
+        UnixProcess* pProcess = m_pServerProcess;
+        #endif
+        m_pServerProcess = nullptr;
+        delete pProcess;
     }
 
     return;
@@ -417,7 +517,8 @@ bool ProcessLanguageClient::Has_LSPServerProcess()
 // ----------------------------------------------------------------------------
 {
     // data from LSP clangd stderr
-    if ( (not pServerProcess) or (not pServerProcess->IsAlive()) ) //pProcess->GetPid() does not work
+    //Using pProcess->GetPid() does not work. It always gets the pid even tho it's <defunct>
+    if ( (not m_pServerProcess) or (not IsAlive()) )
         return false;
     return true;
 }
@@ -425,7 +526,6 @@ bool ProcessLanguageClient::Has_LSPServerProcess()
 void ProcessLanguageClient::writeClientLog(wxString logmsg)
 // ----------------------------------------------------------------------------
 {
-    // FIXME (ph#): logging should be a config setting
     if (not lspClientLogFile.IsOpened()) return;
     wxString logcr = "";
     if (not logmsg.EndsWith(wxT("\n")) )
@@ -437,10 +537,33 @@ void ProcessLanguageClient::writeClientLog(wxString logmsg)
 void ProcessLanguageClient::writeServerLog(wxString logmsg)
 // ----------------------------------------------------------------------------
 {
-    // FIXME (ph#): logging should be a config setting
     if (not lspServerLogFile.IsOpened()) return;
     lspServerLogFile.Write(logmsg);
     lspServerLogFile.Flush();
+
+    //(ph 2022/02/16)
+    // V[10:58:51.183] Reusing preamble version 0 for version 0 of F:\usr\Proj\HelloWorld\HelloWorld3.h
+    // clangd does not always respond when it reuses a file (esp., with didOpen() )
+    // So here we check if that's what happend by checking the server log response.
+    // If so, we clear our "waiting for response" status flags
+    if (logmsg.Contains("Reusing preamble version") and logmsg.Contains(" for version "))
+    {
+        wxString filename;
+        int filenamePosn = logmsg.Find(" of ");
+        if (wxFound(filenamePosn))
+        {
+            filename = logmsg.Mid(filenamePosn+4);
+            filename.Trim();    //remove CRLF or LF
+            filename.Replace("\\", "/");
+            cbEditor* pEditor = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
+            if (pEditor)
+            {
+                LSP_RemoveFromServerFilesParsing(filename);
+                SetLSP_EditorIsParsed(pEditor, true);
+            }
+        }
+    }//endIf logmsg
+
 }
 // ----------------------------------------------------------------------------
 wxString ProcessLanguageClient::GetTime()
@@ -448,18 +571,6 @@ wxString ProcessLanguageClient::GetTime()
 {
     wxDateTime now = wxDateTime::Now();
     return now.Format("%H:%M:%S", wxDateTime::Local);
-}
-// ----------------------------------------------------------------------------
-void ProcessLanguageClient::OnLSP_stderr(clProcessEvent& event)
-// ----------------------------------------------------------------------------
-{
-    wxString errStr = event.GetOutput();
-    if ( errStr.Length())
-
-        //-writeServerLog(wxString::Format("-> OnLSP_stderr():\n%s", errStr) );
-        writeServerLog(errStr );
-
-    return;
 }
 // ----------------------------------------------------------------------------
 std::string ProcessLanguageClient::GetTime_in_HH_MM_SS_MMM()
@@ -537,32 +648,112 @@ cbStyledTextCtrl* ProcessLanguageClient::GetNewHiddenEditor(const wxString& file
     return control;
 }
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::OnLSP_ResponseStdOut(clProcessEvent& event)
+void ProcessLanguageClient::OnClangd_stderr(wxThreadEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Data from LSP server stdout to clients stdin
-    // concatenate LSP response to buffer
+    std::string* pErrStr = event.GetPayload<std::string*>();
+    if ( pErrStr->length())
+        writeServerLog( pErrStr->c_str() );
 
-    for (int ii=1; ii; ++ii) ///try to lock for one second
-    {
-        wxMutexError lockerr = m_MutexInputBufGuard.LockTimeout(50);
-        if (lockerr == wxMUTEX_NO_ERROR) break;
-        wxMilliSleep(50);
-        if (ii>20) //failure, time is up
+    return;
+}
+// ----------------------------------------------------------------------------
+void ProcessLanguageClient::OnClangd_stdout(wxThreadEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // This routine is driven by the clangd pipe thread.
+    // Raw data from clangd server stdout event to this clients stdin.
+    // concatenate LSP response to buffer.
+
+    // **Debugging**
+    // See the clangd incoming raw data
+    //std::string* pRawData = event.GetPayload<std::string*>();
+    //if (pRawData->length() == 0) { asm("int3");}
+    //wxString utfData = wxString(pRawData->c_str(), wxConvUTF8);
+    //writeClientLog(wxString::Format(">>> OnClangd_stdout() rawlen[%d] utflen[%d] currbuflen[%d]\n%s\n",
+    //                    int(pRawData->length()), int(utfData.length()),  int(m_std_LSP_IncomingStr.length()) ,wxString(pRawData->c_str())) );
+
+        /// ---Lock the clangd input buffer --------------------------
+        wxMutexError lockerr = m_MutexInputBufGuard.Lock();
+
+        if (lockerr != wxMUTEX_NO_ERROR)
         {
-            wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __PRETTY_FUNCTION__);
+            wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __FUNCTION__);
             wxSafeShowMessage("Lock fail, lost data", msg);
-            break;
+            Manager::Get()->GetLogManager()->DebugLogError(msg);
+            writeClientLog(msg);
+            return;
         }
-    }
 
-    // Append incomming data to buffer;
-    LSP_IncomingStr.Append(event.GetOutput().mb_str(wxConvUTF8));
+    // Append clangd incomming response data to buffer;
+    std::string* pRawOutput = event.GetPayload<std::string*>();
+    if (not pRawOutput->size())
+    {
+        writeClientLog("Error: clangd responded with a zero length buffer.");
+    }
+    std::string std_clangdRawOutput = *pRawOutput;
+    m_std_LSP_IncomingStr.append(*pRawOutput);
 
     /// unlock the input buffer
     m_MutexInputBufGuard.Unlock();
     return;
 }
+// ----------------------------------------------------------------------------
+void ProcessLanguageClient::OnLSP_Terminated(wxThreadEvent& event_pipedprocess_terminated)
+// ----------------------------------------------------------------------------
+{
+    // Entered here when the LSP server terminates
+    int processExitCode = 0; //no good, return code is always 0
+    if (GetLSP_Initialized()) processExitCode = -1; //terminated while initialized and running.
+    if (m_pServerProcess)
+    {
+        //-pProcess->GetProcessExitCode(pProcess->GetPid(), processExitCode); no good. return code is always 0
+        m_terminateLSP = true;   //tell read thread to exit.
+        m_LSP_initialized = false;
+        #if defined(_WIN32)
+        m_pServerProcess->Terminate(); //make sure LSP is terminated. Silly here but....
+        #else
+        m_pServerProcess->Stop();
+        #endif
+
+        if (m_pServerProcess)
+        {
+            #if defined(_WIN32)
+            IProcess* pProcess = m_pServerProcess;
+            #else
+            UnixProcess* pProcess = m_pServerProcess;
+            #endif
+            m_pServerProcess = nullptr;
+            delete pProcess;
+        }
+    }
+    m_LSP_initialized = false;
+
+    // To whom it may concern, clangd terminated.
+    wxCommandEvent terminatedEvt(wxEVT_COMMAND_MENU_SELECTED, XRCID("idLSP_Process_Terminated"));
+    terminatedEvt.SetEventObject((wxObject*)m_pCBProject);
+    terminatedEvt.SetInt(processExitCode);
+    Manager::Get()->GetAppFrame()->GetEventHandler()->ProcessEvent(terminatedEvt);
+
+    if (processExitCode != 0)
+    {
+        wxString msg = "Unusual termination of LanguageProcessClient(LSP) occured.";
+        if (lspClientLogFile.IsOpened() )
+            msg += "\nClient Log filename: " + lspClientLogFile.GetName();
+        if (lspServerLogFile.IsOpened() )
+            msg += "\nServer Log filename: " + lspServerLogFile.GetName();
+        msg += "\n\nDo you want to restart the client and server?";
+        int answ = cbMessageBox(msg, "clangd client", wxYES_NO);
+        if (answ == wxID_YES)
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED);
+            int reparse = wxFindMenuItemId(Manager::Get()->GetAppFrame(), "Project", "Reparse active project");
+            evt.SetId(reparse);
+            Manager::Get()->GetAppFrame()->GetEventHandler()->AddPendingEvent(evt);
+        }
+    }
+    return;
+}//end OnLSP_Terminated()
 // ----------------------------------------------------------------------------
 void ProcessLanguageClient::OnLSP_Idle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
@@ -588,204 +779,156 @@ void ProcessLanguageClient::OnLSP_Idle(wxIdleEvent& event)
     return;
 }
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::OnLSP_Terminated(wxCommandEvent& event_pipedprocess_terminated)
-// ----------------------------------------------------------------------------
-{
-    // Entered here when the LSP server terminates
-    int processExitCode = 0; //no good, return code is always 0
-    if (GetLSP_Initialized()) processExitCode = -1; //terminated while initialized and running.
-    if (pServerProcess)
-    {
-        //-pProcess->GetProcessExitCode(pProcess->GetPid(), processExitCode); no good. return code is always 0
-        terminateLSP = true;   //tell read thread to exit.
-        m_LSP_initialized = false;
-        pServerProcess->Terminate(); //make sure LSP is terminated. Silly here but....
-
-        if (pServerProcess)
-        {
-            IProcess* pIProcess = pServerProcess;
-            pServerProcess = nullptr;
-            delete pIProcess;
-        }
-    }
-    m_LSP_initialized = false;
-
-    // To whom it may concern, clangd terminated.
-    wxCommandEvent terminatedEvt(wxEVT_COMMAND_MENU_SELECTED, XRCID("idLSP_Process_Terminated"));
-    terminatedEvt.SetEventObject((wxObject*)m_pCBProject);
-    terminatedEvt.SetInt(processExitCode);
-    Manager::Get()->GetAppFrame()->GetEventHandler()->ProcessEvent(terminatedEvt)
-
-;    if (processExitCode != 0)
-    {
-        wxString msg = "Unusual termination of LanguageProcessClient(LSP) occured.";
-        if (lspClientLogFile.IsOpened() )
-            msg += "\nClient Log filename: " + lspClientLogFile.GetName();
-        if (lspServerLogFile.IsOpened() )
-            msg += "\nServer Log filename: " + lspServerLogFile.GetName();
-        msg += "\n\nDo you want to restart the client and server?";
-        int answ = cbMessageBox(msg, "clangd client", wxYES_NO);
-        if (answ == wxID_YES)
-        {
-            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED);
-            int reparse = wxFindMenuItemId(Manager::Get()->GetAppFrame(), "Project", "Reparse current project");
-            evt.SetId(reparse);
-            Manager::Get()->GetAppFrame()->GetEventHandler()->AddPendingEvent(evt);
-        }
-    }
-    return;
-}//end OnLSP_Terminated()
-// ----------------------------------------------------------------------------
-void ProcessLanguageClient::SkipLine()
+int ProcessLanguageClient::SkipLine() //return json data position
 // ----------------------------------------------------------------------------
 {
     // this function is driven by thread in transport::loop()
     // thread was started in constructor
 
     // Skip past header to get to actual data. "content-length: nnnncrlf"
-    if ( (not Has_LSPServerProcess()) or ( LSP_IncomingStr.empty()) )
-        return ;
+    if ( (not Has_LSPServerProcess()) or ( m_std_LSP_IncomingStr.empty()) )
+        return wxNOT_FOUND;
 
-    int ndx = LSP_IncomingStr.Find('\n');
-    if (ndx == wxNOT_FOUND)
-        return ;
-    while( (LSP_IncomingStr.Mid(ndx,1) == '\r') or (LSP_IncomingStr(ndx,1) == '\n') )
+    size_t ndx = m_std_LSP_IncomingStr.find('\n');
+    if (not stdFound(ndx) )
+        return wxNOT_FOUND ;
+
+    while( (m_std_LSP_IncomingStr[ndx] == '\r') or (m_std_LSP_IncomingStr[ndx] == '\n') )
         ndx += 1;
-    // update buffer to begining of next line
-    LSP_IncomingStr = LSP_IncomingStr.Mid(ndx); //skip past \r\n
-    return ;
+
+    return ndx;
 }
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::SkipToJsonData()
+int ProcessLanguageClient::SkipToJsonData()
 // ----------------------------------------------------------------------------
 {
-    // this function is driven by thread in transport::loop()
+    // this function is driven by readJson() called by thread in transport::loop()
     // thread was started in constructor
 
     // Skip over header to get to actual data. "content-length: ####crlf{"jsonrpc": ...
-    if ( (not Has_LSPServerProcess()) or ( LSP_IncomingStr.empty()) )
-        return ;
+    if ( (not Has_LSPServerProcess()) or ( m_std_LSP_IncomingStr.empty()) )
+        return wxNOT_FOUND;
 
     //-int ndx = LSP_IncomingStr.Find("{\"jsonrpc");    //CCLS format
-    int ndx = LSP_IncomingStr.Find("{\"");        //clangd format {"
-    if (ndx == wxNOT_FOUND)
-        return ;
-    // update buffer to begining of json data
-    LSP_IncomingStr = LSP_IncomingStr.Mid(ndx); //skip past hdr/length and any \r\n
-    return ;
+    size_t ndx = m_std_LSP_IncomingStr.find("Content-Length: ");
+    if (ndx == std::string::npos)
+    {
+        writeClientLog("ERROR: SkipToJsonData(): clangd header not at start of buffer.");
+        return wxNOT_FOUND; //something wrong, clangd header not at start of buffer
+    }
+    ndx = m_std_LSP_IncomingStr.find("\r\n{\"");         //clangd format "Content-Length: <digits>\r\n\r\n{"
+    if (ndx != std::string::npos)
+        return ndx+2;                               // skip over '\r\n' before json data
+
+    return wxNOT_FOUND;
 }
 // ----------------------------------------------------------------------------
 int ProcessLanguageClient::ReadLSPinputLength()
 // ----------------------------------------------------------------------------
 {
-    // this function is driven by thread in transport::loop()
-    // thread was started in constructor
+    // this function is driven by readJson() via the thread in transport::loop()
+    // and the incoming data is locked.
+    // thread was started in constructor and called from readJason() after locking the buffer
 
-    // "Content-Length: nnnn\r\n"
+    // "Content-Length: <digits>\r\n\r\n"
 
-    if (Has_LSPServerProcess() and LSP_IncomingStr.Length())
+    if (Has_LSPServerProcess() and m_std_LSP_IncomingStr.length())
     {
-        int hdrPosn = LSP_IncomingStr.Find(wxT("Content-Length: "));
-        if (hdrPosn == wxNOT_FOUND)
-            return 0;
+        // search for LSP header
+        size_t hdrPosn = m_std_LSP_IncomingStr.find("Content-Length: ");
+        if (hdrPosn == std::string::npos)
+            return wxNOT_FOUND;
         else //have incoming text
         {
-            if (hdrPosn > 0)
+            if (hdrPosn != 0)   // verify LSP header is at beginning of buffer
             {
-                wxString msg(wxString::Format("%s() Error: ReadLength (%d): Position of incoming LSP server data %d.\n",
-                             __PRETTY_FUNCTION__, LSP_IncomingStr.Length(), hdrPosn) );
-                    msg += "Buffer contents written to client log.";
-                wxSafeShowMessage("Input Buffer error",msg);
-                msg += "LSP_IncomingStrBuf:\n" + LSP_IncomingStr + "\n";
+                // Error: header is not at beginning of buffer. Try to fix it.
+                // usually caused by clangd invalid utf8 sequence
+                wxString msg(wxString::Format("ERROR:%s(): buffLength (%d): Position of content header %d.\n",
+                             __FUNCTION__, int(m_std_LSP_IncomingStr.length()), int(hdrPosn)) );
+                msg += "Buffer contents written to client log.";
+                //#if defined(cbDEBUG)
+                //    wxSafeShowMessage("Input Buffer error",msg);
+                //#endif
+                msg += "LSP_IncomingStrBuf:\n" + m_std_LSP_IncomingStr + "\n";
                 writeClientLog(msg);
-                LSP_IncomingStr = LSP_IncomingStr.Mid(hdrPosn);         //shift data to head of buf
+                // adjust the data buf to get clangd header at buff beginning
+                m_std_LSP_IncomingStr = m_std_LSP_IncomingStr.substr(hdrPosn);
             }
 
-            int textPosn = LSP_IncomingStr.Find("{\"");                  //find beginning of json data
-            if (textPosn == wxNOT_FOUND)
-                return 0;                                               //all json data is not yet in.
-            size_t textLength = atoi(LSP_IncomingStr.Mid(16));          //length of json data is at buf + 16
-            if (LSP_IncomingStr.Length() >= (textPosn + textLength) )   //buff must be complete
-                return textLength;                                      //length is at buf + 16
+            size_t jdataPosn = m_std_LSP_IncomingStr.find("\r\n{\"");        //find beginning of json data
+            if (jdataPosn == std::string::npos)
+                return wxNOT_FOUND;                                          //all json data is not yet in.
+            jdataPosn += 2;                                                  // skip over "\r\n" prefixed before '{"' json chars
+            //-int jdataLength = atoi(std_LSP_IncomingStr.at(16));
+            long jdataLength = std::stoi(&m_std_LSP_IncomingStr[16], nullptr, 10); //length of json data is at buf + 16
+
+            if (m_std_LSP_IncomingStr.length() >= (jdataPosn + jdataLength) ) //clangd entry must be complete
+            {
+                if (m_std_LSP_IncomingStr[jdataPosn + jdataLength-1] == '}' )
+                    return jdataLength;
+
+                // Length in LSP data header was wrong. Should have seen a '}' at end of data.
+                //cbAssertNonFatal(m_std_LSP_IncomingStr[jdataPosn + jdataLength-1] == '}'); // **Debugging**
+                wxString msg = wxString::Format("Error:%s invalid LSP dataLth[%d]\n%s", __FUNCTION__, int(jdataLength), m_std_LSP_IncomingStr);
+                writeClientLog( msg);
+                // Must return the length even if invalid else the data gets stuck in the buffer.
+                // Try for valid length by looking for next LSP data entry
+                size_t actualLength = m_std_LSP_IncomingStr.find("Content-Length: ", 1);
+                if (stdFound(actualLength)) jdataLength = actualLength - jdataPosn;
+                return jdataLength;
+            }
+            else // all data not in yet.
+            {
+                // **Debugging**
+                if (m_std_LSP_IncomingStr.length())
+                {
+                    wxString msg = wxString::Format("Header[%s] buffLth[%d]",
+                                m_std_LSP_IncomingStr.substr(0,jdataPosn),  //header
+                                int(m_std_LSP_IncomingStr.length()) );      //full buffer length
+                    msg.Replace("\r\n","\\r\\n"); //show crlf
+                    writeClientLog(wxString::Format(" >>> Info:%s() %s", __FUNCTION__, msg) );
+                }
+            }
         }
     }
     return 0;
 }
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::ReadLSPinput(int length, std::string& out)
+void ProcessLanguageClient::ReadLSPinput(int startPosn, int length, std::string& out)
 // ----------------------------------------------------------------------------
 {
     // this function is driven by thread in transport::loop()
     // thread was started in constructor
 
-    if (Has_LSPServerProcess() and LSP_IncomingStr.Length())
+    if (Has_LSPServerProcess() and m_std_LSP_IncomingStr.length())
     {
         //ReadLength() guaranteed input hdr was at start of buf
-        out = LSP_IncomingStr.Mid(0,length).mb_str();
+        out = m_std_LSP_IncomingStr.substr(startPosn, length);
         if (out.length())
-            ; //writeClientLog(wxString::Format("Read()\n:%s", wxString(out)) ); debugging
-        LSP_IncomingStr = LSP_IncomingStr.Mid(length); //remove used chars
-
-        //if (LSP_IncomingStr.Length()) // **debugging**
-        //    asm("int3"); /*trap*/
-        //int lth = LSP_IncomingStr.Length();
+        {
+            //writeClientLog(wxString::Format("Read()\n:%s", wxString(out)) ); // **Debugging**
+            size_t nextHdrPosn = m_std_LSP_IncomingStr.find("Content-Length: ", 1);
+            if (nextHdrPosn != std::string::npos)
+                m_std_LSP_IncomingStr = m_std_LSP_IncomingStr.substr(nextHdrPosn);
+            else    // no more data or missing header
+                m_std_LSP_IncomingStr = m_std_LSP_IncomingStr.substr(startPosn + length);   //remove used chars
+        }
     }
     return;
 }//end Read()
 // ----------------------------------------------------------------------------
-bool ProcessLanguageClient::WriteHdr(const std::string &in)
-// ----------------------------------------------------------------------------
-{
-    // write json header and data string to the log
-    wxString limitedLogOut(in.c_str(), wxConvUTF8);
-    wxString out(in.c_str(), wxConvUTF8);
-    // limit "text" output to log at 512 chars
-
-    if (limitedLogOut.Contains("\"textDocument/didOpen\"")
-        or limitedLogOut.Contains("\"textDocument/didChange\""))
-    {
-        int posnText = limitedLogOut.Find("\"text\":");
-        int posnUri =  limitedLogOut.Find("\"uri\":");
-        // if uri follows text, make adjustments
-        if (posnUri > posnText)
-        {
-            int txtBeg = posnText + 7; //skip over "text":
-            int txtEnd = posnUri - 4;  //skip back over "uri": where text ends
-            int txtLen = txtEnd - txtBeg ;
-            if (txtLen > 512)
-            {
-                wxString tmpStr = limitedLogOut.Left((txtBeg + 120)) + "<...snip...>" + limitedLogOut.Right(120);
-                tmpStr.Append(limitedLogOut.Mid(posnUri-8) ); //append uri to end
-                limitedLogOut = tmpStr;
-            }
-        }
-        else
-        limitedLogOut = wxString::Format("<<< Write():\n%s", wxString(in)).Mid(0,512) + "<...data sniped by log write()...>";
-    }//endif contains didOpen
-
-    writeClientLog(limitedLogOut );
-    bool ok = pServerProcess->WriteRaw(in ); //adding \r\n crashes Clangd
-    if (not ok)
-    {
-        writeClientLog("WriteHdr() failed WriteRaw()");
-        return false;
-    }
-
-    return true;
-}//end WriteHdr()
-// ----------------------------------------------------------------------------
 bool ProcessLanguageClient::readJson(json &json)
 // ----------------------------------------------------------------------------
 {
-    // this function is driven by thread in transport::loop()
-    // thread was started in constructor
-
+    // this function is driven by thread in transport::loop().
+    // Thread was started in constructor
 
     json.clear();
     int length = 0;
     std::string inputbuf;
 
-    if ( terminateLSP or (not Has_LSPServerProcess()) )
+    if ( m_terminateLSP or (not Has_LSPServerProcess()) )
     {   // terminate the read loop thread
         inputbuf = "{\"jsonrpc\":\"2.0\",\"Exit!\":\"Exit!\",\"params\":null}";
         length = inputbuf.length();
@@ -794,60 +937,85 @@ bool ProcessLanguageClient::readJson(json &json)
     }
 
     // --------------------------------------------
-    /// try to lock the input buffer
+    /// lock the clangd stdout buffer
     // --------------------------------------------
-    for (int ii=1; ii; ++ii) //try to lock for one second
+    wxMutexError lockerr = m_MutexInputBufGuard.Lock();
+    if (lockerr != wxMUTEX_NO_ERROR)
     {
-        wxMutexError lockerr = m_MutexInputBufGuard.LockTimeout(50);
-        if (lockerr == wxMUTEX_NO_ERROR) break;
-        wxMilliSleep(50);
-        if (ii>20) //failure, time is up
-        {
-            wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __PRETTY_FUNCTION__);
-            wxSafeShowMessage("Lock failed, lost data", msg);
-            return false;
-        }
+        wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __FUNCTION__);
+        //-wxSafeShowMessage("Lock failed, lost data", msg); // **Debugging**
+        Manager::Get()->GetLogManager()->DebugLogError(msg);
+        writeClientLog(msg);
+        wxMilliSleep(500); //let pipe thread do its thing
+        return false;
     }
 
     length = ReadLSPinputLength();
     if (not length)
     {
-        /// no data, unlock the input buffer
+        /// no data, UNlock the input buffer
         m_MutexInputBufGuard.Unlock();
         wxMilliSleep(250);
         return false;
     }
 
-    //SkipLine();
-    SkipToJsonData();
-    ReadLSPinput(length, inputbuf);
+    int dataPosn = SkipToJsonData();    //skip over the Clangd length header
+    if (dataPosn != wxNOT_FOUND)
+        ReadLSPinput(dataPosn, length, inputbuf);
+    else {
+        /// UNLock the input buffer
+        m_MutexInputBufGuard.Unlock();
+        wxMilliSleep(250);
+        return false;
+    }
 
-    /// we have the data, unlock the input buffer
+    /// we have the data, UNlock the input buffer
     m_MutexInputBufGuard.Unlock();
 
-    if (inputbuf.size() )
+    if (inputbuf.size())
+        writeClientLog(wxString::Format(">>> readJson() len:%d:\n%s", length, inputbuf.c_str()) );
+
+    // remove any imva;od utf8 chars
+    bool validData = DoValidateUTF8data(inputbuf);
+    if (not validData)
     {
-        //Note: some ill formed utf8 chars are coming in from clangd
-        //  or the nlohman json lib is in error. Namely hex E2 80 A6 within parens.
-        // empty parens '()' get returned as "(\xE2\x80\xA6)" in completion results
-        std::string badBytes =  "\xE2\x80\xA6" ;
-        replace_substring(inputbuf, badBytes, "");
-        std::string badBytes2 =  "\xE2\x80\xA2" ;
-        replace_substring(inputbuf, badBytes2, "");
+        //message to log that data had illegal utf8 already written
+
     }
-    try {
+
+    int retryCount = 0;
+    while (++retryCount)
+    {
+        try {
         json = json::parse(inputbuf);
-    }
-    catch (std::exception &e) {
-
-        wxString msg = wxString::Format("\n >>> readJson() error:%s\n%s", e.what(), inputbuf.c_str()) ;
-        msg += wxString::Format("Buffer was:%s", inputbuf);
-        wxSafeShowMessage("jsonRead() error",wxString::Format("readJson() error:%s", e.what()) );
-        writeClientLog(msg); //(ph 2020/08/21)
-    }
-
-    // The following also provided by OnLSP_ResponseStdOut():
-    writeClientLog(wxString::Format(">>> readJson() len:%d:\n%s", length, inputbuf.c_str()) ); //(ph 2020/08/21)
+        break;
+        }
+        catch (std::exception &e)
+        {
+            wxString msg = wxString::Format(" >>> readJson() error:%s", e.what()) ;
+            #if defined(cbDEBUG)
+                //-Manager::Get()->GetLogManager()->DebugLogError(msg);
+                Manager::Get()->GetLogManager()->DebugLog(msg);
+            #endif
+            if (retryCount == 1) // do only once
+                msg << "\n" << inputbuf;
+            writeClientLog(msg);
+            if (retryCount > 10) break; //allow nine errors
+            if ( not msg.Contains( "ill-formed UTF-8 byte") )
+                break;
+            // find the location of the invalid utf8 char
+            size_t posn = msg.find("column ");
+            if (posn)
+            {
+                long utf8BytePosn = 0;
+                msg.Mid(posn + 7).ToLong(&utf8BytePosn, 10); // always returns false even when ok
+                if (not utf8BytePosn) break;
+                // wipe out the invalid utf8 char with a blank
+                if (inputbuf[--utf8BytePosn] & 0x80)
+                    inputbuf[utf8BytePosn] = ' ';
+            }
+        }//endcatch
+    }//endwhile
 
     if (std_String_StartsWith(inputbuf, R"({"jsonrpc":"2.0","method":"textDocument/publishDiagnostics")") )
     {
@@ -866,23 +1034,140 @@ bool ProcessLanguageClient::writeJson(json& json)
 
     std::string content = json.dump();
     std::string header = "Content-Length: " + std::to_string(content.length()) + "\r\n\r\n" + content;
-    //writeClientLog(wxString::Format("\n-<writeJson():\n%s", content.c_str()) ); //(ph 2020/08/21)
     return WriteHdr(header);
 }
+// ----------------------------------------------------------------------------
+bool ProcessLanguageClient::WriteHdr(const std::string &in)
+// ----------------------------------------------------------------------------
+{
+    // write json header and data string to the log
+    wxString limitedLogOut(in.c_str(), wxConvUTF8);
+    wxString out(in.c_str(), wxConvUTF8);
+
+    // limit "text" output to log at 512 chars
+    if (limitedLogOut.Contains("\"textDocument/didOpen\"")
+        or limitedLogOut.Contains("\"textDocument/didChange\""))
+    {
+        int posnText = limitedLogOut.Find("\"text\":");
+        int posnUri =  limitedLogOut.Find("\"uri\":");
+        // if uri follows text, make adjustments
+        if (posnUri > posnText)
+        {
+            int txtBeg = posnText + 7; //skip over "text":
+            int txtEnd = posnUri - 4;  //skip back over "uri": where text ends
+            int txtLen = txtEnd - txtBeg ;
+            if (txtLen > 512)
+            {
+                wxString tmpStr = limitedLogOut.Left((txtBeg + 120)) + "<...SNIP...>" + limitedLogOut.Right(120);
+                tmpStr.Append(limitedLogOut.Mid(posnUri-8) ); //append uri to end
+                limitedLogOut = tmpStr;
+            }
+        }
+        else
+        limitedLogOut = wxString::Format("<<< Write():\n%s", wxString(in)).Mid(0,512) + "<...DATA SNIPED BY LOG WRITE()...>";
+    }//endif contains didOpen
+
+    if (not limitedLogOut.StartsWith("<<< ") )
+        limitedLogOut.Prepend("<<< ");
+    writeClientLog(limitedLogOut );
+
+    // Write raw data to clangd server
+    #if defined(_WIN32)
+        bool ok = m_pServerProcess->WriteRaw( out ); //windows
+        if (not ok)
+        {
+            writeClientLog("Error: WriteHdr() failed WriteRaw()");
+            return false;
+        }
+    #else
+        // unix just posts the msg to an output thread queue, so no return code.
+        m_pServerProcess->Write( fileUtils.ToStdString(out) );            //unix
+    #endif
+    return true;
+}//end WriteHdr()
+// ----------------------------------------------------------------------------
+bool ProcessLanguageClient::DoValidateUTF8data(std::string& strdata)
+// ----------------------------------------------------------------------------
+{
+    // These invalid utr8 chars are coming from clangd textDocument/completion
+    // responses in sysmbols from non-CB files. Eg., files included by the compiler etc.
+
+    // convert string data to vector
+    //eg., const std::vector<int> charvect(json_str.begin(), json_str.end());
+    std::vector<int>utf8Vector(strdata.begin(), strdata.end());
+
+    vector<int>invalidLocs;
+    ValidateUTF8vector validateUTF8;
+    bool result = validateUTF8.validUtf8(utf8Vector,invalidLocs);
+    if (invalidLocs.size())
+    {
+        ConfigManager *cfgApp = Manager::Get()->GetConfigManager(_T("app"));
+        // Avoid utf8 asserts in internationalized CodeBlocks.
+        bool i18n = cfgApp->ReadBool(_T("/locale/enable"), false);
+
+        // Erase the invalid utf8 chars (if any) in reverse order
+        for (int ii=invalidLocs.size(); ii-- > 0; )
+        {
+            int invloc = invalidLocs[ii];
+            std::string invStr(&strdata[invloc], 1);
+            unsigned char invChar(invStr[0]);
+
+            // clangd response:
+            // {"id":"textDocument/completion","jsonrpc":"2.0","result":{
+            // a URI is not always included in the response
+            //  "textDocument":{"uri":"file:///F:/usr/Proj/Clangd_Client-uw/clone/src/LSPclient/src/client.cpp"}
+            std::string respID;
+            std::string respURI;
+            int respIDposn = strdata.find("textDocument/");
+            int respURIposn = strdata.find("{\"uri\":\"file://");
+            if (stdFound(respIDposn))
+                respID = strdata.substr(respIDposn, 24);
+            if (stdFound(respURIposn))
+            {
+                int uriend = strdata.find("\"}", respURIposn);
+                if (wxFound(uriend))
+                    respURI = strdata.substr(respURIposn+7, uriend);
+            }
+
+            wxString msg = "Error: Removed clangd response invalid utf8 char:";
+            if (not i18n) //if not internationalization show U(<codepoint>)
+            {
+                // With internationalization the wxUniChar gets an assert in wxString::Format
+                wxUniChar uniChar(invChar);
+                msg += wxString::Format("position(%d), hex(%02hhX), U(%x), \'%s\'", invloc, (unsigned int)invChar, (int)uniChar.GetValue(), invStr );
+            }
+            else
+                msg += wxString::Format("position(%d), hex(%02hhX), \'%s\'", invloc, (unsigned int)invChar, invStr );
+
+            if (respID.size())
+                msg += wxString::Format(" ResponseID:%s", respID);
+            if (respURI.size())
+                msg += wxString::Format(" URI(%s)", respURI);
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+            writeClientLog(msg);
+
+            // erase the invalid utf8 char
+            strdata.erase (invloc, 1);
+        }//endFor
+    }//endIf
+    return result;
+
+}//end DoValidateUTF8data
 // ----------------------------------------------------------------------------
 void ProcessLanguageClient::OnLSP_Response(wxThreadEvent& threadEvent)
 // ----------------------------------------------------------------------------
 {
-    // This member event was Connected in  ProcessLanguageClient() constructor;
-    // and issued from  transport.h "int loop(MessageHandler &handler)"
+    // This member event was Connected in ProcessLanguageClient() constructor;
+    // and issued from  transport.h " in loop(MessageHandler &handler)"
     // with event.clientdata set to incoming json data
+    // tranport.h loop analyses the raw clangd stdout data.
+    // Here we dispatch the different messages types to the appropriate routine.
 
     m_LSP_responseStatus = true;
     if (not Has_LSPServerProcess()) return;
 
     json* pJson = nullptr;
     try {
-        //json* pJson = (json*)event.GetClientData();
         pJson = (json*)threadEvent.GetPayload<json*>();
     }
     catch (std::exception &e){
@@ -985,8 +1270,8 @@ void ProcessLanguageClient::OnIDResult(wxCommandEvent& event)
         {
             m_LSP_initialized = false;
             // Terminate the input thread
-            terminateLSP = true; //tell the read thread to terminate //(ph 2021/01/15)
-            MapMsgHndlr.SetLSP_TerminateFlag(true); //(ph 2021/07/8)
+            m_terminateLSP = true; //tell the read thread to terminate //(ph 2021/01/15)
+            m_MapMsgHndlr.SetLSP_TerminateFlag(1); //(ph 2021/07/8)
             lspevt.SetString("LSP_Initialized:false");
         }
 
@@ -1004,7 +1289,7 @@ void ProcessLanguageClient::OnIDResult(wxCommandEvent& event)
 
         else if (idValue.StartsWith("textDocument/references") )
         {
-            //{"jsonrpc":"2.0","id":"textDocument/references","result":[{"uri":"file:///F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":49,"character":45},"end":{"line":49,"character":52}}},{"uri":"file:///F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":4},"end":{"line":89,"character":11}}}]}
+            //{"jsonrpc":"2.0","id":"textDocument/references","result":[{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":49,"character":45},"end":{"line":49,"character":52}}},{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":4},"end":{"line":89,"character":11}}}]}
             lspevt.SetString(idValue + STX + "result");
             json resultValue = pJson->at("result"); // now array
 
@@ -1037,23 +1322,19 @@ void ProcessLanguageClient::OnIDResult(wxCommandEvent& event)
             lspevt.SetString(idValue + STX +"result");
         }
 
-        // append the event string with the RequestResponseID (if any)
-        if (idValue.Contains(wxString(STX) + "RRID"))
-        {
-            lspevt.SetString(lspevt.GetString() + wxString(STX) + GetRRIDvalue(idValue));
-        }
-
-
     }//endif "id"
 
     // A copy of the json object is necessary for AddPendingEvent(). The current one
     // will be reused  by the readJson() function.
     // The new json object will be freed in CodeCompletion code.
     json* pJsonData = new json(*pJson);
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pJsonData && "Failure to allocate json data");
+    #endif
     if (not pJsonData) return;
 
     lspevt.SetClientData(pJsonData);
+    lspevt.SetEventObject(this);
     Manager::Get()->GetAppFrame()->GetEventHandler()->AddPendingEvent(lspevt);
 
     return;
@@ -1093,10 +1374,13 @@ void ProcessLanguageClient::OnIDError(wxCommandEvent& event)
     // The current one will be reused  by the readJson() function.
     // new json object will be freed in CodeCompletion::OnLSP_Event() code
     json* pJsonData = new json(*pJson);
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pJsonData && "Failure to allocate json data");
+    #endif
     if (not pJsonData) return;
 
     lspevt.SetClientData(pJsonData);
+    lspevt.SetEventObject(this);
     Manager::Get()->GetAppFrame()->GetEventHandler()->AddPendingEvent(lspevt);
 
 }//end IDError
@@ -1120,7 +1404,7 @@ void ProcessLanguageClient::OnMethodParams(wxCommandEvent& event)
     }
 
 
-    // event used to pass json object to code completion
+    // event used to pass json object to CodeCompletion functions via CodeCompletion::OnLSP_Event()
     wxCommandEvent lspevt(wxEVT_COMMAND_MENU_SELECTED, GetLSP_UserEventID());
 
     // ----------------------------------------------------------------------------
@@ -1129,7 +1413,7 @@ void ProcessLanguageClient::OnMethodParams(wxCommandEvent& event)
     // {"jsonrpc":"2.0",
     //      "method":"textDocument/publishDiagnostics",
     //       "params":{
-    //         "uri":"file:///F%3A/usr/Proj/Clangd/CB_Client/HelloWorld/HelloWorld.cpp","diagnostics":[{"range":{"start":{"line":3,"character":16},"end":{"line":3,"character":19}},"severity":2,"code":2,"source":"Clangd","message":"using directive refers to implicitly-defined namespace 'std'","relatedInformation":[]},{...
+    //         "uri":"file://F%3A/usr/Proj/Clangd/CB_Client/HelloWorld/HelloWorld.cpp","diagnostics":[{"range":{"start":{"line":3,"character":16},"end":{"line":3,"character":19}},"severity":2,"code":2,"source":"Clangd","message":"using directive refers to implicitly-defined namespace 'std'","relatedInformation":[]},{...
 
     if ((methodValue == "textDocument/publishDiagnostics"))
     {
@@ -1140,10 +1424,13 @@ void ProcessLanguageClient::OnMethodParams(wxCommandEvent& event)
     // will be reused  by the readJson() function.
     // The new json object will be freed in CodeCompletion code.
     json* pJsonData = new json(*pJson);
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pJsonData && "Failure to allocate json data");
+    #endif
     if (not pJsonData) return;
 
     lspevt.SetClientData(pJsonData);
+    lspevt.SetEventObject(this);
     Manager::Get()->GetAppFrame()->GetEventHandler()->AddPendingEvent(lspevt);
 
     return;
@@ -1153,14 +1440,16 @@ void ProcessLanguageClient::OnMethodParams(wxCommandEvent& event)
 wxString ProcessLanguageClient::GetRRIDvalue(wxString& lspHdrString)
 // ----------------------------------------------------------------------------
 {
+    // RRID == RequestResponseID, an int to redirect responses to the requestor
+
     int posn = wxNOT_FOUND;
     long lspRRID = 0;
     wxString RRIDstr;
 
     if ( wxFound(posn = lspHdrString.Find(wxString(STX) + "RRID")) )
     {
-        RRIDstr = lspHdrString.Mid(posn+1);      // skip over STX (StartOfText) char
-        RRIDstr = lspHdrString.BeforeFirst(STX); //eliminate any other trailing strings
+        RRIDstr = lspHdrString.Mid(posn+1);     // skip over STX (StartOfText) char
+        RRIDstr = RRIDstr.BeforeFirst(STX);     //eliminate any other trailing strings
         bool ok = (lspRRID = RRIDstr.Mid(4).ToLong(&lspRRID)); //skip over 'RRID' to get int chars
         if (not ok) return wxString();
     }
@@ -1176,8 +1465,8 @@ void ProcessLanguageClient::LSP_Shutdown()
     if (Has_LSPServerProcess())
     {
         writeClientLog("<<< Shutdown():\n") ;
-        if (pServerProcess)
-            pServerProcess->Detach(); //throw away any further responses
+        if (m_pServerProcess)
+            m_pServerProcess->Detach(); //throw away any further responses
         Shutdown(); //Tell LSP to close/save/whatever goodness
         Exit();
     }
@@ -1197,14 +1486,14 @@ void ProcessLanguageClient::LSP_Shutdown()
 bool ProcessLanguageClient::ClientProjectOwnsFile(cbEditor* pcbEd, bool notify)
 // ----------------------------------------------------------------------------
 {
-    // Verify that the active project that created this client owns this editors file
+    // Verify that the project that created this client owns this editors file
 
     bool owned = false;
     if (pcbEd)
     {
         // There must be an active project
         cbProject* pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if (not pActiveProject) owned = false;
+        if (not pActiveProject) return owned = false;
         wxString edFilename = pcbEd->GetFilename();
 
         // For LSP, file must belong to a project, because project compile parameters are used
@@ -1220,11 +1509,19 @@ bool ProcessLanguageClient::ClientProjectOwnsFile(cbEditor* pcbEd, bool notify)
             pEdProject = pProjectFile->GetParentProject();
         if ( (not pProjectFile) or (not pEdProject) )
             owned = false;
-        if (pEdProject != GetCBProject()) //GetCBProject returns client project
-            owned = false;
-        else owned = true;
+        else if (pEdProject == GetClientsCBProject()) //GetCBProject returns client project
+            owned = true;
+        else if (pEdProject->GetTitle() == "~ProxyProject~") //for non-owned project files
+        {
+            if (m_pParser and (pEdProject == m_pParser->GetParseManager()->GetProxyProject()))
+                owned = true;
+        }
+
         if ((not owned) and notify)
-            cbMessageBox("LSP: This file is not contained in a loaded project.");
+        {
+            wxString msg = wxString::Format("LSP: This file is not contained in a loaded project.\n%s", edFilename);
+            cbMessageBox(msg);
+        }
     }
 
     return owned;
@@ -1258,7 +1555,9 @@ cbProject* ProcessLanguageClient::GetProjectFromEditor(cbEditor* pcbEd)
 void ProcessLanguageClient::LSP_Initialize(cbProject* pProject)
 // ----------------------------------------------------------------------------
 {
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pProject && "LSP_Initialize called without pProject");
+    #endif
     if (not pProject) return;
 
     //LSP_rootURI = dirname; // contains backword slashes
@@ -1293,7 +1592,7 @@ void ProcessLanguageClient::LSP_Initialize(cbProject* pProject)
     {
         writeClientLog(wxString::Format("<<< Initialize(): %s", dirname) );
 
-        try {Initialize(string_ref("file:///" + dirname) ); }
+        try { Initialize(string_ref(fileUtils.FilePathToURI(dirname))); }
         catch(std::exception &err)
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
@@ -1314,10 +1613,6 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor* pcbEd)
         return false;
     }
 
-
-    //-cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-    //-if (not pProject) return;
-
     cbProject* pProject = GetProjectFromEditor(pcbEd);
     wxString infilename = pcbEd->GetFilename();
 
@@ -1337,8 +1632,15 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor* pcbEd)
     // Add file to compiler_commands.json if it's absent
     UpdateCompilationDatabase(pProject, infilename);
 
+    #if wxCHECK_VERSION(3,1,0)
     std::string srcFilename = infilename.ToStdString(wxConvUTF8);
     std::string srcDirname = wxPathOnly(pProject->GetFilename()).ToStdString(wxConvUTF8);
+    #else
+    //std::string srcFilename = infilename.utf8_str().ToStdString();
+    std::string srcFilename = std::string(infilename.utf8_str());
+    std::string srcDirname = std::string(wxPathOnly(pProject->GetFilename()).utf8_str());
+    #endif
+
     std::vector<string_ref> vecOfCompileCommands;
 
     if (platform::windows)
@@ -1347,7 +1649,7 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor* pcbEd)
         std_ReplaceAll(srcDirname, "\\","/");
     }
 
-    wxString fileURI = wxString(wxT("file:///")) + infilename;
+    wxString fileURI = fileUtils.FilePathToURI(infilename); //(ph 2022/01/5)
     fileURI.Replace("\\", "/");
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     cbStyledTextCtrl* pCntl = pcbEd->GetControl();
@@ -1357,7 +1659,8 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor* pcbEd)
     m_FileLinesHistory[pcbEd] = pCntl->GetLineCount();
 
     wxString strText = pCntl->GetText();
-    const char* pText = strText.mb_str();           //works
+    //-const char* pText = strText.mb_str();        //works //(ph 2022/01/17)
+    const char* pText = strText.ToUTF8();           //ollydbg  220115 did not solve illegal utf8char
 
     writeClientLog(wxString::Format("<<< LSP_DidOpen:%s", docuri.c_str()) );
 
@@ -1383,6 +1686,8 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor* pcbEd)
 bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject* pProject)
 // ----------------------------------------------------------------------------
 {
+    // This function is NOT used for files open in an editor
+
     if (not GetLSP_Initialized()) {
         wxString msg = wxString::Format("%s() %d: ", __FUNCTION__, __LINE__);
         msg += "\n attempt to add file before initialization.";
@@ -1390,18 +1695,14 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject* pProject)
         return false;
     }
 
-    //-cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-    //-if (not pProject) return;
-
     wxString infilename = filename;
     if (not wxFileExists(filename) ) return false;
     if (not pProject) return false;
     if (not pProject->GetFileByFilename(filename, false))
             return false;
 
-    // FIXME (ph#): This function is not used for files open in the editor
-    // Dont open editors or files multile times
-    //if (GetLSP_EditorIsOpen(filename)) <-- should check this also
+    // This function is not used for files open in an editor
+    // Dont DidOpen() editors or files multile times, LSP will yell at you.
     EditorManager* pEdMgr =  Manager::Get()->GetEditorManager();
     if (pEdMgr->IsOpen(filename) )
         return false;
@@ -1416,8 +1717,14 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject* pProject)
     // Add file to compiler_commands.json if it's absent
     UpdateCompilationDatabase(pProject, infilename);
 
+    #if wxCHECK_VERSION(3,1,0)
     std::string srcFilename = infilename.ToStdString(wxConvUTF8);
     std::string srcDirname = wxPathOnly(pProject->GetFilename()).ToStdString(wxConvUTF8);
+    #else
+    std::string srcFilename = infilename.ToStdString();
+    std::string srcDirname = wxPathOnly(pProject->GetFilename()).ToStdString();
+    #endif // wxCHECK
+
     std::vector<string_ref> vecOfCompileCommands;
 
     if (platform::windows)
@@ -1426,14 +1733,19 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject* pProject)
         std_ReplaceAll(srcDirname, "\\","/");
     }
 
-    wxString fileURI = wxString(wxT("file:///")) + infilename;
+    wxString fileURI = fileUtils.FilePathToURI(infilename);
     fileURI.Replace("\\", "/");
     DocumentUri docuri = DocumentUri(fileURI.c_str());
 
     cbStyledTextCtrl* pCtrl = GetNewHiddenEditor(filename);
     if (not pCtrl) return false;
 
+    #if wxCHECK_VERSION(3,1,0)
     std::string strText = pCtrl->GetText().ToStdString(wxConvUTF8);
+    #else
+    std::string strText = std::string(pCtrl->GetText().utf8_str());
+    #endif
+
     const char* pText = strText.c_str();           //works
 
     writeClientLog(wxString::Format("<<< LSP_DidOpen:%s", docuri.c_str()) );
@@ -1460,7 +1772,9 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject* pProject)
 void ProcessLanguageClient::LSP_DidClose(cbEditor* pcbEd)
 // ----------------------------------------------------------------------------
 {
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pcbEd && "LSP_DidClose called with nullptr");
+    #endif
     if (not pcbEd) return;
 
     if (not GetLSP_Initialized())
@@ -1476,11 +1790,11 @@ void ProcessLanguageClient::LSP_DidClose(cbEditor* pcbEd)
     //}
 
     wxString infilename = pcbEd->GetFilename();
-    wxString fileURI = wxString(wxT("file:///")) + infilename;
+    wxString fileURI = fileUtils.FilePathToURI( infilename );
     fileURI.Replace("\\", "/");
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     // There wont be a wxStyledTextCtrl !!
-    //c-bStyledTextCtrl* pCntl = pcbEd->GetControl();
+    //-cbStyledTextCtrl* pCntl = pcbEd->GetControl();
     //-if (not pCntl) return;
 
     writeClientLog(wxString::Format("<<< LSP_DidClose File:\n%s", docuri.c_str()) );
@@ -1506,7 +1820,9 @@ void ProcessLanguageClient::LSP_DidClose(cbEditor* pcbEd)
 void ProcessLanguageClient::LSP_DidClose(wxString filename, cbProject* pProject)
 // ----------------------------------------------------------------------------
 {
+    #if defined(cbDEBUG)
     cbAssertNonFatal(filename.Length() && "LSP_DidClose called with nullptr");
+    #endif
     if (not filename.Length()) return;
 
     if (not GetLSP_Initialized())
@@ -1520,7 +1836,7 @@ void ProcessLanguageClient::LSP_DidClose(wxString filename, cbProject* pProject)
     // project must own file
     if (not pProject->GetFileByFilename(infilename,false) )
         return;
-    wxString fileURI = wxString(wxT("file:///")) + infilename;
+    wxString fileURI = fileUtils.FilePathToURI(infilename);
     fileURI.Replace("\\", "/");
     DocumentUri docuri = DocumentUri(fileURI.c_str());
 
@@ -1536,6 +1852,15 @@ void ProcessLanguageClient::LSP_DidClose(wxString filename, cbProject* pProject)
     }
 
     SetLastLSP_Request(infilename, "textDocument/didClose");
+    // If file in open in an editor, signal that it has been closed
+    EditorManager* pEdMgr = Manager::Get()->GetEditorManager();
+    cbEditor* pcbEd = pEdMgr->IsBuiltinOpen(filename);
+    if (pcbEd)
+    {
+        SetLSP_EditorIsParsed(pcbEd, false); //(ph 2021/11/10)
+        SetLSP_EditorIsOpen(pcbEd, false);
+        SetLSP_EditorRemove(pcbEd);
+    }
 
     return ;
 }
@@ -1548,7 +1873,9 @@ void ProcessLanguageClient::LSP_DidSave(cbEditor* pcbEd)
     // after a didSave. But if we issue a didClose/DidOpen after didSave,
     // completions start up again
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pcbEd && "LSP_DidSave called with nullptr");
+    #endif
     if (not pcbEd) return;
 
     if (not GetLSP_Initialized())
@@ -1563,7 +1890,7 @@ void ProcessLanguageClient::LSP_DidSave(cbEditor* pcbEd)
     }
 
     wxString infilename = pcbEd->GetFilename();
-    wxString fileURI = wxString(wxT("file:///")) + infilename;
+    wxString fileURI = fileUtils.FilePathToURI(infilename);
     fileURI.Replace("\\", "/");
     DocumentUri docuri = DocumentUri(fileURI.c_str());
 
@@ -1584,9 +1911,13 @@ void ProcessLanguageClient::LSP_DidSave(cbEditor* pcbEd)
     //        cbMessageBox(errMsg);
     //    }
 
-    // clear the "LSP messages" log
-    m_pDiagnosticsLog->Clear();
-    pcbEd->SetErrorLine(-1);            ;//clear any error indicator
+    // clear the "LSP messages" log if user set option
+    ConfigManager* pCfg = Manager::Get()->GetConfigManager("clangd_client");
+    bool doClear = pCfg->ReadBool("/lspMsgsClearOnSave_check", false);
+    if (doClear)
+        m_pDiagnosticsLog->Clear(); //(ph 2022/02/12)
+
+    pcbEd->SetErrorLine(-1);            ;//clear any error indicator in editor
 
     // There's a bug in clangd that causes completions to stop after a DidSave(uri).
     // Clangd gets an unhandled exception (see server log and clangd #320 bug),
@@ -1611,7 +1942,9 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor* pcbEd, int argCaretPosi
 {
     // goto definition / implementation
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pcbEd && "LSP_GoToDefinition called with nullptr");
+    #endif
     if (not pcbEd) return;
 
     if (not GetLSP_Initialized())
@@ -1626,7 +1959,7 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor* pcbEd, int argCaretPosi
         return;
     }
 
-    wxString fileURI = wxString(wxT("file:///")) + pcbEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI( pcbEd->GetFilename() );
     fileURI.Replace("\\", "/");
     //-fileURI.MakeLower().Replace("f:", "");
 
@@ -1653,7 +1986,9 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor* pcbEd, int argCaretPosi
     // CB goto implementation == LSP GoToDefinition
     if (id)
     {
-        wxString reqID = wxString::Format("%cRRID%d", STX, id);
+        //RRID == RequestResponseID to return response to original requestor routine
+        wxString reqID = wxString::Format("%cRRID%d", STX, int(id));
+        reqID.Replace(wxString::Format("%c%c", STX ,STX), STX);
         try { GoToDefinitionByID(docuri, position, reqID.ToStdString()); }
         catch(std::exception &err)
         {
@@ -1687,7 +2022,9 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor* pcbEd, int argCaretPos
 
     if (not pcbEd)
     {
+        #if defined(cbDEBUG)
         cbAssertNonFatal(pcbEd && "LSP_ToToDeclaration called with nullptr");
+        #endif
         return;
      }
 
@@ -1703,7 +2040,7 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor* pcbEd, int argCaretPos
     }
 
 
-    wxString fileURI = wxString(wxT("file:///")) + pcbEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI(pcbEd->GetFilename() );
     fileURI.Replace("\\", "/");
     //-fileURI.MakeLower().Replace("f:", "");
 
@@ -1721,20 +2058,37 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor* pcbEd, int argCaretPos
     //-const int startPosn = pCtrl->WordStartPosition(edCaretPosn, true);
     position.line       = edLineNum;
     position.character  = edColumn;
-    writeClientLog(wxString::Format("<<< GoToDeclaration:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character) );
+    writeClientLog(wxString::Format("<<< GoToDeclaration:\n%s,line[%d], char[%d]", docuri.str(), position.line, position.character) );
 
     // Tell server if text has changed
     LSP_DidChange(pcbEd);
 
-    try { GoToDeclaration(docuri, position); }
-    catch(std::exception &err)
+    if (id)
     {
-        //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
-        wxString errMsg(wxString::Format("\nLSP_GoToDeclaration() error: %s\n%s", err.what(), fileURI.c_str()) );
-        writeClientLog(errMsg);
-        cbMessageBox(errMsg);
-    }
+        // RRID is aRequestResponseID used to return cland response to requestor
+        wxString reqID = wxString::Format("%cRRID%d", STX, int(id));
+        reqID.Replace(wxString::Format("%c%c", STX ,STX), STX);
 
+        try { GoToDeclarationByID(docuri, position, reqID.ToStdString()); }
+        catch(std::exception &err)
+        {
+            //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
+            wxString errMsg(wxString::Format("\nLSP_GoToDeclaration() error: %s\n%s", err.what(), fileURI.c_str()) );
+            writeClientLog(errMsg);
+            cbMessageBox(errMsg);
+        }
+    }
+    else
+    {
+        try { GoToDeclaration(docuri, position); }
+        catch(std::exception &err)
+        {
+            //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
+            wxString errMsg(wxString::Format("\nLSP_GoToDeclaration() error: %s\n%s", err.what(), fileURI.c_str()) );
+            writeClientLog(errMsg);
+            cbMessageBox(errMsg);
+        }
+    }
     //-SetLSP_EditorRequest(pcbEd, "textDocument/declaration", argCaretPosition);
     SetLastLSP_Request(pcbEd->GetFilename(), "textDocument/declaration");
 
@@ -1746,7 +2100,9 @@ void ProcessLanguageClient::LSP_FindReferences(cbEditor* pEd, int argCaretPositi
 {
     // goto signature
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_FindReferences called with nullptr");
+    #endif
     if (not pEd) return;
 
     if (not GetLSP_Initialized())
@@ -1763,7 +2119,7 @@ void ProcessLanguageClient::LSP_FindReferences(cbEditor* pEd, int argCaretPositi
         return;
     }
 
-    wxString fileURI = wxString(wxT("file:///")) + pEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI(pEd->GetFilename());
     fileURI.Replace("\\", "/");
 
     cbStyledTextCtrl* pCtrl = pEd->GetControl();
@@ -1798,6 +2154,8 @@ void ProcessLanguageClient::LSP_FindReferences(cbEditor* pEd, int argCaretPositi
         wxString errMsg(wxString::Format("\nLSP_FindReferences() error: %s\n%s", err.what(), docuri.c_str()) );
         writeClientLog(errMsg);
         cbMessageBox(errMsg);
+        writeClientLog("Error: " + errMsg);
+        return;
     }
 
     //-SetLSP_EditorRequest(pEd, "textDocument/references", argCaretPosition);
@@ -1811,7 +2169,9 @@ void ProcessLanguageClient::LSP_RequestRename(cbEditor* pEd, int argCaretPositio
 {
     // LSP Rename
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_FindReferences called with nullptr");
+    #endif
     if (not pEd) return;
 
     if (not GetLSP_Initialized())
@@ -1828,7 +2188,7 @@ void ProcessLanguageClient::LSP_RequestRename(cbEditor* pEd, int argCaretPositio
         return;
     }
 
-    wxString fileURI = wxString(wxT("file:///")) + pEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI(pEd->GetFilename());
     fileURI.Replace("\\", "/");
 
     cbStyledTextCtrl* pCtrl = pEd->GetControl();
@@ -1857,7 +2217,7 @@ void ProcessLanguageClient::LSP_RequestRename(cbEditor* pEd, int argCaretPositio
     // Report changes to server else reported references will be wrong.
     LSP_DidChange(pEd);
 
-    string_ref newNameStrRef = newName.ToStdString();
+    string_ref newNameStrRef(newName.c_str()); //(ph 2022/01/3)
     try { Rename(docuri, position, newNameStrRef); }
     catch(std::exception &err)
     {
@@ -1878,7 +2238,9 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor* pEd, size_t id)
 {
     // goto signature
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_GetSymbols called with nullptr");
+    #endif
     if (not pEd) return;
 
     if (not GetLSP_Initialized())
@@ -1893,12 +2255,12 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor* pEd, size_t id)
         return;
     }
 
-    if ((not pEd) or (not ClientProjectOwnsFile(pEd)) ) return;
+    //Does this really matter ?
+    //?if ((not pEd) or (not ClientProjectOwnsFile(pEd)) ) return; //(ph 2021/11/9)
     if (not pEd) return;
 
-    wxString fileURI = wxString(wxT("file:///")) + pEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI(pEd->GetFilename());
     fileURI.Replace("\\", "/");
-    //-fileURI.MakeLower().Replace("f:", "");
 
     cbStyledTextCtrl* pCtrl = pEd->GetControl();
     if (not pCtrl) return;
@@ -1908,11 +2270,13 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor* pEd, size_t id)
 
     // Tell LSP server when text has changed
     LSP_DidChange(pEd);
-    //get symbols
-    //try { DocumentSymbol(docuri); }
 
     wxString idHdr = fileURI;
-    if (id) idHdr.Append(wxString::Format("%cRRID%d", STX, id));
+    if (id)
+    {
+        idHdr.Append(wxString::Format("%cRRID%d", STX, int(id))); // set ResponseRequestID
+        idHdr.Replace(wxString::Format("%c%c", STX ,STX), STX);
+    }
 
     try { DocumentSymbolByID(docuri, idHdr.ToStdString() ); }
     catch(std::exception &err)
@@ -1923,7 +2287,6 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor* pEd, size_t id)
         cbMessageBox(errMsg);
     }
 
-    //-SetLSP_EditorRequest(pEd, "textDocument/documentSymbol", 0);
     SetLastLSP_Request(pEd->GetFilename(), "textDocument/documentSymbol");
 
     return ;
@@ -1932,8 +2295,10 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor* pEd, size_t id)
 void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject* pProject, size_t id) //(ph 2021/04/11)
 // ----------------------------------------------------------------------------
 {
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pProject && "LSP_GetSymbols called with null Project ptr");
     cbAssertNonFatal(filename.Length() && "LSP_GetSymbols called with null filename");
+    #endif
     if ((not pProject) or (not filename.Length())) return;
 
     if (not GetLSP_Initialized())
@@ -1947,7 +2312,7 @@ void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject* pPr
     if ((not pProject) or (not pProject->GetFileByFilename(filename,false)) ) return;
     if (not wxFileExists(filename)) return;
 
-    wxString fileURI = wxString(wxT("file:///")) + filename;
+    wxString fileURI = fileUtils.FilePathToURI(filename);
     fileURI.Replace("\\", "/");
     //-fileURI.MakeLower().Replace("f:", "");
 
@@ -1958,7 +2323,11 @@ void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject* pPr
     writeClientLog(wxString::Format("<<< LSP_GetSymbols:\n%s", docuri.c_str()) );
 
     wxString idHdr = fileURI;
-    if (id) idHdr.Append(wxString::Format("%cRRID%d", STX, id));
+    if (id)
+    {
+        idHdr.Append(wxString::Format("%cRRID%d", STX, int(id))); // set RequestResponseID used to return response to requestor
+        idHdr.Replace(wxString::Format("%c%c", STX ,STX), STX);
+    }
 
     //try { DocumentSymbol(docuri); }
     try { DocumentSymbolByID(docuri, idHdr.ToStdString() ); }
@@ -1981,7 +2350,9 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor* pEd, size_t id) 
 {
     // goto signature
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_GetSymbols called with nullptr");
+    #endif
     if (not pEd) return;
 
     if (not GetLSP_Initialized())
@@ -1999,7 +2370,7 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor* pEd, size_t id) 
     if ((not pEd) or (not ClientProjectOwnsFile(pEd)) ) return;
     if (not pEd) return;
 
-    wxString fileURI = wxString(wxT("file:///")) + pEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI(pEd->GetFilename());
     fileURI.Replace("\\", "/");
     //-fileURI.MakeLower().Replace("f:", "");
 
@@ -2010,18 +2381,36 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor* pEd, size_t id) 
     writeClientLog(wxString::Format("<<< LSP_GetSymbols:\n%s", docuri.c_str()) );
 
     // Tell LSP server when text has changed
-    LSP_DidChange(pEd);
-    //get symbols
-    //try { DocumentSymbol(docuri); }
-    try { SemanticTokensByID(docuri, fileURI.ToStdString() ); }
-    catch(std::exception &err)
-    {
-        //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
-        wxString errMsg(wxString::Format("\nLSP_RequestSemanticTokens() error: %s\n%s", err.what(), docuri.c_str()) );
-        writeClientLog(errMsg);
-        cbMessageBox(errMsg);
-    }
+    LSP_DidChange
+    (pEd);
 
+    //get symbols
+    if (id)
+    {
+        //RRID == RequestResponseID used to return the response data to the requestor
+        wxString idHdr = wxString::Format("%s%cRRID%d", fileURI, STX, id);
+        idHdr.Replace(wxString::Format("%c%c", STX ,STX), STX);
+
+        try { SemanticTokensByID(docuri, idHdr.ToStdString() ); }
+        catch(std::exception &err)
+        {
+            //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
+            wxString errMsg(wxString::Format("\nLSP_RequestSemanticTokens() error: %s\n%s", err.what(), docuri.c_str()) );
+            writeClientLog(errMsg);
+            cbMessageBox(errMsg);
+        }
+    }
+    else
+    {
+        try { SemanticTokensByID(docuri, fileURI.ToStdString() ); }
+        catch(std::exception &err)
+        {
+            //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
+            wxString errMsg(wxString::Format("\nLSP_RequestSemanticTokens() error: %s\n%s", err.what(), docuri.c_str()) );
+            writeClientLog(errMsg);
+            cbMessageBox(errMsg);
+        }
+    }
     //-SetLSP_EditorRequest(pEd, "textDocument/documentTokens", 0);
     SetLastLSP_Request(pEd->GetFilename(), "textDocument/documentTokens");
 
@@ -2091,7 +2480,9 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor* pEd)
     //        text: string;
     //    }
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_DidChange called with nullptr");
+    #endif
     if (not pEd) return;
 
     if (not GetLSP_Initialized())
@@ -2106,7 +2497,7 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor* pEd)
         return;
     }
 
-    wxString fileURI = wxString(wxT("file:///")) + pEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI(pEd->GetFilename());
     fileURI.Replace("\\", "/");
 
     cbStyledTextCtrl* pCtrl = pEd->GetControl();
@@ -2151,7 +2542,8 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor* pEd)
     }
 
     // Assure text is UTF8 before handing to DidChange()
-    didChangeEvent.text = edText.ToUTF8();
+    didChangeEvent.text = edText;
+    // didChangeEvent.text = edText.ToUTF8(); Trying to find bad utf8 problem
     std::vector<TextDocumentContentChangeEvent> tdcce{didChangeEvent};
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     // **debugging**
@@ -2181,13 +2573,14 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor* pEd)
     return;
 }//end LSP_DidChange()
 // ----------------------------------------------------------------------------
-//-void ProcessLanguageClient::LSP_Completion(bool isAuto, cbEditor* pEd, int& tknStart, int& tknEnd)
 void ProcessLanguageClient::LSP_Completion(cbEditor* pEd)
 // ----------------------------------------------------------------------------
 {
     // Code completion
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_Completion called with nullptr");
+    #endif
     if (not pEd) return;
 
     if (not GetLSP_Initialized())
@@ -2205,30 +2598,19 @@ void ProcessLanguageClient::LSP_Completion(cbEditor* pEd)
     cbStyledTextCtrl* pCtrl = pEd->GetControl();
     if (not pCtrl) return;
 
-
-    // Allow completion requests to block for previous SetCompletionBusyTime() call.
-    // It's cleared when the LSP responds to the completion request
+    // Allow completion requests to punt when a previous completion is busy for this file.
+    // It's cleared when the LSP responds to the completion request.
     if ( GetCompletionTimeBusy()) return;
 
     // Tell LSP server if file has changed, else asking for completion w/o updating can crash Clangd
-    LSP_DidChange(pEd); // FIXME (ph#): optimize sending DidChange() notifications //(ph 2020/12/19)
-
-    //if (GetDidChangeTimeBusy() )
-    //{
-        // Call back after LSP didChange responds with textDocument/publishDiagnostics
-        // Else the LSP completion rquest begins to fail over time
-        // SetLSP_ClientCallBack(pEd,&ProcessLanguageClient::LSP_Completion);
-        //wxString msg = LSP_GetTimeHMSM() + " LSP_Completion: SetCallback";
-        //Manager::Get()->GetLogManager()->DebugLog(msg);
-        //return;
-    //}
+    LSP_DidChange(pEd);
 
     int tknStart = 0; int tknEnd = 0;
     tknEnd = pCtrl->GetCurrentPos();
     tknStart = pCtrl->WordStartPosition(tknEnd, true);
 
 
-    wxString fileURI = wxString(wxT("file:///")) + pEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI( pEd->GetFilename());
     fileURI.Replace("\\", "/");
 
     DocumentUri docuri = DocumentUri(fileURI.c_str());
@@ -2270,7 +2652,9 @@ void ProcessLanguageClient::LSP_Hover(cbEditor* pEd, int posn)
 {
     // Hover
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_Hover called with nullptr");
+    #endif
     if  (not pEd) return;
 
     if (not GetLSP_Initialized())
@@ -2284,16 +2668,14 @@ void ProcessLanguageClient::LSP_Hover(cbEditor* pEd, int posn)
         return;
     }
 
-//    if ((not pEd) or (not ClientProjectOwnsFile(pEd)) )  return;
     if (not pEd) return;
-    wxString fileURI = wxString(wxT("file:///")) + pEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI(pEd->GetFilename());
     fileURI.Replace("\\", "/");
 
     cbStyledTextCtrl* pCtrl = pEd->GetControl();
     if (not pCtrl) return;
 
     DocumentUri docuri = DocumentUri(fileURI.c_str());
-    //-const int posn      = pCtrl->GetCurrentPos();
     const int startPosn = pCtrl->WordStartPosition(posn, true);
     Position position;
     position.line       = pCtrl->LineFromPosition(posn);
@@ -2312,7 +2694,6 @@ void ProcessLanguageClient::LSP_Hover(cbEditor* pEd, int posn)
         cbMessageBox(errMsg);
     }
 
-    //-SetLSP_EditorRequest(pEd, "textDocument/hover", posn);
     SetLastLSP_Request(pEd->GetFilename(), "textDocument/hover");
 
     return;
@@ -2323,7 +2704,9 @@ void ProcessLanguageClient::LSP_SignatureHelp(cbEditor* pEd, int posn)
 // ----------------------------------------------------------------------------
 {
     // SignatureHelp
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_SignatureHelp called with nullptr");
+    #endif
     if  (not pEd) return;
 
     if (not GetLSP_Initialized())
@@ -2337,16 +2720,14 @@ void ProcessLanguageClient::LSP_SignatureHelp(cbEditor* pEd, int posn)
         return;
     }
 
-//    if ((not pEd) or (not ClientProjectOwnsFile(pEd)) )  return;
     if (not pEd) return;
-    wxString fileURI = wxString(wxT("file:///")) + pEd->GetFilename();
+    wxString fileURI = fileUtils.FilePathToURI(pEd->GetFilename());
     fileURI.Replace("\\", "/");
 
     cbStyledTextCtrl* pCtrl = pEd->GetControl();
     if (not pCtrl) return;
 
     DocumentUri docuri = DocumentUri(fileURI.c_str());
-    //-const int posn      = pCtrl->GetCurrentPos();
     const int startPosn = pCtrl->WordStartPosition(posn, true);
     Position position;
     position.line       = pCtrl->LineFromPosition(posn);
@@ -2359,7 +2740,6 @@ void ProcessLanguageClient::LSP_SignatureHelp(cbEditor* pEd, int posn)
     try { SignatureHelp(docuri, position); }
     catch(std::exception &err)
     {
-        //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
         wxString errMsg(wxString::Format("\nLSP_SignatureHelp() error: %s\n%s", err.what(), docuri.c_str()) );
         writeClientLog(errMsg);
         cbMessageBox(errMsg);
@@ -2504,7 +2884,7 @@ size_t ProcessLanguageClient::GetCompilerDriverIncludesByFile(wxArrayString& res
 }//GetCompilersIncludesForFile
 // ----------------------------------------------------------------------------
 void ProcessLanguageClient::CheckForTooLongCommandLine(wxString& executableCmd, wxArrayString& outputCommandArray,
-                                    const wxString& basename ,const wxString& path) const //(ph 2020/12/2)
+                                    const wxString& basename ,const wxString& path) const
 // ----------------------------------------------------------------------------
 {
 
@@ -2592,7 +2972,9 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget* p
         if (tgtTitle == pTarget->GetTitle()) targetFound = true; //ok
     if (not targetFound) return ret;
 
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pTarget && "null target pointer");
+    #endif
     if (not pTarget) return ret;
     Compiler* compiler = CompilerFactory::GetCompiler(pTarget->GetCompilerID());
 
@@ -2645,10 +3027,11 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget* p
         else
             source_file = pfd.source_file;
 
-#ifdef command_line_generation
+    #ifdef command_line_generation
+        #warning command_line_generation is defined for debugging purposes
         Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_T("GetCompileFileCommand[1]: compiler_cmd='%s', source_file='%s', object='%s', object_dir='%s'."),
                                                     compiler_cmd.wx_str(), source_file.wx_str(), object.wx_str(), object_dir.wx_str()));
-#endif
+    #endif
 
         // for resource files, use short from if path because if windres bug with spaces-in-paths
         if (is_resource && compiler->GetSwitches().UseFullSourcePaths)
@@ -2656,10 +3039,10 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget* p
 
         QuoteStringIfNeeded(source_file);
 
-#ifdef command_line_generation
+    #ifdef command_line_generation
         Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_T("GetCompileFileCommand[2]: source_file='%s'."),
                                                     source_file.wx_str()));
-#endif
+    #endif
         cb::shared_ptr<CompilerCommandGenerator> generator(compiler ? compiler->GetCommandGenerator(pProject) : nullptr);
         generator->GenerateCommandLine(compiler_cmd, pTarget, pf, source_file, object,
                                           pfd.object_file_flat, pfd.dep_file);
@@ -2720,7 +3103,7 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget* p
     for (int ii=ret.GetCount()-1; ii>=0 ;--ii)
     {
         // clean out comment/log lines
-        if (ret[ii].starts_with("SLOG:"))
+        if (ret[ii].StartsWith("SLOG:"))
             ret.RemoveAt(ii);
     }
     return ret;
@@ -2735,25 +3118,20 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject* pProject, ProjectB
     // compile_commands.json needs the result of this to add to the command line.
     // else '#include <files> ' will not be found.
     // This is the resulting data were searching within...
-    /*   #include <...> search starts here:
-         F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++
-         F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32
-         F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward
-         F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include
-         F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed
-         F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include
-        End of search list.
-    */
+    //    #include <...> search starts here:
+    //     F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++
+    //     F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32
+    //     F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward
+    //     F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include
+    //     F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed
+    //     F:/usr/MinGW810_64seh/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include
+    //    End of search list.
 
     size_t compileCommandDBchanged = 0;
 
-    wxString sep = "/";
-    if (platform::windows) sep = "\\";
-
     wxString newFullFilePath = argFullFilePath;
     if (platform::windows)
-        newFullFilePath.Replace(sep, "/");
-    sep = "/";
+        newFullFilePath.Replace(fileSep, "/");
 
     ProjectFile* pProjectFile = pProject->GetFileByFilename(newFullFilePath, false);
     if (not pProjectFile) return false;
@@ -2856,8 +3234,8 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject* pProject, ProjectB
         std::string ccjFile    = entry["file"];
         std::string ccjCommand = entry["command"];
 
-        //-wxString ccjPath = ccjDir + sep + ccjFile ;
-        if (ccjFile == newFullFilePath)         //(ph 2021/01/15) make compile_commands file fullpath
+        //-wxString ccjPath = ccjDir + filesep + ccjFile ;
+        if (ccjFile == newFullFilePath)         // make compile_commands file fullpath
         {
             // filename and directory name have matched.
             // If commands match, leave entry alone.
@@ -2897,6 +3275,10 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject* pProject, ProjectB
             pJson->push_back(newEntry);
         //SetCompile_CommandsChanged(true);
         compileCommandDBchanged++;
+        #if defined(cbDEBUG)
+            LogManager* pLogMgr = Manager::Get()->GetLogManager();
+            pLogMgr->DebugLog(wxString::Format("NewCompileCommand:%s", newEntry["command"].get<std::string>()) );
+        #endif
     }
 
     //wxString look = pJson->dump(); debugging
@@ -2906,9 +3288,21 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject* pProject, ProjectB
 
 }//end AddFileToCompileDBJson()
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::UpdateCompilationDatabase(cbProject* pProject, wxString filename)             //(ph 2020/12/1)
+void ProcessLanguageClient::UpdateCompilationDatabase(cbProject* pProject, wxString filename)
 // ----------------------------------------------------------------------------
 {
+    if (pProject == m_pParser->GetParseManager()->GetProxyProject() )
+    {
+        // Don't update the compile_commands.json database if this is the
+        // Proxy cbProject containing non-project files.
+        // clangd will attempt to find another translation unit that somewhat
+        // matches this projects' unassociated file and use its compile parameters.
+        // We do this because clangd starts searching for the database within the directory
+        // containing the file, then searching backup the tree.
+        // There's likely no such database there; just wasting time.
+        return;
+    }
+
     // create compilation database 'compile_commands.json' from project files.
     // If compile_commands.json already exists, use it to insert project file data.
 
@@ -2922,9 +3316,9 @@ void ProcessLanguageClient::UpdateCompilationDatabase(cbProject* pProject, wxStr
     //    ...
     // ]
 
-    // Even if the file belongs to a non-active project, add it to the active projects
+    // Add an active project owned file and it's compiling info to the clangd compile_database.json file.
+    // If the file does not belong to a project, add it to proxy project
     // compile_commands.json file so Clangd can find  and parse it.
-    // Clangd looks only within the active projects json file
 
     std::fstream jsonFile;           //("out.json", std::ofstream::in | std::ofstream::out);
     json jdb = json::array();        //create the main array
@@ -2935,7 +3329,7 @@ void ProcessLanguageClient::UpdateCompilationDatabase(cbProject* pProject, wxStr
     if (wxFileExists(compileCommandsFullPath)) switch(1)
     {
         default:
-        jsonFile.open (compileCommandsFullPath, std::ofstream::in);
+        jsonFile.open (compileCommandsFullPath.ToStdString(), std::ofstream::in);
         if (not jsonFile.is_open())
         {
             wxString msg = wxString::Format("Existing compile_commands.json file failed to open.\n%s", editorProjectDotCBP);
@@ -2988,7 +3382,7 @@ void ProcessLanguageClient::UpdateCompilationDatabase(cbProject* pProject, wxStr
 
     if (fileCount)
     {
-        jsonFile.open (compileCommandsFullPath, std::ofstream::out | std::ofstream::trunc);
+        jsonFile.open (compileCommandsFullPath.ToStdString(), std::ofstream::out | std::ofstream::trunc);
         if (not jsonFile.is_open())
         {
             wxString msg(wxString::Format("compile_commands.json file %s\nfailed to open for output.\n", compileCommandsFullPath) );
@@ -3024,7 +3418,7 @@ int ProcessLanguageClient::GetCompilationDatabaseEntry(wxArrayString& resultArra
         unixFilename.Replace("\\", "/");
 
     nlohmann::json jArray;
-    std::ifstream jsonFile(fn_ccdbj.GetFullPath());
+    std::ifstream jsonFile(fn_ccdbj.GetFullPath().ToStdString());
     try {
         jsonFile >> jArray;
         jsonFile.close();
@@ -3084,7 +3478,10 @@ void ProcessLanguageClient::CreateDiagnosticsLog()
         ListCtrlLogger* pLogger = (ListCtrlLogger*)logslot.GetLogger();
         // pLogger->Clear();
         if (pLogger)
+        {
             m_pDiagnosticsLog = (LSPDiagnosticsResultsLog*)pLogger;
+            m_pDiagnosticsLog->Clear();
+        }
         return;
     }
 
@@ -3117,15 +3514,13 @@ void ProcessLanguageClient::CreateDiagnosticsLog()
         {
             wxCommandEvent dsEvt(wxEVT_COMMAND_MENU_SELECTED, XRCID("idDragScrollAddWindow"));
             dsEvt.SetEventObject(pWindow);
-            //pPlgn->AddPendingEvent(dsEvt);
-            //Manager::Get()->GetAppFrame()->GetEventHandler()->AddPendingEvent(dsEvt);
-            pPlgn->ProcessEvent(dsEvt);
+            pPlgn->ProcessEvent(dsEvt); //(ph 2022/02/12)
         }
     }
 
 }//end createLog
 // ----------------------------------------------------------------------------
-int ProcessLanguageClient::GetLogIndex (const wxString& logRequest) //(pecan 2018/02/23)
+int ProcessLanguageClient::GetLogIndex (const wxString& logRequest)
 // ----------------------------------------------------------------------------
 {
     // Usage:
@@ -3187,7 +3582,7 @@ int ProcessLanguageClient::GetLogIndex (const wxString& logRequest) //(pecan 201
     return 0;
 }
 // ----------------------------------------------------------------------------
-wxString ProcessLanguageClient::CreateLSPClientLogName(int pid, const cbProject* pProject) //(ph 2021/02/12)
+wxString ProcessLanguageClient::CreateLSPClientLogName(int pid, const cbProject* pProject)
 // ----------------------------------------------------------------------------
 {
     // Create or find an appropriate client/server log filename for this project
@@ -3225,7 +3620,6 @@ wxString ProcessLanguageClient::CreateLSPClientLogName(int pid, const cbProject*
         oldPidNum = std::stol(linePid.ToStdString(),&sz);
         // Is this pid still alive ?
         wxString oldPidExePath = ProcUtils::GetProcessNameByPid(oldPidNum);
-        // FIXME (ph#): delete the old log
         if (not oldPidExePath) {slot = ii; break;} //old process is dead, slot is available
         oldPidNum = 0;
     }
@@ -3253,7 +3647,8 @@ wxString ProcessLanguageClient::CreateLSPClientLogName(int pid, const cbProject*
             // Probably because of Windows delayed deletions.
             // The PID is gone but no access to the file is allowed.
             // Access and delete is allowed after the project is closed.
-            //
+            // The logs are now removed in void CodeCompletion::CleanUpLSPLogs() after
+            // the project is closed.
             if (wxFileExists(logFilename))
                 ;//-wxRemoveFile(logFilename);
             logFilename.Replace("client", "server");
@@ -3276,20 +3671,24 @@ void ProcessLanguageClient::ListenForSavedFileMethod()
     int saveFileID = wxFindMenuItemId(pAppFrame, "File", "Save file");
     int saveEverythingID = wxFindMenuItemId(pAppFrame, "File", "Save everything");
 
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &ProcessLanguageClient::SetLastSavedFileMethod, this, saveFileID);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &ProcessLanguageClient::SetLastSavedFileMethod, this, saveEverythingID);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &ProcessLanguageClient::SetSaveFileEventOccured, this, saveFileID);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &ProcessLanguageClient::SetSaveFileEventOccured, this, saveEverythingID);
 }
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::SetLastSavedFileMethod(wxCommandEvent& event)
+void ProcessLanguageClient::SetSaveFileEventOccured(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    // Set a flag to show that the user did a save or saveEverything from the menu system.
     event.Skip();
     an_SavedFileMethod = event.GetId();
 }
 // ----------------------------------------------------------------------------
-bool ProcessLanguageClient::GetLastSavedFileUsedMenu()
+bool ProcessLanguageClient::GetSaveFileEventOccured()
 // ----------------------------------------------------------------------------
 {
+    // This routine called to avoid switchng the log focus unless user did a save.
+    // If so, the focus can switch to the LSP messages log when the "textDocument/Diagnostics"
+    // LSP response event occurs.
     bool isSaveButton = false;
     wxFrame* pAppFrame = Manager::Get()->GetAppFrame();
     int saveFileID = wxFindMenuItemId(pAppFrame, "File", "Save file");

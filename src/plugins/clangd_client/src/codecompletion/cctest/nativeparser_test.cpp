@@ -23,45 +23,45 @@
 #endif
 
 #ifdef CC_PARSER_TEST
-#define ADDTOKEN(format, args...) \
-    wxLogMessage(F(format, ##args))
-#define TRACE(format, args...) \
-    wxLogMessage(F(format, ##args))
-#define TRACE2(format, args...) \
-    wxLogMessage(F(format, ##args))
+    #define ADDTOKEN(format, args...) \
+            wxLogMessage(F(format, ##args))
+    #define TRACE(format, args...) \
+            wxLogMessage(F(format, ##args))
+    #define TRACE2(format, args...) \
+            wxLogMessage(F(format, ##args))
 #else
-#if CC_NATIVEPARSERTEST_DEBUG_OUTPUT == 1
-#define ADDTOKEN(format, args...) \
-    CCLogger::Get()->AddToken(F(format, ##args))
-#define TRACE(format, args...) \
-    CCLogger::Get()->DebugLog(F(format, ##args))
-#define TRACE2(format, args...)
-#elif CC_NATIVEPARSERTEST_DEBUG_OUTPUT == 2
-#define ADDTOKEN(format, args...) \
-    CCLogger::Get()->AddToken(F(format, ##args))
-#define TRACE(format, args...)                                              \
-    do                                                                      \
-    {                                                                       \
-        if (g_EnableDebugTrace)                                             \
-            CCLogger::Get()->DebugLog(F(format, ##args));                   \
-    }                                                                       \
-    while (false)
-#define TRACE2(format, args...) \
-    CCLogger::Get()->DebugLog(F(format, ##args))
-#else
-#define ADDTOKEN(format, args...)
-#define TRACE(format, args...)
-#define TRACE2(format, args...)
-#endif
+    #if CC_NATIVEPARSERTEST_DEBUG_OUTPUT == 1
+        #define ADDTOKEN(format, args...) \
+                CCLogger::Get()->AddToken(F(format, ##args))
+        #define TRACE(format, args...) \
+            CCLogger::Get()->DebugLog(F(format, ##args))
+        #define TRACE2(format, args...)
+    #elif CC_NATIVEPARSERTEST_DEBUG_OUTPUT == 2
+        #define ADDTOKEN(format, args...) \
+                CCLogger::Get()->AddToken(F(format, ##args))
+        #define TRACE(format, args...)                                              \
+            do                                                                      \
+            {                                                                       \
+                if (g_EnableDebugTrace)                                             \
+                    CCLogger::Get()->DebugLog(F(format, ##args));                   \
+            }                                                                       \
+            while (false)
+        #define TRACE2(format, args...) \
+            CCLogger::Get()->DebugLog(F(format, ##args))
+    #else
+        #define ADDTOKEN(format, args...)
+        #define TRACE(format, args...)
+        #define TRACE2(format, args...)
+    #endif
 #endif
 
 bool s_DebugSmartSense = false; // if true, then cclogger will log many debug messages
 
 namespace CCTestAppGlobal
 {
-extern wxArrayString s_includeDirs;
-extern wxArrayString s_fileQueue;
-extern wxArrayString s_filesParsed;
+    extern wxArrayString s_includeDirs;
+    extern wxArrayString s_fileQueue;
+    extern wxArrayString s_filesParsed;
 }// CCTestAppGlobal
 
 NativeParserTest::NativeParserTest()
@@ -74,41 +74,36 @@ NativeParserTest::~NativeParserTest()
 {
 }
 
-bool NativeParserTest::TestExpression(wxString     &     expression,
-                                      const TokenIdxSet & searchScope,
-                                      TokenIdxSet    &   result)
+bool NativeParserTest::TestExpression(wxString&          expression,
+                                      const TokenIdxSet& searchScope,
+                                      TokenIdxSet&       result)
 {
     // find all other matches
     std::queue<ParserComponent> components;
     BreakUpComponents(expression, components);
+
     ResolveExpression(m_Parser.GetTokenTree(), components, searchScope, result, true, true /*isPrefix*/);
 
     if (s_DebugSmartSense)
-    {
         CCLogger::Get()->DebugLog(F(_T("NativeParserTest::TestExpression, returned %lu results"), static_cast<unsigned long>(result.size())));
-    }
 
     return true;
 }
 
-bool NativeParserTest::Parse(wxString & file, bool isLocalFile)
+bool NativeParserTest::Parse(wxString& file, bool isLocalFile)
 {
     if (isLocalFile)
-    {
         return m_Parser.Reparse(file, true);
-    }
 
     return m_Parser.ParseBuffer(file, true);
 }
 
 void NativeParserTest::PrintList()
 {
-    const TokenList * tokens = m_Parser.GetTokenTree()->GetTokens();
-
-    for (TokenList::const_iterator it = tokens->begin(); it != tokens->end(); ++it)
+    const TokenList* tokens = m_Parser.GetTokenTree()->GetTokens();
+    for (TokenList::const_iterator it=tokens->begin(); it!=tokens->end(); ++it)
     {
-        Token * token = (*it);
-
+        Token* token = (*it);
         if (token)
         {
             wxString log;
@@ -126,56 +121,39 @@ wxString NativeParserTest::SerializeTree()
     return m_Parser.GetTokenTree()->m_Tree.Serialize();
 }
 
-void NativeParserTest::PrintTokenTree(Token * token)
+void NativeParserTest::PrintTokenTree(Token* token)
 {
     if (!token)
-    {
         return;
-    }
 
     wxString log;
-
-    if (!token->m_Children.empty())
-    {
-        log << _T("+");
-    }
-
+    if (!token->m_Children.empty()) log << _T("+");
     if (token->m_TokenKind == tkFunction)
-    {
         log << token->m_Name << token->m_Args << _T("\t");
-    }
     else
-    {
         log << token->DisplayName() << _T("\t");
-    }
-
     log << _T("[") << token->m_Line << _T(",") << token->m_ImplLine << _T("]");
     CCLogger::Get()->Log(log);
-    TokenIdxSet & ids = token->m_Children;
 
-    for (TokenIdxSet::iterator it = ids.begin(); it != ids.end(); ++it)
+    TokenIdxSet& ids = token->m_Children;
+    for (TokenIdxSet::iterator it=ids.begin(); it!=ids.end(); ++it)
     {
-        Token * token_ex = m_Parser.GetTokenTree()->at(*it);
+        Token* token_ex = m_Parser.GetTokenTree()->at(*it);
         PrintTokenTree(token_ex); // recursion
     }
 }
 
 void NativeParserTest::PrintTree()
 {
-    const TokenList * tokens = m_Parser.GetTokenTree()->GetTokens();
-
-    for (TokenList::const_iterator it = tokens->begin(); it != tokens->end(); ++it)
+    const TokenList *tokens = m_Parser.GetTokenTree()->GetTokens();
+    for (TokenList::const_iterator it=tokens->begin(); it!=tokens->end(); ++it)
     {
-        Token * token = (*it);
-
+        Token* token = (*it);
         if (token)
         {
-            Token * parent = m_Parser.GetTokenTree()->at(token->m_ParentIndex);
-
-            if (!parent)
-            {
-                PrintTokenTree(token);
-            }
+          Token* parent = m_Parser.GetTokenTree()->at(token->m_ParentIndex);
+          if (!parent)
+              PrintTokenTree(token);
         }
     }
 }
@@ -189,29 +167,27 @@ void NativeParserTest::Init()
 {
     // initialize the include files
     // second, try taking include directories into account
-    for (size_t i = 0; i < CCTestAppGlobal::s_includeDirs.GetCount(); i++)
+    for (size_t i=0; i<CCTestAppGlobal::s_includeDirs.GetCount(); i++)
     {
         wxString include_dir = CCTestAppGlobal::s_includeDirs.Item(i);
         m_Parser.AddIncludeDir(include_dir);
     }
-
     // add the "testing" folder as include search path
-    m_Parser.AddIncludeDir(wxGetCwd() + wxT("/testing"));
+    m_Parser.AddIncludeDir(wxGetCwd()+wxT("/testing"));
 }
 
 bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFile)
 {
     Clear(); //clear the tree
+
     bool parseResult = false;
     parseResult = Parse(filename, isLocalFile);
-
     if (!parseResult)
-    {
         return false;
-    }
 
     int passCount = 0;
     int failCount = 0;
+
     wxString testResult;
     wxString message;
 
@@ -225,26 +201,23 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
         message = wxString::Format(_T("********************************************************\n  Testing in file: %s\n********************************************************"), printName.wx_str());
     }
     else
-    {
         message = wxString::Format(_T("********************************************************\n  Testing file in edit control\n********************************************************"));
-    }
 
     wxLogMessage(message);
     testResult << message << wxT("\n");
+
     // reading the test cases, first we read all the lines of the file
     // handling local files and wxScintilla control differently
     std::vector<wxString> allLines;
-
     if (isLocalFile)
     {
         // read the test cases of CodeCompletion test
         wxTextFile source;
         source.Open(filename);
         wxString str;
-
-        for (str = source.GetFirstLine();
-                source.GetCurrentLine() < source.GetLineCount();
-                str = source.GetNextLine())
+        for ( str = source.GetFirstLine();
+              source.GetCurrentLine() < source.GetLineCount();
+              str = source.GetNextLine() )
         {
             allLines.push_back(str);
         }
@@ -252,8 +225,7 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
     else
     {
         wxStringTokenizer tokenizer(filename, wxT("\n"), wxTOKEN_RET_EMPTY);
-
-        while (tokenizer.HasMoreTokens())
+        while ( tokenizer.HasMoreTokens() )
         {
             wxString token = tokenizer.GetNextToken();
             allLines.push_back(token);
@@ -265,7 +237,6 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
     for (ssize_t l = allLines.size() - 1; l >= 0; l--)
     {
         wxString str = allLines[l];
-
         // a test case should be put in a line, and start with the double slash
         if (str.StartsWith(_T("//")))
         {
@@ -273,13 +244,14 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
             // tc.St    //StaticVoid
             // remove the beginning "//"
             str.Remove(0, 2);
+
             int pos;
             wxString expression;
             wxString match;
             wxString match_doc;
+
             // find the optional "///<" for Doxygen comment tests
             pos = str.Find(_T("///<"));
-
             if (pos != wxNOT_FOUND)
             {
                 match_doc = str.Mid(pos + 4);
@@ -289,7 +261,6 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
             // find the second "//", the string after the second double slash are the
             // the result should be listed
             pos = str.Find(_T("//"));
-
             if (pos != wxNOT_FOUND)
             {
                 expression = str.Mid(0, pos);
@@ -298,21 +269,18 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
             else
             {
                 expression = str;
-
                 if (!match_doc.IsEmpty())
-                {
                     match = _T("* @doxygen");
-                }
             }
 
             expression.Trim(true).Trim(false);
             match.Trim(true).Trim(false);
             match_doc.Trim(true).Trim(false);
+
             wxArrayString suggestList;
             // the match can have many items, like: AAA,BBBB
             wxStringTokenizer tkz(match, wxT(","));
-
-            while (tkz.HasMoreTokens())
+            while ( tkz.HasMoreTokens() )
             {
                 wxString token = tkz.GetNextToken().Trim(true).Trim(false);
                 suggestList.Add(token);
@@ -321,24 +289,20 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
             TokenIdxSet searchScope;
             searchScope.insert(-1);
             TokenIdxSet result;
-            TestExpression(expression, searchScope, result);
+            TestExpression(expression,searchScope,result);
 
             // loop the suggestList to see it is in the result Tokens
-            for (size_t s = 0; s < suggestList.GetCount(); s++)
+            for (size_t s=0; s<suggestList.GetCount(); s++)
             {
                 wxString element = suggestList[s];
                 bool pass = false; // pass the test?
-
                 for (TokenIdxSet::const_iterator it = result.begin();
-                        it != result.end();
-                        ++it)
+                     it != result.end();
+                     ++it)
                 {
-                    const Token * token = m_Parser.GetTokenTree()->at(*it);
-
+                    const Token* token = m_Parser.GetTokenTree()->at(*it);
                     if (!token || token->m_Name.IsEmpty())
-                    {
                         continue;
-                    }
 
                     if (element.IsSameAs(token->m_Name) || element[0] == '*')
                     {
@@ -355,13 +319,12 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
                         {
                             // check whether doxygen documents are matched
                             if (token->m_Doc.Contains(match_doc)
-                                    || (match_doc[0] == '*' && match_doc.Len() == 1 && !token->m_Doc.IsEmpty())
-                                    || (match_doc[0] == '-' && match_doc.Len() == 1 && token->m_Doc.IsEmpty()))
+                            || (match_doc[0] == '*' && match_doc.Len() == 1 && !token->m_Doc.IsEmpty())
+                            || (match_doc[0] == '-' && match_doc.Len() == 1 && token->m_Doc.IsEmpty()))
                             {
                                 message = wxString::Format(_T("+ PASS: %s  %s  \"%s\""), expression.wx_str(), token->m_Name.wx_str(), match_doc.wx_str());
                                 testResult << message << wxT("\n");
                                 wxLogMessage(message);
-
                                 if (!pass)
                                 {
                                     pass = true;
@@ -371,23 +334,17 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
                             else
                             {
                                 if (pass)
-                                {
                                     --passCount;
-                                }
-
                                 pass = false;
                                 element = wxString::Format(_T("%s  \"%s\""), token->m_Name.wx_str(), match_doc.wx_str());
                                 break;
                             }
                         }
-
                         if (element[0] != '*')
-                        {
                             break;
-                        }
                     }
-                }
 
+                }
                 if (pass == false)
                 {
                     message = wxString::Format(_T("- FAIL: %s  %s"), expression.wx_str(), element.wx_str());
@@ -396,16 +353,15 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
                     failCount++;
                 }
             }
-
             // wxLogMessage(_T("Result have %lu matches"), static_cast<unsigned long>(result.size()));
         }
         else
-        {
-            break;    // if the line is not started with //, then we just stop testing
-        }
+            break; // if the line is not started with //, then we just stop testing
     }
 
     // report the test result here again in the last stage, further more, we can show this in another text control
-    wxLogMessage(wxT("--------------------------------------------------------\nTotal %d tests, %d PASS, %d FAIL\n--------------------------------------------------------"), passCount + failCount, passCount, failCount);
+
+    wxLogMessage(wxT("--------------------------------------------------------\nTotal %d tests, %d PASS, %d FAIL\n--------------------------------------------------------"), passCount+failCount, passCount, failCount);
+
     return true;
 }

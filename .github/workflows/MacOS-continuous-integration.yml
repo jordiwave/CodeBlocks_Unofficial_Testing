@@ -1,0 +1,53 @@
+name: MacOS Integration Builds
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  continuous-integration:
+    runs-on: ${{ matrix.os }}
+    env:
+      BUILD_TYPE: Debug
+    strategy:
+      fail-fast: false
+      matrix:
+        # specify a specific compiler to build with each OS separately
+        include:
+          - platform_name: macOS 11
+            os: macos-11
+            cxx: clang++
+            arch: x86_64
+          ## NOTE: CXX seems to be ignored on Windows, but specify it anyway for consistency
+          #- platform_name: windows
+          #  os: windows-2019
+          #  cxx: msvc
+          #  cmake_generator: ""
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Show build environment
+        run: |
+          echo "Environment:"
+          env | sort
+          echo
+          echo "Clang Compiler version:"
+          clang++ --version
+          echo
+
+      - name: Shell Permission Update
+        working-directory: ${{github.workspace}}/Build_Helper_Files/CodeBlocks_MacOS
+        run: chmod +x *.sh
+
+      - name: Change Permissions
+        working-directory: ${{github.workspace}}/Build_Helper_Files/CodeBlocks_MacOS
+        run: ./change_permissions_MacOS.sh
+
+      - name: Build CodeBlocks
+        working-directory: ${{github.workspace}}/Build_Helper_Files/CodeBlocks_MacOS
+        run: ./MacOS_codeblocks_build.sh

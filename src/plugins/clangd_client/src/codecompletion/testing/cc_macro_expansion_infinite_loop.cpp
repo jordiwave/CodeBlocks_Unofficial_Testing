@@ -1,4 +1,4 @@
-//Bug report. Infinite loop in ParserThread::SkipBlock -
+//Bug report. Infinite loop in ParserThread::SkipBlock - 
 //http://forums.codeblocks.org/index.php/topic,20568.0.html
 
 #define AA__( x ) #x
@@ -7,14 +7,8 @@
 
 #define BB 42
 
-struct CC
-{
-    int member;
-};
-struct DD
-{
-    CC cc;
-};
+struct CC { int member; };
+struct DD { CC cc; };
 
 #define EE() g( AA(BB) )
 
@@ -22,7 +16,7 @@ struct DD
 
 #define member FF.member
 
-DD * g(const char *);
+DD* g(const char*);
 
 int aaa;
 int f()

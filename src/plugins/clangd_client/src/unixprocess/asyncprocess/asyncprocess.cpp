@@ -27,109 +27,93 @@ class IProcess;
 #include <wx/string.h>
 
 #ifdef __WXMSW__
-    static bool shell_is_cmd = true;
-    #include "winprocess_impl.h"
+static bool shell_is_cmd = true;
+#include "winprocess_impl.h"
 #else
-    static bool shell_is_cmd = false;
-    #include "unixprocess_impl.h"
+static bool shell_is_cmd = false;
+#include "unixprocess_impl.h"
 #endif
 class __AsyncCallback : public wxEvtHandler
 {
-        function<void(const wxString &)> m_cb;
-        wxString m_output;
+    function<void(const wxString&)> m_cb;
+    wxString m_output;
 
-    public:
-        __AsyncCallback(function<void(const wxString &)> cb)
-            : m_cb(move(cb))
-        {
-            Bind(wxEVT_ASYNC_PROCESS_TERMINATED, &__AsyncCallback::OnProcessTerminated, this);
-            Bind(wxEVT_ASYNC_PROCESS_OUTPUT, &__AsyncCallback::OnProcessOutput, this);
+public:
+    __AsyncCallback(function<void(const wxString&)> cb)
+        : m_cb(move(cb))
+    {
+        Bind(wxEVT_ASYNC_PROCESS_TERMINATED, &__AsyncCallback::OnProcessTerminated, this);
+        Bind(wxEVT_ASYNC_PROCESS_OUTPUT, &__AsyncCallback::OnProcessOutput, this);
+    }
+    ~__AsyncCallback()
+    {
+        Unbind(wxEVT_ASYNC_PROCESS_TERMINATED, &__AsyncCallback::OnProcessTerminated, this);
+        Unbind(wxEVT_ASYNC_PROCESS_OUTPUT, &__AsyncCallback::OnProcessOutput, this);
+    }
+
+    // --------------------------------------------------------------
+    void OnProcessOutput(clProcessEvent& event)
+    // --------------------------------------------------------------
+    {
+        size_t new_len = m_output.length() + event.GetOutput().length();
+        if(new_len > m_output.length()) {
+            m_output.reserve(new_len);
+            m_output << event.GetOutput();
         }
-        ~__AsyncCallback()
-        {
-            Unbind(wxEVT_ASYNC_PROCESS_TERMINATED, &__AsyncCallback::OnProcessTerminated, this);
-            Unbind(wxEVT_ASYNC_PROCESS_OUTPUT, &__AsyncCallback::OnProcessOutput, this);
+    }
+
+    // --------------------------------------------------------------
+    void OnProcessTerminated(clProcessEvent& event)
+    // --------------------------------------------------------------
+    {
+        if(!event.GetOutput().empty()) {
+            m_output << event.GetOutput();
         }
-
-        // --------------------------------------------------------------
-        void OnProcessOutput(clProcessEvent & event)
-        // --------------------------------------------------------------
-        {
-            size_t new_len = m_output.length() + event.GetOutput().length();
-
-            if (new_len > m_output.length())
-            {
-                m_output.reserve(new_len);
-                m_output << event.GetOutput();
-            }
-        }
-
-        // --------------------------------------------------------------
-        void OnProcessTerminated(clProcessEvent & event)
-        // --------------------------------------------------------------
-        {
-            if (!event.GetOutput().empty())
-            {
-                m_output << event.GetOutput();
-            }
-
-            // all the user callback
-            m_cb(m_output);
-            delete event.GetProcess();
-            delete this; // we are no longer needed...
-        }
+        // all the user callback
+        m_cb(m_output);
+        delete event.GetProcess();
+        delete this; // we are no longer needed...
+    }
 };
 
-static void __WrapSpacesForShell(wxString & str, size_t flags)
+static void __WrapSpacesForShell(wxString& str, size_t flags)
 {
     str.Trim().Trim(false);
     auto tmpArgs = StringUtils::BuildArgv(str);
-
-    if (tmpArgs.size() > 1)
-    {
-        if (!shell_is_cmd || (flags & IProcessCreateSSH))
-        {
+    if(tmpArgs.size() > 1) {
+        if(!shell_is_cmd || (flags & IProcessCreateSSH)) {
             // escape any occurances of "
             str.Replace("\"", "\\\"");
         }
-
         str.Append("\"").Prepend("\"");
     }
 }
 
-static wxArrayString __WrapInShell(const wxArrayString & args, size_t flags)
+static wxArrayString __WrapInShell(const wxArrayString& args, size_t flags)
 {
     wxArrayString tmparr = args;
-
-    for (wxString & arg : tmparr)
-    {
+    for(wxString& arg : tmparr) {
         __WrapSpacesForShell(arg, flags);
     }
 
     wxString cmd = wxJoin(tmparr, ' ', 0);
     wxArrayString command;
+
     bool is_ssh = flags & IProcessCreateSSH;
-
-    if (shell_is_cmd && !is_ssh)
-    {
-        wxChar * shell = wxGetenv(wxT("COMSPEC"));
-
-        if (!shell)
-        {
-            shell = (wxChar *)wxT("CMD.EXE");
+    if(shell_is_cmd && !is_ssh) {
+        wxChar* shell = wxGetenv(wxT("COMSPEC"));
+        if(!shell) {
+            shell = (wxChar*)wxT("CMD.EXE");
         }
-
         command.Add(shell);
         command.Add("/C");
         command.Add("\"" + cmd + "\"");
-    }
-    else
-    {
+
+    } else {
         command.Add("/bin/sh");
         command.Add("-c");
         command.Add("'" + cmd + "'");
     }
-
     return command;
 }
 
@@ -222,75 +206,65 @@ static wxArrayString __WrapInShell(const wxArrayString & args, size_t flags)
 ////    return a;
 ////}
 
-static void __FixArgs(wxArrayString & args)
+static void __FixArgs(wxArrayString& args)
 {
-    for (wxString & arg : args)
-    {
+    for(wxString& arg : args) {
         // escape LF/CR
         arg.Replace("\n", "");
         arg.Replace("\r", "");
 #if defined(__WXOSX__) || defined(__WXGTK__)
         arg.Trim().Trim(false);
-
-        if (arg.length() > 1)
-        {
-            if (arg.StartsWith("'") && arg.EndsWith("'"))
-            {
+        if(arg.length() > 1) {
+            if(arg.StartsWith("'") && arg.EndsWith("'")) {
+                arg.Remove(0, 1);
+                arg.RemoveLast();
+            } else if(arg.StartsWith("\"") && arg.EndsWith("\"")) {
                 arg.Remove(0, 1);
                 arg.RemoveLast();
             }
-            else
-                if (arg.StartsWith("\"") && arg.EndsWith("\""))
-                {
-                    arg.Remove(0, 1);
-                    arg.RemoveLast();
-                }
         }
-
 #endif
     }
 }
 
 // --------------------------------------------------------------
-IProcess * CreateAsyncProcess(wxEvtHandler * parent, const vector<wxString> & args, size_t flags,
-                              const wxString & workingDir, const clEnvList_t * env, const wxString & sshAccountName)
+IProcess* CreateAsyncProcess(wxEvtHandler* parent, const vector<wxString>& args, size_t flags,
+                             const wxString& workingDir, const clEnvList_t* env, const wxString& sshAccountName)
 // --------------------------------------------------------------
 {
     wxArrayString wxargs;
     wxargs.reserve(args.size());
-
-    for (const wxString & s : args)
-    {
+    for(const wxString& s : args) {
         wxargs.Add(s);
     }
-
     return CreateAsyncProcess(parent, wxargs, flags, workingDir, env, sshAccountName);
 }
 
 // --------------------------------------------------------------
-IProcess * CreateAsyncProcess(wxEvtHandler * parent, const wxArrayString & args, size_t flags, const wxString & workingDir,
-                              const clEnvList_t * env, const wxString & sshAccountName)
+IProcess* CreateAsyncProcess(wxEvtHandler* parent, const wxArrayString& args, size_t flags, const wxString& workingDir,
+                             const clEnvList_t* env, const wxString& sshAccountName)
 // --------------------------------------------------------------
 {
     clEnvironment e(env);
     wxArrayString c = args;
 
-    ////    clDEBUG1() << "1: CreateAsyncProcess called with:" << c << endl;
+////    clDEBUG1() << "1: CreateAsyncProcess called with:" << c << endl;
 
-    if (flags & IProcessWrapInShell)
-    {
+    if(flags & IProcessWrapInShell) {
         // wrap the command in OS specific terminal
         c = __WrapInShell(c, flags);
     }
 
-    ////    clTempFile tmpfile; // needed for putty clients
-    ////    tmpfile.Persist();  // do not delete this file on destruct
-    ////    if(flags & IProcessCreateSSH) {
-    ////        c = __AddSshCommand(c, workingDir, sshAccountName, tmpfile);
-    ////    }
+////    clTempFile tmpfile; // needed for putty clients
+////    tmpfile.Persist();  // do not delete this file on destruct
+////    if(flags & IProcessCreateSSH) {
+////        c = __AddSshCommand(c, workingDir, sshAccountName, tmpfile);
+////    }
+
     // needed on linux where fork does not require the extra quoting
     __FixArgs(c);
-    ////    clDEBUG1() << "2: CreateAsyncProcess called with:" << c << endl;
+////    clDEBUG1() << "2: CreateAsyncProcess called with:" << c << endl;
+
 #ifdef __WXMSW__
     return WinProcessImpl::Execute(parent, c, flags, workingDir);
 #else
@@ -299,8 +273,8 @@ IProcess * CreateAsyncProcess(wxEvtHandler * parent, const wxArrayString & args,
 }
 
 // --------------------------------------------------------------
-IProcess * CreateAsyncProcess(wxEvtHandler * parent, const wxString & cmd, size_t flags, const wxString & workingDir,
-                              const clEnvList_t * env, const wxString & sshAccountName)
+IProcess* CreateAsyncProcess(wxEvtHandler* parent, const wxString& cmd, size_t flags, const wxString& workingDir,
+                             const clEnvList_t* env, const wxString& sshAccountName)
 // --------------------------------------------------------------
 {
     auto args = StringUtils::BuildArgv(cmd);
@@ -308,8 +282,8 @@ IProcess * CreateAsyncProcess(wxEvtHandler * parent, const wxString & cmd, size_
 }
 
 // --------------------------------------------------------------
-void CreateAsyncProcessCB(const wxString & cmd, function<void(const wxString &)> cb, size_t flags,
-                          const wxString & workingDir, const clEnvList_t * env)
+void CreateAsyncProcessCB(const wxString& cmd, function<void(const wxString&)> cb, size_t flags,
+                          const wxString& workingDir, const clEnvList_t* env)
 // --------------------------------------------------------------
 {
     clEnvironment e(env);
@@ -317,7 +291,7 @@ void CreateAsyncProcessCB(const wxString & cmd, function<void(const wxString &)>
 }
 
 // --------------------------------------------------------------
-IProcess * CreateSyncProcess(const wxString & cmd, size_t flags, const wxString & workingDir, const clEnvList_t * env)
+IProcess* CreateSyncProcess(const wxString& cmd, size_t flags, const wxString& workingDir, const clEnvList_t* env)
 // --------------------------------------------------------------
 {
     return CreateAsyncProcess(nullptr, StringUtils::BuildArgv(cmd), flags | IProcessCreateSync, workingDir, env,
@@ -326,11 +300,12 @@ IProcess * CreateSyncProcess(const wxString & cmd, size_t flags, const wxString 
 
 // Static methods:
 // --------------------------------------------------------------
-bool IProcess::GetProcessExitCode(int pid, int & exitCode)
+bool IProcess::GetProcessExitCode(int pid, int& exitCode)
 // --------------------------------------------------------------
 {
     wxUnusedVar(pid);
     wxUnusedVar(exitCode);
+
     exitCode = 0;
     return true;
 }
@@ -344,31 +319,22 @@ void IProcess::SetProcessExitCode(int pid, int exitCode)
 }
 
 // --------------------------------------------------------------
-void IProcess::WaitForTerminate(wxString & output)
+void IProcess::WaitForTerminate(wxString& output)
 // --------------------------------------------------------------
 {
-    if (IsRedirect())
-    {
+    if(IsRedirect()) {
         wxString buff;
         wxString buffErr;
-
-        while (Read(buff, buffErr))
-        {
+        while(Read(buff, buffErr)) {
             output << buff;
-
-            if (!buff.IsEmpty() && !buffErr.IsEmpty())
-            {
+            if(!buff.IsEmpty() && !buffErr.IsEmpty()) {
                 output << "\n";
             }
-
             output << buffErr;
         }
-    }
-    else
-    {
+    } else {
         // Just wait for the process to terminate in a busy loop
-        while (IsAlive())
-        {
+        while(IsAlive()) {
             wxThread::Sleep(10);
         }
     }
@@ -378,11 +344,10 @@ void IProcess::WaitForTerminate(wxString & output)
 void IProcess::SuspendAsyncReads()
 // --------------------------------------------------------------
 {
-    if (m_thr)
-    {
-        ////        clDEBUG1() << "Suspending process reader thread..." << endl;
+    if(m_thr) {
+////        clDEBUG1() << "Suspending process reader thread..." << endl;
         m_thr->Suspend();
-        ////        clDEBUG1() << "Suspending process reader thread...done" << endl;
+////        clDEBUG1() << "Suspending process reader thread...done" << endl;
     }
 }
 
@@ -390,10 +355,9 @@ void IProcess::SuspendAsyncReads()
 void IProcess::ResumeAsyncReads()
 // --------------------------------------------------------------
 {
-    if (m_thr)
-    {
-        ////        clDEBUG1() << "Resuming process reader thread..." << endl;
+    if(m_thr) {
+////        clDEBUG1() << "Resuming process reader thread..." << endl;
         m_thr->Resume();
-        ////        clDEBUG1() << "Resuming process reader thread..." << endl;
+////        clDEBUG1() << "Resuming process reader thread..." << endl;
     }
 }

@@ -20,24 +20,24 @@ class wxCommandEvent;
 // When instance this class, *MUST* entered a critical section, and should call ShowModal() rather than the other
 class InsertClassMethodDlg : public wxScrollingDialog
 {
-    public:
-        InsertClassMethodDlg(wxWindow * parent, ParserBase * parser, const wxString & filename);
-        virtual ~InsertClassMethodDlg();
+public:
+    InsertClassMethodDlg(wxWindow* parent, ParserBase* parser, const wxString& filename);
+    virtual ~InsertClassMethodDlg();
 
-        wxArrayString GetCode() const; // return an array of checked methods
+    wxArrayString GetCode() const; // return an array of checked methods
 
-    private:
-        void FillClasses();
-        void FillMethods();
-        void OnClassesChange(wxCommandEvent & event);
-        void OnCodeChange(wxCommandEvent & event);
-        void OnFilterChange(wxCommandEvent & event);
+private:
+    void FillClasses();
+    void FillMethods();
+    void OnClassesChange(wxCommandEvent& event);
+    void OnCodeChange(wxCommandEvent& event);
+    void OnFilterChange(wxCommandEvent& event);
 
-        ParserBase * m_Parser;
-        bool        m_Decl;
-        wxString    m_Filename;
+    ParserBase* m_Parser;
+    bool        m_Decl;
+    wxString    m_Filename;
 
-        DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // INSERTCLASSMETHODDLG_H

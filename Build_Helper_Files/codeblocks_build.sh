@@ -24,6 +24,11 @@ reset
 echo
 echo "+-----------------------------------------------------+"
 echo "|  Code::Blocks build script running on " $(uname) "  |"
+if [ "$GITHUB_ACTIONS" == "true" ] ; then
+    echo "|                                                     |"
+    echo "|      You are running under GITHUB ACTIONS.          |"
+    echo "|                                                     |"
+fi
 echo "+-----------------------------------------------------+"
 echo
 
@@ -159,7 +164,14 @@ fi
 # Configure, build & install using selected configuration 
 echo -n "running ./update_revision.sh"
 beforeStepStartTime=$(date +%s)
-if ./update_revision.sh > z_update_revision_result.txt 2>&1 ; then
+if [ "$GITHUB_ACTIONS" == "true" ] ; then
+    ./update_revision.sh
+    status=$?
+else
+    ./update_revision.sh > z_update_revision_result.txt 2>&1
+    status=$?
+fi
+if [ $status == 0 ] ; then
     durationTotalTime=$(($(date +%s)-start_datetime))
     stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
     echo -e "\\r${CHECK_MARK}./update_revision.sh finish at         : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
@@ -167,28 +179,58 @@ if ./update_revision.sh > z_update_revision_result.txt 2>&1 ; then
     echo -n "running ./boostrap"
     beforeStepStartTime=$(date +%s)
 
-    if ./bootstrap > z_bootstrap_result.txt 2>&1 ; then
+    if [ "$GITHUB_ACTIONS" == "true" ] ; then
+        ./bootstrap
+        status=$?
+    else
+        ./bootstrap > z_bootstrap_result.txt 2>&1
+        status=$?
+    fi
+    if [ $status == 0 ] ; then
         durationTotalTime=$(($(date +%s)-start_datetime))
         stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
         echo -e "\\r${CHECK_MARK}./Bootstrap finish at                  : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
 
         echo -n "running ./configure " $configOptions
         beforeStepStartTime=$(date +%s)
-        if ./configure $configOptions > z_configure_result.txt 2>&1; then
+        if [ "$GITHUB_ACTIONS" == "true" ] ; then
+            ./configure $configOptions
+            status=$?
+        else
+            ./configure $configOptions > z_configure_result.txt 2>&1
+            status=$?
+        fi
+        if [ $status == 0 ] ; then
             durationTotalTime=$(($(date +%s)-start_datetime))
             stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
             echo -e "\\r${CHECK_MARK}./configure .... finish at             : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
 
             echo -n "running make -j14..."
             beforeStepStartTime=$(date +%s)
-            if make -j14 > z_make_j14_result.txt 2>&1; then
+
+            if [ "$GITHUB_ACTIONS" == "true" ] ; then
+                make -j14
+                status=$?
+            else
+                make -j14 > z_make_j14_result.txt 2>&1
+                status=$?
+            fi
+            if [ $status == 0 ] ; then
                 durationTotalTime=$(($(date +%s)-start_datetime))
                 stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
                 echo -e "\\r${CHECK_MARK}Make -j14 finish at                    : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
 
                 echo -n "running "make install""
                 beforeStepStartTime=$(date +%s)
-                if make install > z_makeinstall_result.txt 2>&1; then
+
+                if [ "$GITHUB_ACTIONS" == "true" ] ; then
+                    make install
+                    status=$?
+                else
+                    make install > z_makeinstall_result.txt 2>&1
+                    status=$?
+                fi
+                if [ $status == 0 ] ; then
                     durationTotalTime=$(($(date +%s)-start_datetime))
                     stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
                     echo -e "\\r${CHECK_MARK}Make install finish at                 : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
@@ -239,6 +281,8 @@ echo "|                                                           |"
 echo "+-----------------------------------------------------------+"
 echo
 
+cd $CurrentDir
+
 if test "x$failureDetected" = "xyes"; then :
     echo
     echo -e "\\r${RED_START}***************************************************************************************************"
@@ -253,6 +297,7 @@ if test "x$failureDetected" = "xyes"; then :
     echo -e "\\r${RED_START}*                                                                                                 *"
     echo -e "\\r${RED_START}***************************************************************************************************"
     echo -e "\\r${COLOR_REVERT}"
+    exit 999
 else
     echo
     echo -e "\\r${GREEN_START}+--------------------------------------------------------------------------------------+"
@@ -267,8 +312,5 @@ else
     echo -e "\\r${GREEN_START}|                                                                                      |"
     echo -e "\\r${GREEN_START}+--------------------------------------------------------------------------------------+"
     echo -e "\\r${COLOR_REVERT}"
+    exit 0
 fi
-echo
-
-cd $CurrentDir
-exit 0
