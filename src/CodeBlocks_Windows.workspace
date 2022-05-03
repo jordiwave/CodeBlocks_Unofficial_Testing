@@ -105,7 +105,7 @@
 		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/keybinder/keybinder_Windows.cbp">
+		<Project filename="plugins/contrib/keybinder/Keybinder_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/lib_finder/lib_finder_Windows.cbp">

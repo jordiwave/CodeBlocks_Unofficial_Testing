@@ -32,7 +32,7 @@
 		<Project filename="plugins/contrib/help_plugin/help-plugin_unix.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor_unix.cbp" />
 		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_unix.cbp" />
-		<Project filename="plugins/contrib/keybinder/keybinder_unix.cbp" />
+		<Project filename="plugins/contrib/keybinder/Keybinder_unix.cbp" />
 		<Project filename="plugins/contrib/lib_finder/lib_finder_unix.cbp">
 			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_unix.cbp" />
 		</Project>

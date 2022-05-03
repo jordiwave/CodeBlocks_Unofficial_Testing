@@ -35,7 +35,7 @@
 		<Project filename="plugins/contrib/help_plugin/help-plugin_Windows.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor_Windows.cbp" />
 		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_Windows.cbp" />
-		<Project filename="plugins/contrib/keybinder/keybinder_Windows.cbp" />
+		<Project filename="plugins/contrib/keybinder/Keybinder_Windows.cbp" />
 		<Project filename="plugins/contrib/lib_finder/lib_finder_Windows.cbp">
 			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_Windows.cbp" />
 		</Project>

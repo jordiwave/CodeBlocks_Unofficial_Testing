@@ -93,7 +93,7 @@
 		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_MacOS.cbp">
 			<Depends filename="CodeBlocks_MacOS.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/keybinder/keybinder_MacOS.cbp">
+		<Project filename="plugins/contrib/keybinder/Keybinder_MacOS.cbp">
 			<Depends filename="CodeBlocks_MacOS.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/lib_finder/lib_finder_MacOS.cbp">
