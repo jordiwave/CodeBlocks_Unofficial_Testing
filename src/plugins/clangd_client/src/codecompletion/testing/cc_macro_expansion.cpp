@@ -9,23 +9,23 @@
 
 #if ADD(ONE,TWO) == 3
 
-void f1234();
+    void f1234();
 
 #endif
 
 void f2345();
 
 #if defined TWO && defined ( THREE )
-void test_defined_expand_1();
+    void test_defined_expand_1();
 #elif defined ONE
-void test_defined_expand_2();
+    void test_defined_expand_2();
 #endif
 
 #if defined (ZERO)
-int zero_defined;
+    int zero_defined;
 #endif
 
-A(B,C);
+A(B, C);
 
 // see whether we correctly handle ## operator
 #define _GLIBCXX_PSEUDO_VISIBILITY_default
@@ -33,7 +33,7 @@ A(B,C);
 # define _GLIBCXX_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY(V)
 namespace std _GLIBCXX_VISIBILITY(default)
 {
-    class string { };
+class string { };
 }
 
 

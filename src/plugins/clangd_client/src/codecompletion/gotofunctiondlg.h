@@ -46,30 +46,30 @@ class GotoFunctionDlg : public wxDialog
 
         struct Iterator : IncrementalSelectIteratorIndexed
         {
-            Iterator();
+                Iterator();
 
-            void AddToken(const FunctionToken &token);
-            const FunctionToken* GetToken(int index) const;
+                void AddToken(const FunctionToken & token);
+                const FunctionToken * GetToken(int index) const;
 
-            int GetTotalCount() const override;
-            const wxString& GetItemFilterString(int index) const override;
-            wxString GetDisplayText(int index, int column) const override;
+                int GetTotalCount() const override;
+                const wxString & GetItemFilterString(int index) const override;
+                wxString GetDisplayText(int index, int column) const override;
 
-            void SetColumnMode(bool flag);
+                void SetColumnMode(bool flag);
 
-            int GetColumnWidth(int column) const override;
-            void CalcColumnWidth(wxListCtrl &list) override;
+                int GetColumnWidth(int column) const override;
+                void CalcColumnWidth(wxListCtrl & list) override;
 
-            void Sort();
+                void Sort();
 
-        private:
-            std::vector<FunctionToken> m_tokens;
-            int m_columnLength[3]; /// 0 is for non-column mode, 1 and 2 are for column mode.
-            bool m_columnMode;
+            private:
+                std::vector<FunctionToken> m_tokens;
+                int m_columnLength[3]; /// 0 is for non-column mode, 1 and 2 are for column mode.
+                bool m_columnMode;
         };
     public:
 
-        GotoFunctionDlg(wxWindow* parent, Iterator* iterator);
+        GotoFunctionDlg(wxWindow * parent, Iterator * iterator);
         virtual ~GotoFunctionDlg();
 
         int GetSelection();
@@ -77,9 +77,9 @@ class GotoFunctionDlg : public wxDialog
     private:
 
         //(*Declarations(GotoFunctionDlg)
-        IncrementalListCtrl* m_list;
-        wxCheckBox* m_mode;
-        wxTextCtrl* m_text;
+        IncrementalListCtrl * m_list;
+        wxCheckBox * m_mode;
+        wxTextCtrl * m_text;
         //*)
 
         //(*Identifiers(GotoFunctionDlg)
@@ -89,15 +89,15 @@ class GotoFunctionDlg : public wxDialog
         //*)
 
         //(*Handlers(GotoFunctionDlg)
-        void OnModeClick(wxCommandEvent& event);
+        void OnModeClick(wxCommandEvent & event);
         //*)
 
     private:
-        void BuildContent(wxWindow* parent, Iterator* iterator);
+        void BuildContent(wxWindow * parent, Iterator * iterator);
         void SwitchMode();
     private:
         IncrementalSelectHandler m_handler;
-        Iterator *m_iterator;
+        Iterator * m_iterator;
     private:
         DECLARE_EVENT_TABLE()
 };

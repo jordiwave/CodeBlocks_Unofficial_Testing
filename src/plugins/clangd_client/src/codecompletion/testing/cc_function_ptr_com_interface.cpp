@@ -20,29 +20,29 @@ typedef struct GUID IID;
 typedef unsigned long ULONG;
 typedef long HRESULT;
 typedef bool BOOL;
-typedef void *PVOID;
+typedef void * PVOID;
 
 DECLARE_INTERFACE(IUnknown)
 {
-	STDMETHOD(QueryInterface)(THIS_ REFIID,PVOID*) PURE;
-	STDMETHOD_(ULONG,AddRef)(THIS) PURE;
-	STDMETHOD_(ULONG,Release)(THIS) PURE;
+    STDMETHOD(QueryInterface)(THIS_ REFIID, PVOID *) PURE;
+    STDMETHOD_(ULONG, AddRef)(THIS) PURE;
+    STDMETHOD_(ULONG, Release)(THIS) PURE;
 };
 
-typedef IUnknown *LPUNKNOWN;
+typedef IUnknown * LPUNKNOWN;
 
-DECLARE_INTERFACE_(IClassFactory,IUnknown)
+DECLARE_INTERFACE_(IClassFactory, IUnknown)
 {
-	STDMETHOD(QueryInterface)(THIS_ REFIID,PVOID*) PURE;
-	STDMETHOD_(ULONG,AddRef)(THIS) PURE;
-	STDMETHOD_(ULONG,Release)(THIS) PURE;
-	STDMETHOD(CreateInstance)(THIS_ LPUNKNOWN,REFIID,PVOID*) PURE;
-	STDMETHOD(LockServer)(THIS_ BOOL) PURE;
+    STDMETHOD(QueryInterface)(THIS_ REFIID, PVOID *) PURE;
+    STDMETHOD_(ULONG, AddRef)(THIS) PURE;
+    STDMETHOD_(ULONG, Release)(THIS) PURE;
+    STDMETHOD(CreateInstance)(THIS_ LPUNKNOWN, REFIID, PVOID *) PURE;
+    STDMETHOD(LockServer)(THIS_ BOOL) PURE;
 };
 
 
-IUnknown* unknwown;
-IClassFactory* factory;
+IUnknown * unknwown;
+IClassFactory * factory;
 
 //unknwown-> //QueryInterface,AddRef,Release
 //factory->  //QueryInterface,AddRef,Release,CreateInstance,LockServer

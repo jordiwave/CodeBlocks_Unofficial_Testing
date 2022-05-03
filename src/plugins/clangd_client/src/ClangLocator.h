@@ -18,17 +18,17 @@ class ClangLocator
 
         wxString MSWLocate();
         wxArrayString GetEnvPaths() const;
-        std::size_t ScanForFiles(wxString path, wxArrayString& foundFiles, wxString mask);
-        bool ReadMSWInstallLocation(const wxString& regkey, wxString& installPath, wxString& llvmVersion);
-        wxString GetClangdVersion(const wxString& clangBinary);
-        wxString GetClangdVersionID(const wxString& clangdBinary);
+        std::size_t ScanForFiles(wxString path, wxArrayString & foundFiles, wxString mask);
+        bool ReadMSWInstallLocation(const wxString & regkey, wxString & installPath, wxString & llvmVersion);
+        wxString GetClangdVersion(const wxString & clangBinary);
+        wxString GetClangdVersionID(const wxString & clangdBinary);
 
         // PATH environment variable separator
-        #ifdef __WXMSW__
-        #define ENV_PATH_SEPARATOR ";"
-        #else
-        #define ENV_PATH_SEPARATOR ":"
-        #endif
+#ifdef __WXMSW__
+#define ENV_PATH_SEPARATOR ";"
+#else
+#define ENV_PATH_SEPARATOR ":"
+#endif
 
     private:
 };

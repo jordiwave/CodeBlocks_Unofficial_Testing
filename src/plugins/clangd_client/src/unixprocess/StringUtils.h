@@ -21,42 +21,42 @@
 
 class /*WXDLLIMPEXP_CL*/ StringUtils
 {
-public:
-    /**
-     * @brief convert string into std::string
-     */
-    static std::string ToStdString(const wxString& str);
+    public:
+        /**
+         * @brief convert string into std::string
+         */
+        static std::string ToStdString(const wxString & str);
 
-    /**
-     * @brief remove terminal colours from buffer
-     */
-    static void StripTerminalColouring(const std::string& buffer, std::string& modbuffer);
-    /**
-     * @brief wxString version.
-     * @param buffer
-     * @param modbuffer
-     */
-    static void StripTerminalColouring(const wxString& buffer, wxString& modbuffer);
+        /**
+         * @brief remove terminal colours from buffer
+         */
+        static void StripTerminalColouring(const std::string & buffer, std::string & modbuffer);
+        /**
+         * @brief wxString version.
+         * @param buffer
+         * @param modbuffer
+         */
+        static void StripTerminalColouring(const wxString & buffer, wxString & modbuffer);
 
-    /**
-     * @brief add backslash to markdown styling characters
-     */
-    static void DisableMarkdownStyling(wxString& buffer);
+        /**
+         * @brief add backslash to markdown styling characters
+         */
+        static void DisableMarkdownStyling(wxString & buffer);
 
-    /**
-     * @brief build argv out of str
-     */
-    static char** BuildArgv(const wxString& str, int& argc);
+        /**
+         * @brief build argv out of str
+         */
+        static char ** BuildArgv(const wxString & str, int & argc);
 
-    /**
-     * @brief build argv out of str
-     */
-    static wxArrayString BuildArgv(const wxString& str);
+        /**
+         * @brief build argv out of str
+         */
+        static wxArrayString BuildArgv(const wxString & str);
 
-    /**
-     * @brief free argv created by StringUtils::BuildArgv method
-     */
-    static void FreeArgv(char** argv, int argc);
+        /**
+         * @brief free argv created by StringUtils::BuildArgv method
+         */
+        static void FreeArgv(char ** argv, int argc);
 };
 
 #endif // STRINGUTILS_H

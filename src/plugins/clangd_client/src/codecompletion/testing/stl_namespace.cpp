@@ -3,13 +3,11 @@
 
 using namespace std;
 
-void nop (void)
+void nop(void)
 {
-//  std::
-
-  string s;
-//  s.
-
-  vector<int> v;
-//  v.
+    //  std::
+    string s;
+    //  s.
+    vector<int> v;
+    //  v.
 }

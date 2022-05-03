@@ -44,36 +44,36 @@
 #endif
 
 #ifdef CC_PARSER_TEST
-    #define ADDTOKEN(format, args...) \
-            CCLogger::Get()->AddToken(F(format, ##args))
-    #define TRACE(format, args...) \
-            CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...) \
-            CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+#define ADDTOKEN(format, args...) \
+    CCLogger::Get()->AddToken(F(format, ##args))
+#define TRACE(format, args...) \
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+#define TRACE2(format, args...) \
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #else
-    #if CC_LSP_SymbolsParser_DEBUG_OUTPUT == 1
-        #define ADDTOKEN(format, args...) \
-                CCLogger::Get()->AddToken(F(format, ##args))
-        #define TRACE(format, args...) \
-            CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-        #define TRACE2(format, args...)
-    #elif CC_LSP_SymbolsParser_DEBUG_OUTPUT == 2
-        #define ADDTOKEN(format, args...) \
-                CCLogger::Get()->AddToken(F(format, ##args))
-        #define TRACE(format, args...)                                              \
-            do                                                                      \
-            {                                                                       \
-                if (g_EnableDebugTrace)                                             \
-                    CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
-            }                                                                       \
-            while (false)
-        #define TRACE2(format, args...) \
-            CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #else
-        #define ADDTOKEN(format, args...)
-        #define TRACE(format, args...)
-        #define TRACE2(format, args...)
-    #endif
+#if CC_LSP_SymbolsParser_DEBUG_OUTPUT == 1
+#define ADDTOKEN(format, args...) \
+    CCLogger::Get()->AddToken(F(format, ##args))
+#define TRACE(format, args...) \
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+#define TRACE2(format, args...)
+#elif CC_LSP_SymbolsParser_DEBUG_OUTPUT == 2
+#define ADDTOKEN(format, args...) \
+    CCLogger::Get()->AddToken(F(format, ##args))
+#define TRACE(format, args...)                                              \
+    do                                                                      \
+    {                                                                       \
+        if (g_EnableDebugTrace)                                             \
+            CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
+    }                                                                       \
+    while (false)
+#define TRACE2(format, args...) \
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+#else
+#define ADDTOKEN(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
+#endif
 #endif
 
 //#define CC_LSP_SymbolsParser_TESTDESTROY 0
@@ -87,181 +87,188 @@
 #define IS_ALIVE true //(ph 2021/03/15) //(ph 2021/03/23)
 namespace
 {
-    bool wxFound(int result){return result != wxNOT_FOUND;};
-    const char STX = '\u0002';
-    // ----------------------------------------------------------------------------
-    // Language Server symbol kind.
-    // ----------------------------------------------------------------------------
-    // defined in https://microsoft.github.io/language-server-protocol/specification
-    enum LSP_DocumentSymbolKind {
-        File = 1,
-        Module = 2,
-        Namespace = 3,
-        Package = 4,
-        Class = 5,
-        Method = 6,
-        Property = 7,
-        Field = 8,
-        Constructor = 9,
-        Enum = 10,
-        Interface = 11,
-        Function = 12,
-        Variable = 13,
-        Constant = 14,
-        String = 15,
-        Number = 16,
-        Boolean = 17,
-        Array = 18,
-        Object = 19,
-        Key = 20,
-        Null = 21,
-        EnumMember = 22,
-        Struct = 23,
-        Event = 24,
-        Operator = 25,
-        TypeParameter = 26
-    };
+bool wxFound(int result)
+{
+    return result != wxNOT_FOUND;
+};
+const char STX = '\u0002';
+// ----------------------------------------------------------------------------
+// Language Server symbol kind.
+// ----------------------------------------------------------------------------
+// defined in https://microsoft.github.io/language-server-protocol/specification
+enum LSP_DocumentSymbolKind
+{
+    File = 1,
+    Module = 2,
+    Namespace = 3,
+    Package = 4,
+    Class = 5,
+    Method = 6,
+    Property = 7,
+    Field = 8,
+    Constructor = 9,
+    Enum = 10,
+    Interface = 11,
+    Function = 12,
+    Variable = 13,
+    Constant = 14,
+    String = 15,
+    Number = 16,
+    Boolean = 17,
+    Array = 18,
+    Object = 19,
+    Key = 20,
+    Null = 21,
+    EnumMember = 22,
+    Struct = 23,
+    Event = 24,
+    Operator = 25,
+    TypeParameter = 26
+};
 
 }
 const wxString g_UnnamedSymbol = _T("__Unnamed");
 
 namespace ParserConsts
 {
-    // length: 0
-    const wxString empty           (_T(""));
-    const wxChar   null            (_T('\0'));
-    // length: 1
-    const wxChar   eol_chr         (_T('\n'));
-    const wxString space           (_T(" "));
-    const wxChar   space_chr       (_T(' '));
-    const wxChar   tab_chr         (_T('\t'));
-    const wxString equals          (_T("="));
-    const wxChar   equals_chr      (_T('='));
-    const wxString hash            (_T("#"));
-    const wxChar   hash_chr        (_T('#'));
-    const wxString plus            (_T("+"));
-    const wxChar   plus_chr        (_T('+'));
-    const wxString dash            (_T("-"));
-    const wxChar   dash_chr        (_T('-'));
-    const wxString ptr             (_T("*"));
-    const wxChar   ptr_chr         (_T('*'));
-    const wxString ref             (_T("&"));
-    const wxChar   ref_chr         (_T('&'));
-    const wxString comma           (_T(","));
-    const wxChar   comma_chr       (_T(','));
-    const wxString dot             (_T("."));
-    const wxChar   dot_chr         (_T('.'));
-    const wxString colon           (_T(":"));
-    const wxChar   colon_chr       (_T(':'));
-    const wxString semicolon       (_T(";"));
-    const wxChar   semicolon_chr   (_T(';'));
-    const wxChar   opbracket_chr   (_T('('));
-    const wxChar   clbracket_chr   (_T(')'));
-    const wxString opbracket       (_T("("));
-    const wxString clbracket       (_T(")"));
-    const wxString opbrace         (_T("{"));
-    const wxChar   opbrace_chr     (_T('{'));
-    const wxString clbrace         (_T("}"));
-    const wxChar   clbrace_chr     (_T('}'));
-    const wxString oparray         (_T("["));
-    const wxChar   oparray_chr     (_T('['));
-    const wxString clarray         (_T("]"));
-    const wxChar   clarray_chr     (_T(']'));
-    const wxString tilde           (_T("~"));
-    const wxString lt              (_T("<"));
-    const wxChar   lt_chr          (_T('<'));
-    const wxString gt              (_T(">"));
-    const wxChar   gt_chr          (_T('>'));
-    const wxChar   underscore_chr  (_T('_'));
-    const wxChar   question_chr    (_T('?'));
-    // length: 2
-    const wxString dcolon          (_T("::"));
-    const wxString opbracesemicolon(_T("{;"));
-    const wxString commaclbrace    (_T(",}"));
-    const wxString semicolonopbrace(_T(";{"));
-    const wxString semicolonclbrace(_T(";}"));
-    const wxString gtsemicolon     (_T(">;"));
-    const wxString quot            (_T("\""));
-    const wxString kw_do           (_T("do"));
-    const wxString kw_if           (_T("if"));
-    // length: 3
-    const wxString spaced_colon    (_T(" : "));
-    const wxString kw__C_          (_T("\"C\""));
-    const wxString kw_for          (_T("for"));
-    const wxString kw_try          (_T("try"));
-    const wxString commasemicolonopbrace(_T(",;{"));
-    // length: 4
-    const wxString kw___at         (_T("__at"));
-    const wxString kw_else         (_T("else"));
-    const wxString kw_enum         (_T("enum"));
-    const wxString kw_elif         (_T("elif"));
-    const wxString kw_case         (_T("case"));
-    // length: 5
-    const wxString kw__CPP_        (_T("\"C++\""));
-    const wxString kw___asm        (_T("__asm"));
-    const wxString kw_catch        (_T("catch"));
-    const wxString kw_class        (_T("class"));
-    const wxString kw_const        (_T("const"));
-    const wxString kw_union        (_T("union"));
-    const wxString kw_using        (_T("using"));
-    const wxString kw_throw        (_T("throw"));
-    const wxString kw_while        (_T("while"));
-    // length: 6
-    const wxString kw_delete       (_T("delete"));
-    const wxString kw_extern       (_T("extern"));
-    const wxString kw_friend       (_T("friend"));
-    const wxString kw_inline       (_T("inline"));
-    const wxString kw_public       (_T("public"));
-    const wxString kw_return       (_T("return"));
-    const wxString kw_static       (_T("static"));
-    const wxString kw_struct       (_T("struct"));
-    const wxString kw_switch       (_T("switch"));
-    // length: 7
-    const wxString kw_include      (_T("include"));
-    const wxString kw_private      (_T("private"));
-    const wxString kw_typedef      (_T("typedef"));
-    const wxString kw_virtual      (_T("virtual"));
-    // length: 8
-    const wxString kw_noexcept     (_T("noexcept"));
-    const wxString kw_operator     (_T("operator"));
-    const wxString kw_template     (_T("template"));
-    const wxString kw_typename     (_T("typename"));
-    const wxString kw_volatile     (_T("volatile"));
-    // length: 9
-    const wxString kw_namespace    (_T("namespace"));
-    const wxString kw_protected    (_T("protected"));
-    // length: 10
-    const wxString kw_declspec     (_T("__declspec"));
-    // length: 13
-    const wxString kw_attribute    (_T("__attribute__"));
+// length: 0
+const wxString empty(_T(""));
+const wxChar   null(_T('\0'));
+// length: 1
+const wxChar   eol_chr(_T('\n'));
+const wxString space(_T(" "));
+const wxChar   space_chr(_T(' '));
+const wxChar   tab_chr(_T('\t'));
+const wxString equals(_T("="));
+const wxChar   equals_chr(_T('='));
+const wxString hash(_T("#"));
+const wxChar   hash_chr(_T('#'));
+const wxString plus(_T("+"));
+const wxChar   plus_chr(_T('+'));
+const wxString dash(_T("-"));
+const wxChar   dash_chr(_T('-'));
+const wxString ptr(_T("*"));
+const wxChar   ptr_chr(_T('*'));
+const wxString ref(_T("&"));
+const wxChar   ref_chr(_T('&'));
+const wxString comma(_T(","));
+const wxChar   comma_chr(_T(','));
+const wxString dot(_T("."));
+const wxChar   dot_chr(_T('.'));
+const wxString colon(_T(":"));
+const wxChar   colon_chr(_T(':'));
+const wxString semicolon(_T(";"));
+const wxChar   semicolon_chr(_T(';'));
+const wxChar   opbracket_chr(_T('('));
+const wxChar   clbracket_chr(_T(')'));
+const wxString opbracket(_T("("));
+const wxString clbracket(_T(")"));
+const wxString opbrace(_T("{"));
+const wxChar   opbrace_chr(_T('{'));
+const wxString clbrace(_T("}"));
+const wxChar   clbrace_chr(_T('}'));
+const wxString oparray(_T("["));
+const wxChar   oparray_chr(_T('['));
+const wxString clarray(_T("]"));
+const wxChar   clarray_chr(_T(']'));
+const wxString tilde(_T("~"));
+const wxString lt(_T("<"));
+const wxChar   lt_chr(_T('<'));
+const wxString gt(_T(">"));
+const wxChar   gt_chr(_T('>'));
+const wxChar   underscore_chr(_T('_'));
+const wxChar   question_chr(_T('?'));
+// length: 2
+const wxString dcolon(_T("::"));
+const wxString opbracesemicolon(_T("{;"));
+const wxString commaclbrace(_T(",}"));
+const wxString semicolonopbrace(_T(";{"));
+const wxString semicolonclbrace(_T(";}"));
+const wxString gtsemicolon(_T(">;"));
+const wxString quot(_T("\""));
+const wxString kw_do(_T("do"));
+const wxString kw_if(_T("if"));
+// length: 3
+const wxString spaced_colon(_T(" : "));
+const wxString kw__C_(_T("\"C\""));
+const wxString kw_for(_T("for"));
+const wxString kw_try(_T("try"));
+const wxString commasemicolonopbrace(_T(",;{"));
+// length: 4
+const wxString kw___at(_T("__at"));
+const wxString kw_else(_T("else"));
+const wxString kw_enum(_T("enum"));
+const wxString kw_elif(_T("elif"));
+const wxString kw_case(_T("case"));
+// length: 5
+const wxString kw__CPP_(_T("\"C++\""));
+const wxString kw___asm(_T("__asm"));
+const wxString kw_catch(_T("catch"));
+const wxString kw_class(_T("class"));
+const wxString kw_const(_T("const"));
+const wxString kw_union(_T("union"));
+const wxString kw_using(_T("using"));
+const wxString kw_throw(_T("throw"));
+const wxString kw_while(_T("while"));
+// length: 6
+const wxString kw_delete(_T("delete"));
+const wxString kw_extern(_T("extern"));
+const wxString kw_friend(_T("friend"));
+const wxString kw_inline(_T("inline"));
+const wxString kw_public(_T("public"));
+const wxString kw_return(_T("return"));
+const wxString kw_static(_T("static"));
+const wxString kw_struct(_T("struct"));
+const wxString kw_switch(_T("switch"));
+// length: 7
+const wxString kw_include(_T("include"));
+const wxString kw_private(_T("private"));
+const wxString kw_typedef(_T("typedef"));
+const wxString kw_virtual(_T("virtual"));
+// length: 8
+const wxString kw_noexcept(_T("noexcept"));
+const wxString kw_operator(_T("operator"));
+const wxString kw_template(_T("template"));
+const wxString kw_typename(_T("typename"));
+const wxString kw_volatile(_T("volatile"));
+// length: 9
+const wxString kw_namespace(_T("namespace"));
+const wxString kw_protected(_T("protected"));
+// length: 10
+const wxString kw_declspec(_T("__declspec"));
+// length: 13
+const wxString kw_attribute(_T("__attribute__"));
 }
 
 // ----------------------------------------------------------------------------
-LSP_SymbolsParser::LSP_SymbolsParser(ParserBase*          parent,
-                           const wxString&      bufferOrFilename,
-                           bool                 isLocal,
-                           LSP_SymbolsParserOptions& LSP_SymbolsParserOptions,
-                           TokenTree*           tokenTree)
+LSP_SymbolsParser::LSP_SymbolsParser(ParserBase     *     parent,
+                                     const wxString   &   bufferOrFilename,
+                                     bool                 isLocal,
+                                     LSP_SymbolsParserOptions & LSP_SymbolsParserOptions,
+                                     TokenTree      *     tokenTree)
 // ----------------------------------------------------------------------------
-  : m_Tokenizer(tokenTree),
-    m_Parent(parent),
-    m_TokenTree(tokenTree),
-    m_LastParent(0),
-    m_LastScope(tsUndefined),
-    m_FileSize(0),
-    m_FileIdx(0),
-    m_IsLocal(isLocal),
-    m_Options(LSP_SymbolsParserOptions),
-    m_ParsingTypedef(false),
-    m_Buffer(bufferOrFilename),
-    m_StructUnionUnnamedCount(0),
-    m_EnumUnnamedCount(0),
-    m_SemanticTokensVec(m_Tokenizer.m_SemanticTokensVec) //(ph 2021/03/22)
+    : m_Tokenizer(tokenTree),
+      m_Parent(parent),
+      m_TokenTree(tokenTree),
+      m_LastParent(0),
+      m_LastScope(tsUndefined),
+      m_FileSize(0),
+      m_FileIdx(0),
+      m_IsLocal(isLocal),
+      m_Options(LSP_SymbolsParserOptions),
+      m_ParsingTypedef(false),
+      m_Buffer(bufferOrFilename),
+      m_StructUnionUnnamedCount(0),
+      m_EnumUnnamedCount(0),
+      m_SemanticTokensVec(m_Tokenizer.m_SemanticTokensVec) //(ph 2021/03/22)
 {
     m_Tokenizer.SetTokenizerOption(LSP_SymbolsParserOptions.wantPreprocessor,
                                    LSP_SymbolsParserOptions.storeDocumentation);
+
     if (!m_TokenTree)
+    {
         cbThrow(_T("m_TokenTree is a nullptr?!"));
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -276,14 +283,18 @@ LSP_SymbolsParser::~LSP_SymbolsParser()
     }
 }
 
-wxChar LSP_SymbolsParser::SkipToOneOfChars(const wxString& chars, bool supportNesting, bool singleCharToken)
+wxChar LSP_SymbolsParser::SkipToOneOfChars(const wxString & chars, bool supportNesting, bool singleCharToken)
 {
     unsigned int level = m_Tokenizer.GetNestingLevel();
+
     while (IS_ALIVE)
     {
         wxString token = m_Tokenizer.GetToken(); // grab next token...
+
         if (token.IsEmpty())
-            return ParserConsts::null; // eof
+        {
+            return ParserConsts::null;    // eof
+        }
 
         // if supportNesting==true, we only do a match in the same brace/nesting level,
         // thus we preserve the brace level when the function returned. But if
@@ -292,11 +303,16 @@ wxChar LSP_SymbolsParser::SkipToOneOfChars(const wxString& chars, bool supportNe
         {
             // only consider tokens of length one, if requested
             if (singleCharToken && token.length() > 1)
+            {
                 continue;
+            }
 
             wxChar ch = token.GetChar(0);
+
             if (chars.Find(ch) != wxNOT_FOUND) // match one char
+            {
                 return ch;
+            }
         }
     }
 
@@ -309,23 +325,27 @@ void LSP_SymbolsParser::SkipBlock()
     // or else default values for template params would cause us to miss everything (because of the '=' symbol)
     TokenizerState oldState = m_Tokenizer.GetState();
     m_Tokenizer.SetState(tsNormal);
-
     // skip tokens until we reach }
     // block nesting is taken into consideration too ;)
-
     // this is the nesting level we start at
     // we subtract 1 because we 're already inside the block
     // (since we 've read the {)
     unsigned int level = m_Tokenizer.GetNestingLevel() - 1;
+
     while (IS_ALIVE)
     {
         wxString token = m_Tokenizer.GetToken();
+
         if (token.IsEmpty())
-            break; // eof
+        {
+            break;    // eof
+        }
 
         // if we reach the initial nesting level, we are done
         if (level == m_Tokenizer.GetNestingLevel())
+        {
             break;
+        }
     }
 
     // reset tokenizer's functionality
@@ -338,45 +358,59 @@ void LSP_SymbolsParser::SkipAngleBraces()
     // or else default values for template params would cause us to miss everything (because of the '=' symbol)
     TokenizerState oldState = m_Tokenizer.GetState();
     m_Tokenizer.SetState(tsNormal);
-
     int nestLvl = 0;
+
     // NOTE: only exit this loop with 'break' so the tokenizer's state can
     // be reset afterwards (i.e. don't use 'return')
     while (IS_ALIVE)
     {
         wxString tmp = m_Tokenizer.GetToken();
-        if (tmp==ParserConsts::lt)
-            ++nestLvl;
-        else if (tmp==ParserConsts::gt)
-            --nestLvl;
-        else if (tmp==ParserConsts::semicolon)
+
+        if (tmp == ParserConsts::lt)
         {
-            // unget token - leave ; on the stack
-            m_Tokenizer.UngetToken();
+            ++nestLvl;
+        }
+        else
+            if (tmp == ParserConsts::gt)
+            {
+                --nestLvl;
+            }
+            else
+                if (tmp == ParserConsts::semicolon)
+                {
+                    // unget token - leave ; on the stack
+                    m_Tokenizer.UngetToken();
+                    break;
+                }
+                else
+                    if (tmp.IsEmpty())
+                    {
+                        break;
+                    }
+
+        if (nestLvl <= 0)
+        {
             break;
         }
-        else if (tmp.IsEmpty())
-            break;
-        if (nestLvl <= 0)
-            break;
     }
 
     // reset tokenizer's functionality
     m_Tokenizer.SetState(oldState);
 }
 // ----------------------------------------------------------------------------
-bool LSP_SymbolsParser::ParseBufferForNamespaces(const wxString& buffer, NameSpacesVec& result)
+bool LSP_SymbolsParser::ParseBufferForNamespaces(const wxString & buffer, NameSpacesVec & result)
 // ----------------------------------------------------------------------------
 {
     int startTime = 0;
     RECORD_TIME(startTime);  //(ph 2021/09/7)
-
     m_Tokenizer.InitFromBuffer(buffer);
+
     if (!m_Tokenizer.IsOK())
+    {
         return false;
+    }
 
     result.clear();
-
     wxArrayString nsStack;
     m_Tokenizer.SetState(tsNormal);
     m_ParsingTypedef = false;
@@ -384,70 +418,95 @@ bool LSP_SymbolsParser::ParseBufferForNamespaces(const wxString& buffer, NameSpa
     while (m_Tokenizer.NotEOF() && IS_ALIVE)
     {
         CHECK_TIME(startTime, 1000); //(ph 2021/09/7)
-
         wxString token = m_Tokenizer.GetToken();
+
         if (token.IsEmpty())
+        {
             continue;
+        }
 
         if (token == ParserConsts::kw_using)
+        {
             SkipToOneOfChars(ParserConsts::semicolonclbrace);
-        else if (token == ParserConsts::opbrace)
-            SkipBlock();
-        else if (token == ParserConsts::kw_namespace)
-        {
-            wxString name = m_Tokenizer.GetToken();
-            if (name == ParserConsts::opbrace)
-                name = wxEmptyString; // anonymous namespace
+        }
+        else
+            if (token == ParserConsts::opbrace)
+            {
+                SkipBlock();
+            }
             else
-            {
-                wxString next = m_Tokenizer.PeekToken();
-                if (next == ParserConsts::equals)
+                if (token == ParserConsts::kw_namespace)
                 {
-                    SkipToOneOfChars(ParserConsts::semicolonclbrace);
-                    continue;
-                }
-                else if (next == ParserConsts::opbrace)
-                {
-                    m_Tokenizer.GetToken();
-                    name += ParserConsts::dcolon;
-                }
-            }
+                    wxString name = m_Tokenizer.GetToken();
 
-            nsStack.Add(name);
-            NameSpaces ns;
-            for (size_t i = 0; i < nsStack.Count(); ++i)
-                ns.Name << nsStack[i];
-            ns.StartLine = m_Tokenizer.GetLineNumber() - 1;
-            ns.EndLine = -1;
+                    if (name == ParserConsts::opbrace)
+                    {
+                        name = wxEmptyString;    // anonymous namespace
+                    }
+                    else
+                    {
+                        wxString next = m_Tokenizer.PeekToken();
 
-            result.push_back(ns);
-        }
-        else if (token == ParserConsts::clbrace)
-        {
-            NameSpacesVec::reverse_iterator it;
-            for (it = result.rbegin(); it != result.rend(); ++it)
-            {
-                NameSpaces& ns = *it;
-                if (ns.EndLine == -1)
-                {
-                    ns.EndLine = m_Tokenizer.GetLineNumber() - 1;
-                    break;
+                        if (next == ParserConsts::equals)
+                        {
+                            SkipToOneOfChars(ParserConsts::semicolonclbrace);
+                            continue;
+                        }
+                        else
+                            if (next == ParserConsts::opbrace)
+                            {
+                                m_Tokenizer.GetToken();
+                                name += ParserConsts::dcolon;
+                            }
+                    }
+
+                    nsStack.Add(name);
+                    NameSpaces ns;
+
+                    for (size_t i = 0; i < nsStack.Count(); ++i)
+                    {
+                        ns.Name << nsStack[i];
+                    }
+
+                    ns.StartLine = m_Tokenizer.GetLineNumber() - 1;
+                    ns.EndLine = -1;
+                    result.push_back(ns);
                 }
-            }
+                else
+                    if (token == ParserConsts::clbrace)
+                    {
+                        NameSpacesVec::reverse_iterator it;
 
-            if (!nsStack.IsEmpty())
-                nsStack.RemoveAt(nsStack.GetCount() - 1);
-        }
+                        for (it = result.rbegin(); it != result.rend(); ++it)
+                        {
+                            NameSpaces & ns = *it;
+
+                            if (ns.EndLine == -1)
+                            {
+                                ns.EndLine = m_Tokenizer.GetLineNumber() - 1;
+                                break;
+                            }
+                        }
+
+                        if (!nsStack.IsEmpty())
+                        {
+                            nsStack.RemoveAt(nsStack.GetCount() - 1);
+                        }
+                    }
     }
+
     return true;
 }
 // ----------------------------------------------------------------------------
-bool LSP_SymbolsParser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
+bool LSP_SymbolsParser::ParseBufferForUsingNamespace(const wxString & buffer, wxArrayString & result)
 // ----------------------------------------------------------------------------
 {
     m_Tokenizer.InitFromBuffer(buffer);
+
     if (!m_Tokenizer.IsOK())
+    {
         return false;
+    }
 
     result.Clear();
     m_Str.Clear();
@@ -456,70 +515,96 @@ bool LSP_SymbolsParser::ParseBufferForUsingNamespace(const wxString& buffer, wxA
 
     // Notice: clears the queue "m_EncounteredTypeNamespaces"
     while (!m_EncounteredTypeNamespaces.empty())
+    {
         m_EncounteredTypeNamespaces.pop();
+    }
 
     // Notice: clears the queue "m_EncounteredNamespaces"
     while (!m_EncounteredNamespaces.empty())
+    {
         m_EncounteredNamespaces.pop();
+    }
 
     while (m_Tokenizer.NotEOF() && IS_ALIVE)
     {
         wxString token = m_Tokenizer.GetToken();
-        if (token.IsEmpty())
-            continue;
 
-        if (token==ParserConsts::kw_namespace)
+        if (token.IsEmpty())
+        {
+            continue;
+        }
+
+        if (token == ParserConsts::kw_namespace)
         {
             // need this too
             token = m_Tokenizer.GetToken();
             SkipToOneOfChars(ParserConsts::opbrace);
 
             if (!token.IsEmpty())
-                result.Add(token);
-        }
-        else if (token==ParserConsts::opbrace && m_Options.bufferSkipBlocks)
-        {
-            SkipBlock();
-        }
-        else if (token==ParserConsts::kw_using)
-        {
-            // there are some kinds of using keyword usage
-            // (1) using namespace A;
-            // (2) using namespace A::B; // where B is a namespace
-            // (3) using A::B;           // where B is NOT a namespace
-            // (4) using A = B;          // doesn't import anything, so we don't handle this here
-            token = m_Tokenizer.GetToken();
-            wxString peek = m_Tokenizer.PeekToken();
-            if (token == ParserConsts::kw_namespace || peek == ParserConsts::dcolon)
             {
-                if (peek == ParserConsts::dcolon) // using declaration, such as case (3)
-                    m_Str << token; // push the A to the m_Str(type stack)
-                else //handling the case (1) and (2)
-                {
-                    // using directive
-                    while (IS_ALIVE) // support full namespaces
-                    {
-                        m_Str << m_Tokenizer.GetToken();
-                        if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
-                            m_Str << m_Tokenizer.GetToken();
-                        else
-                            break;
-                    }
-                }
-                // m_Str must end with a namespace for CC to work
-                // now, m_Str contains "A" in case (1) and (3), and "A::B" in case (2)
-                if (!m_Str.IsEmpty())
-                    result.Add(m_Str);
-                m_Str.Clear();
+                result.Add(token);
+            }
+        }
+        else
+            if (token == ParserConsts::opbrace && m_Options.bufferSkipBlocks)
+            {
+                SkipBlock();
             }
             else
-                SkipToOneOfChars(ParserConsts::semicolonclbrace);
-        }
+                if (token == ParserConsts::kw_using)
+                {
+                    // there are some kinds of using keyword usage
+                    // (1) using namespace A;
+                    // (2) using namespace A::B; // where B is a namespace
+                    // (3) using A::B;           // where B is NOT a namespace
+                    // (4) using A = B;          // doesn't import anything, so we don't handle this here
+                    token = m_Tokenizer.GetToken();
+                    wxString peek = m_Tokenizer.PeekToken();
+
+                    if (token == ParserConsts::kw_namespace || peek == ParserConsts::dcolon)
+                    {
+                        if (peek == ParserConsts::dcolon) // using declaration, such as case (3)
+                        {
+                            m_Str << token;    // push the A to the m_Str(type stack)
+                        }
+                        else //handling the case (1) and (2)
+                        {
+                            // using directive
+                            while (IS_ALIVE) // support full namespaces
+                            {
+                                m_Str << m_Tokenizer.GetToken();
+
+                                if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                                {
+                                    m_Str << m_Tokenizer.GetToken();
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        // m_Str must end with a namespace for CC to work
+                        // now, m_Str contains "A" in case (1) and (3), and "A::B" in case (2)
+                        if (!m_Str.IsEmpty())
+                        {
+                            result.Add(m_Str);
+                        }
+
+                        m_Str.Clear();
+                    }
+                    else
+                    {
+                        SkipToOneOfChars(ParserConsts::semicolonclbrace);
+                    }
+                }
     }
+
     return true;
 }
 // ----------------------------------------------------------------------------
-bool LSP_SymbolsParser::InitTokenizer(json* pJson)
+bool LSP_SymbolsParser::InitTokenizer(json * pJson)
 // ----------------------------------------------------------------------------
 {
     bool ret = false;
@@ -537,18 +622,19 @@ bool LSP_SymbolsParser::InitTokenizer(json* pJson)
             if (wxFileExists(m_Buffer))
             {
                 wxFile file(m_Buffer);
+
                 if (file.IsOpened())
                 {
                     m_Filename = m_Buffer;
                     m_FileSize = file.Length();
-
                     TRACE(_T("InitTokenizer() : m_Filename='%s', m_FileSize=%u."), m_Filename.wx_str(), m_FileSize);
-
                     ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
 
                     // must delete the loader, since it was allocated by SDK's Load() function
                     if (m_Options.loader)       //(ph 2021/03/19)
+                    {
                         Delete(m_Options.loader);
+                    }
 
                     if (!ret)
                     {
@@ -568,12 +654,14 @@ bool LSP_SymbolsParser::InitTokenizer(json* pJson)
             // record filename for buffer parsing
             m_Filename = m_Options.fileOfBuffer;
             m_FileIdx  = m_TokenTree->InsertFileOrGetIndex(m_Filename);
-
             ret = m_Tokenizer.InitFromBuffer(m_Buffer, m_Filename, m_Options.initLineOfBuffer);
-            if (not ret) return ret;
+
+            if (not ret)
+            {
+                return ret;
+            }
         }
     }//endif buffer not empty
-
 
     // move semantic legends to tokenizer
     m_Tokenizer.m_SemanticTokensTypes = m_SemanticTokensTypes;
@@ -581,34 +669,44 @@ bool LSP_SymbolsParser::InitTokenizer(json* pJson)
     // convert LSP semantic tokens and symbols results to usable data
     wxString jsonIDfield = pJson->at("id").get<std::string>();
     bool converted = false;
+
     if (jsonIDfield.StartsWith("textDocument/semanticTokens/full"))
-        converted = m_Tokenizer.LSP_ConvertSemanticTokens( pJson);
+    {
+        converted = m_Tokenizer.LSP_ConvertSemanticTokens(pJson);
+    }
 
     if (jsonIDfield.StartsWith("textDocument/documentSymbol"))
+    {
         return ret;
+    }
 
     // convenience variables
     m_SemanticTokensVec = m_Tokenizer.GetSemanticTokensVec(); //a reference
     m_SemanticTokensVecSize = m_SemanticTokensVec.size();
     m_SemanticTokensIdx = 0;
     //-testing-    size_t typeCnt = m_Tokenizer.m_SemanticTokensTypes.size();
-
     return ret and converted;
 }
 // ----------------------------------------------------------------------------
-bool LSP_SymbolsParser::Parse(json* pJson, cbProject* pProject)
+bool LSP_SymbolsParser::Parse(json * pJson, cbProject * pProject)
 // ----------------------------------------------------------------------------
 {
     m_pJson = pJson;
 
     // FIXME (ph#): get rid of the IS_ALIVE requirement, its always true.
     //if (!IS_ALIVE || !InitTokenizer())
-    if (!IS_ALIVE || (not InitTokenizer(pJson)) )
+    if (!IS_ALIVE || (not InitTokenizer(pJson)))
+    {
         return false;
+    }
 
     wxString parseIDstr;
-    try{ parseIDstr = pJson->at("id").get<std::string>();}
-    catch(std::exception &e)
+
+    try
+    {
+        parseIDstr = pJson->at("id").get<std::string>();
+    }
+    catch (std::exception & e)
     {
         cbMessageBox(wxString::Format("%s() %s", __FUNCTION__, e.what()));
         return false;
@@ -625,34 +723,43 @@ bool LSP_SymbolsParser::Parse(json* pJson, cbProject* pProject)
     }
 
     TRACE(_T("Parse() : Parsing '%s'"), m_Filename.wx_str());
-
     bool result      = false;
     m_ParsingTypedef = false;
 
     do
     {
         if (!m_TokenTree || !m_Tokenizer.IsOK())
+        {
             break;
+        }
 
         if (not m_Options.useBuffer) // Parse a file
         {
             // the second parameter of ReserveFileForParsing() is false, so set it to fpsBeingParsed
             m_FileIdx = m_TokenTree->ReserveFileForParsing(m_Filename);
+
             if (!m_FileIdx)
+            {
                 break;
+            }
         }
 
-        if (parseIDstr.Contains("/documentSymbol") )
+        if (parseIDstr.Contains("/documentSymbol"))
+        {
             DoParseDocumentSymbols(pJson, pProject);
+        }
         else
+        {
             DoParseSemanticTokens();
+        }
 
         if (!m_Options.useBuffer) // Parsing a file
+        {
             m_TokenTree->FlagFileAsParsed(m_Filename);
+        }
 
         result = true;
-    }
-    while (false);
+    } while (false);
 
     return result;
 }
@@ -661,30 +768,36 @@ bool LSP_SymbolsParser::DoParseSemanticTokens()
 // ----------------------------------------------------------------------------
 {
     /// FIXME (ph#): This routine is not yet setting m_LastParent ala DoParseDocumentSymbols()
-
     // need to reset tokenizer's behaviour
     // don't forget to reset it if you add any early exit condition!
     TokenizerState oldState = m_Tokenizer.GetState();
     m_Tokenizer.SetState(tsNormal);
-
     m_Str.Clear();
     m_LastToken.Clear();
     m_LastUnnamedTokenName.Clear();
 
     // Notice: clears the queue "m_EncounteredTypeNamespaces"
     while (!m_EncounteredTypeNamespaces.empty())
+    {
         m_EncounteredTypeNamespaces.pop();
+    }
 
     // Notice: clears the queue "m_EncounteredNamespaces"
     while (!m_EncounteredNamespaces.empty())
+    {
         m_EncounteredNamespaces.pop();
+    }
 
     while (m_Tokenizer.NotEOF() && IS_ALIVE)
     {
         wxString token = m_Tokenizer.GetToken();
+
         if (token.IsEmpty())
             //-continue;     //(ph 2021/03/22)
-            break; //LSP    //(ph 2021/03/22)
+        {
+            break;    //LSP    //(ph 2021/03/22)
+        }
+
         // info                                     //(ph 2021/03/22)
         //m_Tokenizer.m_SemanticTokenIndex      == m_SemanticTokensIdx;
         //m_Tokenizer.m_SemanticTokenLineNumber == lineNum;
@@ -692,33 +805,112 @@ bool LSP_SymbolsParser::DoParseSemanticTokens()
         //m_Tokenizer.m_SemanticTokenLength     == txtLen;
         //m_Tokenizer.m_SemanticTokenType       == type;
         //m_Tokenizer.m_SemanticTokenModifier   == modifier;
-
         TokenKind ccTokenKind = tkUndefined;
         wxString  args = wxString();
-
         /// FIXME (ph#): the following ccTokenKind(s) may not be correct //(ph 2021/03/22)
         size_t lspTokenTypeIdx = m_Tokenizer.m_SemanticTokenType;
         wxString lspTokenType = m_Tokenizer.m_SemanticTokensTypes[lspTokenTypeIdx];
-        if           (lspTokenType == "type")        ccTokenKind = tkTypedef;
-        else if      (lspTokenType == "class")       ccTokenKind = tkClass;
-        else if      (lspTokenType == "enum")        ccTokenKind = tkEnum;
-        else if      (lspTokenType == "interface")   ccTokenKind = tkMacroDef;
-        else if      (lspTokenType == "struct")      ccTokenKind = tkMacroDef;
-        else if      (lspTokenType == "typeParameter") ccTokenKind = tkTypedef;
-        else if      (lspTokenType == "parameter")   ccTokenKind = tkVariable;
-        else if      (lspTokenType == "variable")    ccTokenKind = tkVariable;
-        else if      (lspTokenType == "property")    ccTokenKind = tkVariable;
-        else if      (lspTokenType == "event")       ccTokenKind = tkUndefined;
-        else if      (lspTokenType == "function")    {ccTokenKind = tkFunction; args = DoHandleSemanticTokenFunction();}
-        else if      (lspTokenType == "method")      ccTokenKind = tkFunction;
-        else if      (lspTokenType == "macro")       ccTokenKind = tkMacroDef;
-        else if      (lspTokenType == "keyword")     ccTokenKind = tkUndefined;
-        else if      (lspTokenType == "modifier")    ccTokenKind = tkTypedef;
-        else if      (lspTokenType == "comment")     ccTokenKind = tkUndefined;
-        else if      (lspTokenType == "string")      ccTokenKind = tkVariable;
-        else if      (lspTokenType == "number")      ccTokenKind = tkVariable;
-        else if      (lspTokenType == "regexp")      ccTokenKind = tkMacroDef;
-        else if      (lspTokenType == "operator")    ccTokenKind = tkUndefined;
+
+        if (lspTokenType == "type")
+        {
+            ccTokenKind = tkTypedef;
+        }
+        else
+            if (lspTokenType == "class")
+            {
+                ccTokenKind = tkClass;
+            }
+            else
+                if (lspTokenType == "enum")
+                {
+                    ccTokenKind = tkEnum;
+                }
+                else
+                    if (lspTokenType == "interface")
+                    {
+                        ccTokenKind = tkMacroDef;
+                    }
+                    else
+                        if (lspTokenType == "struct")
+                        {
+                            ccTokenKind = tkMacroDef;
+                        }
+                        else
+                            if (lspTokenType == "typeParameter")
+                            {
+                                ccTokenKind = tkTypedef;
+                            }
+                            else
+                                if (lspTokenType == "parameter")
+                                {
+                                    ccTokenKind = tkVariable;
+                                }
+                                else
+                                    if (lspTokenType == "variable")
+                                    {
+                                        ccTokenKind = tkVariable;
+                                    }
+                                    else
+                                        if (lspTokenType == "property")
+                                        {
+                                            ccTokenKind = tkVariable;
+                                        }
+                                        else
+                                            if (lspTokenType == "event")
+                                            {
+                                                ccTokenKind = tkUndefined;
+                                            }
+                                            else
+                                                if (lspTokenType == "function")
+                                                {
+                                                    ccTokenKind = tkFunction;
+                                                    args = DoHandleSemanticTokenFunction();
+                                                }
+                                                else
+                                                    if (lspTokenType == "method")
+                                                    {
+                                                        ccTokenKind = tkFunction;
+                                                    }
+                                                    else
+                                                        if (lspTokenType == "macro")
+                                                        {
+                                                            ccTokenKind = tkMacroDef;
+                                                        }
+                                                        else
+                                                            if (lspTokenType == "keyword")
+                                                            {
+                                                                ccTokenKind = tkUndefined;
+                                                            }
+                                                            else
+                                                                if (lspTokenType == "modifier")
+                                                                {
+                                                                    ccTokenKind = tkTypedef;
+                                                                }
+                                                                else
+                                                                    if (lspTokenType == "comment")
+                                                                    {
+                                                                        ccTokenKind = tkUndefined;
+                                                                    }
+                                                                    else
+                                                                        if (lspTokenType == "string")
+                                                                        {
+                                                                            ccTokenKind = tkVariable;
+                                                                        }
+                                                                        else
+                                                                            if (lspTokenType == "number")
+                                                                            {
+                                                                                ccTokenKind = tkVariable;
+                                                                            }
+                                                                            else
+                                                                                if (lspTokenType == "regexp")
+                                                                                {
+                                                                                    ccTokenKind = tkMacroDef;
+                                                                                }
+                                                                                else
+                                                                                    if (lspTokenType == "operator")
+                                                                                    {
+                                                                                        ccTokenKind = tkUndefined;
+                                                                                    }
 
         //Token* DoAddToken(TokenKind       kind,
         //                  const wxString& name,
@@ -728,13 +920,13 @@ bool LSP_SymbolsParser::DoParseSemanticTokens()
         //                  const wxString& args = wxEmptyString,
         //                  bool            isOperator = false,
         //                  bool            isImpl = false);
-        Token* newToken = DoAddToken(ccTokenKind, token,
-                                     m_Tokenizer.m_SemanticTokenLineNumber,
-                                     0, 0, // FIXME (ph#):For semanticToken, any access to Impl start/end line?
-                                     args,
-                                     (lspTokenType == "operator"),          //isOperator
-                                     ((ccTokenKind & tkAnyFunction) !=0)    //isImpl
-                                      );
+        Token * newToken = DoAddToken(ccTokenKind, token,
+                                      m_Tokenizer.m_SemanticTokenLineNumber,
+                                      0, 0, // FIXME (ph#):For semanticToken, any access to Impl start/end line?
+                                      args,
+                                      (lspTokenType == "operator"),          //isOperator
+                                      ((ccTokenKind & tkAnyFunction) != 0)   //isImpl
+                                     );
         wxUnusedVar(newToken);
     }//end while
 
@@ -743,75 +935,92 @@ bool LSP_SymbolsParser::DoParseSemanticTokens()
     return true;
 }
 // ----------------------------------------------------------------------------
-bool LSP_SymbolsParser::DoParseDocumentSymbols(json* pJson, cbProject* pProject) //(ph 2021/03/15)
+bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProject) //(ph 2021/03/15)
 // ----------------------------------------------------------------------------
 {
     /// Do Not free pJson, it will be freed in CodeCompletion::LSP_Event()
     int startTime = 0;
     RECORD_TIME(startTime) //(ph 2021/09/7)
-
     bool debugging = false;
-
     // fetch filename from json id
     wxString URI;
-    try{
+
+    try
+    {
         URI = pJson->at("id").get<std::string>();
-    }catch(std::exception &e) {
-        cbMessageBox(wxString::Format("%s() %s",__FUNCTION__, e.what()));
+    }
+    catch (std::exception & e)
+    {
+        cbMessageBox(wxString::Format("%s() %s", __FUNCTION__, e.what()));
         return false;
     }
+
     URI = URI.AfterFirst(STX);
     wxFileName fnFilename = fileUtils.FilePathFromURI(URI);
     wxString filename = fnFilename.GetFullPath();
+
     if (not wxFileExists(filename))
+    {
         return false;
+    }
 
     // Validate that this file belongs to this projects parser
 
-    if (not pProject) return false;
-    if (not pProject->GetFileByFilename(filename,false)) return false;
-    EditorManager* pEdMgr = Manager::Get()->GetEditorManager();
-    cbEditor* pEditor = pEdMgr->GetBuiltinEditor(filename);
-    cbStyledTextCtrl* pEdCtrl =  nullptr;           //(ph 2021/04/12)
+    if (not pProject)
+    {
+        return false;
+    }
+
+    if (not pProject->GetFileByFilename(filename, false))
+    {
+        return false;
+    }
+
+    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+    cbEditor * pEditor = pEdMgr->GetBuiltinEditor(filename);
+    cbStyledTextCtrl * pEdCtrl =  nullptr;          //(ph 2021/04/12)
+
     if (pEditor)
+    {
         pEdCtrl = pEditor->GetControl();
+    }
     else
+    {
         pEdCtrl = m_Tokenizer.m_pControl;
+    }
 
     // most ParserThreadOptions was copied from m_Options
     LSP_SymbolsParserOptions opts;
-
     opts.useBuffer             = false;
     opts.bufferSkipBlocks      = false;
     opts.bufferSkipOuterBlocks = false;
-
     opts.followLocalIncludes   = m_Options.followLocalIncludes;
     opts.followGlobalIncludes  = m_Options.followGlobalIncludes;
     opts.wantPreprocessor      = m_Options.wantPreprocessor;
     opts.parseComplexMacros    = m_Options.parseComplexMacros;
     opts.platformCheck         = m_Options.platformCheck;
-
     // whether to collect doxygen style documents.
     opts.storeDocumentation    = m_Options.storeDocumentation;
     opts.loader                = nullptr; // must be 0 at this point
-
     bool isLocal = true;
     wxUnusedVar(isLocal);
-    Token* savedLastParent = nullptr;
+    Token * savedLastParent = nullptr;
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
 
-    LogManager* pLogMgr = Manager::Get()->GetLogManager();
     if (debugging)
+    {
         pLogMgr->DebugLog("-----------------symbols----------------");
+    }
 
     try
     {
         json result = pJson->at("result");
         size_t defcnt = result.size();
         TRACE(wxString::Format("%s() json contains %d major symbols", __FUNCTION__, defcnt));
-        for (size_t symidx=0; symidx<defcnt; ++symidx)
+
+        for (size_t symidx = 0; symidx < defcnt; ++symidx)
         {
             CHECK_TIME(startTime, 2000) //(ph 2021/09/7)
-
             wxString name =   result.at(symidx)["name"].get<std::string>();
             int kind =        result.at(symidx)["kind"].get<int>();
             // startLine etc is the items lines ranges, eg., function start line to end line braces.
@@ -825,20 +1034,21 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json* pJson, cbProject* pProject)
             int selectionRangeEndLine =   result.at(symidx)["selectionRange"]["end"]["line"].get<int>();
             int selectionRangeEndCol =    result.at(symidx)["selectionRange"]["end"]["character"].get<int>();
             size_t childcnt = 0;
-            childcnt = result.at(symidx).contains("children")?result.at(symidx)["children"].size() : 0;
-
+            childcnt = result.at(symidx).contains("children") ? result.at(symidx)["children"].size() : 0;
             wxString lineTxt = pEdCtrl->GetLine(startLine);
             lineTxt.Trim(true);  //remove crlf
 
-            if (debugging) { //debugging
-            pLogMgr->DebugLog(wxString::Format("lineTxt[%s]", lineTxt));
-            pLogMgr->DebugLog(wxString::Format("name[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", name, kind, startLine, startCol, endLine, endCol));
-            pLogMgr->DebugLog(wxString::Format("SelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
-            pLogMgr->DebugLog(wxString::Format("\tchildren[%d]", childcnt ));
+            if (debugging)   //debugging
+            {
+                pLogMgr->DebugLog(wxString::Format("lineTxt[%s]", lineTxt));
+                pLogMgr->DebugLog(wxString::Format("name[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", name, kind, startLine, startCol, endLine, endCol));
+                pLogMgr->DebugLog(wxString::Format("SelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
+                pLogMgr->DebugLog(wxString::Format("\tchildren[%d]", childcnt));
             }
 
-            Token* newToken = nullptr;
+            Token * newToken = nullptr;
             wxString args =  wxString();
+
             //Note: start and end lines contain the whole definition/implementation code.
             //      selectionRange start and end lines are the token name only.
             switch (kind)
@@ -846,19 +1056,32 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json* pJson, cbProject* pProject)
                 case LSP_DocumentSymbolKind::Class: // type 5
                 {
                     int lineNum = selectionRangeStartLine;
-                    newToken = DoHandleClass(ctClass, lineNum, endLine, endCol );
-                    if (not newToken) switch(1)
-                    {   default:    //debugging
-                        lineTxt = lineTxt.Trim(true).Trim(false);
-                        // clangd is reporting typedefs as classes, eg: typedef std::vector<ScriptEntry> ScriptsVector;
-                        // FIXME (ph#): There's a HandleTypedef() function. Adapt it.
-                        if (lineTxt.StartsWith("typedef ")) break;
-                        // Eliminate forward declarations like: "class ThatClass;"
-                        if (lineTxt.StartsWith("class ") and wxFound(lineTxt.Mid(4).Find(";")) ) break;
-                        // DoHandleClass() didn't understand the syntax. Could have been expanded macro.
-                        wxString msg = wxString::Format("LSP Error:DoHandleClass() did not understand line:%d %s", selectionRangeStartLine, lineTxt);
-                        pLogMgr->DebugLog(msg);
-                    }
+                    newToken = DoHandleClass(ctClass, lineNum, endLine, endCol);
+
+                    if (not newToken)
+                        switch (1)
+                        {
+                            default:    //debugging
+                                lineTxt = lineTxt.Trim(true).Trim(false);
+
+                                // clangd is reporting typedefs as classes, eg: typedef std::vector<ScriptEntry> ScriptsVector;
+                                // FIXME (ph#): There's a HandleTypedef() function. Adapt it.
+                                if (lineTxt.StartsWith("typedef "))
+                                {
+                                    break;
+                                }
+
+                                // Eliminate forward declarations like: "class ThatClass;"
+                                if (lineTxt.StartsWith("class ") and wxFound(lineTxt.Mid(4).Find(";")))
+                                {
+                                    break;
+                                }
+
+                                // DoHandleClass() didn't understand the syntax. Could have been expanded macro.
+                                wxString msg = wxString::Format("LSP Error:DoHandleClass() did not understand line:%d %s", selectionRangeStartLine, lineTxt);
+                                pLogMgr->DebugLog(msg);
+                        }
+
                     // In case the user has ticked "show inheritance",
                     // if a base class doesn't exists (not parsed yet), add an entry for it now.
                     // It'll just point back to this derived class declaration.
@@ -866,16 +1089,18 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json* pJson, cbProject* pProject)
                     // FIXME (ph#): Remove this code when system included files get parsed ?
                     if (newToken and newToken->m_AncestorsString.Length())
                     {
-                        Token* pClassToken = nullptr;
+                        Token * pClassToken = nullptr;
                         wxString ancestor = newToken->m_AncestorsString.BeforeFirst(',');
                         pClassToken = TokenExists(ancestor, 0, tkClass);
+
                         if (not pClassToken)
                         {
                             pClassToken = DoAddToken(tkClass, ancestor,
-                                    selectionRangeStartLine+1,
-                                    startLine+1,
-                                    endLine+1,
-                                    "", false, false);    //args, isOperator, isImpl
+                                                     selectionRangeStartLine + 1,
+                                                     startLine + 1,
+                                                     endLine + 1,
+                                                     "", false, false);    //args, isOperator, isImpl
+
                             if (not pClassToken)
                             {
                                 wxString msg = wxString::Format("Failed to add class Token %s():%d", __FUNCTION__, __LINE__);
@@ -883,6 +1108,7 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json* pJson, cbProject* pProject)
                             }
                         }//endif ancestor token does not exists
                     }//endif ancestor specified
+
                     break;
                 }//endcase LSP_DocumentSymbolKind::Class
 
@@ -893,34 +1119,38 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json* pJson, cbProject* pProject)
                 {
                     m_Str = wxString();
                     size_t funcNameLth = selectionRangeEndCol - selectionRangeStartCol;
-                    args = DoGetDocumentSymbolFunctionArgs(lineTxt, selectionRangeStartCol, funcNameLth );
+                    args = DoGetDocumentSymbolFunctionArgs(lineTxt, selectionRangeStartCol, funcNameLth);
+
                     if (wxFound(name.Find("::")))
                     {
                         int posn = name.Find("::");
-                        wxString nmspce = name.SubString(0,posn-1).Trim(true).Trim(false);
+                        wxString nmspce = name.SubString(0, posn - 1).Trim(true).Trim(false);
                         m_EncounteredNamespaces.push(nmspce);
-                        name = name.Mid(posn+2).Trim(true).Trim(false);
+                        name = name.Mid(posn + 2).Trim(true).Trim(false);
 
                         if (kind == LSP_DocumentSymbolKind::Method)
                         {
                             if (wxFound(posn = lineTxt.Find(nmspce)))
                             {
-                                m_Str = posn ? lineTxt.SubString(0, posn-1) : wxString();
+                                m_Str = posn ? lineTxt.SubString(0, posn - 1) : wxString();
                                 m_Str = m_Str.BeforeLast(' '); //must have blank before namespace
                             }
                         }
                     }//endif method
+
                     // fetch function return type
                     if (kind == LSP_DocumentSymbolKind::Function)
                     {
                         int posn;
+
                         if (wxFound(posn = lineTxt.Find(name)))
                         {
-                            m_Str = posn ? lineTxt.SubString(0,posn-1) : wxString();
+                            m_Str = posn ? lineTxt.SubString(0, posn - 1) : wxString();
                             m_Str = m_Str.BeforeLast(' '); //must have blank before func name
                         }
                     }
                 }//endcase kind function, method, constructor, property
+
                 // fall into default:
                 default:
                 {
@@ -933,71 +1163,75 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json* pJson, cbProject* pProject)
                     //                  const wxString& args = wxEmptyString,
                     //                  bool            isOperator = false,
                     //                  bool            isImpl = false);
-
                     bool isImpl = FileTypeOf(filename) == ftSource;
                     TokenKind ccTokenKind = ConvertDocSymbolKindToCCTokenKind(kind);
 
                     // Handle tokens that arn't class declarations
-                    if ( (not newToken) and  (kind != LSP_DocumentSymbolKind::Class))
+                    if ((not newToken) and (kind != LSP_DocumentSymbolKind::Class))
                         newToken = DoAddToken(ccTokenKind, name,
-                                                 selectionRangeStartLine+1,
-                                                 startLine+1,
-                                                 endLine+1,
-                                                 args,
-                                                 (kind == LSP_DocumentSymbolKind::Operator), //isOperator
-                                                 //((ccTokenKind & tkAnyFunction)!=0)          //isImpl
-                                                 isImpl
-                                                  );
-                    if (newToken and pProject->GetFileByFilename(filename, false) )
+                                              selectionRangeStartLine + 1,
+                                              startLine + 1,
+                                              endLine + 1,
+                                              args,
+                                              (kind == LSP_DocumentSymbolKind::Operator), //isOperator
+                                              //((ccTokenKind & tkAnyFunction)!=0)          //isImpl
+                                              isImpl
+                                             );
+
+                    if (newToken and pProject->GetFileByFilename(filename, false))
                     {
                         newToken->m_UserData = pProject;                                //(ph 2021/04/22)
-
                     }
-
                 }//end default
             }//endswitch kind
+
             if (childcnt and newToken)                   //(ph 2021/06/12) added newToken check
             {
                 savedLastParent = m_LastParent; //save current parent level
                 m_LastParent = newToken;
                 json jChildren = result.at(symidx)["children"];
-                WalkDocumentSymbols(jChildren,filename, newToken, 1);
+                WalkDocumentSymbols(jChildren, filename, newToken, 1);
                 m_LastParent = savedLastParent; //back to prvious parent level
             }
-
         }//end for
-    } catch (std::exception &e)
+    }
+    catch (std::exception & e)
     {
         wxString msg = wxString::Format("%s() Error:%s", __FUNCTION__, e.what());
         cbMessageBox(msg, "json Exception");
     }
 
-   return true;
+    return true;
 }
 // ----------------------------------------------------------------------------
-void LSP_SymbolsParser::WalkDocumentSymbols(json& jref, wxString& filename, Token* pParentToken, size_t level) //(ph 2021/03/13)
+void LSP_SymbolsParser::WalkDocumentSymbols(json & jref, wxString & filename, Token * pParentToken, size_t level) //(ph 2021/03/13)
 // ----------------------------------------------------------------------------
 {
     bool debugging = false;
-
     int startTime = 0;
-    Token* savedLastParent = nullptr;
+    Token * savedLastParent = nullptr;
     RECORD_TIME(startTime) //(ph 2021/09/7)
-
     size_t indentLevel = level++ ? level : 1;
-    LogManager* pLogMgr = Manager::Get()->GetLogManager();
-    EditorManager* pEdMgr = Manager::Get()->GetEditorManager();
-    cbEditor* pEditor = pEdMgr->GetBuiltinEditor(filename);
-    cbStyledTextCtrl* pEdCtrl = nullptr;        //(ph 2021/04/12)
-    if (pEditor)
-        pEdCtrl = pEditor->GetControl();
-    else
-        pEdCtrl = m_Tokenizer.m_pControl;
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+    cbEditor * pEditor = pEdMgr->GetBuiltinEditor(filename);
+    cbStyledTextCtrl * pEdCtrl = nullptr;       //(ph 2021/04/12)
 
-    try {
+    if (pEditor)
+    {
+        pEdCtrl = pEditor->GetControl();
+    }
+    else
+    {
+        pEdCtrl = m_Tokenizer.m_pControl;
+    }
+
+    try
+    {
         json result = jref;
         size_t defcnt = result.size();
-        for (size_t symidx=0; symidx<defcnt; ++symidx)
+
+        for (size_t symidx = 0; symidx < defcnt; ++symidx)
         {
             wxString name =   result.at(symidx)["name"].get<std::string>();
             int kind =        result.at(symidx)["kind"].get<int>();
@@ -1009,58 +1243,61 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json& jref, wxString& filename, Toke
             int selectionRangeStartCol =  result.at(symidx)["selectionRange"]["start"]["character"].get<int>();
             int selectionRangeEndLine =   result.at(symidx)["selectionRange"]["end"]["line"].get<int>();
             int selectionRangeEndCol =    result.at(symidx)["selectionRange"]["end"]["character"].get<int>();
-
             size_t childcnt = 0;
-            childcnt = result.at(symidx).contains("children")?result.at(symidx)["children"].size() : 0;
-
+            childcnt = result.at(symidx).contains("children") ? result.at(symidx)["children"].size() : 0;
             wxString lineTxt = pEdCtrl->GetLine(startLine);
             lineTxt.Trim(true);  //remove crlf
 
-            if (debugging) { //debugging
-            pLogMgr->DebugLog(wxString::Format("%*slineTxt[%s]", indentLevel*4, "", lineTxt));
-            pLogMgr->DebugLog(wxString::Format("%*sname[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", indentLevel*4, "",  name, kind, startLine, startCol, endLine, endCol));
-            pLogMgr->DebugLog(wxString::Format("%*sSelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", indentLevel*4, "",  selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
-            pLogMgr->DebugLog(wxString::Format("%*s\tchildren[%d]", indentLevel*4, "",  childcnt ));
+            if (debugging)   //debugging
+            {
+                pLogMgr->DebugLog(wxString::Format("%*slineTxt[%s]", indentLevel * 4, "", lineTxt));
+                pLogMgr->DebugLog(wxString::Format("%*sname[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", indentLevel * 4, "",  name, kind, startLine, startCol, endLine, endCol));
+                pLogMgr->DebugLog(wxString::Format("%*sSelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", indentLevel * 4, "",  selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
+                pLogMgr->DebugLog(wxString::Format("%*s\tchildren[%d]", indentLevel * 4, "",  childcnt));
             }
 
             wxString args =  wxString();
-            if ( (kind == LSP_DocumentSymbolKind::Function)
+
+            if ((kind == LSP_DocumentSymbolKind::Function)
                     or (kind == LSP_DocumentSymbolKind::Method)
                     or (kind == LSP_DocumentSymbolKind::Constructor)
                     or (kind == LSP_DocumentSymbolKind::Property)
                     or (kind == LSP_DocumentSymbolKind::Class)
-                )
-            { //function or method
+               )
+            {
+                //function or method
                 m_Str = wxString();
                 size_t funcNameLth = selectionRangeEndCol - selectionRangeStartCol;
-                args = DoGetDocumentSymbolFunctionArgs(lineTxt, selectionRangeStartCol, funcNameLth );
+                args = DoGetDocumentSymbolFunctionArgs(lineTxt, selectionRangeStartCol, funcNameLth);
+
                 if (wxFound(name.Find("::")))
                 {
                     int posn = name.Find("::");
-                    wxString nmspce = name.SubString(0,posn-1).Trim(true).Trim(false);
+                    wxString nmspce = name.SubString(0, posn - 1).Trim(true).Trim(false);
                     m_EncounteredNamespaces.push(nmspce);
-                    name = name.Mid(posn+2).Trim(true).Trim(false);
+                    name = name.Mid(posn + 2).Trim(true).Trim(false);
 
                     if (kind == LSP_DocumentSymbolKind::Method)
                     {
                         if (wxFound(posn = lineTxt.Find(nmspce)))
                         {
-                            m_Str = posn ? lineTxt.SubString(0, posn-1) : wxString();
+                            m_Str = posn ? lineTxt.SubString(0, posn - 1) : wxString();
                             m_Str = m_Str.BeforeLast(' '); //must have blank before namespace
                         }
                     }
                 }//endif method
+
                 // fetch function return type
                 if (kind == LSP_DocumentSymbolKind::Function)
                 {
                     int posn;
+
                     if (wxFound(posn = lineTxt.Find(name)))
                     {
-                        m_Str = posn ? lineTxt.SubString(0,posn-1) : wxString();
+                        m_Str = posn ? lineTxt.SubString(0, posn - 1) : wxString();
                         m_Str = m_Str.BeforeLast(' '); //must have blank before func name
                     }
                 }
-
             }//endif kind function, method, constructor, property, class
 
             //Token* DoAddToken(TokenKind       kind,
@@ -1071,26 +1308,28 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json& jref, wxString& filename, Toke
             //                  const wxString& args = wxEmptyString,
             //                  bool            isOperator = false,
             //                  bool            isImpl = false);
-
             bool isImpl = FileTypeOf(filename) == ftSource;
             TokenKind ccTokenKind = ConvertDocSymbolKindToCCTokenKind(kind);
             m_LastParent = pParentToken;
-            Token* newToken = TokenExists(name, 0, ccTokenKind);
+            Token * newToken = TokenExists(name, 0, ccTokenKind);
+
             if (not newToken)
             {
                 newToken = DoAddToken(ccTokenKind, name,
-                                             selectionRangeStartLine+1,
-                                             startLine+1,
-                                             endLine+1,
-                                             args,
-                                             (kind == LSP_DocumentSymbolKind::Operator),    //isOperator
-                                             //((ccTokenKind & tkAnyFunction)!=0)             //isImpl
-                                             isImpl
-                                              );
+                                      selectionRangeStartLine + 1,
+                                      startLine + 1,
+                                      endLine + 1,
+                                      args,
+                                      (kind == LSP_DocumentSymbolKind::Operator),    //isOperator
+                                      //((ccTokenKind & tkAnyFunction)!=0)             //isImpl
+                                      isImpl
+                                     );
             }
 
             if (newToken and pParentToken)                                       //(ph 2021/06/12) added pParentToken check
-                newToken->m_UserData = pParentToken->m_UserData;                                //(ph 2021/04/22)
+            {
+                newToken->m_UserData = pParentToken->m_UserData;    //(ph 2021/04/22)
+            }
 
             CHECK_TIME(startTime, 2000) //(ph 2021/09/7)
 
@@ -1098,128 +1337,213 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json& jref, wxString& filename, Toke
             {
                 savedLastParent = m_LastParent;  //save current parent level
                 json jChildren = result.at(symidx)["children"];
-                WalkDocumentSymbols(jChildren, filename, newToken, indentLevel+1);
+                WalkDocumentSymbols(jChildren, filename, newToken, indentLevel + 1);
                 m_LastParent = savedLastParent; //restore previous parent level
             }
         }//endfor
-    } catch (std::exception &e)
+    }
+    catch (std::exception & e)
     {
         wxString msg = wxString::Format("%s() Error:%s", __FUNCTION__, e.what());
         cbMessageBox(msg, "json Exception");
     }
 
-   return;
+    return;
 }
 // ----------------------------------------------------------------------------
 wxString LSP_SymbolsParser::DoHandleSemanticTokenFunction()
 // ----------------------------------------------------------------------------
 {
-        // info                                     //(ph 2021/03/22)
-        //m_Tokenizer.m_SemanticTokenIndex      == m_SemanticTokensIdx;
-        //m_Tokenizer.m_SemanticTokenLineNumber == lineNum;
-        //m_Tokenizer.m_SemanticTokenColumn     == colNum;
-        //m_Tokenizer.m_SemanticTokenLength     == txtLen;
-        //m_Tokenizer.m_SemanticTokenType       == type;
-        //m_Tokenizer.m_SemanticTokenModifier   == modifier;
+    // info                                     //(ph 2021/03/22)
+    //m_Tokenizer.m_SemanticTokenIndex      == m_SemanticTokensIdx;
+    //m_Tokenizer.m_SemanticTokenLineNumber == lineNum;
+    //m_Tokenizer.m_SemanticTokenColumn     == colNum;
+    //m_Tokenizer.m_SemanticTokenLength     == txtLen;
+    //m_Tokenizer.m_SemanticTokenType       == type;
+    //m_Tokenizer.m_SemanticTokenModifier   == modifier;
     wxString args = wxString();
-    cbStyledTextCtrl* pControl = m_Tokenizer.m_pControl;
+    cbStyledTextCtrl * pControl = m_Tokenizer.m_pControl;
     int posn = m_Tokenizer.m_SemanticTokenColumn;
     posn += m_Tokenizer.m_SemanticTokenLength;
     wxString lineTxt = pControl->GetLine(m_Tokenizer.m_SemanticTokenLineNumber);
+
     if (wxFound(lineTxt.Mid(posn).Find('(')))
     {
         int stx = lineTxt.Mid(posn).Find('(');
         int etx = lineTxt.Mid(posn).Find(')');
-        args = lineTxt.Mid(posn).SubString(stx,etx);
+        args = lineTxt.Mid(posn).SubString(stx, etx);
     }
-    return args;
 
+    return args;
 }
 // ----------------------------------------------------------------------------
 TokenKind LSP_SymbolsParser::ConvertDocSymbolKindToCCTokenKind(int docSymKind)
 // ----------------------------------------------------------------------------
 {
-
     /// FIXME (ph#): the following ccTokenKind(s) may not be correct //(ph 2021/03/22)
     TokenKind ccTokenKind = tkUndefined;
 
-    switch(docSymKind)
+    switch (docSymKind)
     {
-        case LSP_DocumentSymbolKind::File:      ccTokenKind = tkUndefined;  break;
-        case LSP_DocumentSymbolKind::Module:    ccTokenKind = tkUndefined;  break;
-        case LSP_DocumentSymbolKind::Namespace: ccTokenKind = tkNamespace;  break;
-        case LSP_DocumentSymbolKind::Package:   ccTokenKind = tkUndefined;  break;
-        case LSP_DocumentSymbolKind::Class:     ccTokenKind = tkClass;      break;
-        case LSP_DocumentSymbolKind::Method:    ccTokenKind = tkFunction;   break;
-        case LSP_DocumentSymbolKind::Property:  ccTokenKind = tkVariable;   break;
-        case LSP_DocumentSymbolKind::Field:     ccTokenKind = tkVariable;   break;
-        case LSP_DocumentSymbolKind::Constructor:ccTokenKind = tkConstructor;break;
-        case LSP_DocumentSymbolKind::Enum:      ccTokenKind = tkEnum;       break;
-        case LSP_DocumentSymbolKind::Interface: ccTokenKind = tkClass;      break;
-        case LSP_DocumentSymbolKind::Function:  ccTokenKind = tkFunction;   break;
-        case LSP_DocumentSymbolKind::Variable:  ccTokenKind = tkVariable;   break;
-        case LSP_DocumentSymbolKind::Constant:  ccTokenKind = tkVariable;   break;
-        case LSP_DocumentSymbolKind::String:    ccTokenKind = tkTypedef;    break;
-        case LSP_DocumentSymbolKind::Number:    ccTokenKind = tkTypedef;    break;
-        case LSP_DocumentSymbolKind::Boolean:   ccTokenKind = tkTypedef;    break;
-        case LSP_DocumentSymbolKind::Array:     ccTokenKind = tkTypedef;    break;
-        case LSP_DocumentSymbolKind::Object:    ccTokenKind = tkTypedef;    break;
-        case LSP_DocumentSymbolKind::Key:       ccTokenKind = tkTypedef;    break;
-        case LSP_DocumentSymbolKind::Null :     ccTokenKind = tkTypedef;    break;
-        case LSP_DocumentSymbolKind::EnumMember:ccTokenKind = tkEnumerator; break;
-        case LSP_DocumentSymbolKind::Struct:    ccTokenKind = tkClass;      break;
-        case LSP_DocumentSymbolKind::Event:     ccTokenKind = tkUndefined;  break;
-        case LSP_DocumentSymbolKind::Operator:  ccTokenKind = tkUndefined;  break;
+        case LSP_DocumentSymbolKind::File:
+            ccTokenKind = tkUndefined;
+            break;
 
+        case LSP_DocumentSymbolKind::Module:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_DocumentSymbolKind::Namespace:
+            ccTokenKind = tkNamespace;
+            break;
+
+        case LSP_DocumentSymbolKind::Package:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_DocumentSymbolKind::Class:
+            ccTokenKind = tkClass;
+            break;
+
+        case LSP_DocumentSymbolKind::Method:
+            ccTokenKind = tkFunction;
+            break;
+
+        case LSP_DocumentSymbolKind::Property:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_DocumentSymbolKind::Field:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_DocumentSymbolKind::Constructor:
+            ccTokenKind = tkConstructor;
+            break;
+
+        case LSP_DocumentSymbolKind::Enum:
+            ccTokenKind = tkEnum;
+            break;
+
+        case LSP_DocumentSymbolKind::Interface:
+            ccTokenKind = tkClass;
+            break;
+
+        case LSP_DocumentSymbolKind::Function:
+            ccTokenKind = tkFunction;
+            break;
+
+        case LSP_DocumentSymbolKind::Variable:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_DocumentSymbolKind::Constant:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_DocumentSymbolKind::String:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Number:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Boolean:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Array:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Object:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Key:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Null :
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::EnumMember:
+            ccTokenKind = tkEnumerator;
+            break;
+
+        case LSP_DocumentSymbolKind::Struct:
+            ccTokenKind = tkClass;
+            break;
+
+        case LSP_DocumentSymbolKind::Event:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_DocumentSymbolKind::Operator:
+            ccTokenKind = tkUndefined;
+            break;
     }//endswitch
+
     return ccTokenKind;
 }
 // ----------------------------------------------------------------------------
-wxString LSP_SymbolsParser::DoGetDocumentSymbolFunctionArgs(wxString& lineTxt, int startCol, int length)
+wxString LSP_SymbolsParser::DoGetDocumentSymbolFunctionArgs(wxString & lineTxt, int startCol, int length)
 // ----------------------------------------------------------------------------
 {
     wxString args = wxString();
     //cbStyledTextCtrl* pControl = m_Tokenizer.m_pControl;
     int posn = startCol + length;
+
     if (wxFound(lineTxt.Mid(posn).Find('(')))
     {
         int stx = lineTxt.Mid(posn).Find('(');
         int etx = lineTxt.Mid(posn).Find(')');
-        if (etx == wxNOT_FOUND) {     // if no ending ')'
+
+        if (etx == wxNOT_FOUND)       // if no ending ')'
+        {
             args = lineTxt.Mid(posn); // use rest of line as arguments
             args.Trim(true);
             args.Append("...");
         }
         else                          // else use '(chars)' following function name
-            args = lineTxt.Mid(posn).SubString(stx,etx);
+        {
+            args = lineTxt.Mid(posn).SubString(stx, etx);
+        }
     }
+
     return args;
 }
 
-Token* LSP_SymbolsParser::TokenExists(const wxString& name, const Token* parent, short int kindMask)
+Token * LSP_SymbolsParser::TokenExists(const wxString & name, const Token * parent, short int kindMask)
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
-
     // Lookup in local parent or in global scope
     int foundIdx = m_TokenTree->TokenExists(name, parent ? parent->m_Index : -1, kindMask);
+
     if (foundIdx != wxNOT_FOUND)
+    {
         return m_TokenTree->at(foundIdx);
+    }
 
     // Lookup in included namespaces
     foundIdx = m_TokenTree->TokenExists(name, m_UsedNamespacesIds, kindMask);
     return m_TokenTree->at(foundIdx);
 }
 
-Token* LSP_SymbolsParser::TokenExists(const wxString& name, const wxString& baseArgs, const Token* parent, TokenKind kind)
+Token * LSP_SymbolsParser::TokenExists(const wxString & name, const wxString & baseArgs, const Token * parent, TokenKind kind)
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
-
     // Lookup in local parent or in global scope
     int foundIdx = m_TokenTree->TokenExists(name, baseArgs, parent ? parent->m_Index : -1, kind);
-    if(foundIdx != wxNOT_FOUND)
+
+    if (foundIdx != wxNOT_FOUND)
+    {
         return m_TokenTree->at(foundIdx);
+    }
 
     // Lookup in included namespaces
     foundIdx = m_TokenTree->TokenExists(name, baseArgs, m_UsedNamespacesIds, kind);
@@ -1229,30 +1553,30 @@ Token* LSP_SymbolsParser::TokenExists(const wxString& name, const wxString& base
 wxString LSP_SymbolsParser::GetTokenBaseType()
 {
     TRACE(_T("GetTokenBaseType() : Searching within m_Str='%s'"), m_Str.wx_str());
-
     // Compensate for spaces between namespaces (e.g. NAMESPACE :: SomeType)
     // which is valid C++ construct.
     // Also, spaces that follow a semicolon are removed.
     int pos = 0;
+
     while (pos < static_cast<int>(m_Str.Length()))
     {
-        if (   wxIsspace(m_Str.GetChar(pos))
-            && (   (   (pos > 0)
-                    && (m_Str.GetChar(pos - 1) == ParserConsts::colon_chr) )
-                || (   (pos < static_cast<int>(m_Str.Length()) - 1)
-                    && (m_Str.GetChar(pos + 1) == ParserConsts::colon_chr) ) ) )
+        if (wxIsspace(m_Str.GetChar(pos))
+                && (((pos > 0)
+                     && (m_Str.GetChar(pos - 1) == ParserConsts::colon_chr))
+                    || ((pos < static_cast<int>(m_Str.Length()) - 1)
+                        && (m_Str.GetChar(pos + 1) == ParserConsts::colon_chr))))
         {
             m_Str.Remove(pos, 1);
         }
         else
+        {
             ++pos;
+        }
     }
 
     TRACE(_T("GetTokenBaseType() : Compensated m_Str='%s'"), m_Str.wx_str());
-
     // TODO (Morten#5#): Handle stuff like the following gracefully:
     // int __cdecl __MINGW_NOTHROW vscanf (const char * __restrict__, __VALIST);
-
     // m_Str contains the full text before the token's declaration
     // an example, for a variable Token: "const wxString& s;"
     // m_Str would be: const wxString&
@@ -1261,7 +1585,6 @@ wxString LSP_SymbolsParser::GetTokenBaseType()
     // Note that generally the returned type string is the identifier like token near the variable
     // name, there may be some exceptions. E.g. "wxString const &s;", here, "const" should not be
     // returned as a type name.
-
     pos = m_Str.Length() - 1; // search start at the end of m_Str
 
     while (pos >= 0)
@@ -1270,10 +1593,10 @@ wxString LSP_SymbolsParser::GetTokenBaseType()
         // not * or &
         //                        const wxString&
         // in this example, we would stop here ^
-        while (   (pos >= 0)
-               && (   wxIsspace(m_Str.GetChar(pos))
-                   || (m_Str.GetChar(pos) == ParserConsts::ptr_chr)
-                   || (m_Str.GetChar(pos) == ParserConsts::ref_chr)) )
+        while ((pos >= 0)
+                && (wxIsspace(m_Str.GetChar(pos))
+                    || (m_Str.GetChar(pos) == ParserConsts::ptr_chr)
+                    || (m_Str.GetChar(pos) == ParserConsts::ref_chr)))
         {
             --pos;
         }
@@ -1286,17 +1609,21 @@ wxString LSP_SymbolsParser::GetTokenBaseType()
             // continue walking backwards until we find the start of the word
             //                               const  wxString&
             // in this example, we would stop here ^
-            while (   (pos >= 0)
-                   && (   wxIsalnum(m_Str.GetChar(pos))
-                       || (m_Str.GetChar(pos) == ParserConsts::underscore_chr)
-                       || (m_Str.GetChar(pos) == ParserConsts::colon_chr)) )
+            while ((pos >= 0)
+                    && (wxIsalnum(m_Str.GetChar(pos))
+                        || (m_Str.GetChar(pos) == ParserConsts::underscore_chr)
+                        || (m_Str.GetChar(pos) == ParserConsts::colon_chr)))
             {
                 --pos;
             }
+
             wxString typeCandidate = m_Str.Mid(pos + 1, end - pos);
+
             // "const" should not be returned as a type name, so we try next candidate.
             if (typeCandidate.IsSameAs(ParserConsts::kw_const))
+            {
                 continue;
+            }
 
             TRACE(_T("GetTokenBaseType() : Found '%s'"), typeCandidate.wx_str());
             return typeCandidate;
@@ -1307,16 +1634,17 @@ wxString LSP_SymbolsParser::GetTokenBaseType()
     return m_Str; // token ends at start of phrase
 }
 
-Token* LSP_SymbolsParser::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, bool createIfNotExist,
-                                        Token* parentIfCreated)
+Token * LSP_SymbolsParser::FindTokenFromQueue(std::queue<wxString> & q, Token * parent, bool createIfNotExist,
+                                              Token * parentIfCreated)
 {
     if (q.empty())
+    {
         return 0;
+    }
 
     wxString ns = q.front();
     q.pop();
-
-    Token* result = TokenExists(ns, parent, tkNamespace | tkClass);
+    Token * result = TokenExists(ns, parent, tkNamespace | tkClass);
 
     // if we can't find one in global namespace, then we check the local parent
     if (!result && parent == 0)
@@ -1331,8 +1659,11 @@ Token* LSP_SymbolsParser::FindTokenFromQueue(std::queue<wxString>& q, Token* par
         result->m_IsLocal = m_IsLocal;
         result->m_ParentIndex = parentIfCreated ? parentIfCreated->m_Index : -1;
         int newidx = m_TokenTree->insert(result);
+
         if (parentIfCreated)
+        {
             parentIfCreated->AddChild(newidx);
+        }
 
         TRACE(_T("FindTokenFromQueue() : Created unknown class/namespace %s (%d) under %s (%d)"),
               ns.wx_str(),
@@ -1342,23 +1673,27 @@ Token* LSP_SymbolsParser::FindTokenFromQueue(std::queue<wxString>& q, Token* par
     }
 
     if (q.empty())
+    {
         return result;
+    }
 
     if (result)
+    {
         result = FindTokenFromQueue(q, result, createIfNotExist, parentIfCreated);
+    }
 
     return result;
 }
 
 // ----------------------------------------------------------------------------
-Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
-                                const wxString& name,
-                                int             line,
-                                int             implLineStart,
-                                int             implLineEnd,
-                                const wxString& args,
-                                bool            isOperator,
-                                bool            isImpl)
+Token * LSP_SymbolsParser::DoAddToken(TokenKind       kind,
+                                      const wxString & name,
+                                      int             line,
+                                      int             implLineStart,
+                                      int             implLineEnd,
+                                      const wxString & args,
+                                      bool            isOperator,
+                                      bool            isImpl)
 // ----------------------------------------------------------------------------
 {
     if (name.IsEmpty())
@@ -1367,9 +1702,10 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
         return 0; // oops!
     }
 
-    Token* newToken = 0;
+    Token * newToken = 0;
     wxString newname(name);
     m_Str.Trim(true).Trim(false);
+
     if (kind == tkDestructor)
     {
         // special class destructors case
@@ -1378,40 +1714,56 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
     }
 
     wxString baseArgs;
+
     if (kind & tkAnyFunction)
     {
-        if ( !GetBaseArgs(args, baseArgs) )
+        if (!GetBaseArgs(args, baseArgs))
+        {
             kind = tkVariable;
+        }
     }
 
-    Token* localParent = 0;
-
+    Token * localParent = 0;
     // preserve m_EncounteredTypeNamespaces; needed further down this function
     std::queue<wxString> q = m_EncounteredTypeNamespaces;
+
     if ((kind == tkDestructor || kind == tkConstructor) && !q.empty())
     {
         // look in m_EncounteredTypeNamespaces
         localParent = FindTokenFromQueue(q, 0, true, m_LastParent);
+
         if (localParent)
+        {
             newToken = TokenExists(newname, baseArgs, localParent, kind);
+        }
+
         if (newToken)
-        {   TRACE(_T("DoAddToken() : Found token (ctor/dtor).")); }
+        {
+            TRACE(_T("DoAddToken() : Found token (ctor/dtor)."));
+        }
     }
 
     // check for implementation member function
     if (!newToken && !m_EncounteredNamespaces.empty())
     {
         localParent = FindTokenFromQueue(m_EncounteredNamespaces, 0, true, m_LastParent);
+
         if (localParent)
+        {
             newToken = TokenExists(newname, baseArgs, localParent, kind);
+        }
+
         if (newToken)
         {
             TRACE(_T("DoAddToken() : Found token (member function)."));
+
             // Special handling function implementation here, a function declaration and its
             // function implementation share one Token. But the function implementation's arguments
             // should take precedence, as they will be used for code-completion.
             if (isImpl && (kind & tkAnyFunction))
+            {
                 newToken->m_Args = args;
+            }
         }
     }
 
@@ -1419,12 +1771,16 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
     if (!newToken)
     {
         newToken = TokenExists(newname, baseArgs, m_LastParent, kind);
+
         if (newToken)
         {
             TRACE(_T("DoAddToken() : Found token (parent)."));
+
             // Special handling function implementation, see comments above
             if (isImpl && (kind & tkAnyFunction))
+            {
                 newToken->m_Args = args;
+            }
         }
     }
 
@@ -1437,11 +1793,11 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
     // checked to support template specialization
     // eg:  template<typename T> class A {...} and template<> class A<int> {...}
     // we record them as different tokens
-    if (   newToken
-        && (newToken->m_TemplateArgument == m_TemplateArgument)
-        && (   kind & tkAnyFunction
-            || newToken->m_Args == args
-            || kind & tkAnyContainer ) )
+    if (newToken
+            && (newToken->m_TemplateArgument == m_TemplateArgument)
+            && (kind & tkAnyFunction
+                || newToken->m_Args == args
+                || kind & tkAnyContainer))
     {
         ; // nothing to do
     }
@@ -1450,10 +1806,12 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
         newToken = new Token(newname, m_FileIdx, line, ++m_TokenTree->m_TokenTicketCount);
         TRACE(_T("DoAddToken() : Created token='%s', file_idx=%u, line=%d, ticket=%lu"), newname.wx_str(),
               m_FileIdx, line, static_cast<unsigned long>(m_TokenTree->m_TokenTicketCount));
+        Token * finalParent = localParent ? localParent : m_LastParent;
 
-        Token* finalParent = localParent ? localParent : m_LastParent;
         if (kind == tkVariable && m_Options.parentIdxOfBuffer != -1)
+        {
             finalParent = m_TokenTree->at(m_Options.parentIdxOfBuffer);
+        }
 
         newToken->m_ParentIndex = finalParent ? finalParent->m_Index : -1;
         newToken->m_TokenKind   = kind;
@@ -1461,25 +1819,34 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
         newToken->m_BaseArgs    = baseArgs;
 
         if (newToken->m_TokenKind == tkClass)
-            newToken->m_BaseArgs = args; // save template args
+        {
+            newToken->m_BaseArgs = args;    // save template args
+        }
         else
+        {
             newToken->m_Args = args;
+        }
 
         int newidx = m_TokenTree->insert(newToken);
 
         if (finalParent)
+        {
             finalParent->AddChild(newidx);
+        }
     }
 
     if (!(kind & (tkConstructor | tkDestructor)))
     {
         wxString tokenFullType = m_Str;
+
         if (!m_PointerOrRef.IsEmpty())
         {
             tokenFullType << m_PointerOrRef;
             m_PointerOrRef.Clear();
         }
+
         wxString tokenBaseType = GetTokenBaseType();
+
         if (tokenBaseType.Find(ParserConsts::space_chr) == wxNOT_FOUND)
         {
             // token type must contain all namespaces
@@ -1495,6 +1862,7 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
             TRACE(_T("DoAddToken() : Prepending '%s'"), prepend.wx_str());
             tokenBaseType.Prepend(prepend);
         }
+
         newToken->m_FullType = tokenFullType;
         newToken->m_BaseType = tokenBaseType;
     }
@@ -1519,41 +1887,40 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
 
     // this will append the doxygen style comments to the Token
     m_Tokenizer.SetLastTokenIdx(newToken->m_Index);
-
     TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
           name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_FullType.wx_str(),
           newToken->m_BaseType.wx_str(), m_TokenTree->at(newToken->m_ParentIndex) ?
           m_TokenTree->at(newToken->m_ParentIndex)->m_Name.wx_str() : wxEmptyString,
           newToken->m_ParentIndex);
-          //(ph 2021/10/30) **debugging**
-        //wxString AddedTokenStr = wxString::Format(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
-        //      name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_FullType.wx_str(),
-        //      newToken->m_BaseType.wx_str(), m_TokenTree->at(newToken->m_ParentIndex) ?
-        //      m_TokenTree->at(newToken->m_ParentIndex)->m_Name.wx_str() : wxEmptyString,
-        //      newToken->m_ParentIndex);
-        //CCLogger::Get()->DebugLog(AddedTokenStr);
-        ADDTOKEN(_T("Token: Index %7d Line %7d: Type: %s: -> '%s'"),
-                 newToken->m_Index, line, newToken->GetTokenKindString().wx_str(), name.wx_str());
-        //(ph 2021/10/30) **debugging**
-        //AddedTokenStr = wxString::Format(_T("Token: Index %7d Line %7d: Type: %s: -> '%s'"),
-        //         newToken->m_Index, line, newToken->GetTokenKindString().wx_str(), name.wx_str());
-        //CCLogger::Get()->DebugLog(AddedTokenStr);
-
+    //(ph 2021/10/30) **debugging**
+    //wxString AddedTokenStr = wxString::Format(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
+    //      name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_FullType.wx_str(),
+    //      newToken->m_BaseType.wx_str(), m_TokenTree->at(newToken->m_ParentIndex) ?
+    //      m_TokenTree->at(newToken->m_ParentIndex)->m_Name.wx_str() : wxEmptyString,
+    //      newToken->m_ParentIndex);
+    //CCLogger::Get()->DebugLog(AddedTokenStr);
+    ADDTOKEN(_T("Token: Index %7d Line %7d: Type: %s: -> '%s'"),
+             newToken->m_Index, line, newToken->GetTokenKindString().wx_str(), name.wx_str());
+    //(ph 2021/10/30) **debugging**
+    //AddedTokenStr = wxString::Format(_T("Token: Index %7d Line %7d: Type: %s: -> '%s'"),
+    //         newToken->m_Index, line, newToken->GetTokenKindString().wx_str(), name.wx_str());
+    //CCLogger::Get()->DebugLog(AddedTokenStr);
 
     // Notice: clears the queue "m_EncounteredTypeNamespaces"
     while (!m_EncounteredTypeNamespaces.empty())
+    {
         m_EncounteredTypeNamespaces.pop();
+    }
 
     return newToken;
 }
 
 void LSP_SymbolsParser::HandleIncludes()
 {
-    #if defined(cbDEBUG)
+#if defined(cbDEBUG)
     cbAssertNonFatal(0 && "LSP_SymbolsParser::HandleIncludes() shouldnt be here!");
-    #endif
+#endif
     return;
-
     //wxString filename;
     //bool isGlobal = !m_IsLocal;
     //wxString token = m_Tokenizer.GetToken();
@@ -1643,17 +2010,14 @@ void LSP_SymbolsParser::HandleNamespace()
     if (ns == ParserConsts::opbrace)
     {
         // parse inside anonymous namespace
-        Token*     lastParent = m_LastParent;
+        Token   *  lastParent = m_LastParent;
         TokenScope lastScope  = m_LastScope;
-
         DoParse();
-
         m_LastParent = lastParent;
         m_LastScope   = lastScope;
     }
     else
     {
-
         while (true)
         {
             // for namespace aliases to be parsed, we need to tell the tokenizer
@@ -1661,16 +2025,19 @@ void LSP_SymbolsParser::HandleNamespace()
             // "assignment" (=).
             // we just have to remember to revert this setting below, or else problems will follow
             m_Tokenizer.SetState(tsNormal);
-
             wxString next = m_Tokenizer.PeekToken(); // named namespace
-            if (next==ParserConsts::opbrace)
+
+            if (next == ParserConsts::opbrace)
             {
                 m_Tokenizer.SetState(tsNormal);
-
                 // use the existing copy (if any)
-                Token* newToken = TokenExists(ns, m_LastParent, tkNamespace);
+                Token * newToken = TokenExists(ns, m_LastParent, tkNamespace);
+
                 if (!newToken)
+                {
                     newToken = DoAddToken(tkNamespace, ns, line);
+                }
+
                 if (!newToken)
                 {
                     TRACE(_T("HandleNamespace() : Unable to create/add new token: ") + ns);
@@ -1679,19 +2046,14 @@ void LSP_SymbolsParser::HandleNamespace()
 
                 m_Tokenizer.GetToken(); // eat {
                 int lineStart = m_Tokenizer.GetLineNumber();
-
-                Token*     lastParent = m_LastParent; // save status, will restore after DoParse()
+                Token   *  lastParent = m_LastParent; // save status, will restore after DoParse()
                 TokenScope lastScope  = m_LastScope;
-
                 m_LastParent = newToken;
                 // default scope is: public for namespaces (actually no, but emulate it)
                 m_LastScope   = tsPublic;
-
                 DoParse();
-
                 m_LastParent = lastParent;
                 m_LastScope   = lastScope;
-
                 // update implementation file and lines of namespace.
                 // this doesn't make much sense because namespaces are all over the place,
                 // but do it anyway so that buffer-based parsing returns the correct values.
@@ -1699,81 +2061,89 @@ void LSP_SymbolsParser::HandleNamespace()
                 newToken->m_ImplLine      = line;
                 newToken->m_ImplLineStart = lineStart;
                 newToken->m_ImplLineEnd   = m_Tokenizer.GetLineNumber();
-
                 // the namespace body is correctly parsed
                 break;
             }
-            else if (next==ParserConsts::equals)
-            {
-                // namespace alias; example from cxxabi.h:
-                //
-                // namespace __cxxabiv1
-                // {
-                // ...
-                // }
-                // namespace abi = __cxxabiv1; <-- we 're in this case now
-
-                m_Tokenizer.GetToken(); // eat '='
-                m_Tokenizer.SetState(tsNormal);
-
-                Token* lastParent = m_LastParent;
-                Token* aliasToken = NULL;
-
-                while (IS_ALIVE)
+            else
+                if (next == ParserConsts::equals)
                 {
-                    wxString aliasStr = m_Tokenizer.GetToken();
+                    // namespace alias; example from cxxabi.h:
+                    //
+                    // namespace __cxxabiv1
+                    // {
+                    // ...
+                    // }
+                    // namespace abi = __cxxabiv1; <-- we 're in this case now
+                    m_Tokenizer.GetToken(); // eat '='
+                    m_Tokenizer.SetState(tsNormal);
+                    Token * lastParent = m_LastParent;
+                    Token * aliasToken = NULL;
 
-                    // use the existing copy (if any)
-                    aliasToken = TokenExists(aliasStr, m_LastParent, tkNamespace);
-                    if (!aliasToken)
-                        aliasToken = DoAddToken(tkNamespace, aliasStr, line);
-                    if (!aliasToken)
-                        return;
-
-                    if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                    while (IS_ALIVE)
                     {
-                        m_Tokenizer.GetToken();
-                        m_LastParent = aliasToken;
+                        wxString aliasStr = m_Tokenizer.GetToken();
+                        // use the existing copy (if any)
+                        aliasToken = TokenExists(aliasStr, m_LastParent, tkNamespace);
+
+                        if (!aliasToken)
+                        {
+                            aliasToken = DoAddToken(tkNamespace, aliasStr, line);
+                        }
+
+                        if (!aliasToken)
+                        {
+                            return;
+                        }
+
+                        if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                        {
+                            m_Tokenizer.GetToken();
+                            m_LastParent = aliasToken;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    aliasToken->m_Aliases.Add(ns);
+                    m_LastParent = lastParent;
+                    // the namespace alias statement is correctly parsed
+                    break;
+                }
+                else
+                {
+                    m_Tokenizer.SetState(tsNormal);
+                    // probably some kind of error in code ?
+                    SkipToOneOfChars(ParserConsts::semicolonopbrace);
+                    // in case of the code:
+                    //
+                    //    # define _GLIBCXX_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY(V)
+                    //    namespace std _GLIBCXX_VISIBILITY(default)
+                    //    {
+                    //        class vector
+                    //        {
+                    //            size_t size();
+                    //        }
+                    //    }
+                    // we still want to parse the body of the namespace, but skip the tokens before "{"
+                    m_Tokenizer.UngetToken();
+                    wxString peek = m_Tokenizer.PeekToken();
+
+                    if (peek == ParserConsts::opbrace)
+                    {
+                        continue;
                     }
                     else
+                    {
                         break;
+                    }
                 }
-
-                aliasToken->m_Aliases.Add(ns);
-                m_LastParent = lastParent;
-
-                // the namespace alias statement is correctly parsed
-                break;
-            }
-            else
-            {
-                m_Tokenizer.SetState(tsNormal);
-                // probably some kind of error in code ?
-                SkipToOneOfChars(ParserConsts::semicolonopbrace);
-
-                // in case of the code:
-                //
-                //    # define _GLIBCXX_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY(V)
-                //    namespace std _GLIBCXX_VISIBILITY(default)
-                //    {
-                //        class vector
-                //        {
-                //            size_t size();
-                //        }
-                //    }
-                // we still want to parse the body of the namespace, but skip the tokens before "{"
-                m_Tokenizer.UngetToken();
-                wxString peek = m_Tokenizer.PeekToken();
-                if(peek == ParserConsts::opbrace)
-                    continue;
-                else
-                    break;
-            }
         } // while(true)
     }
 }
 // ----------------------------------------------------------------------------
-Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastLineNumber, int endCol)            //(ph 2021/05/15)
+Token * LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastLineNumber, int endCol)           //(ph 2021/05/15)
 // ----------------------------------------------------------------------------
 {
     // need to force the tokenizer _not_ skip anything
@@ -1781,31 +2151,30 @@ Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastL
     // don't forget to reset that if you add any early exit condition!
     TokenizerState oldState = m_Tokenizer.GetState();
     m_Tokenizer.SetState(tsNormal);
-
     m_Tokenizer.SetLineNumber(lineNumber);
     int lineNr = m_Tokenizer.GetLineNumber(); //just checking
     wxString ancestors;
     wxString lastCurrent;
-    Token* newToken = nullptr;  //(ph 2021/05/30)
+    Token * newToken = nullptr; //(ph 2021/05/30)
+    cbStyledTextCtrl * pTextCtrl = m_Tokenizer.m_pControl;
 
-    cbStyledTextCtrl* pTextCtrl = m_Tokenizer.m_pControl;
     // FIXME (ph#): change code to use cbStyledTextCtrl directly. Quite moving text
     // In Tokenizer init, text from cbStyledTextCtrl should have been copied to Tokenizer.m_Buffer
-    if ((not pTextCtrl) or (not pTextCtrl->GetLength()) )
-        return nullptr; //(ph 2021/05/30)
+    if ((not pTextCtrl) or (not pTextCtrl->GetLength()))
+    {
+        return nullptr;    //(ph 2021/05/30)
+    }
 
     //set current parsing position to beginning of lineNumber param
     m_Tokenizer.SetTokenIndex(pTextCtrl->PositionFromLine(lineNumber));
     m_Tokenizer.SetPeekTokenIndex(pTextCtrl->PositionFromLine(lineNumber));
     m_Tokenizer.SetPeekAvailable(false);
-
     int startTime = 0;
     RECORD_TIME(startTime)
 
     while (IS_ALIVE)
     {
         CHECK_TIME(startTime, 1000) //(ph 2021/09/8)
-
         wxString current = m_Tokenizer.GetToken(); // class name
         wxString next    = m_Tokenizer.PeekToken();
 
@@ -1813,7 +2182,6 @@ Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastL
         if (current == ParserConsts::kw_attribute || current == ParserConsts::kw_declspec)
         {
             TRACE(_T("HandleClass() : Skip __attribute__ or __declspec"));
-
             // Handle stuff like: __attribute__(( whatever ))
             m_Tokenizer.GetToken();  // eat __attribute__
             current = m_Tokenizer.GetToken();  // eat (( whatever ))
@@ -1823,11 +2191,13 @@ Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastL
         TRACE(_T("HandleClass() : Found class '%s', next='%s'"), current.wx_str(), next.wx_str());
 
         if (current.IsEmpty() || next.IsEmpty())
+        {
             break;
+        }
 
         // -------------------------------------------------------------------
         if (next == ParserConsts::lt) // template specialization
-        // -------------------------------------------------------------------
+            // -------------------------------------------------------------------
         {
             // eg: template<> class A<int> {...}, then we update template argument with "<int>"
             GetTemplateArgs();
@@ -1836,65 +2206,73 @@ Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastL
 
         // -------------------------------------------------------------------
         if (next == ParserConsts::colon) // has ancestor(s)
-        // -------------------------------------------------------------------
+            // -------------------------------------------------------------------
         {
             TRACE(_T("HandleClass() : Class '%s' has ancestors"), current.wx_str());
             m_Tokenizer.GetToken(); // eat ":"
+
             while (IS_ALIVE)
             {
                 CHECK_TIME(startTime, 1000) //(ph 2021/09/8)
-
                 wxString tmp = m_Tokenizer.GetToken();
                 next = m_Tokenizer.PeekToken();
+
                 // -----------------------------------------------------------
-                if (   tmp == ParserConsts::kw_public
-                    || tmp == ParserConsts::kw_protected
-                    || tmp == ParserConsts::kw_private )
-                // -----------------------------------------------------------
+                if (tmp == ParserConsts::kw_public
+                        || tmp == ParserConsts::kw_protected
+                        || tmp == ParserConsts::kw_private)
+                    // -----------------------------------------------------------
                 {
                     continue;
                 }
 
                 // -----------------------------------------------------------
                 if (!(tmp == ParserConsts::comma || tmp == ParserConsts::gt))
-                // -----------------------------------------------------------
+                    // -----------------------------------------------------------
                 {
                     // fix for namespace usage in ancestors
                     if (tmp == ParserConsts::dcolon || next == ParserConsts::dcolon)
+                    {
                         ancestors << tmp;
+                    }
                     else
+                    {
                         ancestors << tmp << ParserConsts::comma_chr;
+                    }
+
                     TRACE(_T("HandleClass() : Adding ancestor ") + tmp);
                 }
 
                 // -----------------------------------------------------------
-                if (   next.IsEmpty()
-                    || next == ParserConsts::opbrace
-                    || next == ParserConsts::semicolon )
-                // -----------------------------------------------------------
+                if (next.IsEmpty()
+                        || next == ParserConsts::opbrace
+                        || next == ParserConsts::semicolon)
+                    // -----------------------------------------------------------
                 {
                     break;
                 }
                 // -----------------------------------------------------------
-                else if (next == ParserConsts::lt)
-                // -----------------------------------------------------------
-                {
-                    // template class
-                    //m_Tokenizer.GetToken(); // reach "<"
-                    // must not "eat" the token,
-                    // SkipAngleBraces() will do it to see what it must match
-                    SkipAngleBraces();
-                    // also need to 'unget' the last token (>)
-                    // so next iteration will see the { or ; in 'next'
-                    m_Tokenizer.UngetToken();
-                }
+                else
+                    if (next == ParserConsts::lt)
+                        // -----------------------------------------------------------
+                    {
+                        // template class
+                        //m_Tokenizer.GetToken(); // reach "<"
+                        // must not "eat" the token,
+                        // SkipAngleBraces() will do it to see what it must match
+                        SkipAngleBraces();
+                        // also need to 'unget' the last token (>)
+                        // so next iteration will see the { or ; in 'next'
+                        m_Tokenizer.UngetToken();
+                    }
             }
+
             TRACE(_T("HandleClass() : Ancestors: ") + ancestors);
         }
 
         // -------------------------------------------------------------------
         if (current == ParserConsts::opbrace) // unnamed class/struct/union
-        // -------------------------------------------------------------------
+            // -------------------------------------------------------------------
         {
             wxString unnamedTmp;
             unnamedTmp.Printf(_T("%s%s%u_%lu"),
@@ -1903,11 +2281,11 @@ Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastL
                               m_FileIdx, static_cast<unsigned long>(m_StructUnionUnnamedCount++));
             //-Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
             newToken = DoAddToken(tkClass, unnamedTmp, lineNr); //(ph 2021/05/30)
+
             // Maybe it is a bug here. I just fixed it.
             if (!newToken)
             {
                 TRACE(_T("HandleClass() : Unable to create/add new token: ") + unnamedTmp);
-
                 // restore tokenizer's functionality
                 m_Tokenizer.SetState(oldState);
                 return nullptr;
@@ -1917,35 +2295,33 @@ Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastL
             wxArrayString formals;
             SplitTemplateFormalParameters(m_TemplateArgument, formals);
 #ifdef CC_PARSER_TEST
+
             for (size_t i = 0; i < formals.GetCount(); ++i)
+            {
                 TRACE(_T("The template formal arguments are '%s'."), formals[i].wx_str());
+            }
+
 #endif
             newToken->m_TemplateType = formals;
             m_TemplateArgument.Clear();
-
-            Token*     lastParent     = m_LastParent;
+            Token   *  lastParent     = m_LastParent;
             TokenScope lastScope      = m_LastScope;
             bool       parsingTypedef = m_ParsingTypedef;
-
             m_LastParent     = newToken;
             // default scope is: private for classes, public for structs, public for unions
             m_LastScope      = ct == ctClass ? tsPrivate : tsPublic;
             m_ParsingTypedef = false;
-
             newToken->m_ImplLine = lineNr;
             newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
-
             newToken->m_IsAnonymous = true;
-            #if defined(cbDEBUG)
+#if defined(cbDEBUG)
             cbAssertNonFatal(wxString::Format("Trying to DoParse recursion in %s():%d", __PRETTY_FUNCTION__, __LINE__));
-            #endif
+#endif
             break; //(ph 2021/10/13)
             /// DoParse(); // recursion
-
             m_LastParent     = lastParent;
             m_LastScope      = lastScope;
             m_ParsingTypedef = parsingTypedef;
-
             m_LastUnnamedTokenName = unnamedTmp; // used for typedef'ing anonymous class/struct/union
 
             // we should now be right after the closing brace
@@ -1955,264 +2331,311 @@ Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastL
             {
                 m_Str.Clear();
                 TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
-                if ( !ReadClsNames(newToken->m_Name) )
-                {   TRACE(_T("HandleClass() : ReadClsNames returned false [1].")); }
+
+                if (!ReadClsNames(newToken->m_Name))
+                {
+                    TRACE(_T("HandleClass() : ReadClsNames returned false [1]."));
+                }
+
                 break;
             }
             else
             {
                 m_Str = newToken->m_Name;
-                if ( !ReadVarNames() )
-                {   TRACE(_T("HandleClass() : ReadVarNames returned false [1].")); }
+
+                if (!ReadVarNames())
+                {
+                    TRACE(_T("HandleClass() : ReadVarNames returned false [1]."));
+                }
+
                 m_Str.Clear();
                 break;
             }
         }
         // -------------------------------------------------------------------
-        else if (next == ParserConsts::opbrace)
-        // -------------------------------------------------------------------
-        {
-            // for a template class definition like
-            // template <typename x, typename y>class AAA : public BBB, CCC {;}
-            // we would like to show its ancestors and template formal parameters on the tooltip,
-            // so we re-used the m_Args member to store those informations, the tooltip shows like:
-            // class AAA<x,y> : BBB, CCC {...} instead of class AAA {...}
-            wxStringTokenizer tkz(ancestors, ParserConsts::comma);
-            wxString args;
-            while (tkz.HasMoreTokens())
+        else
+            if (next == ParserConsts::opbrace)
+                // -------------------------------------------------------------------
             {
-                CHECK_TIME(startTime, 1000)     //(ph 2021/09/8)
-
-                const wxString& ancestor = tkz.GetNextToken();
-                if (ancestor.IsEmpty())
-                    continue;
-                if (args.IsEmpty())
-                    args += ParserConsts::space + ParserConsts::colon;
-                else
-                    args += ParserConsts::comma;
-                args += ParserConsts::space + ancestor;
-            }
-            wxArrayString formals;
-            SplitTemplateFormalParameters(m_TemplateArgument, formals);
-            if (!formals.IsEmpty())
-                args.Prepend(ParserConsts::lt + GetStringFromArray(formals, ParserConsts::comma, false) + ParserConsts::gt);
-
-            //-Token* newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
-            newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);    //(ph 2021/05/30)
-            if (!newToken)
-            {
-                TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
-
-                // restore tokenizer's functionality
-                m_Tokenizer.SetState(oldState);
-                return newToken; //(ph 2021/05/30)
-            }
-            newToken->m_AncestorsString = ancestors;
-
-            m_Tokenizer.GetToken(); // eat {
-
-            Token* lastParent = m_LastParent; // save status, and will restore after DoParse()
-            TokenScope lastScope = m_LastScope;
-            bool parsingTypedef = m_ParsingTypedef;
-
-            m_LastParent = newToken;
-            // default scope is: private for classes, public for structs, public for unions
-            m_LastScope = ct == ctClass ? tsPrivate : tsPublic;
-            m_ParsingTypedef = false;
-
-            newToken->m_ImplLine = lineNr;
-            newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
-
-            newToken->m_TemplateArgument = m_TemplateArgument;
-
-#ifdef CC_PARSER_TEST
-            for (size_t i = 0; i < formals.GetCount(); ++i)
-                TRACE(_T("The template formal arguments are '%s'."), formals[i].wx_str());
-#endif
-            newToken->m_TemplateType = formals;
-            m_TemplateArgument.Clear();
-
-            /// ------- Dont parse class for LSP ----------------------------------- //(ph 2021/05/27)
-            //-DoParse();
-            // Set Tokenizer last line number to end of Class code
-            cbStyledTextCtrl* pTextCtrl = m_Tokenizer.m_pControl;
-            // lastLineNumber from LSP must contain ending '}'
-            m_Tokenizer.SetLineNumber(lastLineNumber);
-            unsigned endOfClassTokenIndex = pTextCtrl->PositionFromLine(lastLineNumber);
-            wxString endOfClassText = pTextCtrl->GetLine(lastLineNumber);
-            m_Tokenizer.SetTokenIndex(endOfClassTokenIndex);
-            wxString token = m_Tokenizer.GetToken();
-            wxString peektoken = m_Tokenizer.PeekToken();
-            // unterminated class with '}'causes loop //(ph 2021/09/8)
-            //while ( (token != '}' ) and (m_Tokenizer.GetLineNumber() <= (size_t)lastLineNumber) )
-            //{
-            //    token = m_Tokenizer.GetToken();
-            //}
-            wxString classLastLine = pTextCtrl->GetLine(lastLineNumber); //(ph 2021/09/8)
-            if (classLastLine[endCol?endCol-1:endCol] == '}')
-                token = '}';
-            else  token = "";
-
-            if ( token == '}' )
-                ;//token = m_Tokenizer.GetToken(); //eat the '}'
-
-            //newToken->m_ImplLineEnd = m_Tokenizer.GetLineNumber();
-            newToken->m_ImplLineEnd = lastLineNumber+1;
-
-            m_ParsingTypedef = parsingTypedef;
-            m_LastParent = lastParent;
-            m_LastScope = lastScope;
-
-            // we should now be right after the closing brace
-            // no vars are defined on a typedef, only types
-            // In the former example, aa is not part of the typedef.
-            if (m_ParsingTypedef)
-            {
-                m_Str.Clear();
-                if ( !ReadClsNames(newToken->m_Name) )
-                {   TRACE(_T("HandleClass() : ReadClsNames returned false [2].")); }
-                break;
-            }
-            else
-            {
-                m_Str = newToken->m_Name;   // pattern: class A{} b; b is a variable
-                if ( !ReadVarNames() )
-                {   TRACE(_T("HandleClass() : ReadVarNames returned false [2].")); }
-                m_Str.Clear();
-                break;
-            }
-        }
-        // -------------------------------------------------------------------
-        else if (next == ParserConsts::semicolon)
-        // -------------------------------------------------------------------
-        {
-            // e.g. struct A {}; struct B { struct A a; };
-            if (   m_LastParent
-                && m_LastParent->m_TokenKind == tkClass
-                && !lastCurrent.IsEmpty() )
-            {
-                m_Str << lastCurrent << ParserConsts::space_chr;
-                DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
-                break;
-            }
-            else
-                break; // forward decl; we don't care
-        }
-        // -------------------------------------------------------------------
-        else if (next.GetChar(0) == ParserConsts::opbracket_chr) // function: struct xyz& DoSomething()...
-        // -------------------------------------------------------------------
-        {
-            HandleFunction(current);
-            break;
-        }
-        // -------------------------------------------------------------------
-        else if (   (next.GetChar(0) == ParserConsts::ptr_chr)
-                 || (next.GetChar(0) == ParserConsts::ref_chr) )
-        // -------------------------------------------------------------------
-        {
-            // e.g. typedef struct A * a;
-            if (next.GetChar(0) == ParserConsts::ptr_chr && m_ParsingTypedef)
-            {
+                // for a template class definition like
+                // template <typename x, typename y>class AAA : public BBB, CCC {;}
+                // we would like to show its ancestors and template formal parameters on the tooltip,
+                // so we re-used the m_Args member to store those informations, the tooltip shows like:
+                // class AAA<x,y> : BBB, CCC {...} instead of class AAA {...}
+                wxStringTokenizer tkz(ancestors, ParserConsts::comma);
                 wxString args;
 
+                while (tkz.HasMoreTokens())
+                {
+                    CHECK_TIME(startTime, 1000)     //(ph 2021/09/8)
+                    const wxString & ancestor = tkz.GetNextToken();
+
+                    if (ancestor.IsEmpty())
+                    {
+                        continue;
+                    }
+
+                    if (args.IsEmpty())
+                    {
+                        args += ParserConsts::space + ParserConsts::colon;
+                    }
+                    else
+                    {
+                        args += ParserConsts::comma;
+                    }
+
+                    args += ParserConsts::space + ancestor;
+                }
+
+                wxArrayString formals;
+                SplitTemplateFormalParameters(m_TemplateArgument, formals);
+
+                if (!formals.IsEmpty())
+                {
+                    args.Prepend(ParserConsts::lt + GetStringFromArray(formals, ParserConsts::comma, false) + ParserConsts::gt);
+                }
+
                 //-Token* newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
-                newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args); //(ph 2021/05/30)
+                newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);    //(ph 2021/05/30)
 
                 if (!newToken)
                 {
                     TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
-
                     // restore tokenizer's functionality
                     m_Tokenizer.SetState(oldState);
                     return newToken; //(ph 2021/05/30)
                 }
+
                 newToken->m_AncestorsString = ancestors;
+                m_Tokenizer.GetToken(); // eat {
+                Token * lastParent = m_LastParent; // save status, and will restore after DoParse()
+                TokenScope lastScope = m_LastScope;
+                bool parsingTypedef = m_ParsingTypedef;
+                m_LastParent = newToken;
+                // default scope is: private for classes, public for structs, public for unions
+                m_LastScope = ct == ctClass ? tsPrivate : tsPublic;
+                m_ParsingTypedef = false;
+                newToken->m_ImplLine = lineNr;
+                newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
+                newToken->m_TemplateArgument = m_TemplateArgument;
+#ifdef CC_PARSER_TEST
 
-                m_PointerOrRef << m_Tokenizer.GetToken();
-
-                m_Str.Clear();
-                if ( !ReadClsNames(newToken->m_Name) )
+                for (size_t i = 0; i < formals.GetCount(); ++i)
                 {
-                    TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
+                    TRACE(_T("The template formal arguments are '%s'."), formals[i].wx_str());
                 }
 
-                break;
-            }
-            else
-                m_Str << current;
-            break;
-        }
-        // -------------------------------------------------------------------
-        else if(next == ParserConsts::equals)
-        // -------------------------------------------------------------------
-        {
-            // some patterns like: struct AAA a = {.x = 1, .y=2};
-            // In (ANSI) C99, you can use a designated initializer to initialize a structure
-            if (!lastCurrent.IsEmpty() )
-            {
-                m_Str << lastCurrent << ParserConsts::space_chr;
-                DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
-            }
-            // so we have to eat the brace pair
-            SkipToOneOfChars(ParserConsts::semicolon, /* supportNesting*/ true, /*singleCharToken*/ true);
-            break;
-        }
-        // -------------------------------------------------------------------
-        else
-        // -------------------------------------------------------------------
-        {
-            // might be instantiation, see the following
-            // e.g. struct HiddenStruct { int val; }; struct HiddenStruct yy;
-            if (m_ParsingTypedef)
-            {
-                m_Tokenizer.UngetToken();
-                break;
-            }
-            if (TokenExists(current, m_LastParent, tkClass))
-            {
-                if (!TokenExists(next, m_LastParent, tkVariable))
+#endif
+                newToken->m_TemplateType = formals;
+                m_TemplateArgument.Clear();
+                /// ------- Dont parse class for LSP ----------------------------------- //(ph 2021/05/27)
+                //-DoParse();
+                // Set Tokenizer last line number to end of Class code
+                cbStyledTextCtrl * pTextCtrl = m_Tokenizer.m_pControl;
+                // lastLineNumber from LSP must contain ending '}'
+                m_Tokenizer.SetLineNumber(lastLineNumber);
+                unsigned endOfClassTokenIndex = pTextCtrl->PositionFromLine(lastLineNumber);
+                wxString endOfClassText = pTextCtrl->GetLine(lastLineNumber);
+                m_Tokenizer.SetTokenIndex(endOfClassTokenIndex);
+                wxString token = m_Tokenizer.GetToken();
+                wxString peektoken = m_Tokenizer.PeekToken();
+                // unterminated class with '}'causes loop //(ph 2021/09/8)
+                //while ( (token != '}' ) and (m_Tokenizer.GetLineNumber() <= (size_t)lastLineNumber) )
+                //{
+                //    token = m_Tokenizer.GetToken();
+                //}
+                wxString classLastLine = pTextCtrl->GetLine(lastLineNumber); //(ph 2021/09/8)
+
+                if (classLastLine[endCol ? endCol - 1 : endCol] == '}')
                 {
-                    wxString farnext;
+                    token = '}';
+                }
+                else
+                {
+                    token = "";
+                }
 
-                    m_Tokenizer.GetToken(); // go ahead of identifier
-                    farnext = m_Tokenizer.PeekToken();
-                    //  struct Point p1, p2;
-                    //  current="Point", next="p1"
-                    if (farnext == ParserConsts::semicolon || farnext == ParserConsts::comma)
+                if (token == '}')
+                    ;//token = m_Tokenizer.GetToken(); //eat the '}'
+
+                //newToken->m_ImplLineEnd = m_Tokenizer.GetLineNumber();
+                newToken->m_ImplLineEnd = lastLineNumber + 1;
+                m_ParsingTypedef = parsingTypedef;
+                m_LastParent = lastParent;
+                m_LastScope = lastScope;
+
+                // we should now be right after the closing brace
+                // no vars are defined on a typedef, only types
+                // In the former example, aa is not part of the typedef.
+                if (m_ParsingTypedef)
+                {
+                    m_Str.Clear();
+
+                    if (!ReadClsNames(newToken->m_Name))
                     {
-                        while (m_Options.handleVars
-                               &&  (   farnext == ParserConsts::semicolon
-                                    || farnext == ParserConsts::comma ))
-                        {
+                        TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
+                    }
 
-                            CHECK_TIME(startTime, 1000) //(ph 2021/09/8)
+                    break;
+                }
+                else
+                {
+                    m_Str = newToken->m_Name;   // pattern: class A{} b; b is a variable
 
-                            if (m_Str.IsEmpty())
-                                m_Str = current;
-                            DoAddToken(tkVariable, next, m_Tokenizer.GetLineNumber());
+                    if (!ReadVarNames())
+                    {
+                        TRACE(_T("HandleClass() : ReadVarNames returned false [2]."));
+                    }
 
-                            if (farnext == ParserConsts::comma)
-                            {
-                                m_Tokenizer.GetToken(); // eat the ","
-                                next = m_Tokenizer.GetToken(); // next = "p2"
-                                farnext = m_Tokenizer.PeekToken(); // farnext = "," or the final ";"
-                                continue;
-                            }
-                            else // we meet a ";", so break the loop
-                            {
-                                m_Str.Clear();
-                                break;
-                            }
-                        }
-
-                        m_Tokenizer.GetToken(); // eat semi-colon
+                    m_Str.Clear();
+                    break;
+                }
+            }
+            // -------------------------------------------------------------------
+            else
+                if (next == ParserConsts::semicolon)
+                    // -------------------------------------------------------------------
+                {
+                    // e.g. struct A {}; struct B { struct A a; };
+                    if (m_LastParent
+                            && m_LastParent->m_TokenKind == tkClass
+                            && !lastCurrent.IsEmpty())
+                    {
+                        m_Str << lastCurrent << ParserConsts::space_chr;
+                        DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
                         break;
                     }
                     else
-                        m_Tokenizer.UngetToken(); // restore the identifier
+                    {
+                        break;    // forward decl; we don't care
+                    }
                 }
-            }
-        }
+                // -------------------------------------------------------------------
+                else
+                    if (next.GetChar(0) == ParserConsts::opbracket_chr) // function: struct xyz& DoSomething()...
+                        // -------------------------------------------------------------------
+                    {
+                        HandleFunction(current);
+                        break;
+                    }
+                    // -------------------------------------------------------------------
+                    else
+                        if ((next.GetChar(0) == ParserConsts::ptr_chr)
+                                || (next.GetChar(0) == ParserConsts::ref_chr))
+                            // -------------------------------------------------------------------
+                        {
+                            // e.g. typedef struct A * a;
+                            if (next.GetChar(0) == ParserConsts::ptr_chr && m_ParsingTypedef)
+                            {
+                                wxString args;
+                                //-Token* newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
+                                newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args); //(ph 2021/05/30)
+
+                                if (!newToken)
+                                {
+                                    TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
+                                    // restore tokenizer's functionality
+                                    m_Tokenizer.SetState(oldState);
+                                    return newToken; //(ph 2021/05/30)
+                                }
+
+                                newToken->m_AncestorsString = ancestors;
+                                m_PointerOrRef << m_Tokenizer.GetToken();
+                                m_Str.Clear();
+
+                                if (!ReadClsNames(newToken->m_Name))
+                                {
+                                    TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
+                                }
+
+                                break;
+                            }
+                            else
+                            {
+                                m_Str << current;
+                            }
+
+                            break;
+                        }
+                        // -------------------------------------------------------------------
+                        else
+                            if (next == ParserConsts::equals)
+                                // -------------------------------------------------------------------
+                            {
+                                // some patterns like: struct AAA a = {.x = 1, .y=2};
+                                // In (ANSI) C99, you can use a designated initializer to initialize a structure
+                                if (!lastCurrent.IsEmpty())
+                                {
+                                    m_Str << lastCurrent << ParserConsts::space_chr;
+                                    DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
+                                }
+
+                                // so we have to eat the brace pair
+                                SkipToOneOfChars(ParserConsts::semicolon, /* supportNesting*/ true, /*singleCharToken*/ true);
+                                break;
+                            }
+                            // -------------------------------------------------------------------
+                            else
+                                // -------------------------------------------------------------------
+                            {
+                                // might be instantiation, see the following
+                                // e.g. struct HiddenStruct { int val; }; struct HiddenStruct yy;
+                                if (m_ParsingTypedef)
+                                {
+                                    m_Tokenizer.UngetToken();
+                                    break;
+                                }
+
+                                if (TokenExists(current, m_LastParent, tkClass))
+                                {
+                                    if (!TokenExists(next, m_LastParent, tkVariable))
+                                    {
+                                        wxString farnext;
+                                        m_Tokenizer.GetToken(); // go ahead of identifier
+                                        farnext = m_Tokenizer.PeekToken();
+
+                                        //  struct Point p1, p2;
+                                        //  current="Point", next="p1"
+                                        if (farnext == ParserConsts::semicolon || farnext == ParserConsts::comma)
+                                        {
+                                            while (m_Options.handleVars
+                                                    && (farnext == ParserConsts::semicolon
+                                                        || farnext == ParserConsts::comma))
+                                            {
+                                                CHECK_TIME(startTime, 1000) //(ph 2021/09/8)
+
+                                                if (m_Str.IsEmpty())
+                                                {
+                                                    m_Str = current;
+                                                }
+
+                                                DoAddToken(tkVariable, next, m_Tokenizer.GetLineNumber());
+
+                                                if (farnext == ParserConsts::comma)
+                                                {
+                                                    m_Tokenizer.GetToken(); // eat the ","
+                                                    next = m_Tokenizer.GetToken(); // next = "p2"
+                                                    farnext = m_Tokenizer.PeekToken(); // farnext = "," or the final ";"
+                                                    continue;
+                                                }
+                                                else // we meet a ";", so break the loop
+                                                {
+                                                    m_Str.Clear();
+                                                    break;
+                                                }
+                                            }
+
+                                            m_Tokenizer.GetToken(); // eat semi-colon
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            m_Tokenizer.UngetToken();    // restore the identifier
+                                        }
+                                    }
+                                }
+                            }
+
         lastCurrent = current;
     }
 
@@ -2227,10 +2650,10 @@ void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing
     // don't forget to reset that if you add any early exit condition!
     TokenizerState oldState = m_Tokenizer.GetState();
     m_Tokenizer.SetState(tsNormal);
-
     int lineNr = m_Tokenizer.GetLineNumber();
     wxString ancestors;
     wxString lastCurrent;
+
     while (IS_ALIVE)
     {
         wxString current = m_Tokenizer.GetToken(); // class name
@@ -2240,7 +2663,6 @@ void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing
         if (current == ParserConsts::kw_attribute || current == ParserConsts::kw_declspec)
         {
             TRACE(_T("HandleClass() : Skip __attribute__ or __declspec"));
-
             // Handle stuff like: __attribute__(( whatever ))
             m_Tokenizer.GetToken();  // eat __attribute__
             current = m_Tokenizer.GetToken();  // eat (( whatever ))
@@ -2250,11 +2672,13 @@ void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing
         TRACE(_T("HandleClass() : Found class '%s', next='%s'"), current.wx_str(), next.wx_str());
 
         if (current.IsEmpty() || next.IsEmpty())
+        {
             break;
+        }
 
         // -------------------------------------------------------------------
         if (next == ParserConsts::lt) // template specialization
-        // -------------------------------------------------------------------
+            // -------------------------------------------------------------------
         {
             // eg: template<> class A<int> {...}, then we update template argument with "<int>"
             GetTemplateArgs();
@@ -2263,75 +2687,84 @@ void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing
 
         // -------------------------------------------------------------------
         if (next == ParserConsts::colon) // has ancestor(s)
-        // -------------------------------------------------------------------
+            // -------------------------------------------------------------------
         {
             TRACE(_T("HandleClass() : Class '%s' has ancestors"), current.wx_str());
             m_Tokenizer.GetToken(); // eat ":"
+
             while (IS_ALIVE)
             {
                 wxString tmp = m_Tokenizer.GetToken();
                 next = m_Tokenizer.PeekToken();
+
                 // -----------------------------------------------------------
-                if (   tmp == ParserConsts::kw_public
-                    || tmp == ParserConsts::kw_protected
-                    || tmp == ParserConsts::kw_private )
-                // -----------------------------------------------------------
+                if (tmp == ParserConsts::kw_public
+                        || tmp == ParserConsts::kw_protected
+                        || tmp == ParserConsts::kw_private)
+                    // -----------------------------------------------------------
                 {
                     continue;
                 }
 
                 // -----------------------------------------------------------
                 if (!(tmp == ParserConsts::comma || tmp == ParserConsts::gt))
-                // -----------------------------------------------------------
+                    // -----------------------------------------------------------
                 {
                     // fix for namespace usage in ancestors
                     if (tmp == ParserConsts::dcolon || next == ParserConsts::dcolon)
+                    {
                         ancestors << tmp;
+                    }
                     else
+                    {
                         ancestors << tmp << ParserConsts::comma_chr;
+                    }
+
                     TRACE(_T("HandleClass() : Adding ancestor ") + tmp);
                 }
 
                 // -----------------------------------------------------------
-                if (   next.IsEmpty()
-                    || next == ParserConsts::opbrace
-                    || next == ParserConsts::semicolon )
-                // -----------------------------------------------------------
+                if (next.IsEmpty()
+                        || next == ParserConsts::opbrace
+                        || next == ParserConsts::semicolon)
+                    // -----------------------------------------------------------
                 {
                     break;
                 }
                 // -----------------------------------------------------------
-                else if (next == ParserConsts::lt)
-                // -----------------------------------------------------------
-                {
-                    // template class
-                    //m_Tokenizer.GetToken(); // reach "<"
-                    // must not "eat" the token,
-                    // SkipAngleBraces() will do it to see what it must match
-                    SkipAngleBraces();
-                    // also need to 'unget' the last token (>)
-                    // so next iteration will see the { or ; in 'next'
-                    m_Tokenizer.UngetToken();
-                }
+                else
+                    if (next == ParserConsts::lt)
+                        // -----------------------------------------------------------
+                    {
+                        // template class
+                        //m_Tokenizer.GetToken(); // reach "<"
+                        // must not "eat" the token,
+                        // SkipAngleBraces() will do it to see what it must match
+                        SkipAngleBraces();
+                        // also need to 'unget' the last token (>)
+                        // so next iteration will see the { or ; in 'next'
+                        m_Tokenizer.UngetToken();
+                    }
             }
+
             TRACE(_T("HandleClass() : Ancestors: ") + ancestors);
         }
 
         // -------------------------------------------------------------------
         if (current == ParserConsts::opbrace) // unnamed class/struct/union
-        // -------------------------------------------------------------------
+            // -------------------------------------------------------------------
         {
             wxString unnamedTmp;
             unnamedTmp.Printf(_T("%s%s%u_%lu"),
                               g_UnnamedSymbol.wx_str(),
                               (ct == ctClass ? _T("Class") : (ct == ctUnion ? _T("Union") : _T("Struct"))),
                               m_FileIdx, static_cast<unsigned long>(m_StructUnionUnnamedCount++));
-            Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
+            Token * newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
+
             // Maybe it is a bug here. I just fixed it.
             if (!newToken)
             {
                 TRACE(_T("HandleClass() : Unable to create/add new token: ") + unnamedTmp);
-
                 // restore tokenizer's functionality
                 m_Tokenizer.SetState(oldState);
                 return;
@@ -2341,32 +2774,29 @@ void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing
             wxArrayString formals;
             SplitTemplateFormalParameters(m_TemplateArgument, formals);
 #ifdef CC_PARSER_TEST
+
             for (size_t i = 0; i < formals.GetCount(); ++i)
+            {
                 TRACE(_T("The template formal arguments are '%s'."), formals[i].wx_str());
+            }
+
 #endif
             newToken->m_TemplateType = formals;
             m_TemplateArgument.Clear();
-
-            Token*     lastParent     = m_LastParent;
+            Token   *  lastParent     = m_LastParent;
             TokenScope lastScope      = m_LastScope;
             bool       parsingTypedef = m_ParsingTypedef;
-
             m_LastParent     = newToken;
             // default scope is: private for classes, public for structs, public for unions
             m_LastScope      = ct == ctClass ? tsPrivate : tsPublic;
             m_ParsingTypedef = false;
-
             newToken->m_ImplLine = lineNr;
             newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
-
             newToken->m_IsAnonymous = true;
-
             DoParse(); // recursion
-
             m_LastParent     = lastParent;
             m_LastScope      = lastScope;
             m_ParsingTypedef = parsingTypedef;
-
             m_LastUnnamedTokenName = unnamedTmp; // used for typedef'ing anonymous class/struct/union
 
             // we should now be right after the closing brace
@@ -2376,234 +2806,276 @@ void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing
             {
                 m_Str.Clear();
                 TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
-                if ( !ReadClsNames(newToken->m_Name) )
-                {   TRACE(_T("HandleClass() : ReadClsNames returned false [1].")); }
+
+                if (!ReadClsNames(newToken->m_Name))
+                {
+                    TRACE(_T("HandleClass() : ReadClsNames returned false [1]."));
+                }
+
                 break;
             }
             else
             {
                 m_Str = newToken->m_Name;
-                if ( !ReadVarNames() )
-                {   TRACE(_T("HandleClass() : ReadVarNames returned false [1].")); }
+
+                if (!ReadVarNames())
+                {
+                    TRACE(_T("HandleClass() : ReadVarNames returned false [1]."));
+                }
+
                 m_Str.Clear();
                 break;
             }
         }
         // -------------------------------------------------------------------
-        else if (next == ParserConsts::opbrace)
-        // -------------------------------------------------------------------
-        {
-            // for a template class definition like
-            // template <typename x, typename y>class AAA : public BBB, CCC {;}
-            // we would like to show its ancestors and template formal parameters on the tooltip,
-            // so we re-used the m_Args member to store those informations, the tooltip shows like:
-            // class AAA<x,y> : BBB, CCC {...} instead of class AAA {...}
-            wxStringTokenizer tkz(ancestors, ParserConsts::comma);
-            wxString args;
-            while (tkz.HasMoreTokens())
+        else
+            if (next == ParserConsts::opbrace)
+                // -------------------------------------------------------------------
             {
-                const wxString& ancestor = tkz.GetNextToken();
-                if (ancestor.IsEmpty())
-                    continue;
-                if (args.IsEmpty())
-                    args += ParserConsts::space + ParserConsts::colon;
-                else
-                    args += ParserConsts::comma;
-                args += ParserConsts::space + ancestor;
-            }
-            wxArrayString formals;
-            SplitTemplateFormalParameters(m_TemplateArgument, formals);
-            if (!formals.IsEmpty())
-                args.Prepend(ParserConsts::lt + GetStringFromArray(formals, ParserConsts::comma, false) + ParserConsts::gt);
-
-            Token* newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
-            if (!newToken)
-            {
-                TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
-
-                // restore tokenizer's functionality
-                m_Tokenizer.SetState(oldState);
-                return;
-            }
-            newToken->m_AncestorsString = ancestors;
-
-            m_Tokenizer.GetToken(); // eat {
-
-            Token* lastParent = m_LastParent; // save status, and will restore after DoParse()
-            TokenScope lastScope = m_LastScope;
-            bool parsingTypedef = m_ParsingTypedef;
-
-            m_LastParent = newToken;
-            // default scope is: private for classes, public for structs, public for unions
-            m_LastScope = ct == ctClass ? tsPrivate : tsPublic;
-            m_ParsingTypedef = false;
-
-            newToken->m_ImplLine = lineNr;
-            newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
-
-            newToken->m_TemplateArgument = m_TemplateArgument;
-
-#ifdef CC_PARSER_TEST
-            for (size_t i = 0; i < formals.GetCount(); ++i)
-                TRACE(_T("The template formal arguments are '%s'."), formals[i].wx_str());
-#endif
-            newToken->m_TemplateType = formals;
-            m_TemplateArgument.Clear();
-
-            DoParse();
-
-            newToken->m_ImplLineEnd = m_Tokenizer.GetLineNumber();
-
-            m_ParsingTypedef = parsingTypedef;
-            m_LastParent = lastParent;
-            m_LastScope = lastScope;
-
-            // we should now be right after the closing brace
-            // no vars are defined on a typedef, only types
-            // In the former example, aa is not part of the typedef.
-            if (m_ParsingTypedef)
-            {
-                m_Str.Clear();
-                if ( !ReadClsNames(newToken->m_Name) )
-                {   TRACE(_T("HandleClass() : ReadClsNames returned false [2].")); }
-                break;
-            }
-            else
-            {
-                m_Str = newToken->m_Name;   // pattern: class A{} b; b is a variable
-                if ( !ReadVarNames() )
-                {   TRACE(_T("HandleClass() : ReadVarNames returned false [2].")); }
-                m_Str.Clear();
-                break;
-            }
-        }
-        // -------------------------------------------------------------------
-        else if (next == ParserConsts::semicolon)
-        // -------------------------------------------------------------------
-        {
-            // e.g. struct A {}; struct B { struct A a; };
-            if (   m_LastParent
-                && m_LastParent->m_TokenKind == tkClass
-                && !lastCurrent.IsEmpty() )
-            {
-                m_Str << lastCurrent << ParserConsts::space_chr;
-                DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
-                break;
-            }
-            else
-                break; // forward decl; we don't care
-        }
-        // -------------------------------------------------------------------
-        else if (next.GetChar(0) == ParserConsts::opbracket_chr) // function: struct xyz& DoSomething()...
-        // -------------------------------------------------------------------
-        {
-            HandleFunction(current);
-            break;
-        }
-        // -------------------------------------------------------------------
-        else if (   (next.GetChar(0) == ParserConsts::ptr_chr)
-                 || (next.GetChar(0) == ParserConsts::ref_chr) )
-        // -------------------------------------------------------------------
-        {
-            // e.g. typedef struct A * a;
-            if (next.GetChar(0) == ParserConsts::ptr_chr && m_ParsingTypedef)
-            {
+                // for a template class definition like
+                // template <typename x, typename y>class AAA : public BBB, CCC {;}
+                // we would like to show its ancestors and template formal parameters on the tooltip,
+                // so we re-used the m_Args member to store those informations, the tooltip shows like:
+                // class AAA<x,y> : BBB, CCC {...} instead of class AAA {...}
+                wxStringTokenizer tkz(ancestors, ParserConsts::comma);
                 wxString args;
 
-                Token* newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
+                while (tkz.HasMoreTokens())
+                {
+                    const wxString & ancestor = tkz.GetNextToken();
+
+                    if (ancestor.IsEmpty())
+                    {
+                        continue;
+                    }
+
+                    if (args.IsEmpty())
+                    {
+                        args += ParserConsts::space + ParserConsts::colon;
+                    }
+                    else
+                    {
+                        args += ParserConsts::comma;
+                    }
+
+                    args += ParserConsts::space + ancestor;
+                }
+
+                wxArrayString formals;
+                SplitTemplateFormalParameters(m_TemplateArgument, formals);
+
+                if (!formals.IsEmpty())
+                {
+                    args.Prepend(ParserConsts::lt + GetStringFromArray(formals, ParserConsts::comma, false) + ParserConsts::gt);
+                }
+
+                Token * newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
 
                 if (!newToken)
                 {
                     TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
-
                     // restore tokenizer's functionality
                     m_Tokenizer.SetState(oldState);
                     return;
                 }
+
                 newToken->m_AncestorsString = ancestors;
+                m_Tokenizer.GetToken(); // eat {
+                Token * lastParent = m_LastParent; // save status, and will restore after DoParse()
+                TokenScope lastScope = m_LastScope;
+                bool parsingTypedef = m_ParsingTypedef;
+                m_LastParent = newToken;
+                // default scope is: private for classes, public for structs, public for unions
+                m_LastScope = ct == ctClass ? tsPrivate : tsPublic;
+                m_ParsingTypedef = false;
+                newToken->m_ImplLine = lineNr;
+                newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
+                newToken->m_TemplateArgument = m_TemplateArgument;
+#ifdef CC_PARSER_TEST
 
-                m_PointerOrRef << m_Tokenizer.GetToken();
-
-                m_Str.Clear();
-                if ( !ReadClsNames(newToken->m_Name) )
+                for (size_t i = 0; i < formals.GetCount(); ++i)
                 {
-                    TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
+                    TRACE(_T("The template formal arguments are '%s'."), formals[i].wx_str());
                 }
 
-                break;
-            }
-            else
-                m_Str << current;
-            break;
-        }
-        // -------------------------------------------------------------------
-        else if(next == ParserConsts::equals)
-        // -------------------------------------------------------------------
-        {
-            // some patterns like: struct AAA a = {.x = 1, .y=2};
-            // In (ANSI) C99, you can use a designated initializer to initialize a structure
-            if (!lastCurrent.IsEmpty() )
-            {
-                m_Str << lastCurrent << ParserConsts::space_chr;
-                DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
-            }
-            // so we have to eat the brace pair
-            SkipToOneOfChars(ParserConsts::semicolon, /* supportNesting*/ true, /*singleCharToken*/ true);
-            break;
-        }
-        // -------------------------------------------------------------------
-        else
-        // -------------------------------------------------------------------
-        {
-            // might be instantiation, see the following
-            // e.g. struct HiddenStruct { int val; }; struct HiddenStruct yy;
-            if (m_ParsingTypedef)
-            {
-                m_Tokenizer.UngetToken();
-                break;
-            }
-            if (TokenExists(current, m_LastParent, tkClass))
-            {
-                if (!TokenExists(next, m_LastParent, tkVariable))
+#endif
+                newToken->m_TemplateType = formals;
+                m_TemplateArgument.Clear();
+                DoParse();
+                newToken->m_ImplLineEnd = m_Tokenizer.GetLineNumber();
+                m_ParsingTypedef = parsingTypedef;
+                m_LastParent = lastParent;
+                m_LastScope = lastScope;
+
+                // we should now be right after the closing brace
+                // no vars are defined on a typedef, only types
+                // In the former example, aa is not part of the typedef.
+                if (m_ParsingTypedef)
                 {
-                    wxString farnext;
+                    m_Str.Clear();
 
-                    m_Tokenizer.GetToken(); // go ahead of identifier
-                    farnext = m_Tokenizer.PeekToken();
-                    //  struct Point p1, p2;
-                    //  current="Point", next="p1"
-                    if (farnext == ParserConsts::semicolon || farnext == ParserConsts::comma)
+                    if (!ReadClsNames(newToken->m_Name))
                     {
-                        while (m_Options.handleVars
-                               &&  (   farnext == ParserConsts::semicolon
-                                    || farnext == ParserConsts::comma ))
-                        {
-                            if (m_Str.IsEmpty())
-                                m_Str = current;
-                            DoAddToken(tkVariable, next, m_Tokenizer.GetLineNumber());
+                        TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
+                    }
 
-                            if (farnext == ParserConsts::comma)
-                            {
-                                m_Tokenizer.GetToken(); // eat the ","
-                                next = m_Tokenizer.GetToken(); // next = "p2"
-                                farnext = m_Tokenizer.PeekToken(); // farnext = "," or the final ";"
-                                continue;
-                            }
-                            else // we meet a ";", so break the loop
-                            {
-                                m_Str.Clear();
-                                break;
-                            }
-                        }
+                    break;
+                }
+                else
+                {
+                    m_Str = newToken->m_Name;   // pattern: class A{} b; b is a variable
 
-                        m_Tokenizer.GetToken(); // eat semi-colon
+                    if (!ReadVarNames())
+                    {
+                        TRACE(_T("HandleClass() : ReadVarNames returned false [2]."));
+                    }
+
+                    m_Str.Clear();
+                    break;
+                }
+            }
+            // -------------------------------------------------------------------
+            else
+                if (next == ParserConsts::semicolon)
+                    // -------------------------------------------------------------------
+                {
+                    // e.g. struct A {}; struct B { struct A a; };
+                    if (m_LastParent
+                            && m_LastParent->m_TokenKind == tkClass
+                            && !lastCurrent.IsEmpty())
+                    {
+                        m_Str << lastCurrent << ParserConsts::space_chr;
+                        DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
                         break;
                     }
                     else
-                        m_Tokenizer.UngetToken(); // restore the identifier
+                    {
+                        break;    // forward decl; we don't care
+                    }
                 }
-            }
-        }
+                // -------------------------------------------------------------------
+                else
+                    if (next.GetChar(0) == ParserConsts::opbracket_chr) // function: struct xyz& DoSomething()...
+                        // -------------------------------------------------------------------
+                    {
+                        HandleFunction(current);
+                        break;
+                    }
+                    // -------------------------------------------------------------------
+                    else
+                        if ((next.GetChar(0) == ParserConsts::ptr_chr)
+                                || (next.GetChar(0) == ParserConsts::ref_chr))
+                            // -------------------------------------------------------------------
+                        {
+                            // e.g. typedef struct A * a;
+                            if (next.GetChar(0) == ParserConsts::ptr_chr && m_ParsingTypedef)
+                            {
+                                wxString args;
+                                Token * newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
+
+                                if (!newToken)
+                                {
+                                    TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
+                                    // restore tokenizer's functionality
+                                    m_Tokenizer.SetState(oldState);
+                                    return;
+                                }
+
+                                newToken->m_AncestorsString = ancestors;
+                                m_PointerOrRef << m_Tokenizer.GetToken();
+                                m_Str.Clear();
+
+                                if (!ReadClsNames(newToken->m_Name))
+                                {
+                                    TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
+                                }
+
+                                break;
+                            }
+                            else
+                            {
+                                m_Str << current;
+                            }
+
+                            break;
+                        }
+                        // -------------------------------------------------------------------
+                        else
+                            if (next == ParserConsts::equals)
+                                // -------------------------------------------------------------------
+                            {
+                                // some patterns like: struct AAA a = {.x = 1, .y=2};
+                                // In (ANSI) C99, you can use a designated initializer to initialize a structure
+                                if (!lastCurrent.IsEmpty())
+                                {
+                                    m_Str << lastCurrent << ParserConsts::space_chr;
+                                    DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
+                                }
+
+                                // so we have to eat the brace pair
+                                SkipToOneOfChars(ParserConsts::semicolon, /* supportNesting*/ true, /*singleCharToken*/ true);
+                                break;
+                            }
+                            // -------------------------------------------------------------------
+                            else
+                                // -------------------------------------------------------------------
+                            {
+                                // might be instantiation, see the following
+                                // e.g. struct HiddenStruct { int val; }; struct HiddenStruct yy;
+                                if (m_ParsingTypedef)
+                                {
+                                    m_Tokenizer.UngetToken();
+                                    break;
+                                }
+
+                                if (TokenExists(current, m_LastParent, tkClass))
+                                {
+                                    if (!TokenExists(next, m_LastParent, tkVariable))
+                                    {
+                                        wxString farnext;
+                                        m_Tokenizer.GetToken(); // go ahead of identifier
+                                        farnext = m_Tokenizer.PeekToken();
+
+                                        //  struct Point p1, p2;
+                                        //  current="Point", next="p1"
+                                        if (farnext == ParserConsts::semicolon || farnext == ParserConsts::comma)
+                                        {
+                                            while (m_Options.handleVars
+                                                    && (farnext == ParserConsts::semicolon
+                                                        || farnext == ParserConsts::comma))
+                                            {
+                                                if (m_Str.IsEmpty())
+                                                {
+                                                    m_Str = current;
+                                                }
+
+                                                DoAddToken(tkVariable, next, m_Tokenizer.GetLineNumber());
+
+                                                if (farnext == ParserConsts::comma)
+                                                {
+                                                    m_Tokenizer.GetToken(); // eat the ","
+                                                    next = m_Tokenizer.GetToken(); // next = "p2"
+                                                    farnext = m_Tokenizer.PeekToken(); // farnext = "," or the final ";"
+                                                    continue;
+                                                }
+                                                else // we meet a ";", so break the loop
+                                                {
+                                                    m_Str.Clear();
+                                                    break;
+                                                }
+                                            }
+
+                                            m_Tokenizer.GetToken(); // eat semi-colon
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            m_Tokenizer.UngetToken();    // restore the identifier
+                                        }
+                                    }
+                                }
+                            }
+
         lastCurrent = current;
     }
 
@@ -2611,13 +3083,13 @@ void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing
     m_Tokenizer.SetState(oldState);
 }
 
-void LSP_SymbolsParser::HandleFunction(wxString& name, bool isOperator, bool isPointer)
+void LSP_SymbolsParser::HandleFunction(wxString & name, bool isOperator, bool isPointer)
 {
-    TRACE(_T("HandleFunction() : Adding function '")+name+_T("': m_Str='")+m_Str+_T("'"));
+    TRACE(_T("HandleFunction() : Adding function '") + name + _T("': m_Str='") + m_Str + _T("'"));
     int lineNr = m_Tokenizer.GetLineNumber();
     wxString args = m_Tokenizer.GetToken();
     wxString peek = m_Tokenizer.PeekToken();
-    TRACE(_T("HandleFunction() : name='")+name+_T("', args='")+args+_T("', peek='")+peek+_T("'"));
+    TRACE(_T("HandleFunction() : name='") + name + _T("', args='") + args + _T("', peek='") + peek + _T("'"));
 
     // NOTE: Avoid using return, because m_Str needs to be cleared
     // at the end of this function.
@@ -2629,194 +3101,231 @@ void LSP_SymbolsParser::HandleFunction(wxString& name, bool isOperator, bool isP
 
         // pattern: m_Str AAA (*BBB) (...);
         // pattern: m_Str AAA (*BBB) (...) = some_function;
-        if (pos != wxNOT_FOUND && (   peek == ParserConsts::semicolon
+        if (pos != wxNOT_FOUND && (peek == ParserConsts::semicolon
                                    || peek == ParserConsts::equals
                                    || peek == ParserConsts::comma))
         {
             name.RemoveLast();  // remove ")"
-            name.Remove(0, pos+1).Trim(false); // remove "(* "
-
+            name.Remove(0, pos + 1).Trim(false); // remove "(* "
             // pattern: m_Str AAA (*BBB[X][Y]) (...);
             // Trim(true) for safety, in case the name contains a trailing space
             pos = name.find(ParserConsts::oparray_chr);
-            if (pos != wxNOT_FOUND)
-                name.Remove(pos).Trim(true);
 
-            TRACE(_T("HandleFunction() : Add token name='")+name+_T("', args='")+args+_T("', return type='") + m_Str+ _T("'"));
-            Token* newToken =  DoAddToken(tkFunction, name, lineNr, 0, 0, args);
+            if (pos != wxNOT_FOUND)
+            {
+                name.Remove(pos).Trim(true);
+            }
+
+            TRACE(_T("HandleFunction() : Add token name='") + name + _T("', args='") + args + _T("', return type='") + m_Str + _T("'"));
+            Token * newToken =  DoAddToken(tkFunction, name, lineNr, 0, 0, args);
+
             if (newToken)
             {
                 newToken->m_IsConst = false;
                 newToken->m_TemplateArgument = m_TemplateArgument;
+
                 if (!m_TemplateArgument.IsEmpty() && newToken->m_TemplateMap.empty())
+                {
                     ResolveTemplateArgs(newToken);
+                }
             }
             else
             {
                 TRACE(_T("HandleFunction() : Unable to create/add new token: ") + name);
             }
+
             m_TemplateArgument.Clear();
         }
     }
-    else if (!m_Str.StartsWith(ParserConsts::kw_friend))
-    {
-        int lineStart = 0;
-        int lineEnd = 0;
-        bool isCtor = m_Str.IsEmpty();
-        bool isDtor = m_Str.StartsWith(ParserConsts::tilde);
-        Token* localParent = 0;
-
-        if ((isCtor || isDtor) && !m_EncounteredTypeNamespaces.empty())
+    else
+        if (!m_Str.StartsWith(ParserConsts::kw_friend))
         {
-            // probably a ctor/dtor
-            std::queue<wxString> q = m_EncounteredTypeNamespaces; // preserve m_EncounteredTypeNamespaces; needed in DoAddToken()
-            localParent = FindTokenFromQueue(q, m_LastParent);
+            int lineStart = 0;
+            int lineEnd = 0;
+            bool isCtor = m_Str.IsEmpty();
+            bool isDtor = m_Str.StartsWith(ParserConsts::tilde);
+            Token * localParent = 0;
 
-            TRACE(_T("HandleFunction() : Ctor/Dtor '%s', m_Str='%s', localParent='%s'"),
-                name.wx_str(),
-                m_Str.wx_str(),
-                localParent ? localParent->m_Name.wx_str() : _T("<none>"));
-        }
-        else
-        {
-            std::queue<wxString> q = m_EncounteredNamespaces; // preserve m_EncounteredNamespaces; needed in DoAddToken()
-            localParent = FindTokenFromQueue(q, m_LastParent);
-
-            TRACE(_T("HandleFunction() : !(Ctor/Dtor) '%s', m_Str='%s', localParent='%s'"),
-                name.wx_str(),
-                m_Str.wx_str(),
-                localParent ? localParent->m_Name.wx_str() : _T("<none>"));
-        }
-
-        bool isCtorOrDtor = m_LastParent && name == m_LastParent->m_Name;
-
-        if (!isCtorOrDtor)
-            isCtorOrDtor = localParent && name == localParent->m_Name;
-
-        if (!isCtorOrDtor && m_Options.useBuffer)
-            isCtorOrDtor = isCtor || isDtor;
-
-        TRACE(_T("HandleFunction() : Adding function '%s', ': m_Str='%s', enc_ns='%s'."),
-              name.wx_str(),
-              m_Str.wx_str(),
-              m_EncounteredNamespaces.size() ? m_EncounteredNamespaces.front().wx_str() : wxT("nil"));
-
-        bool isImpl = false;
-        bool isConst = false;
-        bool isNoExcept = false;
-        while (!peek.IsEmpty()) // !eof
-        {
-            if (peek == ParserConsts::colon) // probably a ctor with member initializers
+            if ((isCtor || isDtor) && !m_EncounteredTypeNamespaces.empty())
             {
-                SkipToOneOfChars(ParserConsts::opbrace);
-                m_Tokenizer.UngetToken(); // leave brace there
-                peek = m_Tokenizer.PeekToken();
-                continue;
+                // probably a ctor/dtor
+                std::queue<wxString> q = m_EncounteredTypeNamespaces; // preserve m_EncounteredTypeNamespaces; needed in DoAddToken()
+                localParent = FindTokenFromQueue(q, m_LastParent);
+                TRACE(_T("HandleFunction() : Ctor/Dtor '%s', m_Str='%s', localParent='%s'"),
+                      name.wx_str(),
+                      m_Str.wx_str(),
+                      localParent ? localParent->m_Name.wx_str() : _T("<none>"));
             }
-            else if (peek == ParserConsts::opbrace)// function implementation
+            else
             {
-                isImpl = true;
-                m_Tokenizer.GetToken(); // eat {
-                lineStart = m_Tokenizer.GetLineNumber();
-                SkipBlock(); // skip  to matching }
-                lineEnd = m_Tokenizer.GetLineNumber();
-                break;
+                std::queue<wxString> q = m_EncounteredNamespaces; // preserve m_EncounteredNamespaces; needed in DoAddToken()
+                localParent = FindTokenFromQueue(q, m_LastParent);
+                TRACE(_T("HandleFunction() : !(Ctor/Dtor) '%s', m_Str='%s', localParent='%s'"),
+                      name.wx_str(),
+                      m_Str.wx_str(),
+                      localParent ? localParent->m_Name.wx_str() : _T("<none>"));
             }
-            else if (   peek == ParserConsts::clbrace
-                     || peek == ParserConsts::semicolon
-                     || peek == ParserConsts::comma)
-                break; // function decl
-            else if (peek == ParserConsts::kw_const)
-                isConst = true;
-            else if (peek == ParserConsts::kw_noexcept)
-                isNoExcept = true;
-            else if (peek == ParserConsts::kw_throw)
-            {
-                // Handle something like: std::string MyClass::MyMethod() throw(std::exception)
-                wxString arg = m_Tokenizer.GetToken(); // eat args ()
-            }
-            else if (peek == ParserConsts::kw_try)
-            {
-                // function-try-block pattern: AAA(...)try{}catch{}
-                m_Tokenizer.GetToken(); // eat the try keyword
 
-                if (m_Tokenizer.PeekToken() == ParserConsts::colon)
+            bool isCtorOrDtor = m_LastParent && name == m_LastParent->m_Name;
+
+            if (!isCtorOrDtor)
+            {
+                isCtorOrDtor = localParent && name == localParent->m_Name;
+            }
+
+            if (!isCtorOrDtor && m_Options.useBuffer)
+            {
+                isCtorOrDtor = isCtor || isDtor;
+            }
+
+            TRACE(_T("HandleFunction() : Adding function '%s', ': m_Str='%s', enc_ns='%s'."),
+                  name.wx_str(),
+                  m_Str.wx_str(),
+                  m_EncounteredNamespaces.size() ? m_EncounteredNamespaces.front().wx_str() : wxT("nil"));
+            bool isImpl = false;
+            bool isConst = false;
+            bool isNoExcept = false;
+
+            while (!peek.IsEmpty()) // !eof
+            {
+                if (peek == ParserConsts::colon) // probably a ctor with member initializers
                 {
-                        // skip ctor initialization list
-                        SkipToOneOfChars(ParserConsts::opbrace);
-                        m_Tokenizer.UngetToken(); // leave brace there
+                    SkipToOneOfChars(ParserConsts::opbrace);
+                    m_Tokenizer.UngetToken(); // leave brace there
+                    peek = m_Tokenizer.PeekToken();
+                    continue;
                 }
-                if (m_Tokenizer.PeekToken() == ParserConsts::opbrace)
-                {
-                    isImpl = true;
-                    m_Tokenizer.GetToken(); // eat {
-                    lineStart = m_Tokenizer.GetLineNumber();
-                    SkipBlock(); // skip to matching }
-
-                    while (m_Tokenizer.PeekToken() == ParserConsts::kw_catch)
+                else
+                    if (peek == ParserConsts::opbrace)// function implementation
                     {
-                        m_Tokenizer.GetToken(); // eat catch
-                        m_Tokenizer.GetToken(); // eat catch args
-
-                        if (m_Tokenizer.PeekToken() == ParserConsts::opbrace)
-                        {
-                            m_Tokenizer.GetToken(); // eat {
-                            SkipBlock(); // skip to matching }
-                        }
+                        isImpl = true;
+                        m_Tokenizer.GetToken(); // eat {
+                        lineStart = m_Tokenizer.GetLineNumber();
+                        SkipBlock(); // skip  to matching }
+                        lineEnd = m_Tokenizer.GetLineNumber();
+                        break;
                     }
+                    else
+                        if (peek == ParserConsts::clbrace
+                                || peek == ParserConsts::semicolon
+                                || peek == ParserConsts::comma)
+                        {
+                            break;    // function decl
+                        }
+                        else
+                            if (peek == ParserConsts::kw_const)
+                            {
+                                isConst = true;
+                            }
+                            else
+                                if (peek == ParserConsts::kw_noexcept)
+                                {
+                                    isNoExcept = true;
+                                }
+                                else
+                                    if (peek == ParserConsts::kw_throw)
+                                    {
+                                        // Handle something like: std::string MyClass::MyMethod() throw(std::exception)
+                                        wxString arg = m_Tokenizer.GetToken(); // eat args ()
+                                    }
+                                    else
+                                        if (peek == ParserConsts::kw_try)
+                                        {
+                                            // function-try-block pattern: AAA(...)try{}catch{}
+                                            m_Tokenizer.GetToken(); // eat the try keyword
 
-                    lineEnd = m_Tokenizer.GetLineNumber();
-                    break;
+                                            if (m_Tokenizer.PeekToken() == ParserConsts::colon)
+                                            {
+                                                // skip ctor initialization list
+                                                SkipToOneOfChars(ParserConsts::opbrace);
+                                                m_Tokenizer.UngetToken(); // leave brace there
+                                            }
+
+                                            if (m_Tokenizer.PeekToken() == ParserConsts::opbrace)
+                                            {
+                                                isImpl = true;
+                                                m_Tokenizer.GetToken(); // eat {
+                                                lineStart = m_Tokenizer.GetLineNumber();
+                                                SkipBlock(); // skip to matching }
+
+                                                while (m_Tokenizer.PeekToken() == ParserConsts::kw_catch)
+                                                {
+                                                    m_Tokenizer.GetToken(); // eat catch
+                                                    m_Tokenizer.GetToken(); // eat catch args
+
+                                                    if (m_Tokenizer.PeekToken() == ParserConsts::opbrace)
+                                                    {
+                                                        m_Tokenizer.GetToken(); // eat {
+                                                        SkipBlock(); // skip to matching }
+                                                    }
+                                                }
+
+                                                lineEnd = m_Tokenizer.GetLineNumber();
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            TRACE(_T("HandleFunction() : Possible macro '%s' in function '%s' (file name='%s', line numer %d)."),
+                                                  peek.wx_str(), name.wx_str(), m_Filename.wx_str(), m_Tokenizer.GetLineNumber());
+                                            break; // darned macros that do not end with a semicolon :/
+                                        }
+
+                // if we reached here, eat the token so peek gets a new value
+                m_Tokenizer.GetToken();
+                peek = m_Tokenizer.PeekToken();
+            } // while
+
+            TRACE(_T("HandleFunction() : Add token name='") + name + _T("', args='") + args + _T("', return type='") + m_Str + _T("'"));
+            TokenKind tokenKind = !isCtorOrDtor ? tkFunction : (isDtor ? tkDestructor : tkConstructor);
+            Token * newToken =  DoAddToken(tokenKind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
+
+            if (newToken)
+            {
+                newToken->m_IsConst = isConst;
+                newToken->m_IsNoExcept = isNoExcept;
+                newToken->m_TemplateArgument = m_TemplateArgument;
+
+                if (!m_TemplateArgument.IsEmpty() && newToken->m_TemplateMap.empty())
+                {
+                    ResolveTemplateArgs(newToken);
                 }
             }
             else
             {
-                TRACE(_T("HandleFunction() : Possible macro '%s' in function '%s' (file name='%s', line numer %d)."),
-                      peek.wx_str(), name.wx_str(), m_Filename.wx_str(), m_Tokenizer.GetLineNumber());
-                break; // darned macros that do not end with a semicolon :/
+                TRACE(_T("HandleFunction() : Unable to create/add new token: ") + name);
             }
 
-            // if we reached here, eat the token so peek gets a new value
-            m_Tokenizer.GetToken();
-            peek = m_Tokenizer.PeekToken();
-        } // while
-
-        TRACE(_T("HandleFunction() : Add token name='")+name+_T("', args='")+args+_T("', return type='") + m_Str+ _T("'"));
-        TokenKind tokenKind = !isCtorOrDtor ? tkFunction : (isDtor ? tkDestructor : tkConstructor);
-        Token* newToken =  DoAddToken(tokenKind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
-        if (newToken)
-        {
-            newToken->m_IsConst = isConst;
-            newToken->m_IsNoExcept = isNoExcept;
-            newToken->m_TemplateArgument = m_TemplateArgument;
-            if (!m_TemplateArgument.IsEmpty() && newToken->m_TemplateMap.empty())
-                ResolveTemplateArgs(newToken);
+            m_TemplateArgument.Clear();
         }
-        else
-        {
-            TRACE(_T("HandleFunction() : Unable to create/add new token: ") + name);
-        }
-        m_TemplateArgument.Clear();
-    }
 
     // NOTE: If we peek an equals or comma, this could be a list of function
     // declarations. In that case, don't clear return type (m_Str).
     peek = m_Tokenizer.PeekToken();
+
     if (peek != ParserConsts::equals && peek != ParserConsts::comma)
+    {
         m_Str.Clear();
+    }
 }
 
 void LSP_SymbolsParser::HandleConditionalArguments()
 {
     // if these aren't empty at this point, we have a syntax error
     if (!m_Str.empty())
+    {
         return;
+    }
 
     if (!m_PointerOrRef.empty())
+    {
         return;
+    }
 
     if (!m_TemplateArgument.empty())
+    {
         return;
+    }
 
     // conditional arguments can look like this:
     // (int i = 12)
@@ -2826,23 +3335,29 @@ void LSP_SymbolsParser::HandleConditionalArguments()
 
     // remove braces
     if (args.StartsWith(_T("(")))
+    {
         args = args.Mid(1, args.length() - 1);
+    }
 
     if (args.EndsWith(_T(")")))
+    {
         args = args.Mid(0, args.length() - 1);
+    }
 
     // parse small tokens inside for loop head
     TokenTree tree;
     wxString fileName = m_Tokenizer.GetFilename();
     Tokenizer smallTokenizer(&tree);
-
     smallTokenizer.InitFromBuffer(args, fileName, m_Tokenizer.GetLineNumber());
 
     while (IS_ALIVE)
     {
         wxString token = smallTokenizer.GetToken();
+
         if (token.empty())
+        {
             break;
+        }
 
         wxString peek = smallTokenizer.PeekToken();
 
@@ -2853,16 +3368,18 @@ void LSP_SymbolsParser::HandleConditionalArguments()
                 // remove template argument if there is one
                 wxString varType, templateArgs;
                 RemoveTemplateArgs(m_Str, varType, templateArgs);
-
                 m_Str = varType;
                 m_TemplateArgument = templateArgs;
+                Token * newToken = DoAddToken(tkVariable, token, smallTokenizer.GetLineNumber());
 
-                Token *newToken = DoAddToken(tkVariable, token, smallTokenizer.GetLineNumber());
                 if (newToken && !m_TemplateArgument.IsEmpty())
+                {
                     ResolveTemplateArgs(newToken);
+                }
                 else
-                {   TRACE(_T("HandleConditionalArguments() : Unable to create/add new token: ") + token); }
-
+                {
+                    TRACE(_T("HandleConditionalArguments() : Unable to create/add new token: ") + token);
+                }
             }
 
             break;
@@ -2870,11 +3387,15 @@ void LSP_SymbolsParser::HandleConditionalArguments()
         else
         {
             if (token == ParserConsts::ref_chr || token == ParserConsts::ptr_chr)
+            {
                 m_PointerOrRef << token;
+            }
             else
             {
                 if (!m_Str.empty())
+                {
                     m_Str << _T(" ");
+                }
 
                 m_Str << token;
             }
@@ -2890,13 +3411,19 @@ void LSP_SymbolsParser::HandleForLoopArguments()
 {
     // if these aren't empty at this point, we have a syntax error
     if (!m_Str.empty())
+    {
         return;
+    }
 
     if (!m_PointerOrRef.empty())
+    {
         return;
+    }
 
     if (!m_TemplateArgument.empty())
+    {
         return;
+    }
 
     // for loop heads look like this:
     // ([init1 [, init2 ...] ] ; [cond1 [, cond2 ..]]; [mod1 [, mod2 ..]])
@@ -2904,30 +3431,38 @@ void LSP_SymbolsParser::HandleForLoopArguments()
 
     // remove braces
     if (args.StartsWith(_T("(")))
+    {
         args = args.Mid(1, args.length() - 1);
+    }
+
     if (args.EndsWith(_T(")")))
+    {
         args = args.Mid(0, args.length() - 1);
+    }
 
     // parse small tokens inside for loop head
     TokenTree tree;
     wxString fileName = m_Tokenizer.GetFilename();
     Tokenizer smallTokenizer(&tree);
-
     smallTokenizer.InitFromBuffer(args, fileName, m_Tokenizer.GetLineNumber());
 
     while (IS_ALIVE)
     {
         wxString token = smallTokenizer.GetToken();
+
         if (token.empty())
+        {
             break;
+        }
 
         // pattern  for (; ...)
         // the first token is a ';'
         if (token == ParserConsts::semicolon)
+        {
             break;
+        }
 
         wxString peek = smallTokenizer.PeekToken();
-
         bool createNewToken = false;
         bool finished = false;
 
@@ -2939,12 +3474,14 @@ void LSP_SymbolsParser::HandleForLoopArguments()
             while (IS_ALIVE)
             {
                 smallTokenizer.GetToken();
-
                 peek = smallTokenizer.PeekToken();
+
                 if (peek == ParserConsts::comma
-                    || peek == ParserConsts::semicolon
-                    || peek.empty())
+                        || peek == ParserConsts::semicolon
+                        || peek.empty())
+                {
                     break;
+                }
             }
         }
 
@@ -2953,45 +3490,54 @@ void LSP_SymbolsParser::HandleForLoopArguments()
             smallTokenizer.GetToken(); // eat comma
             createNewToken = true;
         }
-        else if (peek == ParserConsts::colon
-                 || peek == ParserConsts::semicolon
-                 || peek.empty())
-        {
-            createNewToken = true;
-            finished = true; // after this point there will be no further declarations
-        }
         else
-        {
-            if (token == ParserConsts::ref_chr || token == ParserConsts::ptr_chr)
-                m_PointerOrRef << token;
+            if (peek == ParserConsts::colon
+                    || peek == ParserConsts::semicolon
+                    || peek.empty())
+            {
+                createNewToken = true;
+                finished = true; // after this point there will be no further declarations
+            }
             else
             {
-                if (!m_Str.empty())
-                    m_Str << _T(" ");
+                if (token == ParserConsts::ref_chr || token == ParserConsts::ptr_chr)
+                {
+                    m_PointerOrRef << token;
+                }
+                else
+                {
+                    if (!m_Str.empty())
+                    {
+                        m_Str << _T(" ");
+                    }
 
-                m_Str << token;
+                    m_Str << token;
+                }
             }
-        }
 
         if (createNewToken && !m_Str.empty())
         {
             // remove template argument if there is one
             wxString name, templateArgs;
             RemoveTemplateArgs(m_Str, name, templateArgs);
-
             m_Str = name;
             m_TemplateArgument = templateArgs;
+            Token * newToken = DoAddToken(tkVariable, token, smallTokenizer.GetLineNumber());
 
-            Token *newToken = DoAddToken(tkVariable, token, smallTokenizer.GetLineNumber());
             if (newToken && !m_TemplateArgument.IsEmpty())
+            {
                 ResolveTemplateArgs(newToken);
+            }
             else
-            {   TRACE(_T("HandleForLoopArguments() : Unable to create/add new token: ") + token); }
-
+            {
+                TRACE(_T("HandleForLoopArguments() : Unable to create/add new token: ") + token);
+            }
         }
 
         if (finished)
+        {
             break;
+        }
     }
 
     m_Str.clear();
@@ -3015,41 +3561,50 @@ void LSP_SymbolsParser::HandleEnum()
         token = m_Tokenizer.GetToken();
         isEnumClass = true;
     }
-    else if (token == ParserConsts::colon)
-    {
-        // enum : int {...}
-        SkipToOneOfChars(ParserConsts::semicolonopbrace); // jump to the "{" or ";"
-        // note in this case, the "{" or ";" is already eaten, so we need to go back one step
-        m_Tokenizer.UngetToken();
-        token = m_Tokenizer.PeekToken();
-    }
+    else
+        if (token == ParserConsts::colon)
+        {
+            // enum : int {...}
+            SkipToOneOfChars(ParserConsts::semicolonopbrace); // jump to the "{" or ";"
+            // note in this case, the "{" or ";" is already eaten, so we need to go back one step
+            m_Tokenizer.UngetToken();
+            token = m_Tokenizer.PeekToken();
+        }
 
     if (token.IsEmpty())
-        return;
-    else if (token==ParserConsts::opbrace)
     {
-        // we have an un-named enum
-        if (m_ParsingTypedef)
-        {
-            token.Printf(_T("%sEnum%u_%lu"), g_UnnamedSymbol.wx_str(), m_FileIdx, static_cast<unsigned long>(m_EnumUnnamedCount++));
-            m_LastUnnamedTokenName = token;
-        }
-        else
-            token = g_UnnamedSymbol;
-        m_Tokenizer.UngetToken(); // return '{' back
-        isUnnamed = true;
+        return;
     }
+    else
+        if (token == ParserConsts::opbrace)
+        {
+            // we have an un-named enum
+            if (m_ParsingTypedef)
+            {
+                token.Printf(_T("%sEnum%u_%lu"), g_UnnamedSymbol.wx_str(), m_FileIdx, static_cast<unsigned long>(m_EnumUnnamedCount++));
+                m_LastUnnamedTokenName = token;
+            }
+            else
+            {
+                token = g_UnnamedSymbol;
+            }
+
+            m_Tokenizer.UngetToken(); // return '{' back
+            isUnnamed = true;
+        }
 
     // the token is now the expected enum name
-    Token* newEnum = 0L;
+    Token * newEnum = 0L;
     unsigned int level = 0;
-    if (   wxIsalpha(token.GetChar(0))
-        || (token.GetChar(0) == ParserConsts::underscore_chr) )
+
+    if (wxIsalpha(token.GetChar(0))
+            || (token.GetChar(0) == ParserConsts::underscore_chr))
     {
         // we have such pattern: enum    name     {
         //                               ^^^^
         //                               token    peek
         wxString peek = m_Tokenizer.PeekToken();
+
         if (peek == ParserConsts::colon) // enum    name  : type    {
         {
             m_Tokenizer.GetToken(); // eat the ":"
@@ -3065,11 +3620,11 @@ void LSP_SymbolsParser::HandleEnum()
             // now peek=var, so we try to see it is a variable definition
             if (TokenExists(token, m_LastParent, tkEnum))
             {
-                if (!TokenExists(m_Tokenizer.PeekToken(), m_LastParent, tkVariable) )
+                if (!TokenExists(m_Tokenizer.PeekToken(), m_LastParent, tkVariable))
                 {
                     wxString ident = m_Tokenizer.GetToken(); // go ahead of identifier
 
-                    if (m_Tokenizer.PeekToken()==ParserConsts::semicolon)
+                    if (m_Tokenizer.PeekToken() == ParserConsts::semicolon)
                     {
                         if (m_Options.handleEnums)
                         {
@@ -3081,7 +3636,8 @@ void LSP_SymbolsParser::HandleEnum()
                         m_Tokenizer.GetToken(); // eat semi-colon
                     }
                     else
-                    {   // peek is not ";", mostly it is some pattern like:
+                    {
+                        // peek is not ";", mostly it is some pattern like:
                         // enum E fun (..) ;
                         // enum E fun (..) {...};
                         // so we just push the "E" to the m_Str, and return
@@ -3093,6 +3649,7 @@ void LSP_SymbolsParser::HandleEnum()
                     }
                 }
             }
+
             return;
         }
 
@@ -3115,7 +3672,10 @@ void LSP_SymbolsParser::HandleEnum()
     else
     {
         if (token.GetChar(0) != ParserConsts::opbrace_chr)
+        {
             return;
+        }
+
         level = m_Tokenizer.GetNestingLevel() - 1; // we 've already entered the { block
     }
 
@@ -3123,7 +3683,6 @@ void LSP_SymbolsParser::HandleEnum()
     //Implementation for showing Enum values: resolves expressions, preprocessor and enum tokens.
     int enumValue = 0;
     bool updateValue = true;
-
     const TokenizerState oldState = m_Tokenizer.GetState();
     m_Tokenizer.SetState(tsNormal);
 
@@ -3132,42 +3691,55 @@ void LSP_SymbolsParser::HandleEnum()
         // process enumerators
         token = m_Tokenizer.GetToken();
         wxString peek = m_Tokenizer.PeekToken();
+
         if (token.IsEmpty() || peek.IsEmpty())
-            return; //eof
-        if (token==ParserConsts::clbrace && level == m_Tokenizer.GetNestingLevel())
+        {
+            return;    //eof
+        }
+
+        if (token == ParserConsts::clbrace && level == m_Tokenizer.GetNestingLevel())
+        {
             break;
+        }
+
         // assignments (=xxx) are ignored by the tokenizer,
         // so we don't have to worry about them here,
         // if (peek==ParserConsts::comma || peek==ParserConsts::clbrace || peek==ParserConsts::colon)
-        if (peek==ParserConsts::colon)
+        if (peek == ParserConsts::colon)
         {
             peek = SkipToOneOfChars(ParserConsts::equals + ParserConsts::commaclbrace);
         }
+
         if (peek == ParserConsts::equals)
         {
             m_Tokenizer.GetToken(); //eat '='
             long result;
             updateValue = false;
+
             if (CalcEnumExpression(newEnum, result, peek))
             {
                 enumValue = result;
                 updateValue = true;
             }
         }
+
         if (peek == ParserConsts::comma || peek == ParserConsts::clbrace)
         {
             // this "if", avoids non-valid enumerators
             // like a comma (if no enumerators follow)
-            if (   wxIsalpha(token.GetChar(0))
-                || (token.GetChar(0) == ParserConsts::underscore_chr) )
+            if (wxIsalpha(token.GetChar(0))
+                    || (token.GetChar(0) == ParserConsts::underscore_chr))
             {
                 wxString args;
-                if (updateValue)
-                    args << enumValue++;
 
-                Token* lastParent = m_LastParent;
+                if (updateValue)
+                {
+                    args << enumValue++;
+                }
+
+                Token * lastParent = m_LastParent;
                 m_LastParent = newEnum;
-                Token* enumerator = DoAddToken(tkEnumerator, token, m_Tokenizer.GetLineNumber(), 0, 0, args);
+                Token * enumerator = DoAddToken(tkEnumerator, token, m_Tokenizer.GetLineNumber(), 0, 0, args);
                 enumerator->m_Scope = isEnumClass ? tsPrivate : tsPublic;
                 m_LastParent = lastParent;
             }
@@ -3175,38 +3747,43 @@ void LSP_SymbolsParser::HandleEnum()
     }
 
     m_Tokenizer.SetState(oldState);
-
     newEnum->m_ImplLine      = lineNr;
     newEnum->m_ImplLineStart = lineStart;
     newEnum->m_ImplLineEnd   = m_Tokenizer.GetLineNumber();
-
-//    // skip to ;
-//    SkipToOneOfChars(ParserConsts::semicolon);
+    //    // skip to ;
+    //    SkipToOneOfChars(ParserConsts::semicolon);
 }
 
-bool LSP_SymbolsParser::CalcEnumExpression(Token* tokenParent, long& result, wxString& peek)
+bool LSP_SymbolsParser::CalcEnumExpression(Token * tokenParent, long & result, wxString & peek)
 {
     // need to force the tokenizer skip raw expression
     const TokenizerState oldState = m_Tokenizer.GetState();
     // expand macros, but don't read a single parentheses
     m_Tokenizer.SetState(tsRawExpression);
-
     Expression exp;
     wxString token, next;
 
     while (IS_ALIVE)
     {
         token = m_Tokenizer.GetToken();
+
         if (token.IsEmpty())
+        {
             return false;
+        }
+
         if (token == _T("\\"))
+        {
             continue;
+        }
+
         if (token == ParserConsts::comma || token == ParserConsts::clbrace)
         {
             m_Tokenizer.UngetToken();
             peek = token;
             break;
         }
+
         if (token == ParserConsts::dcolon)
         {
             peek = SkipToOneOfChars(ParserConsts::commaclbrace);
@@ -3217,12 +3794,14 @@ bool LSP_SymbolsParser::CalcEnumExpression(Token* tokenParent, long& result, wxS
 
         if (wxIsalpha(token[0]) || token[0] == ParserConsts::underscore_chr) // handle enum or macro
         {
-            const Token* tk = m_TokenTree->at(m_TokenTree->TokenExists(token, tokenParent->m_Index, tkEnumerator));
+            const Token * tk = m_TokenTree->at(m_TokenTree->TokenExists(token, tokenParent->m_Index, tkEnumerator));
 
             if (tk) // the enumerator token
             {
                 if (!tk->m_Args.IsEmpty() && wxIsdigit(tk->m_Args[0]))
-                    token = tk->m_Args; // add the value to exp
+                {
+                    token = tk->m_Args;    // add the value to exp
+                }
             }
             else
             {
@@ -3235,12 +3814,17 @@ bool LSP_SymbolsParser::CalcEnumExpression(Token* tokenParent, long& result, wxS
 
         // only remaining number now
         if (!token.StartsWith(_T("0x")))
+        {
             exp.AddToInfixExpression(token);
+        }
         else
         {
             long value;
+
             if (token.ToLong(&value, 16))
+            {
                 exp.AddToInfixExpression(wxString::Format(_T("%ld"), value));
+            }
             else
             {
                 peek = SkipToOneOfChars(ParserConsts::commaclbrace);
@@ -3252,8 +3836,8 @@ bool LSP_SymbolsParser::CalcEnumExpression(Token* tokenParent, long& result, wxS
 
     // reset tokenizer's functionality
     m_Tokenizer.SetState(oldState);
-
     exp.ConvertInfixToPostfix();
+
     if (exp.CalcPostfix() && exp.GetStatus())
     {
         result = exp.GetResult();
@@ -3268,7 +3852,6 @@ void LSP_SymbolsParser::HandleTypedef()
     // typedefs are handled as tkClass and we put the typedef'd type as the
     // class's ancestor. This way, it will work through inheritance.
     // Function pointers are a different beast and are handled differently.
-
     // this is going to be tough :(
     // let's see some examples:
     //
@@ -3287,13 +3870,11 @@ void LSP_SymbolsParser::HandleTypedef()
     // typedef void (*dMessageFunction)(int errnum, const char *msg, va_list ap);
     // or
     // typedef void (MyClass::*Function)(int);
-
     size_t lineNr = m_Tokenizer.GetLineNumber();
     bool is_function_pointer = false;
     wxString typ;
     std::queue<wxString> components;
     // get everything on the same line
-
     TRACE(_T("HandleTypedef() : Typedef start"));
     wxString args;
     wxString token;
@@ -3304,8 +3885,8 @@ void LSP_SymbolsParser::HandleTypedef()
     {
         token = m_Tokenizer.GetToken();
         peek  = m_Tokenizer.PeekToken();
-
         TRACE(_T("HandleTypedef() : token=%s, peek=%s"), token.wx_str(), peek.wx_str());
+
         if (token.IsEmpty() || token == ParserConsts::semicolon)
         {
             m_Tokenizer.UngetToken();   // NOTE: preserve ';' for the next GetToken();
@@ -3313,53 +3894,64 @@ void LSP_SymbolsParser::HandleTypedef()
         }
 
         if (token == ParserConsts::kw_const)
+        {
             continue;
+        }
 
-        if (   token == ParserConsts::kw_class
-            || token == ParserConsts::kw_struct
-            || token == ParserConsts::kw_union)
+        if (token == ParserConsts::kw_class
+                || token == ParserConsts::kw_struct
+                || token == ParserConsts::kw_union)
         {
             // "typedef struct|class|union"
             TRACE(_("HandleTypedef() : Before HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.wx_str());
             HandleClass(token == ParserConsts::kw_class ? ctClass :
                         token == ParserConsts::kw_union ? ctUnion :
-                                                          ctStructure);
+                        ctStructure);
             token = m_LastUnnamedTokenName;
             TRACE(_("HandleTypedef() : After HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.wx_str());
         }
-        else if (token == ParserConsts::ptr || token == ParserConsts::ref)
-        {
-            m_PointerOrRef << token;
-            continue;
-        }
-        else if (peek == ParserConsts::comma)
-        {
-            m_Tokenizer.UngetToken();
-            if (components.size() != 0)
+        else
+            if (token == ParserConsts::ptr || token == ParserConsts::ref)
             {
-                wxString ancestor;
-                while (components.size() > 0)
-                {
-                    wxString tempToken = components.front();
-                    components.pop();
-
-                    if (!ancestor.IsEmpty())
-                        ancestor << ParserConsts::space_chr;
-                    ancestor << tempToken;
-                }
-                if ( !ReadClsNames(ancestor) )
-                {
-                    TRACE(_T("HandleTypedef() : ReadClsNames returned false."));
-                    m_Tokenizer.GetToken(); // eat it
-                }
+                m_PointerOrRef << token;
+                continue;
             }
-        }
-        else if (token == ParserConsts::kw_enum)
-        {
-            // "typedef enum"
-            HandleEnum();
-            token = m_LastUnnamedTokenName;
-        }
+            else
+                if (peek == ParserConsts::comma)
+                {
+                    m_Tokenizer.UngetToken();
+
+                    if (components.size() != 0)
+                    {
+                        wxString ancestor;
+
+                        while (components.size() > 0)
+                        {
+                            wxString tempToken = components.front();
+                            components.pop();
+
+                            if (!ancestor.IsEmpty())
+                            {
+                                ancestor << ParserConsts::space_chr;
+                            }
+
+                            ancestor << tempToken;
+                        }
+
+                        if (!ReadClsNames(ancestor))
+                        {
+                            TRACE(_T("HandleTypedef() : ReadClsNames returned false."));
+                            m_Tokenizer.GetToken(); // eat it
+                        }
+                    }
+                }
+                else
+                    if (token == ParserConsts::kw_enum)
+                    {
+                        // "typedef enum"
+                        HandleEnum();
+                        token = m_LastUnnamedTokenName;
+                    }
 
         // keep namespaces together
         while (peek == ParserConsts::dcolon)
@@ -3374,14 +3966,15 @@ void LSP_SymbolsParser::HandleTypedef()
         {
             // function pointer (probably)
             is_function_pointer = true;
+
             if (peek.GetChar(0) == ParserConsts::opbracket_chr)
             {
                 // typedef void (*dMessageFunction)(int errnum, const char *msg, va_list ap);
                 // typedef void (MyClass::*Function)(int);
-
                 // remove parentheses and keep everything after the dereferencing symbol
                 token.RemoveLast();
                 int pos = token.Find(ParserConsts::ptr_chr, true);
+
                 if (pos != wxNOT_FOUND)
                 {
                     typ << ParserConsts::opbracket_chr
@@ -3394,20 +3987,20 @@ void LSP_SymbolsParser::HandleTypedef()
                     typ = _T("(*)");
                     token.Remove(0, 1); // remove opening parenthesis
                 }
+
                 args = peek;
                 m_Tokenizer.GetToken(); // eat args
-
                 TRACE(_("HandleTypedef() : Pushing component='%s' (typedef args='%s')"), token.Trim(true).Trim(false).wx_str(), args.wx_str());
                 components.push(token.Trim(true).Trim(false));
             }
             else
             {
                 // typedef void dMessageFunction (int errnum, const char *msg, va_list ap);
-
                 // last component is already the name and this is the args
                 args = token;
                 TRACE(_("HandleTypedef() : Typedef args='%s'"), args.wx_str());
             }
+
             break;
         }
 
@@ -3423,14 +4016,19 @@ void LSP_SymbolsParser::HandleTypedef()
 
         TRACE(_T(" + '%s'"), token.wx_str());
     }
+
     TRACE(_T("HandleTypedef() : Typedef done"));
     m_ParsingTypedef = false;
 
     if (components.empty())
-        return; // invalid typedef
+    {
+        return;    // invalid typedef
+    }
 
     if (!is_function_pointer && components.size() <= 1)
-        return; // invalid typedef
+    {
+        return;    // invalid typedef
+    }
 
     // now get the type
     wxString ancestor;
@@ -3444,11 +4042,11 @@ void LSP_SymbolsParser::HandleTypedef()
     //        typedef _Tp  alise;
     //
     // };
-    if (   (components.size() == 2)
-        && m_LastParent
-        && m_LastParent->m_TokenKind == tkClass
-        && (!m_LastParent->m_TemplateType.IsEmpty())
-        && m_LastParent->m_TemplateType.Index(components.front()) != wxNOT_FOUND )
+    if ((components.size() == 2)
+            && m_LastParent
+            && m_LastParent->m_TokenKind == tkClass
+            && (!m_LastParent->m_TemplateType.IsEmpty())
+            && m_LastParent->m_TemplateType.Index(components.front()) != wxNOT_FOUND)
     {
         wxArrayString templateType = m_LastParent->m_TemplateType;
         alias = components.front();
@@ -3463,16 +4061,19 @@ void LSP_SymbolsParser::HandleTypedef()
             components.pop();
 
             if (!ancestor.IsEmpty())
+            {
                 ancestor << ParserConsts::space_chr;
+            }
+
             ancestor << token;
         }
     }
 
     // no return type
     m_Str.Clear();
-
     TRACE(_("HandleTypedef() : Adding typedef: name='%s', ancestor='%s', args='%s'"), components.front().wx_str(), ancestor.wx_str(), args.wx_str());
-    Token* tdef = DoAddToken(tkTypedef /*tkClass*/, components.front(), lineNr, 0, 0, args);
+    Token * tdef = DoAddToken(tkTypedef /*tkClass*/, components.front(), lineNr, 0, 0, args);
+
     if (tdef)
     {
         wxString actualAncestor = ancestor.BeforeFirst(ParserConsts::lt_chr).Trim();
@@ -3482,8 +4083,11 @@ void LSP_SymbolsParser::HandleTypedef()
         {
             tdef->m_FullType        = ancestor + typ; // + args;
             tdef->m_BaseType        = actualAncestor;
+
             if (tdef->IsValidAncestor(ancestor))
+            {
                 tdef->m_AncestorsString = ancestor;
+            }
         }
         else
         {
@@ -3493,9 +4097,14 @@ void LSP_SymbolsParser::HandleTypedef()
             TRACE(_T("The typedef alias is %s."), tdef->m_TemplateAlias.wx_str());
 
             if (tdef->IsValidAncestor(ancestor))
+            {
                 tdef->m_AncestorsString = ancestor;
+            }
+
             if (!m_TemplateArgument.IsEmpty())
+            {
                 ResolveTemplateArgs(tdef);
+            }
         }
     }
 }
@@ -3509,53 +4118,67 @@ bool LSP_SymbolsParser::ReadVarNames()
         wxString token = m_Tokenizer.GetToken();
 
         if (token.IsEmpty())                     // end of file / tokens
+        {
             break;
+        }
 
-        if (token==ParserConsts::comma)          // another variable name
+        if (token == ParserConsts::comma)        // another variable name
+        {
             continue;
-        else if (token==ParserConsts::semicolon) // end of variable name(s)
-        {
-            m_PointerOrRef.Clear();
-            break;
         }
-        else if (token == ParserConsts::oparray)
-        {
-            SkipToOneOfChars(ParserConsts::clarray);
-        }
-        else if (token == ParserConsts::ptr)     // variable is a pointer
-            m_PointerOrRef << token;
-        else if (   wxIsalpha(token.GetChar(0))
-                 || (token.GetChar(0) == ParserConsts::underscore_chr) )
-        {
-            TRACE(_T("ReadVarNames() : Adding variable '%s' as '%s' to '%s'"),
-                  token.wx_str(), m_Str.wx_str(),
-                  (m_LastParent ? m_LastParent->m_Name.wx_str() : _T("<no-parent>")));
-
-            // Detects anonymous ancestor and gives him a name based on the first found alias.
-            if (m_Str.StartsWith(g_UnnamedSymbol))
-                RefineAnonymousTypeToken(tkUndefined, token);
-
-            Token* newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
-            if (!newToken)
+        else
+            if (token == ParserConsts::semicolon) // end of variable name(s)
             {
-                TRACE(_T("ReadVarNames() : Unable to create/add new token: ") + token);
+                m_PointerOrRef.Clear();
                 break;
             }
-        }
-        else // unexpected
-        {
-            TRACE(F(_T("ReadVarNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
-                    token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
-            CCLogger::Get()->DebugLog(wxString::Format(_T("ReadVarNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
-                                        token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
-            success = false;
-            break;
-        }
+            else
+                if (token == ParserConsts::oparray)
+                {
+                    SkipToOneOfChars(ParserConsts::clarray);
+                }
+                else
+                    if (token == ParserConsts::ptr)     // variable is a pointer
+                    {
+                        m_PointerOrRef << token;
+                    }
+                    else
+                        if (wxIsalpha(token.GetChar(0))
+                                || (token.GetChar(0) == ParserConsts::underscore_chr))
+                        {
+                            TRACE(_T("ReadVarNames() : Adding variable '%s' as '%s' to '%s'"),
+                                  token.wx_str(), m_Str.wx_str(),
+                                  (m_LastParent ? m_LastParent->m_Name.wx_str() : _T("<no-parent>")));
+
+                            // Detects anonymous ancestor and gives him a name based on the first found alias.
+                            if (m_Str.StartsWith(g_UnnamedSymbol))
+                            {
+                                RefineAnonymousTypeToken(tkUndefined, token);
+                            }
+
+                            Token * newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
+
+                            if (!newToken)
+                            {
+                                TRACE(_T("ReadVarNames() : Unable to create/add new token: ") + token);
+                                break;
+                            }
+                        }
+                        else // unexpected
+                        {
+                            TRACE(F(_T("ReadVarNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
+                                    token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
+                            CCLogger::Get()->DebugLog(wxString::Format(_T("ReadVarNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
+                                                                       token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
+                            success = false;
+                            break;
+                        }
     }
+
     return success;
 }
 
-bool LSP_SymbolsParser::ReadClsNames(wxString& ancestor)
+bool LSP_SymbolsParser::ReadClsNames(wxString & ancestor)
 {
     bool success = true; // optimistic start value
 
@@ -3564,70 +4187,83 @@ bool LSP_SymbolsParser::ReadClsNames(wxString& ancestor)
         wxString token = m_Tokenizer.GetToken();
 
         if (token.IsEmpty())                     // end of file / tokens
-            break;
-
-        if (token==ParserConsts::comma)          // another class name
-            continue;
-        else if (token==ParserConsts::kw_attribute)
         {
-            m_Tokenizer.GetToken();  // eat (( whatever ))
-            continue;
-        }
-        else if (token==ParserConsts::semicolon) // end of class name(s)
-        {
-            m_Tokenizer.UngetToken();
-            m_PointerOrRef.Clear();
             break;
         }
-        else if (token == ParserConsts::ptr)     // variable is a pointer
-            m_PointerOrRef << token;
-        else if (   wxIsalpha(token.GetChar(0))
-                 || (token.GetChar(0) == ParserConsts::underscore_chr) )
+
+        if (token == ParserConsts::comma)        // another class name
         {
-            TRACE(_T("ReadClsNames() : Adding variable '%s' as '%s' to '%s'"),
-                  token.wx_str(),
-                  m_Str.wx_str(),
-                  (m_LastParent ? m_LastParent->m_Name.wx_str() : _T("<no-parent>")));
-
-            m_Str.clear();
-            m_Str = ancestor;
-
-            // Detects anonymous ancestor and gives him a name based on the first found alias.
-            if (m_Str.StartsWith(g_UnnamedSymbol))
+            continue;
+        }
+        else
+            if (token == ParserConsts::kw_attribute)
             {
-                RefineAnonymousTypeToken(tkTypedef | tkClass, token);
-                ancestor = m_Str;
-            }
-
-            Token* newToken = DoAddToken(tkTypedef, token, m_Tokenizer.GetLineNumber());
-            if (!newToken)
-            {
-                TRACE(_T("ReadClsNames() : Unable to create/add new token: ") + token);
-                break;
+                m_Tokenizer.GetToken();  // eat (( whatever ))
+                continue;
             }
             else
-                newToken->m_AncestorsString = ancestor;
-        }
-        else // unexpected
-        {
-            TRACE(F(_T("ReadClsNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
-                    token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
-            CCLogger::Get()->DebugLog(wxString::Format(_T("ReadClsNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
-                                        token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
-            // The following code snippet freezes CC here:
-            // typedef std::enable_if<N > 1, get_type_N<N-1, Tail...>> type;
-            m_Tokenizer.UngetToken();
-            // Note: Do NOT remove m_Tokenizer.UngetToken();, otherwise it freezes somewhere else
-            success = false;
-            break;
-        }
+                if (token == ParserConsts::semicolon) // end of class name(s)
+                {
+                    m_Tokenizer.UngetToken();
+                    m_PointerOrRef.Clear();
+                    break;
+                }
+                else
+                    if (token == ParserConsts::ptr)     // variable is a pointer
+                    {
+                        m_PointerOrRef << token;
+                    }
+                    else
+                        if (wxIsalpha(token.GetChar(0))
+                                || (token.GetChar(0) == ParserConsts::underscore_chr))
+                        {
+                            TRACE(_T("ReadClsNames() : Adding variable '%s' as '%s' to '%s'"),
+                                  token.wx_str(),
+                                  m_Str.wx_str(),
+                                  (m_LastParent ? m_LastParent->m_Name.wx_str() : _T("<no-parent>")));
+                            m_Str.clear();
+                            m_Str = ancestor;
+
+                            // Detects anonymous ancestor and gives him a name based on the first found alias.
+                            if (m_Str.StartsWith(g_UnnamedSymbol))
+                            {
+                                RefineAnonymousTypeToken(tkTypedef | tkClass, token);
+                                ancestor = m_Str;
+                            }
+
+                            Token * newToken = DoAddToken(tkTypedef, token, m_Tokenizer.GetLineNumber());
+
+                            if (!newToken)
+                            {
+                                TRACE(_T("ReadClsNames() : Unable to create/add new token: ") + token);
+                                break;
+                            }
+                            else
+                            {
+                                newToken->m_AncestorsString = ancestor;
+                            }
+                        }
+                        else // unexpected
+                        {
+                            TRACE(F(_T("ReadClsNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
+                                    token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
+                            CCLogger::Get()->DebugLog(wxString::Format(_T("ReadClsNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
+                                                                       token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
+                            // The following code snippet freezes CC here:
+                            // typedef std::enable_if<N > 1, get_type_N<N-1, Tail...>> type;
+                            m_Tokenizer.UngetToken();
+                            // Note: Do NOT remove m_Tokenizer.UngetToken();, otherwise it freezes somewhere else
+                            success = false;
+                            break;
+                        }
     }
+
     return success;
 }
 
-bool LSP_SymbolsParser::GetBaseArgs(const wxString& args, wxString& baseArgs)
+bool LSP_SymbolsParser::GetBaseArgs(const wxString & args, wxString & baseArgs)
 {
-    const wxChar* ptr = args.wx_str();  // pointer to current char in args string
+    const wxChar * ptr = args.wx_str(); // pointer to current char in args string
     wxString word;             // compiled word of last arg
     bool skip = false;         // skip the next char (do not add to stripped args)
     bool sym  = false;         // current char symbol
@@ -3639,8 +4275,6 @@ bool LSP_SymbolsParser::GetBaseArgs(const wxString& args, wxString& baseArgs)
     // sym = true means ptr is point to an identifier like token
     // here, if we find an identifier like token which is "int", we just skip the next token
     // until we meet a "," or ")".
-
-
     TRACE(_T("GetBaseArgs() : args='%s'."), args.wx_str());
     baseArgs.Alloc(args.Len() + 1);
 
@@ -3649,175 +4283,223 @@ bool LSP_SymbolsParser::GetBaseArgs(const wxString& args, wxString& baseArgs)
     {
         switch (*ptr)
         {
-        case ParserConsts::eol_chr:
-            // skip the "\r\n"
-            while (*ptr != ParserConsts::null && *ptr <= ParserConsts::space_chr)
-                ++ptr;
-            break;
-        case ParserConsts::space_chr:
-            // take care of args like:
-            // - enum     my_enum the_enum_my_enum
-            // - const    int     the_const_int
-            // - volatile long    the_volatile_long
-            if (   (word == ParserConsts::kw_enum)
-                || (word == ParserConsts::kw_const)
-                || (word == ParserConsts::kw_volatile) )
-                skip = false; // don't skip this (it's part of the stripped arg)
-            else
-                skip = true;  // safely skip this as it is the args name
-            word = _T(""); // reset
-            sym  = false;
-            break;
-        case ParserConsts::ptr_chr: // handle pointer args
-            // handle multiple pointer like in: main (int argc, void** argv)
-            // or ((int *, char ***))
-            while (*(ptr+1) != ParserConsts::null && *(ptr+1) == ParserConsts::ptr_chr)
-            {
-                baseArgs << *ptr; // append one more '*' to baseArgs
-                ptr++; // next char
-            }
-            // ...and fall through:
-        case ParserConsts::ref_chr: // handle references
-            word = _T(""); // reset
-            skip = true;
-            sym  = true;
+            case ParserConsts::eol_chr:
 
-            // TODO (Morten#5#): Do comment the following even more. It's still not exactly clear to me...
-            // verify completeness of last stripped argument (handle nested brackets correctly)
-            {
-                // extract last stripped argument from baseArgs
-                wxString lastStrippedArg;
-                int lastArgComma = baseArgs.Find(ParserConsts::comma_chr, true);
-                if (lastArgComma)
-                    lastStrippedArg = baseArgs.Mid(1);
-                else
-                    lastStrippedArg = baseArgs.Mid(lastArgComma);
-
-
-                // input:  (float a = 0.0, int* f1(char x, char y), void z)
-                // output: (float, int*, z)
-                // the internal "(char x, char y)" should be removed
-                // No opening brackets in last stripped arg?
-                // this means if we have function pointer in the argument
-                // input:   void foo(double (*fn)(double))
-                // we should not skip the content after '*', since the '(' before '*' is already
-                // pushed to the lastStrippedArg.
-                if ( lastStrippedArg.Find(ParserConsts::opbracket_chr) == wxNOT_FOUND )
+                // skip the "\r\n"
+                while (*ptr != ParserConsts::null && *ptr <= ParserConsts::space_chr)
                 {
-                    baseArgs << *ptr; // append to baseArgs
+                    ++ptr;
+                }
 
-                    // find end
-                    int brackets = 0;
+                break;
+
+            case ParserConsts::space_chr:
+
+                // take care of args like:
+                // - enum     my_enum the_enum_my_enum
+                // - const    int     the_const_int
+                // - volatile long    the_volatile_long
+                if ((word == ParserConsts::kw_enum)
+                        || (word == ParserConsts::kw_const)
+                        || (word == ParserConsts::kw_volatile))
+                {
+                    skip = false;    // don't skip this (it's part of the stripped arg)
+                }
+                else
+                {
+                    skip = true;    // safely skip this as it is the args name
+                }
+
+                word = _T(""); // reset
+                sym  = false;
+                break;
+
+            case ParserConsts::ptr_chr: // handle pointer args
+
+                // handle multiple pointer like in: main (int argc, void** argv)
+                // or ((int *, char ***))
+                while (*(ptr + 1) != ParserConsts::null && *(ptr + 1) == ParserConsts::ptr_chr)
+                {
+                    baseArgs << *ptr; // append one more '*' to baseArgs
+                    ptr++; // next char
+                }
+
+            // ...and fall through:
+            case ParserConsts::ref_chr: // handle references
+                word = _T(""); // reset
+                skip = true;
+                sym  = true;
+                // TODO (Morten#5#): Do comment the following even more. It's still not exactly clear to me...
+                // verify completeness of last stripped argument (handle nested brackets correctly)
+                {
+                    // extract last stripped argument from baseArgs
+                    wxString lastStrippedArg;
+                    int lastArgComma = baseArgs.Find(ParserConsts::comma_chr, true);
+
+                    if (lastArgComma)
+                    {
+                        lastStrippedArg = baseArgs.Mid(1);
+                    }
+                    else
+                    {
+                        lastStrippedArg = baseArgs.Mid(lastArgComma);
+                    }
+
+                    // input:  (float a = 0.0, int* f1(char x, char y), void z)
+                    // output: (float, int*, z)
+                    // the internal "(char x, char y)" should be removed
+                    // No opening brackets in last stripped arg?
+                    // this means if we have function pointer in the argument
+                    // input:   void foo(double (*fn)(double))
+                    // we should not skip the content after '*', since the '(' before '*' is already
+                    // pushed to the lastStrippedArg.
+                    if (lastStrippedArg.Find(ParserConsts::opbracket_chr) == wxNOT_FOUND)
+                    {
+                        baseArgs << *ptr; // append to baseArgs
+                        // find end
+                        int brackets = 0;
+                        ptr++; // next char
+
+                        while (*ptr != ParserConsts::null)
+                        {
+                            if (*ptr == ParserConsts::opbracket_chr)
+                            {
+                                brackets++;
+                            }
+                            else
+                                if (*ptr == ParserConsts::clbracket_chr)
+                                {
+                                    if (brackets == 0)
+                                    {
+                                        break;
+                                    }
+
+                                    brackets--;
+                                }
+                                else
+                                    if (*ptr == ParserConsts::comma_chr && brackets == 0)
+                                    {
+                                        // don't stop at the inner comma char, such as '^' pointed below
+                                        // (float a = 0.0, int* f1(char x, char y), void z)
+                                        //                               ^
+                                        skip = false;
+                                        break;
+                                    }
+
+                            ptr++; // next char
+                        }
+                    }
+                }
+                break;
+
+            case ParserConsts::colon_chr: // namespace handling like for 'std::vector'
+                skip = false;
+                sym  = true;
+                break;
+
+            case ParserConsts::oparray_chr: // array handling like for 'int[20]'
+
+                // [   128   ]  ->   [128]
+                // space between the [] is stripped
+                while (*ptr != ParserConsts::null
+                        && *ptr != ParserConsts::clarray_chr)
+                {
+                    if (*ptr != ParserConsts::space_chr)
+                    {
+                        baseArgs << *ptr;    // append to baseArgs, skipping spaces
+                    }
+
+                    ptr++; // next char
+                }
+
+                skip = true;
+                sym  = true;
+                break;
+
+            case ParserConsts::lt_chr: // template arg handling like for 'vector<int>'
+
+                // <   int   >  ->   <int>
+                // space between the <> is stripped
+                // note that embeded <> such as vector<vector<int>> is not handled here
+                while (*ptr != ParserConsts::null
+                        && *ptr != ParserConsts::gt_chr)
+                {
+                    if (*ptr != ParserConsts::space_chr)
+                    {
+                        baseArgs << *ptr;    // append to baseArgs, skipping spaces
+                    }
+
+                    ptr++; // next char
+                }
+
+                skip = true;
+                sym  = true;
+                break;
+
+            case ParserConsts::comma_chr:     // fall through
+            case ParserConsts::clbracket_chr: // fall through
+            case ParserConsts::opbracket_chr:
+
+                // ( int abc, .....)
+                // we have just skip the "abc", and now, we see the ","
+                if (skip && *ptr == ParserConsts::comma_chr)
+                {
+                    one = false;    // see a comma, which means we have at least two parameter!
+                }
+
+                // try to remove the __attribute__(xxx) decoration in the parameter
+                // such as: int f(__attribute__(xxx) wxCommandEvent & event);
+                // should be convert to : int f(wxCommandEvent & event);
+                if (*ptr == ParserConsts::opbracket_chr && word == ParserConsts::kw_attribute)
+                {
+                    // remove the "__attribute__" keywords from the baseArgs
+                    // the length of "__attribute__" is 13
+                    baseArgs = baseArgs.Mid(0, baseArgs.Len() - 13);
+                    // skip the next "(xxx)
+                    int brackets = 1; // skip the first "(" already
                     ptr++; // next char
 
                     while (*ptr != ParserConsts::null)
                     {
-                        if      (*ptr == ParserConsts::opbracket_chr)
+                        if (*ptr == ParserConsts::opbracket_chr)
+                        {
                             brackets++;
-                        else if (*ptr == ParserConsts::clbracket_chr)
-                        {
-                            if (brackets == 0)
-                                break;
-                            brackets--;
                         }
-                        else if (*ptr == ParserConsts::comma_chr && brackets == 0)
-                        {
-                            // don't stop at the inner comma char, such as '^' pointed below
-                            // (float a = 0.0, int* f1(char x, char y), void z)
-                            //                               ^
-                            skip = false;
-                            break;
-                        }
+                        else
+                            if (*ptr == ParserConsts::clbracket_chr)
+                            {
+                                brackets--;
+
+                                if (brackets == 0)
+                                {
+                                    ptr++;
+                                    break;
+                                }
+                            }
+
                         ptr++; // next char
                     }
-                }
-            }
-            break;
-        case ParserConsts::colon_chr: // namespace handling like for 'std::vector'
-            skip = false;
-            sym  = true;
-            break;
-        case ParserConsts::oparray_chr: // array handling like for 'int[20]'
-            // [   128   ]  ->   [128]
-            // space between the [] is stripped
-            while (   *ptr != ParserConsts::null
-                   && *ptr != ParserConsts::clarray_chr )
-            {
-                if (*ptr != ParserConsts::space_chr)
-                    baseArgs << *ptr; // append to baseArgs, skipping spaces
-                ptr++; // next char
-            }
-            skip = true;
-            sym  = true;
-            break;
-        case ParserConsts::lt_chr: // template arg handling like for 'vector<int>'
-            // <   int   >  ->   <int>
-            // space between the <> is stripped
-            // note that embeded <> such as vector<vector<int>> is not handled here
-            while (   *ptr != ParserConsts::null
-                   && *ptr != ParserConsts::gt_chr )
-            {
-                if (*ptr != ParserConsts::space_chr)
-                    baseArgs << *ptr; // append to baseArgs, skipping spaces
-                ptr++; // next char
-            }
-            skip = true;
-            sym  = true;
-            break;
-        case ParserConsts::comma_chr:     // fall through
-        case ParserConsts::clbracket_chr: // fall through
-        case ParserConsts::opbracket_chr:
-            // ( int abc, .....)
-            // we have just skip the "abc", and now, we see the ","
-            if (skip && *ptr == ParserConsts::comma_chr)
-                one = false; // see a comma, which means we have at least two parameter!
 
-            // try to remove the __attribute__(xxx) decoration in the parameter
-            // such as: int f(__attribute__(xxx) wxCommandEvent & event);
-            // should be convert to : int f(wxCommandEvent & event);
-            if(*ptr == ParserConsts::opbracket_chr && word == ParserConsts::kw_attribute)
-            {
-                // remove the "__attribute__" keywords from the baseArgs
-                // the length of "__attribute__" is 13
-                baseArgs = baseArgs.Mid(0, baseArgs.Len()-13);
-
-                // skip the next "(xxx)
-                int brackets = 1; // skip the first "(" already
-                ptr++; // next char
-
-                while (*ptr != ParserConsts::null)
-                {
-                    if      (*ptr == ParserConsts::opbracket_chr)
-                        brackets++;
-                    else if (*ptr == ParserConsts::clbracket_chr)
+                    // skip the spaces after the "__attribute__(xxx)"
+                    while (*ptr     != ParserConsts::null
+                            && *(ptr) == ParserConsts::space_chr)
                     {
-                        brackets--;
-                        if (brackets == 0)
-                        {
-                            ptr++;
-                            break;
-                        }
-
+                        ++ptr; // next char
                     }
-                    ptr++; // next char
+
+                    word = _T(""); // reset
+                    sym  = false;  // no symbol is added
+                    skip = false;  // don't skip the next token
+                    break;
                 }
-                // skip the spaces after the "__attribute__(xxx)"
-                while (   *ptr     != ParserConsts::null
-                       && *(ptr) == ParserConsts::space_chr )
-                {
-                    ++ptr; // next char
-                }
+
                 word = _T(""); // reset
-                sym  = false;  // no symbol is added
-                skip = false;  // don't skip the next token
+                sym  = true;
+                skip = false;
                 break;
-            }
-            word = _T(""); // reset
-            sym  = true;
-            skip = false;
-            break;
-        default:
-            sym = false;
+
+            default:
+                sym = false;
         }// switch (*ptr)
 
         // Now handle the char processed in this loop:
@@ -3828,16 +4510,19 @@ bool LSP_SymbolsParser::GetBaseArgs(const wxString& args, wxString& baseArgs)
             if (*ptr != ParserConsts::null)
             {
                 baseArgs << *ptr; // append to baseArgs
+
                 if (wxIsalnum(*ptr) || *ptr == ParserConsts::underscore_chr)
-                    word << *ptr; // append to word
+                {
+                    word << *ptr;    // append to word
+                }
             }
         }
 
         if (!skip && sym)
         {
             // skip white spaces and increase pointer
-            while (   *ptr     != ParserConsts::null
-                   && *(ptr+1) == ParserConsts::space_chr )
+            while (*ptr     != ParserConsts::null
+                    && *(ptr + 1) == ParserConsts::space_chr)
             {
                 ++ptr; // next char
             }
@@ -3852,15 +4537,18 @@ bool LSP_SymbolsParser::GetBaseArgs(const wxString& args, wxString& baseArgs)
     if (one && baseArgs.Len() > 2)
     {
         const wxChar ch = baseArgs[1];
-        if (   (ch <= _T('9') && ch >= _T('0'))             // number, 0 ~ 9
-            || baseArgs.Find(_T('"')) != wxNOT_FOUND    // string
-            || baseArgs.Find(_T('\'')) != wxNOT_FOUND ) // character
+
+        if ((ch <= _T('9') && ch >= _T('0'))                // number, 0 ~ 9
+                || baseArgs.Find(_T('"')) != wxNOT_FOUND    // string
+                || baseArgs.Find(_T('\'')) != wxNOT_FOUND)  // character
         {
             return false; // not function, it should be variable
         }
 
         if (baseArgs == _T("(void)"))
+        {
             baseArgs = _T("()");
+        }
     }
 
     TRACE(_T("GetBaseArgs() : baseArgs='%s'."), baseArgs.wx_str());
@@ -3875,50 +4563,63 @@ void LSP_SymbolsParser::GetTemplateArgs()
     m_Tokenizer.SetState(tsNormal);
     m_TemplateArgument.clear();
     int nestLvl = 0;
+
     // NOTE: only exit this loop with 'break' so the tokenizer's state can
     // be reset afterwards (i.e. don't use 'return')
     while (IS_ALIVE)
     {
         wxString tmp = m_Tokenizer.GetToken();
 
-        if (tmp==ParserConsts::lt)
+        if (tmp == ParserConsts::lt)
         {
             ++nestLvl;
             m_TemplateArgument << tmp;
-
         }
-        else if (tmp==ParserConsts::gt)
-        {
-            --nestLvl;
-            m_TemplateArgument << tmp;
-        }
-        else if (tmp==ParserConsts::semicolon)
-        {
-            // unget token - leave ; on the stack
-            m_Tokenizer.UngetToken();
-            m_TemplateArgument.clear();
-            break;
-        }
-        else if (tmp.IsEmpty())
-            break;
         else
-            m_TemplateArgument << tmp;
+            if (tmp == ParserConsts::gt)
+            {
+                --nestLvl;
+                m_TemplateArgument << tmp;
+            }
+            else
+                if (tmp == ParserConsts::semicolon)
+                {
+                    // unget token - leave ; on the stack
+                    m_Tokenizer.UngetToken();
+                    m_TemplateArgument.clear();
+                    break;
+                }
+                else
+                    if (tmp.IsEmpty())
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        m_TemplateArgument << tmp;
+                    }
+
         if (nestLvl <= 0)
+        {
             break;
+        }
     }
 
     // reset tokenizer's functionality
     m_Tokenizer.SetState(oldState);
 }
 
-void LSP_SymbolsParser::ResolveTemplateArgs(Token* newToken)
+void LSP_SymbolsParser::ResolveTemplateArgs(Token * newToken)
 {
     TRACE(_T("The variable template arguments are '%s'."), m_TemplateArgument.wx_str());
     newToken->m_TemplateArgument = m_TemplateArgument;
     wxArrayString actuals;
     SplitTemplateActualParameters(m_TemplateArgument, actuals);
-    for (size_t i=0; i<actuals.GetCount(); ++i)
+
+    for (size_t i = 0; i < actuals.GetCount(); ++i)
+    {
         TRACE(_T("The template actual arguments are '%s'."), actuals[i].wx_str());
+    }
 
     newToken->m_TemplateType = actuals;
     // now resolve the template normal and actual map
@@ -3928,11 +4629,12 @@ void LSP_SymbolsParser::ResolveTemplateArgs(Token* newToken)
     newToken->m_TemplateMap = templateMap;
 }
 
-wxArrayString LSP_SymbolsParser::GetTemplateArgArray(const wxString& templateArgs, bool remove_gt_lt, bool add_last)
+wxArrayString LSP_SymbolsParser::GetTemplateArgArray(const wxString & templateArgs, bool remove_gt_lt, bool add_last)
 {
     wxString word;
     wxString args = templateArgs;
     args.Trim(true).Trim(false);
+
     if (remove_gt_lt)
     {
         args.Remove(0, 1);
@@ -3940,88 +4642,104 @@ wxArrayString LSP_SymbolsParser::GetTemplateArgArray(const wxString& templateArg
     }
 
     wxArrayString container;
+
     for (size_t i = 0; i < args.Len(); ++i)
     {
         wxChar arg = args.GetChar(i);
+
         switch (arg)
         {
-        case ParserConsts::space_chr:
-            container.Add(word);
-            word.clear();
-            continue;
-        case ParserConsts::lt_chr:
-        case ParserConsts::gt_chr:
-        case ParserConsts::comma_chr:
-            container.Add(word);
-            word.clear();
-            container.Add(args[i]);
-            continue;
-        default:
-            word << args[i];
+            case ParserConsts::space_chr:
+                container.Add(word);
+                word.clear();
+                continue;
+
+            case ParserConsts::lt_chr:
+            case ParserConsts::gt_chr:
+            case ParserConsts::comma_chr:
+                container.Add(word);
+                word.clear();
+                container.Add(args[i]);
+                continue;
+
+            default:
+                word << args[i];
         }
     }
 
     if (add_last && !word.IsEmpty())
+    {
         container.Add(word);
+    }
 
     return container;
 }
 
-void LSP_SymbolsParser::SplitTemplateFormalParameters(const wxString& templateArgs, wxArrayString& formals)
+void LSP_SymbolsParser::SplitTemplateFormalParameters(const wxString & templateArgs, wxArrayString & formals)
 {
     wxArrayString container = GetTemplateArgArray(templateArgs, false, false);
     size_t n = container.GetCount();
+
     for (size_t j = 0; j < n; ++j)
     {
-        if (   (container[j] == ParserConsts::kw_typename)
-            || (container[j] == ParserConsts::kw_class) )
+        if ((container[j] == ParserConsts::kw_typename)
+                || (container[j] == ParserConsts::kw_class))
         {
-            if ( (j+1) < n )
+            if ((j + 1) < n)
             {
-                formals.Add(container[j+1]);
+                formals.Add(container[j + 1]);
                 ++j; // skip
             }
         }
     }
-
 }
 
-void LSP_SymbolsParser::SplitTemplateActualParameters(const wxString& templateArgs, wxArrayString& actuals)
+void LSP_SymbolsParser::SplitTemplateActualParameters(const wxString & templateArgs, wxArrayString & actuals)
 {
     wxArrayString container = GetTemplateArgArray(templateArgs, true, true);
     size_t n = container.GetCount();
 
     // for debug purposes only
     for (size_t j = 0; j < n; ++j)
+    {
         TRACE(_T("The container elements are '%s'."), container[j].wx_str());
+    }
 
     int level = 0;
+
     for (size_t j = 0; j < n; ++j)
     {
         if (container[j] == ParserConsts::lt)
         {
             ++level;
-            while (level > 0 && (j+1) < n)
+
+            while (level > 0 && (j + 1) < n)
             {
                 if (container[j] == ParserConsts::gt)
+                {
                     --level;
+                }
+
                 ++j; // skip
             }
-
-        }
-        else if (container[j] == ParserConsts::comma)
-        {
-            ++j; // skip
-            continue;
         }
         else
-            actuals.Add(container[j]);
+            if (container[j] == ParserConsts::comma)
+            {
+                ++j; // skip
+                continue;
+            }
+            else
+            {
+                actuals.Add(container[j]);
+            }
+
         ++j; // skip
     }
 }
 
-bool LSP_SymbolsParser::ResolveTemplateMap(const wxString& typeStr, const wxArrayString& actuals,
-                                      std::map<wxString, wxString>& results)
+bool LSP_SymbolsParser::ResolveTemplateMap(const wxString & typeStr, const wxArrayString & actuals,
+                                           std::map<wxString, wxString> & results)
 {
     // Check if type is an alias template. If it is, then we use the actual type's template map.
     // For example, given:
@@ -4031,19 +4749,24 @@ bool LSP_SymbolsParser::ResolveTemplateMap(const wxString& typeStr, const wxArra
     wxString tokenFullType = typeStr;
     TokenIdxSet fullTypeMatches;
     size_t matchesCount = m_TokenTree->FindMatches(tokenFullType, fullTypeMatches, true, false, tkTypedef);
+
     if (matchesCount > 0)
     {
-        for (TokenIdxSet::const_iterator it= fullTypeMatches.begin(); it!= fullTypeMatches.end(); ++it)
+        for (TokenIdxSet::const_iterator it = fullTypeMatches.begin(); it != fullTypeMatches.end(); ++it)
         {
             int id = (*it);
-            Token* token = m_TokenTree->at(id);
+            Token * token = m_TokenTree->at(id);
 
             if (token->m_TokenKind == tkTypedef)
             {
                 tokenFullType = token->m_FullType;
+
                 // we are only interested in the type name, so remove the scope qualifiers
                 if (tokenFullType.Find(_T("::")) != wxNOT_FOUND)
-                    tokenFullType = tokenFullType.substr(tokenFullType.Find(_T("::"))+2);
+                {
+                    tokenFullType = tokenFullType.substr(tokenFullType.Find(_T("::")) + 2);
+                }
+
                 break;
             }
         }
@@ -4055,39 +4778,48 @@ bool LSP_SymbolsParser::ResolveTemplateMap(const wxString& typeStr, const wxArra
     // I add this for temporary support of templates under std, I will write better code later.
     TokenIdxSet parentResult;
     size_t tokenCounts = m_TokenTree->FindMatches(parentType, parentResult, true, false, tkClass);
+
     if (tokenCounts > 0)
     {
-        for (TokenIdxSet::const_iterator it=parentResult.begin(); it!=parentResult.end(); ++it)
+        for (TokenIdxSet::const_iterator it = parentResult.begin(); it != parentResult.end(); ++it)
         {
             int id = (*it);
-            Token* normalToken = m_TokenTree->at(id);
+            Token * normalToken = m_TokenTree->at(id);
+
             if (normalToken)
             {
                 // Get the formal template argument lists
                 wxArrayString formals =  normalToken->m_TemplateType;
-                for (size_t i=0; i<formals.GetCount(); ++i)
+
+                for (size_t i = 0; i < formals.GetCount(); ++i)
+                {
                     TRACE(_T("ResolveTemplateMap get the formal template arguments are '%s'."), formals[i].wx_str());
+                }
 
                 size_t n = formals.GetCount() < actuals.GetCount() ? formals.GetCount() : actuals.GetCount();
-                for (size_t i=0; i<n; ++i)
+
+                for (size_t i = 0; i < n; ++i)
                 {
                     results[formals[i]] = actuals[i];
                     TRACE(_T("In ResolveTemplateMap function the normal is '%s',the actual is '%s'."), formals[i].wx_str(), actuals[i].wx_str());
                 }
             }
         }
-        return (results.size()>0) ? true : false;
+
+        return (results.size() > 0) ? true : false;
     }
     else
+    {
         return false;
+    }
 }
 
-void LSP_SymbolsParser::RemoveTemplateArgs(const wxString &exp, wxString &expNoArgs, wxString &templateArgs)
+void LSP_SymbolsParser::RemoveTemplateArgs(const wxString & exp, wxString & expNoArgs, wxString & templateArgs)
 {
     expNoArgs.clear();
     templateArgs.clear();
-
     int nestLvl = 0;
+
     for (unsigned int i = 0; i < exp.length(); i++)
     {
         wxChar c = exp[i];
@@ -4107,42 +4839,59 @@ void LSP_SymbolsParser::RemoveTemplateArgs(const wxString &exp, wxString &expNoA
         }
 
         if (nestLvl == 0)
+        {
             expNoArgs << c;
+        }
         else
         {
             bool wanted = true;
 
             // don't add unwanted whitespaces, i.e. ws around '<' and '>'
-            if(c == ParserConsts::space)
+            if (c == ParserConsts::space)
             {
                 wxChar last = 0;
                 wxChar next = 0;
 
-                if (i > 0) last = exp[i - 1];
-                if (i < exp.length() - 1) next = exp[i + 1];
+                if (i > 0)
+                {
+                    last = exp[i - 1];
+                }
+
+                if (i < exp.length() - 1)
+                {
+                    next = exp[i + 1];
+                }
 
                 if (last == ParserConsts::gt || last == ParserConsts::lt)
+                {
                     wanted = false;
+                }
 
                 if (next == ParserConsts::gt || next == ParserConsts::lt)
+                {
                     wanted = false;
+                }
             }
 
             if (wanted == true)
+            {
                 templateArgs << c;
+            }
         }
     }
 }
 
-bool LSP_SymbolsParser::IsStillAlive(cb_unused const wxString& funcInfo)
+bool LSP_SymbolsParser::IsStillAlive(cb_unused const wxString & funcInfo)
 {
     //const bool alive = !TestDestroy(); //(ph 2021/03/15)
     const bool alive = IS_ALIVE;
+
     if (!alive)
     {
         TRACE(_T("IsStillAlive() : %s "), funcInfo.wx_str());
         free(0);
     }
+
     return alive;
 }
 
@@ -4151,15 +4900,24 @@ void LSP_SymbolsParser::RefineAnonymousTypeToken(short int typeMask, wxString al
     // we expect the m_Str are storing the unnamed type token, like UnnamedClassAA_BBB
     // AA is the file index, BBB is the unnamed token index
     // now, we are going to rename its name to classAA_CCC, CCC is the alias name
-    Token* unnamedAncestor = TokenExists(m_Str, m_LastParent, typeMask);
+    Token * unnamedAncestor = TokenExists(m_Str, m_LastParent, typeMask);
+
     if (unnamedAncestor && unnamedAncestor->m_IsAnonymous) // Unnamed ancestor found - rename it to something useful.
     {
         if (m_Str.Contains(_T("Union")))
+        {
             m_Str = _T("union");
-        else if (m_Str.Contains(_T("Struct")))
-            m_Str = _T("struct");
+        }
         else
-            m_Str = _T("tag");
+            if (m_Str.Contains(_T("Struct")))
+            {
+                m_Str = _T("struct");
+            }
+            else
+            {
+                m_Str = _T("tag");
+            }
+
         m_Str << m_FileIdx << _T("_") << alias;
         m_TokenTree->RenameToken(unnamedAncestor, m_Str);
     }
@@ -4168,41 +4926,55 @@ void LSP_SymbolsParser::RefineAnonymousTypeToken(short int typeMask, wxString al
 wxString LSP_SymbolsParser::ReadAngleBrackets()
 {
     wxString str = m_Tokenizer.GetToken();
+
     if (str != wxT("<"))
+    {
         return wxEmptyString;
+    }
 
     int level = 1; // brace level of '<' and '>'
 
     while (m_Tokenizer.NotEOF())
     {
         wxString token = m_Tokenizer.GetToken();
+
         if (token == _T("<"))
         {
             ++level;
             str << token;
         }
-        else if (token == _T(">"))
-        {
-            --level;
-            str << token;
-            if (level == 0)
-                break;
-
-        }
-        else if (token == _T("*") || token == _T("&") || token == _T(","))
-        {
-            str << token;
-        }
         else
-        {
-            if (str.Last() == _T('<')) // there is no space between '(' and the following token
+            if (token == _T(">"))
+            {
+                --level;
                 str << token;
-            else                       // otherwise, a space is needed
-                str << _T(" ") << token;
-        }
+
+                if (level == 0)
+                {
+                    break;
+                }
+            }
+            else
+                if (token == _T("*") || token == _T("&") || token == _T(","))
+                {
+                    str << token;
+                }
+                else
+                {
+                    if (str.Last() == _T('<')) // there is no space between '(' and the following token
+                    {
+                        str << token;
+                    }
+                    else                       // otherwise, a space is needed
+                    {
+                        str << _T(" ") << token;
+                    }
+                }
 
         if (level == 0)
+        {
             break;
+        }
     }//while (NotEOF())
 
     return str;
@@ -4212,11 +4984,10 @@ void LSP_SymbolsParser::DoParse()
 // ----------------------------------------------------------------------------
 {
     /// deprecated - not used for LSP clangd
-    #if defined(cbDEBUG)
+#if defined(cbDEBUG)
     cbAssertNonFatal(0 && "This DoParse() is deprecated.");
-    #endif
+#endif
     return ;
-
     //// need to reset tokenizer's behaviour
     //// don't forget to reset that if you add any early exit condition!
     //TokenizerState oldState = m_Tokenizer.GetState();

@@ -3,78 +3,85 @@
 
 extern "C"
 {
-  double ExternallyC(double* my_double, std::vector<int> int_vec)
-  {
-    // nothing
-    return 1.0;
-  }
+    double ExternallyC(double * my_double, std::vector<int> int_vec)
+    {
+        // nothing
+        return 1.0;
+    }
 }
 
 class TheClass
 {
-public:
-                  TheClass  ()                   { ; }
-  virtual        ~TheClass  ()                   { ; }
-  int             GetInt    (size_t idx) const   { int i=0; return i; }
-  const TheClass* GetClass  (const TheClass& tc) { return this; }
-  static void     StaticVoid()                   { ; }
-  void            Void      (void* pVoid)        { ; }
+    public:
+        TheClass()                   { ; }
+        virtual        ~TheClass()                   { ; }
+        int             GetInt(size_t idx) const
+        {
+            int i = 0;
+            return i;
+        }
+        const TheClass * GetClass(const TheClass & tc)
+        {
+            return this;
+        }
+        static void     StaticVoid()                   { ; }
+        void            Void(void * pVoid)        { ; }
 };
 
-extern int ExternInt(TheClass* the_class, int my_int);
+extern int ExternInt(TheClass * the_class, int my_int);
 
-int InternInt(TheClass* the_class, int my_int)
+int InternInt(TheClass * the_class, int my_int)
 {
-  // nothing
-  return 42;
+    // nothing
+    return 42;
 }
 
-void VoidFunction(void* my_void_pointer, int my_int)
+void VoidFunction(void * my_void_pointer, int my_int)
 {
-  // nothing
+    // nothing
 }
 
-std::string GetString(TheClass* the_class, const std::string& in_str)
+std::string GetString(TheClass * the_class, const std::string & in_str)
 {
-  std::string str(in_str);
-  return str;
+    std::string str(in_str);
+    return str;
 }
 
-const float& ConstFloatRef(void)
+const float & ConstFloatRef(void)
 {
-  // nothing
-  static float f = 0.0;
-  return f;
+    // nothing
+    static float f = 0.0;
+    return f;
 }
 
-static int StaticInt(const int& in_int)
+static int StaticInt(const int & in_int)
 {
-  // nothing
-  int i = 1;
-  return i;
+    // nothing
+    int i = 1;
+    return i;
 }
 
 struct S
 {
-  int i;
+    int i;
 };
 S g_S;
 
 int main(void)
 {
-//  mai
-//  Externa
-//  ExternI
-//  Int
-//  Void
-//  Get
-//  Con
-//  Sta
-  TheClass tc;
-//  tc.GetI
-//  tc.GetC
-//  tc.St
-//  tc.Vo
-//  g_
-//  g_S.
+    //  mai
+    //  Externa
+    //  ExternI
+    //  Int
+    //  Void
+    //  Get
+    //  Con
+    //  Sta
+    TheClass tc;
+    //  tc.GetI
+    //  tc.GetC
+    //  tc.St
+    //  tc.Vo
+    //  g_
+    //  g_S.
 }
