@@ -11,10 +11,10 @@ CB_EXE_BUILD_ROOT_DIR=../../src/devel31_64
 
 if [ -d "$CB_EXE_BUILD_ROOT_DIR" ]; then
     echo CB root dir: "$PWD/$CB_EXE_BUILD_ROOT_DIR"
-    echo CB exe: "$PWD/$CB_EXE_BUILD_ROOT_DIR/codeblocks"
+    echo CB exe: "$PWD/$CB_EXE_BUILD_ROOT_DIR/CodeBlocks"
 
     cd $CB_EXE_BUILD_ROOT_DIR
-    ./codeblocks -v --prefix $PWD
+    ./CodeBlocks -v --prefix $PWD
 else
     echo ERROR: Cannot find CB root dir: "$PWD/$CB_EXE_BUILD_ROOT_DIR"
 fi

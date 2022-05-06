@@ -581,12 +581,13 @@ void CCOptionsDlg::OnFindDirClangd_Dlg(wxCommandEvent & event)
 
     wxFileDialog dlg(this,
                      _("Select clangd executable file"),
-#if defined(__WXGTK__)
+#if defined(__WXGTK__) || defined(__WXMAC__)
                      "/", "", "*",
+                     wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 #else
                      "", "", "*.*",
-#endif
                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
+#endif
     dlg.SetFilterIndex(0);
     PlaceWindow(&dlg);
 

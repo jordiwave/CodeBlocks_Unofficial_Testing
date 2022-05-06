@@ -17,19 +17,33 @@ if "%BUILD_BITS%" == "64" goto BuildBits_Okay
 set BUILD_BITS=64
 
 :BuildBits_Okay
-@echo on
 call build_CodeBlocks_via_GUI.bat %BUILD_BITS%
-IF %ERRORLEVEL% NEQ 0 (
+@IF %ERRORLEVEL% NEQ 0 (
     @echo build_CodeBlocks_via_GUI.bat returned an ERRORLEVEL of %ERRORLEVEL% 
-    goto CompileError
+    @goto CompileError
 )
 @cd /d %CurrentDirectory%
 
-@if not exist "..\..\src\devel31_%BUILD_BITS%\codeblocks.exe"   goto CompileError
-@if not exist "..\..\src\devel31_%BUILD_BITS%\codeblocks.dll"   goto CompileError
-@if not exist "..\..\src\devel31_%BUILD_BITS%\Addr2LineUI.exe"  goto CompileError
-@if not exist "..\..\src\devel31_%BUILD_BITS%\share\codeblocks\plugins\ToolsPlus.dll"  goto CompileError
-@if not exist "..\..\src\devel31_%BUILD_BITS%\libstdc++-6.dll"   goto CompileError
+@if not exist "..\..\src\devel31_%BUILD_BITS%\CodeBlocks.exe" (
+    @echo not exist "..\..\src\devel31_%BUILD_BITS%\CodeBlocks.exe"
+    @goto CompileError
+)
+@if not exist "..\..\src\devel31_%BUILD_BITS%\codeblocks.dll" (
+    @echo not exist "..\..\src\devel31_%BUILD_BITS%\codeblocks.dll"
+    @goto CompileError
+)
+@if not exist "..\..\src\devel31_%BUILD_BITS%\Addr2LineUI.exe" (
+    @echo not exist "..\..\src\devel31_%BUILD_BITS%\Addr2LineUI.exe"
+    @goto CompileError
+    )
+@if not exist "..\..\src\devel31_%BUILD_BITS%\share\codeblocks\plugins\ToolsPlus.dll" (
+    @echo not exist "..\..\src\devel31_%BUILD_BITS%\share\codeblocks\plugins\ToolsPlus.dll"
+    @goto CompileError
+)
+@if not exist "..\..\src\devel31_%BUILD_BITS%\libstdc++-6.dll" (
+    @echo not exist "..\..\src\devel31_%BUILD_BITS%\libstdc++-6.dll"
+    @goto CompileError
+)
 
 call build_Installer.bat %BUILD_BITS%
 IF %ERRORLEVEL% NEQ 0 (

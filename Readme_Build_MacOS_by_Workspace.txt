@@ -33,6 +33,7 @@ Requirements:
     9) Hunspell development environment
     10) Optional: SVN and/or GIT.
     11) CoreUntils
+    12) Clangd for the clangd-client
     
     To install the items above the following are the commands to use for MacOS Big Sir (11.01):
         # Step 5:
@@ -47,6 +48,8 @@ Requirements:
             brew install subversion git
         # Step 11:
             brew install coreutils
+        # Step 12:
+            brew install llvm
 
 To build Code::Blocks:
     1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or

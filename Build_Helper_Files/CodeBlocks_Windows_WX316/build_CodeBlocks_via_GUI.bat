@@ -192,7 +192,7 @@ if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" copy "%WXWIN%\lib\gcc_dll\wx
 if "%SpawnBuild%" == "True" goto UpdateFinish
 if /I "%UserInput%" NEQ "Y" goto UpdateFinish
 @echo.
-@echo Running "call update.bat 31_%BUILD_BITS% %GCC_ROOT%"
+@echo Running "call update.bat %BUILD_BITS% %GCC_ROOT%"
 call update.bat %BUILD_BITS% %GCC_ROOT% > nul
 @echo.
 @echo.

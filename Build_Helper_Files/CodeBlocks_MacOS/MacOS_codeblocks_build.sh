@@ -99,6 +99,10 @@ function install_dependencies()
         brew install coreutils
     fi
 
+    if [ ! -d /usr/local/Cellar/llvm ]; then
+        brew install llvm
+    fi
+
     if [ "$GITHUB_ACTIONS" == "" ] ; then
         if [ ! -f /usr/local/bin/gdb ]; then
             brew install gdb

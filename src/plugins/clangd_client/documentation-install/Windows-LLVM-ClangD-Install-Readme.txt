@@ -151,3 +151,9 @@ GTX Compiler
 ---------------
 https://github.com/Guyutongxue/mingw-release
 TBA - Please supply if known and possible.
+
+
+Ubuntu 22.04 on WSL2
+====================
+a) sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+b) sudo apt-get install clangd

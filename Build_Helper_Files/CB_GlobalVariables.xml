@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocksGlobalVariableExportConfig version="1">
+<!-- ====================================================================================== -->
 	<cb_win32>
 		<cb_build>
 			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental\src</BASE>
@@ -27,6 +28,7 @@
 			<INCLUDE>$(#BOOST)</INCLUDE>
 		</boost>
 	</cb_win32>
+<!-- ====================================================================================== -->
 	<cb_win64>
 		<wxwidgets>
 			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.1.5_win64</BASE>
@@ -54,171 +56,49 @@
 			<INCLUDE>$(#BOOST)</INCLUDE>
 		</boost>
 	</cb_win64>
-
-
+<!-- ====================================================================================== -->
 	<cb_unix>
 				<cb_build>
-					<BASE>
-						<str>
-							<![CDATA[~/code/CodeBLocks_Private_Experimental/src]]>
-						</str>
-					</BASE>
-					<INCLUDE>
-						<str>
-							<![CDATA[$(#CB_BUILD)/include]]>
-						</str>
-					</INCLUDE>
-					<CFLAGS>
-						<str>
-							<![CDATA[-g -O0 -ggdb]]>
-						</str>
-					</CFLAGS>
-					<OSBITS>
-						<str>
-							<![CDATA[64]]>
-						</str>
-					</OSBITS>
-					<C_STD>
-						<str>
-							<![CDATA[c90]]>
-						</str>
-					</C_STD>
-					<CPP_STD>
-						<str>
-							<![CDATA[gnu++17]]>
-						</str>
-					</CPP_STD>
-					<PKG_CONFIG_GTKPLUS>
-						<str>
-							<![CDATA[gtk+-3.0]]>
-						</str>
-					</PKG_CONFIG_GTKPLUS>
-					<PKG_CONFIG_GDK>
-						<str>
-							<![CDATA[gdk-3.0]]>
-						</str>
-					</PKG_CONFIG_GDK>
-					<PKG_CONFIG_GLIB>
-						<str>
-							<![CDATA[glib-2.0]]>
-						</str>
-					</PKG_CONFIG_GLIB>
+			<BASE>~/code/CodeBLocks_Private_Experimental/src</BASE>
+			<INCLUDE>$(#CB_BUILD)/include</INCLUDE>
+			<CFLAGS>-g -O0 -ggdb</CFLAGS>
+			<OSBITS>64</OSBITS>
+			<C_STD>c90</C_STD>
+			<CPP_STD>gnu++17</CPP_STD>
+			<PKG_CONFIG_GTKPLUS>gtk+-3.0</PKG_CONFIG_GTKPLUS>
+			<PKG_CONFIG_GDK>gdk-3.0</PKG_CONFIG_GDK>
+			<PKG_CONFIG_GLIB>glib-2.0</PKG_CONFIG_GLIB>
 				</cb_build>
 				<wxwidgets>
-					<BASE>
-						<str>
-							<![CDATA[""]]>
-						</str>
-					</BASE>
-					<INCLUDE>
-						<str>
-							<![CDATA[$(#WXWIDGETS)/include]]>
-						</str>
-					</INCLUDE>
-					<LIB>
-						<str>
-							<![CDATA[$(#WXWIDGETS)/lib]]>
-						</str>
-					</LIB>
-					<WX_CFG>
-						<str>
-							<![CDATA[""]]>
-						</str>
-					</WX_CFG>
-					<WX_VERSION>
-						<str>
-							<![CDATA[31]]>
-						</str>
-					</WX_VERSION>
-					<WX_SUFFIX>
-						<str>
-							<![CDATA[u]]>
-						</str>
-					</WX_SUFFIX>
-					<WX_CONFIG_UNIX>
-						<str>
-							<![CDATA[wx-config --version=3.0]]>
-						</str>
-					</WX_CONFIG_UNIX>
+			<BASE>""</BASE>
+			<INCLUDE>(#WXWIDGETS)/include</INCLUDE>
+			<LIB>$(#WXWIDGETS)/lib</LIB>
+			<WX_CFG>""</WX_CFG>
+			<WX_VERSION>31</WX_VERSION>
+			<WX_SUFFIX>u</WX_SUFFIX>
+			<WX_CONFIG_UNIX>wx-config --version=3.0</WX_CONFIG_UNIX>
 				</wxwidgets>
 	</cb_unix>
-
-
-
+<!-- ====================================================================================== -->
 	<cb_macos>
 				<cb_build>
-					<BASE>
-						<str>
-							<![CDATA[/Users/Andy/Code/CodeBLocks_Private_Experimental/src]]>
-						</str>
-					</BASE>
-					<INCLUDE>
-						<str>
-							<![CDATA[$(#CB_BUILD)/include]]>
-						</str>
-					</INCLUDE>
-					<CFLAGS>
-						<str>
-							<![CDATA[-g -O0 -ggdb]]>
-						</str>
-					</CFLAGS>
-					<OSBITS>
-						<str>
-							<![CDATA[64]]>
-						</str>
-					</OSBITS>
-					<C_STD>
-						<str>
-							<![CDATA[c90]]>
-						</str>
-					</C_STD>
-					<CPP_STD>
-						<str>
-							<![CDATA[gnu++17]]>
-						</str>
-					</CPP_STD>
-					<PKG_CONFIG_GLIB>
-						<str>
-							<![CDATA[glib-2.0]]>
-						</str>
-					</PKG_CONFIG_GLIB>
+			<BASE>/Users/Andy/Code/CodeBLocks_Private_Experimental/src</BASE>
+			<INCLUDE>$(#CB_BUILD)/include</INCLUDE>
+			<CFLAGS>-g -O0 -ggdb</CFLAGS>
+			<OSBITS>64</OSBITS>
+			<C_STD>c90</C_STD>
+			<CPP_STD>gnu++17</CPP_STD>
+			<PKG_CONFIG_GLIB>glib-2.0</PKG_CONFIG_GLIB>
 				</cb_build>
 				<wxwidgets>
-					<BASE>
-						<str>
-							<![CDATA[/Users/Andy/Code/wxwidgets-code]]>
-						</str>
-					</BASE>
-					<INCLUDE>
-						<str>
-							<![CDATA[$(#WXWIDGETS)/include]]>
-						</str>
-					</INCLUDE>
-					<LIB>
-						<str>
-							<![CDATA[$(#WXWIDGETS)/lib]]>
-						</str>
-					</LIB>
-					<WX_CFG>
-						<str>
-							<![CDATA[""]]>
-						</str>
-					</WX_CFG>
-					<WX_VERSION>
-						<str>
-							<![CDATA[31]]>
-						</str>
-					</WX_VERSION>
-					<WX_SUFFIX>
-						<str>
-							<![CDATA[u]]>
-						</str>
-					</WX_SUFFIX>
-					<WX_CONFIG_MACOS>
-						<str>
-							<![CDATA[/usr/local/bin/wx-config --version=3.1]]>
-						</str>
-					</WX_CONFIG_MACOS>
+			<BASE>/Users/Andy/Code/wxwidgets-code</BASE>
+			<INCLUDE>$(#WXWIDGETS)/include</INCLUDE>
+			<LIB>$(#WXWIDGETS)/lib</LIB>
+			<WX_CFG>""</WX_CFG>
+			<WX_VERSION>31</WX_VERSION>
+			<WX_SUFFIX>u</WX_SUFFIX>
+			<WX_CONFIG_MACOS>/usr/local/bin/wx-config --version=3.1</WX_CONFIG_MACOS>
 				</wxwidgets>
 	</cb_macos>
+<!-- ====================================================================================== -->
 </CodeBlocksGlobalVariableExportConfig>

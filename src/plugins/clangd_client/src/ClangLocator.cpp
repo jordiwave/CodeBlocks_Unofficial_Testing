@@ -29,10 +29,13 @@ namespace   //anonymous
 {
 #if defined(_WIN32) //Thanks Andrew
     wxString clangdexe("clangd.exe");
-    wxString LLVM_Dirmaybme = "c:\\program files\\LLVM\\bin";
+    wxString LLVM_Dirmaybe = "c:\\program files\\LLVM\\bin";
 #else
     wxString clangdexe("clangd");
-    wxString LLVM_Dirmaybme = "/usr/bin";
+    wxString LLVM_Dirmaybe = "/usr/bin";
+    #ifdef __WXMAC__
+        wxString LLVM_DirmaybeMAC = "/usr/local/opt/llvm/bin";
+    #endif
 #endif
 
 wxString fileSep = wxFILE_SEP_PATH;
@@ -207,10 +210,20 @@ wxString ClangLocator::Locate_ClangdDir()
     if (fnClangdPath.GetPath().empty())
     {
         // Try the default install  location
-        if (wxFileExists(LLVM_Dirmaybme + fileSep + clangdexe))
+        if (wxFileExists(LLVM_Dirmaybe + fileSep + clangdexe))
         {
-            fnClangdPath.Assign(LLVM_Dirmaybme + fileSep + clangdexe);
+            fnClangdPath.Assign(LLVM_Dirmaybe + fileSep + clangdexe);
         }
+
+#ifdef __WXMAC__
+
+        // Try the default install  location
+        if (wxFileExists(LLVM_DirmaybeMAC + fileSep + clangdexe))
+        {
+            fnClangdPath.Assign(LLVM_DirmaybeMAC + fileSep + clangdexe);
+        }
+
+#endif
     }
 
     if (not fnClangdPath.GetFullPath().empty())
