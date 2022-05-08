@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 7109 $
-* $Id: wxwidgetsres.h 7109 2011-04-15 11:53:16Z mortenmacfly $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxwidgetsres.h $
 */
 
 #ifndef WXWIDGETSRES_H

@@ -66,6 +66,9 @@
 		<Unit filename="ProjectOptionsManipulatorResultDlg.cpp" />
 		<Unit filename="ProjectOptionsManipulatorResultDlg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="wxsmith\ProjectOptionsManipulatorDlg.wxs" />
 		<Unit filename="wxsmith\ProjectOptionsManipulatorResultDlg.wxs" />
 		<Extensions>

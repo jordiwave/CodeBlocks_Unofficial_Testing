@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12417 $
-* $Id: wxsmith.cpp 12417 2021-05-09 12:50:17Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxsmith.cpp $
 */
 
 #include "wxsmith.h"

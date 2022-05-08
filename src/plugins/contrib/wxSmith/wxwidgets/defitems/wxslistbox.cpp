@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 11840 $
-* $Id: wxslistbox.cpp 11840 2019-09-08 18:12:30Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxslistbox.cpp $
 */
 
 #include "wxslistbox.h"

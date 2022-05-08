@@ -16,9 +16,6 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision: 12415 $
-* $Id: lib_finder.h 12415 2021-05-09 12:49:44Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/lib_finder/lib_finder.h $
 */
 
 #ifndef LIB_AUTO_CONF_H

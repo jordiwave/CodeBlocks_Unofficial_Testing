@@ -53,6 +53,10 @@
 			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
 			<Add directory=".\include" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-Wl,--no-undefined" />
@@ -72,6 +76,9 @@
 		<Unit filename="include\SetUserDialog.h" />
 		<Unit filename="include\SwitchBranchDialog.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="src\CloneDialog.cpp" />
 		<Unit filename="src\CommitAllDialog.cpp" />
 		<Unit filename="src\CommitDialog.cpp" />

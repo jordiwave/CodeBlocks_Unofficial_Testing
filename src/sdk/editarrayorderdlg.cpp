@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12381 $
- * $Id: editarrayorderdlg.cpp 12381 2021-05-09 12:47:32Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/editarrayorderdlg.cpp $
  */
 
 #include "sdk_precomp.h"

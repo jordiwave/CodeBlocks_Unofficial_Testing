@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12557 $
-* $Id: wxsstringproperty.cpp 12557 2021-12-07 19:39:34Z wh11204 $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsstringproperty.cpp $
 */
 
 #include "wxsstringproperty.h"

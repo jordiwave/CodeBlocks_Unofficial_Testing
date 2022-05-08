@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 11364 $
- * $Id: defaultmimehandler.cpp 11364 2018-04-12 07:02:23Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/defaultmimehandler/defaultmimehandler.cpp $
  */
 
 #include "sdk.h"

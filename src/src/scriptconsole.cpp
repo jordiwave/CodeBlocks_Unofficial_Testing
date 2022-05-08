@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12454 $
- * $Id: scriptconsole.cpp 12454 2021-05-27 16:12:06Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/scriptconsole.cpp $
  */
 
 #include <sdk.h>

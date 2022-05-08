@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 9426 $
- * $Id: projectloader_hooks.cpp 9426 2013-11-02 19:42:20Z alpha0010 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/projectloader_hooks.cpp $
  */
 
 #include "sdk_precomp.h"

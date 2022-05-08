@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12316 $
- * $Id: sdk_events.cpp 12316 2021-05-03 12:02:13Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/sdk_events.cpp $
  */
 
 #include "sdk_precomp.h"

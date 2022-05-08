@@ -65,6 +65,9 @@
 		<Unit filename="resources\configuration.xrc" />
 		<Unit filename="resources\main_dialog.xrc" />
 		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

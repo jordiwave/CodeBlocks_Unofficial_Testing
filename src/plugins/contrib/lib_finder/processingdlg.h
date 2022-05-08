@@ -16,9 +16,6 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision: 10299 $
-* $Id: processingdlg.h 10299 2015-05-15 12:41:59Z jenslody $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/lib_finder/processingdlg.h $
 */
 
 #ifndef PROCESSINGDLG_H

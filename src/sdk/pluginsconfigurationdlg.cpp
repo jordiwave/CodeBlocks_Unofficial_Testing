@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12704 $
- * $Id: pluginsconfigurationdlg.cpp 12704 2022-02-05 12:24:59Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/pluginsconfigurationdlg.cpp $
  */
 
 #include "sdk_precomp.h"

@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12502 $
- * $Id: watchesdlg.cpp 12502 2021-08-14 14:37:01Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/watchesdlg.cpp $
  */
 
 #include "sdk.h"

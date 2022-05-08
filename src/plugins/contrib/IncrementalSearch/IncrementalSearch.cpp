@@ -4,9 +4,6 @@
  *
  * Copyright: 2008 Jens Lody
  *
- * $Revision: 12648 $
- * $Id: IncrementalSearch.cpp 12648 2022-01-13 20:06:39Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/IncrementalSearch/IncrementalSearch.cpp $
  */
 
 #include "sdk.h"

@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12683 $
-* $Id: wxscoder.h 12683 2022-01-27 11:09:56Z wh11204 $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxscoder.h $
 */
 
 #ifndef WXSCODER_H

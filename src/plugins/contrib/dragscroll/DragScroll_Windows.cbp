@@ -14,6 +14,10 @@
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
 				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
+				<ExtraCommands>
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\DragScroll.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
@@ -44,6 +48,10 @@
 			<Add directory="$(#CB_BUILD)\src" />
 			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
 			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
@@ -51,10 +59,6 @@
 			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
 		</Linker>
-		<ExtraCommands>
-			<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\DragScroll.zip manifest.xml" />
-			<Mode after="always" />
-		</ExtraCommands>
 		<Unit filename="dragscroll.cpp" />
 		<Unit filename="dragscroll.h" />
 		<Unit filename="dragscrollcfg.cpp" />
@@ -62,6 +66,9 @@
 		<Unit filename="dragscrollevent.cpp" />
 		<Unit filename="dragscrollevent.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

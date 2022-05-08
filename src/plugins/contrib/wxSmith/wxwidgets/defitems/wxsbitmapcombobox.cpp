@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12656 $
-* $Id: wxsbitmapcombobox.cpp 12656 2022-01-16 09:56:14Z wh11204 $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsbitmapcombobox.cpp $
 */
 
 

@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 8574 $
-* $Id: wxsresourcetreeitemdata.h 8574 2012-11-18 15:59:14Z mortenmacfly $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxsresourcetreeitemdata.h $
 */
 
 #ifndef WXSRESOURCETREEITEMDATA_H

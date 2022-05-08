@@ -16,9 +16,6 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision: 10749 $
-* $Id: wxscustombutton.cpp 10749 2016-01-31 09:07:41Z mortenmacfly $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmithContribItems/wxthings/wxscustombutton.cpp $
 */
 
 #include "wxscustombutton.h"

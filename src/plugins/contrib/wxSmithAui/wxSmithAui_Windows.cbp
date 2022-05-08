@@ -48,6 +48,10 @@
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
 			<Add option="-Wl,--add-stdcall-alias" />
@@ -60,6 +64,9 @@
 			<Add library="wxsmithlib" />
 		</Linker>
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="wxAuiManager\wxSmithAuiManager.h" />
 		<Unit filename="wxAuiManager\wxsAuiManager.cpp" />
 		<Unit filename="wxAuiManager\wxsAuiManager.h" />

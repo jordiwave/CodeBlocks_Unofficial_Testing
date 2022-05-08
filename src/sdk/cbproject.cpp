@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12781 $
- * $Id: cbproject.cpp 12781 2022-04-06 16:43:01Z pecanh $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/cbproject.cpp $
  */
 
 #include "sdk_precomp.h"

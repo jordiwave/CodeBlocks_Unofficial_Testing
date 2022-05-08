@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12304 $
- * $Id: devpakupdater.cpp 12304 2021-03-16 23:28:31Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/devpak_plugin/devpakupdater.cpp $
  */
 
 #include "devpakupdater.h"

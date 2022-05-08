@@ -54,12 +54,19 @@
 		<Compiler>
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Unit filename="EditorConfig.cpp" />
 		<Unit filename="EditorConfig.h" />
 		<Unit filename="EditorConfigCommon.h" />
 		<Unit filename="EditorConfigUI.cpp" />
 		<Unit filename="EditorConfigUI.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="wxsmith\EditorConfigUI.wxs" />
 		<Extensions>
 			<code_completion />

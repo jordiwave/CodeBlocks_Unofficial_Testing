@@ -80,6 +80,9 @@
 		<Unit filename="envvars_prjoptdlg.cpp" />
 		<Unit filename="envvars_prjoptdlg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="project_settings.xrc" />
 		<Extensions>
 			<code_completion />

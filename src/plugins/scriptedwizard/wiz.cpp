@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12733 $
- * $Id: wiz.cpp 12733 2022-03-02 17:38:41Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/scriptedwizard/wiz.cpp $
  */
 
 #include <sdk.h>

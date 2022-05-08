@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 11564 $
- * $Id: infowindow.cpp 11564 2019-02-09 19:57:58Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/infowindow.cpp $
  */
 
 #include "sdk_precomp.h"

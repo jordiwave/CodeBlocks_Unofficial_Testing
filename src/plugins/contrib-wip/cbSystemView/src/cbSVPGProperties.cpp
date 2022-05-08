@@ -145,8 +145,12 @@ wxString svPGData::GetDataReadable(uint64_t data, uint64_t bitsize, ValueReprese
             {
                 output += wxString::Format(wxT("0x%x "), *(reinterpret_cast<const char *>(&data + i)));
             }
+
+            break;
         }
-        break;
+
+        default:
+            break;
     }
 
     return output;
@@ -571,7 +575,7 @@ wxString svPGEnumFieldProp::ValueToString(wxVariant & value, int argFlags) const
     {
         long sel = value.GetLong();
 
-        if (sel >= 0 && sel < m_elements.size())
+        if ((sel >= 0) && (sel < (long)m_elements.size()))
         {
             ret = m_elements[sel].text;
         }
@@ -666,9 +670,9 @@ bool svPGEnumFieldProp::IntToValue(wxVariant &	variant, int number, int argFlags
 
     svPGData & data = svPGDataRefFromVariant(variant);
 
-    if (number < 0 || number >= m_elements.size())
+    if ((number < 0) || (number >= (int)m_elements.size()))
     {
-        return false;    //todo: ASSERT
+        return false; //todo: ASSERT
     }
 
     uint64_t oldData = data.GetData();

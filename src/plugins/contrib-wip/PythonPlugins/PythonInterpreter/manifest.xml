@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_plugin_manifest_file>
-    <SdkVersion major="1" minor="11"  release="13" />
+    <SdkVersion major="2" minor="16" release="0" />
     <Plugin name="PythonInterpreter">
         <Value title="Python Interpreter" />
         <Value version="0.4" />

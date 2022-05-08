@@ -2567,6 +2567,11 @@ void wxPdfDocument::PutPatterns()
                     patternData = "0 3 m 10 3 l 0 8 m 10 8 l 3 0 m 3 3 l 3 8 m 3 10 l 8 3 m 8 8 l";
                     corrFactor = 2;
                     break;
+
+                case wxPDF_PATTERNSTYLE_NONE:
+                case wxPDF_PATTERNSTYLE_IMAGE:
+                case wxPDF_PATTERNSTYLE_TEMPLATE:
+                    break;
             }
 
             OutAscii(wxString(wxS("/Matrix [")) +

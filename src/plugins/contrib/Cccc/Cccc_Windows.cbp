@@ -57,6 +57,10 @@
 		</ExtraCommands>
 		<Unit filename="Cccc.cpp" />
 		<Unit filename="Cccc.h" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

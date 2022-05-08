@@ -50,6 +50,10 @@
 			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-Wl,--no-undefined" />
@@ -73,6 +77,9 @@
 		<Unit filename="TwoPaneSelectionDialog.cpp" />
 		<Unit filename="TwoPaneSelectionDialog.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="menu.cpp" />
 		<Unit filename="menu.h" />
 		<Unit filename="utils.cpp" />

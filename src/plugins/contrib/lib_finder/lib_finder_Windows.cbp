@@ -60,6 +60,7 @@
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
@@ -92,6 +93,9 @@
 		<Unit filename="libselectdlg.cpp" />
 		<Unit filename="libselectdlg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="pkgconfigmanager.cpp" />
 		<Unit filename="pkgconfigmanager.h" />
 		<Unit filename="processingdlg.cpp" />

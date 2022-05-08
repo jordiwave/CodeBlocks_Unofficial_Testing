@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12537 $
- * $Id: envvars.cpp 12537 2021-10-24 22:27:25Z bluehazzard $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/envvars/envvars.cpp $
  */
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

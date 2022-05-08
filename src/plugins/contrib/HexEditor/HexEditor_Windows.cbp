@@ -56,6 +56,10 @@
 		<Compiler>
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Unit filename="CharacterView.cpp" />
 		<Unit filename="CharacterView.h" />
 		<Unit filename="DigitView.cpp" />
@@ -94,6 +98,9 @@
 		<Unit filename="TestCasesDlg.h" />
 		<Unit filename="TestCasesHelper.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="wxsmith\ExpressionTester.wxs" />
 		<Unit filename="wxsmith\HexEditPanel.wxs" />
 		<Unit filename="wxsmith\SearchDialog.wxs" />

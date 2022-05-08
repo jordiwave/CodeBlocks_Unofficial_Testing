@@ -59,6 +59,10 @@
 		<Compiler>
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Unit filename="CParser.cpp" />
 		<Unit filename="DataObject.cpp" />
 		<Unit filename="DataObject.h" />
@@ -106,6 +110,9 @@
 		<Unit filename="commands.cpp" />
 		<Unit filename="commands.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="nassi_shneiderman_toolbar.xrc" />
 		<Unit filename="parseactions.cpp" />
 		<Unit filename="parseactions.h" />

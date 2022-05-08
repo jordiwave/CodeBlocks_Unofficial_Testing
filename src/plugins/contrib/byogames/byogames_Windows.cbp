@@ -71,6 +71,9 @@
 		<Unit filename="byosnake.cpp" />
 		<Unit filename="byosnake.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="wxsmith\byoConf.wxs" />
 		<Unit filename="wxsmith\byoGameSelect.wxs" />
 		<Extensions>

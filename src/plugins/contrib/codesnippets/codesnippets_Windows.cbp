@@ -61,6 +61,10 @@
 			<Add directory="editor" />
 			<Add directory="." />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
@@ -81,6 +85,9 @@
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="menuidentifiers.h" />
 		<Unit filename="resources\Makefile.am" />
 		<Unit filename="resources\allsnippets.png" />

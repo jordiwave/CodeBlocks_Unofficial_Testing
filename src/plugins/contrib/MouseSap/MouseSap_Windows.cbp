@@ -56,11 +56,18 @@
 		<Compiler>
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Unit filename="MouseSap.cpp" />
 		<Unit filename="MouseSap.h" />
 		<Unit filename="MouseSapCfg.cpp" />
 		<Unit filename="MouseSapCfg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

@@ -87,6 +87,10 @@
 			<Add directory="$(#discount.INCLUDE)" />
 			<Add directory=".\include" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-Wl,--no-undefined" />
@@ -105,6 +109,9 @@
 		<Unit filename="cbmarkdownview.cpp" />
 		<Unit filename="cbmarkdownview.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="textProvider.cpp" />
 		<Unit filename="textProvider.h" />
 		<Unit filename="wxsmith\MarkdownConfigPanel.wxs" />

@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12325 $
-* $Id: wxsnewwindowdlg.cpp 12325 2021-05-06 23:05:57Z bluehazzard $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxsnewwindowdlg.cpp $
 */
 
 #include "wxsnewwindowdlg.h"

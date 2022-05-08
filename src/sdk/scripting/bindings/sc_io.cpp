@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12799 $
- * $Id: sc_io.cpp 12799 2022-04-18 21:44:31Z bluehazzard $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/scripting/bindings/sc_io.cpp $
  */
 
 #include <sdk_precomp.h>

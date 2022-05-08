@@ -16,9 +16,6 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision: 12462 $
-* $Id: libselectdlg.h 12462 2021-06-19 19:44:46Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/lib_finder/libselectdlg.h $
 */
 
 #ifndef LIBSELECTDLG_H

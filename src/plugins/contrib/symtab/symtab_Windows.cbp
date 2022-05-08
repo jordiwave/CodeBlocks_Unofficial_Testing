@@ -63,6 +63,9 @@
 		<Unit filename="resources\config_dialog.xrc" />
 		<Unit filename="resources\exec_dialog.xrc" />
 		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="symtab.cpp" />
 		<Unit filename="symtab.h" />
 		<Unit filename="symtabconfig.cpp" />

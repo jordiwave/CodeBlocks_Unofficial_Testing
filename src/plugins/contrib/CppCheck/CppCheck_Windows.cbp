@@ -63,6 +63,10 @@
 		<Unit filename="CppCheckListLog.cpp" />
 		<Unit filename="CppCheckListLog.h" />
 		<Unit filename="wxsmith\ConfigPanel.wxs" />
+		<Unit filename="resources\manifest.rc" />
+		<Unit filename="resources\manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

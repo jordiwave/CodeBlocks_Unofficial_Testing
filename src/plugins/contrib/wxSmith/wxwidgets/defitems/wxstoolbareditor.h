@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12248 $
-* $Id: wxstoolbareditor.h 12248 2020-12-22 14:00:22Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstoolbareditor.h $
 */
 
 #ifndef WXSTOOLBAREDITOR_H

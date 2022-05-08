@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_plugin_manifest_file>
-    <SdkVersion major="2" minor="7"  release="0" />
+    <SdkVersion major="2" minor="16" release="0" />
     <Plugin name="DisplayEvents">
         <Value title="DisplayEvents" />
         <Value version="0.6" />

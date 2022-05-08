@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12531 $
-* $Id: wxsitem.cpp 12531 2021-10-05 22:00:39Z bluehazzard $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxsitem.cpp $
 */
 
 #include "wxsitem.h"

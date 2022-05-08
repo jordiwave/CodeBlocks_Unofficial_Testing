@@ -66,6 +66,10 @@
 		<Compiler>
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Unit filename="IncrementalSearch.cpp" />
 		<Unit filename="IncrementalSearch.h" />
 		<Unit filename="IncrementalSearchConfDlg.cpp" />
@@ -73,6 +77,9 @@
 		<Unit filename="IncrementalSearchConfDlg.xrc" />
 		<Unit filename="IncrementalSearchToolbar.xrc" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

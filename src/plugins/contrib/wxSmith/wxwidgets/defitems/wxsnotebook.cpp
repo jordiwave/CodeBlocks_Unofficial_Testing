@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 10680 $
-* $Id: wxsnotebook.cpp 10680 2016-01-22 10:43:35Z mortenmacfly $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsnotebook.cpp $
 */
 
 #include "wxsnotebook.h"

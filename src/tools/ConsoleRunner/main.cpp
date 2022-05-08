@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 7107 $
- * $Id: main.cpp 7107 2011-04-15 11:19:11Z mortenmacfly $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/tools/ConsoleRunner/main.cpp $
  */
 
 #include <stdio.h>

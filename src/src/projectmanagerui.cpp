@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12756 $
- * $Id: projectmanagerui.cpp 12756 2022-03-17 23:41:38Z bluehazzard $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/projectmanagerui.cpp $
  */
 
 #include "sdk.h"

@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12298 $
-* $Id: wxsboolproperty.cpp 12298 2021-03-06 15:47:09Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsboolproperty.cpp $
 */
 
 #include "wxsboolproperty.h"

@@ -83,6 +83,10 @@
 			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
 			<Add directory=".\include" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-Wl,--no-undefined" />
@@ -96,6 +100,9 @@
 		<Unit filename="cbBuildTools.h" />
 		<Unit filename="include\buildtargetswindow.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="res\dummy.xrc" />
 		<Unit filename="src\buildtargetswindow.cpp" />
 		<Extensions>

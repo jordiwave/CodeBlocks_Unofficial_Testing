@@ -16,9 +16,6 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision: 12304 $
-* $Id: processingdlg.cpp 12304 2021-03-16 23:28:31Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/lib_finder/processingdlg.cpp $
 */
 
 #include "processingdlg.h"

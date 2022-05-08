@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 11752 $
- * $Id: breakpointsdlg.cpp 11752 2019-06-29 13:46:53Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/breakpointsdlg.cpp $
  */
 
 #include "sdk.h"

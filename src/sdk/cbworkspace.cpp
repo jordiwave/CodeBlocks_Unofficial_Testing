@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12656 $
- * $Id: cbworkspace.cpp 12656 2022-01-16 09:56:14Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/cbworkspace.cpp $
  */
 
 #include "sdk_precomp.h"

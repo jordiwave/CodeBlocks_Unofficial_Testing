@@ -1,10 +1,6 @@
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
- *
- * $Revision: 12061 $
- * $Id: wx_help.script 12061 2020-04-17 17:18:58Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/scripts/wx_help.script $
  */
 
 /*

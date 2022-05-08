@@ -111,6 +111,7 @@
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 			<Add directory="wxPdfDocument\include" />
 		</ResourceCompiler>
 		<Linker>
@@ -156,6 +157,11 @@
 		<Unit filename="manifest.xml">
 			<Option target="default" />
 		</Unit>
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option target="default" />
+		</Unit>
+		
 		<Unit filename="wxPdfDocument\include\wx\pdfannotation.h">
 			<Option target="wxPdfDocument" />
 		</Unit>

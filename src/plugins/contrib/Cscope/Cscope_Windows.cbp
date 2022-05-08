@@ -74,6 +74,9 @@
 		<Unit filename="CscopeView.cpp" />
 		<Unit filename="CscopeView.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="wxsmith\CscopeConfigPanel.wxs" />
 		<Extensions>
 			<code_completion />

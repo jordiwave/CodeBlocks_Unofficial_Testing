@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 8300 $
- * $Id: filegroupsandmasks.cpp 8300 2012-08-31 11:35:40Z jenslody $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/filegroupsandmasks.cpp $
  */
 
 #include "sdk_precomp.h"

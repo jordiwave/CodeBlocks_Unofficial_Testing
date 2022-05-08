@@ -148,6 +148,10 @@
 		<Unit filename="manifest.xml">
 			<Option target="default" />
 		</Unit>
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option target="default" />
+		</Unit>
 		<Unit filename="mytar.cpp">
 			<Option target="default" />
 		</Unit>

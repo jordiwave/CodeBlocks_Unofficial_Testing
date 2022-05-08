@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12068 $
-* $Id: wxsmenueditor.cpp 12068 2020-04-20 08:44:00Z bluehazzard $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsmenueditor.cpp $
 */
 
 #include "wxsmenueditor.h"

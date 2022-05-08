@@ -27,22 +27,27 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 VS_VERSION_INFO		VERSIONINFO
   FILEVERSION				RC_FILEVERSION
-  PRODUCTVERSION	RC_FILEVERSION
+  PRODUCTVERSION    2022,05,07,12803
   FILEFLAGSMASK		0x3fL // VS_FFI_FILEFLAGSMASK
+  // FILEFLAGS Can be a combination of the following OR'ed flags:
+  //    VS_FF_DEBUG,        VS_FF_PATCHED,      VS_FF_PRERELEASE,
+  //    VS_FF_PRIVATEBUILD, VS_FF_SPECIALBUILD, VS_FFI_FILEFLAGSMASK
 #ifdef __WXDEBUG__
   FILEFLAGS        		0x1L  // VS_FF_DEBUG|VS_FF_PRIVATEBUILD|VS_FF_PRERELEASE
 #else
   FILEFLAGS        		0x0L  // final version
 #endif
   FILEOS           			VOS_NT_WINDOWS32
-  FILETYPE         			VFT_APP
+  // FILETYPE Can be one of the following values:
+  //   VFT_UNKNOWN, VFT_APP, VFT_DLL, VFT_DRV, VFT_FONT, VFT_VXD, VFT_STATIC_LIB
+  FILETYPE             VFT_DLL
   FILESUBTYPE      		VFT2_UNKNOWN // not used
 {
   BLOCK "StringFileInfo"
   {
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
-      VALUE "Build",					"March 2010\0"
+      VALUE "Build",			"07-May-2022 SVN12803"
       VALUE "Comments",			"Free to all.\0"
       VALUE "CompanyName",	"\0"
       VALUE "Developer",				"Gary Harris\0"

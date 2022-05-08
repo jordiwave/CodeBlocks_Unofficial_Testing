@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12610 $
- * $Id: fileanalysis.cpp 12610 2021-12-23 19:56:19Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/headerfixup/fileanalysis.cpp $
  */
 
 #include <sdk.h>

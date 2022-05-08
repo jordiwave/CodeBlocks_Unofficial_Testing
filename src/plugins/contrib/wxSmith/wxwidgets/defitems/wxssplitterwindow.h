@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 10959 $
-* $Id: wxssplitterwindow.h 10959 2017-01-14 22:40:56Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxssplitterwindow.h $
 */
 
 #ifndef WXSPLITTERWINDOW_H

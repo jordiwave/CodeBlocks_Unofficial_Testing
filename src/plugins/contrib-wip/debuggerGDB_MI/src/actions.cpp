@@ -91,7 +91,7 @@ bool GDBBreakpointAddAction::OnCommandOutputCodeBreakpoint(ResultParser const & 
 bool GDBBreakpointAddAction::OnCommandOutputFunctionBreakpoint(ResultParser const & result)
 {
     bool finish = true;
-#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+    // #warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
 #ifdef __MINGW32__
 
     if (IsDebuggerPresent())
@@ -237,13 +237,13 @@ void GDBBreakpointAddAction::OnStart()
 
         case dbg_mi::GDBBreakpoint::BreakpointType::bptFunction:
         {
-#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+            // #warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
             break;
         }
 
         case dbg_mi::GDBBreakpoint::BreakpointType::bptData:
         {
-#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+            // #warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
             wxString cmd("-break-watch ");
 
             //                if (!m_breakpoint->IsEnabled())
@@ -396,13 +396,13 @@ void GDBDataBreakpointDeleteAction::OnStart()
 
         case dbg_mi::GDBBreakpoint::BreakpointType::bptFunction:
         {
-#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+            // #warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
             break;
         }
 
         case dbg_mi::GDBBreakpoint::BreakpointType::bptData:
         {
-#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+            // #warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
             wxString cmd("-break-watch ");
 
             //                if (!m_breakpoint->IsEnabled())

@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12009 $
- * $Id: autorevision.cpp 12009 2020-03-30 17:55:18Z mortenmacfly $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/build_tools/autorevision/autorevision.cpp $
  */
 
 #include <stdio.h>

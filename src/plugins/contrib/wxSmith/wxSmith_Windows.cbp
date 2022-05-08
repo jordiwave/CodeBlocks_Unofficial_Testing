@@ -70,6 +70,7 @@
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
@@ -249,6 +250,13 @@
 		</Unit>
 		<Unit filename="wxsmith.h">
 			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="manifest.xml" >
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option target="wxSmith" />
 		</Unit>
 		<Unit filename="wxsmith\wxWidgetsGUIAppAdoptingDlg.wxs" />
 		<Unit filename="wxsmith\wxWidgetsGUIConfigPanel.wxs" />

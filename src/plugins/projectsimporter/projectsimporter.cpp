@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12672 $
- * $Id: projectsimporter.cpp 12672 2022-01-21 13:08:35Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/projectsimporter/projectsimporter.cpp $
  */
 
 #include "sdk.h"

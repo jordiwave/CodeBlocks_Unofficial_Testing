@@ -19,9 +19,6 @@
 * This code is based in part on wxsimagecombobox from the wxSmithImage plug-in,
 * copyright Ron Collins and released under the GPL.
 *
-* $Revision: 12649 $
-* $Id: wxstreectrl.cpp 12649 2022-01-14 08:40:00Z wh11204 $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstreectrl.cpp $
 */
 
 #include "wxstreectrl.h"

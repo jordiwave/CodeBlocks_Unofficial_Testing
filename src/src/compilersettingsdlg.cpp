@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12025 $
- * $Id: compilersettingsdlg.cpp 12025 2020-04-04 16:32:45Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/compilersettingsdlg.cpp $
  */
 
 #include <sdk.h>

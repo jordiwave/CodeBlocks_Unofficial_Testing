@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12632 $
- * $Id: editkeywordsdlg.cpp 12632 2022-01-03 12:00:22Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/editkeywordsdlg.cpp $
  */
 
 #include <sdk.h>

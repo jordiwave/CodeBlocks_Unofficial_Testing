@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 8565 $
-* $Id: DigitView.cpp 8565 2012-11-14 22:49:50Z killerbot $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/HexEditor/DigitView.cpp $
 */
 
 #include "DigitView.h"

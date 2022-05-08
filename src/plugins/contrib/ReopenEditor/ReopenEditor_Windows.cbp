@@ -55,6 +55,10 @@
 		<Compiler>
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Unit filename="ReopenEditor.cpp" />
 		<Unit filename="ReopenEditor.h" />
 		<Unit filename="ReopenEditorConfDLg.cpp" />
@@ -62,6 +66,9 @@
 		<Unit filename="ReopenEditorListView.cpp" />
 		<Unit filename="ReopenEditorListView.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="wxsmith\ReopenEditorConfDLg.wxs" />
 		<Extensions>
 			<code_completion />

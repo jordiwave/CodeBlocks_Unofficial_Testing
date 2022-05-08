@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 11113 $
- * $Id: selecttargetdlg.cpp 11113 2017-07-16 08:29:13Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/selecttargetdlg.cpp $
  */
 
 #include "sdk_precomp.h"

@@ -100,6 +100,7 @@
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
@@ -181,6 +182,10 @@
 			<Option target="help_plugin" />
 		</Unit>
 		<Unit filename="manifest.xml">
+			<Option target="help_plugin" />
+		</Unit>
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
 			<Option target="help_plugin" />
 		</Unit>
 		<Unit filename="zlib\adler32.c">

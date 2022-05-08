@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12235 $
-* $Id: wxsitemeditordragassist.cpp 12235 2020-11-04 22:10:36Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditordragassist.cpp $
 */
 
 #include "wxsitemeditordragassist.h"

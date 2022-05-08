@@ -1590,7 +1590,7 @@ void Debugger_GDB_MI::DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
                 }
 
                 case dbg_mi::GDBBreakpoint::bptFunction:
-#warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
+                    // #warning dbg_mi::GDBBreakpoint::BreakpointType::bptFunction not supported yet!!
 #ifdef __MINGW32__
                     if (IsDebuggerPresent())
                     {

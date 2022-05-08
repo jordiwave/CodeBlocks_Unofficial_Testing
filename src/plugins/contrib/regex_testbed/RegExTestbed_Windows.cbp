@@ -10,7 +10,7 @@
 			<Target title="default">
 				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\RegExTestbed" prefix_auto="0" extension_auto="1" />
 				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\regex_testbed" />
-				<Option external_deps="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\libcodeblocks.a" />
+				<Option external_deps="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.a" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
@@ -66,6 +66,9 @@
 		<Unit filename="RegExTestbed.cpp" />
 		<Unit filename="RegExTestbed.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="regexdlg.cpp" />
 		<Unit filename="regexdlg.h" />
 		<Unit filename="regexdlg.xrc" />

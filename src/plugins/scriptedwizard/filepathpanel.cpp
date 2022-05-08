@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 10270 $
- * $Id: filepathpanel.cpp 10270 2015-05-15 10:57:08Z jenslody $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/scriptedwizard/filepathpanel.cpp $
  */
 
 #include <sdk.h>

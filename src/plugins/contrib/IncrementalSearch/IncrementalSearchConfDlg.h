@@ -4,9 +4,6 @@
  *
  * Copyright: 2008 Jens Lody
  *
- * $Revision: 12697 $
- * $Id: IncrementalSearchConfDlg.h 12697 2022-02-03 16:00:38Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/IncrementalSearch/IncrementalSearchConfDlg.h $
  */
 
 #ifndef INCREMENTALSEARCHCONFDLG_H

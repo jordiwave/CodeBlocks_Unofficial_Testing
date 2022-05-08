@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12330 $
-* $Id: wxsspinctrl.cpp 12330 2021-05-08 22:06:15Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsspinctrl.cpp $
 */
 
 #include "wxsspinctrl.h"

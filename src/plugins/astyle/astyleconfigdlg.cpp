@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12018 $
- * $Id: astyleconfigdlg.cpp 12018 2020-04-02 14:45:18Z mortenmacfly $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/astyle/astyleconfigdlg.cpp $
  */
 
 #include <sdk.h>

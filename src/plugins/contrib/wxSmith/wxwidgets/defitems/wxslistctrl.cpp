@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 11378 $
-* $Id: wxslistctrl.cpp 11378 2018-04-29 12:21:37Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxslistctrl.cpp $
 */
 
 #include "wxslistctrl.h"

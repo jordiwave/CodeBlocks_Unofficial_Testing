@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12416 $
- * $Id: help_plugin.cpp 12416 2021-05-09 12:50:02Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/help_plugin/help_plugin.cpp $
  */
 
 #include "sdk.h"

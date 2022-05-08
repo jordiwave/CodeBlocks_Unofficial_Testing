@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12524 $
-* $Id: wxseditor.cpp 12524 2021-09-04 11:32:54Z fuscated $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxseditor.cpp $
 */
 
 #include "wxseditor.h"

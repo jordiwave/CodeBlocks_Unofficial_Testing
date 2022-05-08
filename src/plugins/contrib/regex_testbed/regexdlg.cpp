@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12577 $
- * $Id: regexdlg.cpp 12577 2021-12-13 20:13:23Z wh11204 $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/regex_testbed/regexdlg.cpp $
  */
 
 #include <sdk.h>

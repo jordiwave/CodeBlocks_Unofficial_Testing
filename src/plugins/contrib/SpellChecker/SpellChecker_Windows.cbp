@@ -121,6 +121,10 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-m$(#CB_BUILD.OSBITS)" />
 		</Linker>
@@ -326,6 +330,10 @@
 			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="manifest.xml">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
 			<Option target="plugin" />
 		</Unit>
 		<Unit filename="mythes.cxx">

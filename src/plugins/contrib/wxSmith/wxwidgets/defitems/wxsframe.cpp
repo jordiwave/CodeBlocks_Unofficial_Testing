@@ -15,9 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12548 $
-* $Id: wxsframe.cpp 12548 2021-12-02 08:48:39Z wh11204 $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsframe.cpp $
 */
 
 #include <wx/app.h>        // wxTheApp

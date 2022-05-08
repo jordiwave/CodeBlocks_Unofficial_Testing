@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 11350 $
- * $Id: disassemblydlg.cpp 11350 2018-03-27 22:00:39Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/disassemblydlg.cpp $
  */
 
 #include "sdk.h"

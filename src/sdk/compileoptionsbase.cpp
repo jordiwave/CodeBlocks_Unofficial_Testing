@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 11887 $
- * $Id: compileoptionsbase.cpp 11887 2019-10-26 09:12:28Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/compileoptionsbase.cpp $
  */
 
 #include "sdk_precomp.h"

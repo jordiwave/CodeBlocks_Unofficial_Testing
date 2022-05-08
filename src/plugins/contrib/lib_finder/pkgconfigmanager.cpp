@@ -16,9 +16,6 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision: 8208 $
-* $Id: pkgconfigmanager.cpp 8208 2012-08-07 22:08:06Z killerbot $
-* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/lib_finder/pkgconfigmanager.cpp $
 */
 
 #include <wx/intl.h>

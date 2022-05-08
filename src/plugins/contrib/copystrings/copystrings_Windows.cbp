@@ -58,6 +58,9 @@
 		<Unit filename="copystrings.cpp" />
 		<Unit filename="copystrings.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />
