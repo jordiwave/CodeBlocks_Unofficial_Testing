@@ -3,8 +3,8 @@ THESE INSTRUCTIONS NEED TO BE:
     2) CHECKED FOR INTERPRETATION AND READABILITY to ensure thAT THEY ARE EASY TO FOLLOW!!!!
 
 
-These notes are for developers wishing to build the Code::Blocks Debian deb files from source on Debian or a Debian based Linux OS 
-from source files without having to install Code::Blocks. 
+These notes are for developers wishing to build the Code::Blocks Debian deb files from source on Debian or a Debian based Linux OS
+from source files without having to install Code::Blocks.
 
 If you want to build Code::Blocks on Windows using the workspace/project files please use the Readme_Build_Windows_by_Workspace.txt file.
 If you want to build Code::Blocks on Windows using the bootstrap/configure/make process please use the Readme_Build_Windows_MSYS2_by_Makefile.txt file.
@@ -29,7 +29,7 @@ Requirements:
     8) Gamin development environment
     9) Optional: SVN and/or GIT.
     10) Packages needed for building Debian deb files
-    
+
     DO NOT USE ANY SNAP PACKAGES as the installed packages are sandboxed by default.
 
     To install the items above the following are the commands to use for Ubuntu/Xubuntu/Linux Mint:
@@ -42,20 +42,20 @@ Requirements:
         # Step 5:
         sudo apt install -y libgtk-3-dev
         # Step 6,7 & 8:
-        sudo apt install -y libboost-dev libboost-system-dev libhunspell-dev libgamin-dev 
+        sudo apt install -y libboost-dev libboost-system-dev libhunspell-dev libgamin-dev
         # Optional step 9:
         sudo apt install -y subversion git
         # step 10:
         sudo apt install -y libbz2-dev debhelper cdbs xsltproc fakeroot zip libjpeg-dev libtiff-dev
 
 To build Code::Blocks:
-    1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via the following 
+    1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via the following
         terminal (bash) command:
             git svn checkout http://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
 
     2) Make sure the source code directory does not have spaces or any non ASCII characters.
 
-    3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or GIT or the 
+    3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or GIT or the
         directory you uncompressed the snapshot into run the following:
             ./update_revision.sh
 
@@ -71,11 +71,24 @@ To build Code::Blocks:
 
 
     To rebuild Code::Blocks run the following commands:
-        TBA - unknown , please supply if known 
+        TBA - unknown , please supply if known
 
 NOTES:
 1) There are issues with building the Debian packages under MS WSL2 due to file permission change issues.
     If you have a fix for this please post or followup with the solution.
+    
+    A hack to get building on MS WSL2 is to modify the U:\usr\share\perl5\Dpkg\Source\Package\V3\Native.pm 
+     file to the following at the end of the file:
+            pop_exit_handler();
+            if (defined $ENV{WSL_DISTRO_NAME}) {
+                info(g_('ENV{WSL_DISTRO_NAME}: %s'), $ENV{WSL_DISTRO_NAME});
+                chmod(0666 &~ umask(), $tarname);
+            }
+            else {
+                chmod(0666 &~ umask(), $tarname)
+                    or syserr(g_("unable to change permission of '%s'"), $tarname);
+            }
+
 2) If the NassiShneiderman-plugin fails to build with a boost error then try the following:
     a) Check you have install the libboost-dev package by running the following command:
         dpkg -l | grep libboost | grep dev
@@ -96,14 +109,14 @@ If for some reason you need to build wxWidgets here are the quick instructions:
     ../configure --disable-debug_flag --with-gtk=3
     make -j$(nproc)
 
-If you want/need to install the files then run the following, but be aware this may cause issues if you 
+If you want/need to install the files then run the following, but be aware this may cause issues if you
 have not build wxWidget correctly or built the version you need/want (USE WITH EXTREME CAUTION):
     sudo make install
 
 
 Fetch Code::Blocks Source Code
 ------------------------------
-In a command prompt, create or go to the folder you want the Code::Blocks SVN repository installed in 
+In a command prompt, create or go to the folder you want the Code::Blocks SVN repository installed in
 and run the following command:
     svn checkout https://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
 
@@ -119,11 +132,11 @@ NOTES:
         C:\msys64\home\<username>\.subversion\config
         C:\Users\<username>\.subversion\config
         C:\Users\<username>\AppData\Roaming\Subversion\config
-2) I do not recommend the following as you may encounter issues with EOL if you transfer the files to Linux or if you 
+2) I do not recommend the following as you may encounter issues with EOL if you transfer the files to Linux or if you
     compare against the SF soruce snapshot as the SVN keywords are not expanded:
        git svn checkout http://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
-    
-3) I also do NOT recommend using TortoiseSVN on Windows to do the initial checkout as you may encounter issues with 
+
+3) I also do NOT recommend using TortoiseSVN on Windows to do the initial checkout as you may encounter issues with
      EOL if you transfer the files to Linux
 
 Microsoft Windows Subsystem for Linux 2

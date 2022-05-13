@@ -31,6 +31,19 @@
 #       shut it down (wsl --shutdown)                                                       #
 #                                                                                           #
 #    d) Restart WSL                                                                         #
+#                                                                                           #
+#    e) A hack to get building on MS WSL2 is to modify the                                  #
+#        U:\usr\share\perl5\Dpkg\Source\Package\V3\Native.pm file to the following near     #
+#         the end of the file:                                                              #
+#                pop_exit_handler();                                                        #
+#                if (defined $ENV{WSL_DISTRO_NAME}) {                                       #
+#                    info(g_('ENV{WSL_DISTRO_NAME}: %s'), $ENV{WSL_DISTRO_NAME});           #
+#                    chmod(0666 &~ umask(), $tarname);                                      #
+#                }                                                                          #
+#                else {                                                                     #
+#                    chmod(0666 &~ umask(), $tarname)                                       #
+#                        or syserr(g_("unable to change permission of '%s'"), $tarname);    #
+#                }                                                                          #
 # ------------------------------------------------------------------------------------------#
 # Resources used to create this script:                                                     #
 # source: https://github.com/arnholm/cpde_3rdparty/blob/master/gcc/codeblocks/build_cb.sh   #

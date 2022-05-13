@@ -21,7 +21,6 @@ Preparations for a release:
     [C::B]\codeblocks.plist.in
     [C::B]\codeblocks.spec.in
     [C::B]\codeblocks.spec.fedora.in
-    [C::B]\README
     [C::B]\update_revision.sh
     [C::B]\debian\get-orig-source
     [C::B]\debian\get-orig-source-from-svn

@@ -1,8 +1,8 @@
-codeblocks (22.04.23) experimental; urgency=low
+codeblocks (22.05.10) experimental; urgency=low
 
-  * C::B SVN Release 12797
+  * C::B SVN Release 12806
 
- -- CB Team  <info@codeblocks.org>  Sat, 23 Apr 2022 00:00:00 +1000
+ -- CB Team  <info@codeblocks.org>  Tue, 10 May 2022 00:00:00 +1000
 
 codeblocks (20.03.01) released; urgency=low
 

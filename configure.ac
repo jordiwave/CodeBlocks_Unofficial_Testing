@@ -179,6 +179,7 @@ MACSETFILE="@true"
 
 AC_MSG_CHECKING(for wxWidgets platform)
 WX_BASENAME=`$WX_CONFIG_WITH_ARGS --basename`
+AC_MSG_NOTICE(["WX_BASENAME : $WX_BASENAME"])
 case $WX_BASENAME in
     *wx_gtk* | *wx_msw*)
 

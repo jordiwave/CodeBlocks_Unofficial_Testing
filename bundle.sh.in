@@ -6,6 +6,15 @@ APPNAME="CodeBlocks"
 APPDIR="${APPNAME}.app"
 SHAREDATADIR="`pwd`/${APPDIR}/Contents/Resources/share/codeblocks"
 
+echo "+------------------------------------------------------------------------------+"
+echo "!       Running bundle.sh to fix MacOS App/Library dependencies                !"
+echo "+------------------------------------------------------------------------------+"
+echo "!  PREFIX_DIR=${PREFIX_DIR}         !"
+echo "!  INSTALL_SHAREDIR=${INSTALL_SHAREDIR} !"
+echo "!  SHAREDATADIR=${SHAREDATADIR}  !"
+echo "+------------------------------------------------------------------------------+"
+# https://medium.com/@donblas/fun-with-rpath-otool-and-install-name-tool-e3e41ae86172
+
 if [ ! -d "$APPDIR" ]
 then
     echo "Building ${APPDIR} directory..."
@@ -18,10 +27,6 @@ fi
 
 cp ${INSTALL_SHAREDIR}/osx_bundle/codeblocks.plist "$APPDIR/Contents/Info.plist"
 cp ${INSTALL_SHAREDIR}/osx_bundle/icons/*.icns "${APPDIR}/Contents/Resources"
-
-
-PLUGINS=`echo ${PREFIX_DIR}/lib/codeblocks/plugins/*.dylib `
-EXECUTABLES=`echo ${PREFIX_DIR}/bin/* `
 
 ALL_DEPS=""
 
@@ -53,36 +58,48 @@ copy_deps() {
 			if [[ ! $ALL_DEPS =~ $current_dep ]]
 			then
 				ALL_DEPS="$ALL_DEPS $current_dep"
-				echo "Copying $dep"
+				if [[ -f "$dep" ]]
+				then
 				cp "$dep" "$APPDIR/Contents/MacOS/"
 				install_name_tool -id "@executable_path/$current_dep" "$APPDIR/Contents/MacOS/$current_dep"
+				fi
+				if [[ -f "$APPDIR/Contents/MacOS/$current_dep" ]]
+				then
 				copy_deps "$APPDIR/Contents/MacOS/$current_dep"
 			fi
+		fi
 		fi
 	done
 }
 
+echo "--------------------------------------------------------------------------------"
 echo "Copying libcodeblocks ..."
-cp -v ${PREFIX_DIR}/lib/libcodeblocks.0.dylib "$APPDIR/Contents/MacOS/"
-copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.0.dylib"
-install_name_tool -id "@executable_path/libcodeblocks.0.dylib" "$APPDIR/Contents/MacOS/libcodeblocks.0.dylib"
+cp -v ${PREFIX_DIR}/lib/libcodeblocks.dylib "$APPDIR/Contents/MacOS/"
+copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.dylib"
+install_name_tool -id "@executable_path/libcodeblocks.dylib" "$APPDIR/Contents/MacOS/libcodeblocks.dylib"
+echo "--------------------------------------------------------------------------------"
+
 
 echo "Copying binaries"
+EXECUTABLES=`echo ${PREFIX_DIR}/bin/* `
 for file in ${EXECUTABLES}
 do
-	echo $file
+    echo "Copying binary file: $file"
 	cp $file "${APPDIR}/Contents/MacOS"
 	copy_deps "${APPDIR}/Contents/MacOS/$(basename $file)"
 done
+echo "--------------------------------------------------------------------------------"
 
 echo "Copying plugins"
+PLUGINS=`echo ${PREFIX_DIR}/lib/codeblocks/plugins/*.dylib `
 for file in ${PLUGINS}
 do
-	echo $file
+	echo "Copying plugin: $file"
 	cp $file "${APPDIR}/Contents/Resources/share/codeblocks/plugins/"
 	install_name_tool -id @loader_path/$(basename $file) "${SHAREDATADIR}/plugins/$(basename $file)"
 	copy_deps "${SHAREDATADIR}/plugins/$(basename $file)"
 done
+echo "--------------------------------------------------------------------------------"
 
 rsync -lpdtgou --include='*.zip' --exclude='*' ${INSTALL_SHAREDIR}/ ${SHAREDATADIR}/
 rsync -rlpdtgou  ${INSTALL_SHAREDIR}/images ${SHAREDATADIR}/

@@ -1,3 +1,9 @@
+#!/bin/bash
+
+reset
+echo MacOS - build CODE::BLOCKS and WxWidgets if needed
+
+DEBUG_SCRIPT="Yes"
 
 WX_TAG="v3.1.5"
 InitialDir=$PWD
@@ -51,6 +57,12 @@ function setup_variables()
     OUT_WX="${BUILD_ROOT_DIR}/bin/wxwidgets"
     OUT_CB="${BUILD_ROOT_DIR}/bin/codeblocks"
 
+    if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
+        echo WX_ROOT_DIR = ${WX_ROOT_DIR}
+        echo OUT_WX = ${OUT_WX}
+        echo OUT_CB = ${OUT_CB}
+    fi
+
     cd ${BUILD_ROOT_DIR}
 }
 
@@ -102,8 +114,12 @@ function install_dependencies()
     if [ ! -d /usr/local/Cellar/llvm ]; then
         brew install llvm
     fi
+    
+    if [ ! -d /usr/local/Cellar/create-dmg ]; then
+        brew install create-dmg
+    fi
 
-    if [ "$GITHUB_ACTIONS" == "" ] ; then
+    if [ "${GITHUB_ACTIONS}" == "" ] ; then
         if [ ! -f /usr/local/bin/gdb ]; then
             brew install gdb
         fi
@@ -126,15 +142,6 @@ function install_dependencies()
             brew install gh
         fi
     fi
-
-
-    ##echo "macports update."
-    ## it can take time
-    # sudo port selfupdate
-    ##echo "libgcc installation."
-    #sudo port install libgcc
-    ##echo "cctools installation."
-    #sudo port install cctools
 }
 
 function install_extra_apps()
@@ -163,13 +170,13 @@ function wxwidgets_build()
     cd "${BUILD_ROOT_DIR}"
     if [ ! -d ./wxwidgets-code ]; then
         echo "+------------------------------------------------------------+"
-        echo "| Clone https://github.com/wxWidgets/wxWidgets.git "$WX_TAG" |"
+        echo "| Clone https://github.com/wxWidgets/wxWidgets.git "${WX_TAG}" |"
         echo "+------------------------------------------------------------+"
-        git clone https://github.com/wxWidgets/wxWidgets.git --branch "$WX_TAG" --single-branch --recurse-submodules wxwidgets-code
+        git clone https://github.com/wxWidgets/wxWidgets.git --branch "${WX_TAG}" --single-branch --recurse-submodules wxwidgets-code
         WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code"
         buildWxWidgets=Yes
     else
-        if [ "$GITHUB_ACTIONS" == "true" ] ; then
+        if [ "${GITHUB_ACTIONS}" == "true" ] ; then
             buildWxWidgets=Yes
         else
             read -r -p 'Would you like to re-compile wxWidgets? ( type "y" for yes or "n" for no ): '
@@ -179,20 +186,20 @@ function wxwidgets_build()
         fi
     fi
 
-    if [ "$buildWxWidgets" == "Yes" ]; then
+    if [ "${buildWxWidgets}" == "Yes" ]; then
 
         WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code"
 
         # https://wiki.wxwidgets.org/Possible_Configure_Flags_under_OS_X
-        if [ -d "$OUT_WX" ]; then
-            rm -r -v -f "$OUT_WX"
+        if [ -d "${OUT_WX}" ]; then
+            rm -r -v -f "${OUT_WX}"
         fi
 
-        mkdir -p "$OUT_WX"
-        cd "$OUT_WX"
+        mkdir -p "${OUT_WX}"
+        cd "${OUT_WX}"
 
         echo "+--------------------------------------------------+"
-        echo "|  configure wxWidgets in  $OUT_WX |"
+        echo "|  configure wxWidgets in  ${OUT_WX} |"
         echo "+--------------------------------------------------+"
 
         "${WX_ROOT_DIR}/configure"  --with-osx-cocoa --with-macosx-version-min=11.0 --disable-debug --disable-debug-flag --enable-unicode --enable-cxx11 --with-opengl --with-expat=builtin --with-libjpeg=builtin --with-libpng=builtin --with-regex=builtin --with-libtiff=builtin --with-zlib=builtin
@@ -226,11 +233,11 @@ function wxwidgets_build()
         fi
     fi
 
-    if [ -f "$OUT_WX/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib" ]; then
+    if [ -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib" ]; then
         echo "+--------------------------------------------------+"
         echo "|               install wxWidgets                  |"
         echo "+--------------------------------------------------+"
-        cd "$OUT_WX"
+        cd "${OUT_WX}"
         make install
         status=$?
         if [ $status == 0 ] ; then
@@ -243,9 +250,9 @@ function wxwidgets_build()
             return 1
         fi
     else
-        ls -la "$OUT_WX"
-        ls -la "$OUT_WX/lib"
-        ls -la "$OUT_WX/lib/libwx_osx_cocoau_richtext*.dylib"
+        ls -la "${OUT_WX}"
+        ls -la "${OUT_WX}/lib"
+        ls -la "${OUT_WX}/lib/libwx_osx_cocoau_richtext*.dylib"
         echo "+--------------------------------------------------+"
         echo "|              make wxWidgets  FAILED              |"
         echo "+--------------------------------------------------+"
@@ -258,62 +265,58 @@ function codeblocks_build()
 {
     cd "${BUILD_ROOT_DIR}"
 
-    if [ -d "$OUT_CB" ]; then
-        rm -r -v -f "$OUT_CB"
+    if [ -d "${OUT_CB}" ]; then
+        rm -r -v -f "${OUT_CB}"
     fi
-    mkdir -p "$OUT_CB"
+    mkdir -p "${OUT_CB}"
         
     cd "${CB_ROOT_DIR}"
-    if [ "$GITHUB_ACTIONS" == "true" ] ; then
-        REPLY=Y
-    else
-        read -r -p 'Would you like to build/rebuild Codeblocks? ( type "y" for yes or "n" for no ): '
-    fi
-    if [ "${REPLY}" == "y" ] || [ "${REPLY}" == "Y" ]; then
-        # To make sure you start again from scratch. You can do that : ?cd codeblock-code | svn cleanup --remove-unversioned
-        # before to launch the script.
-        if [ -f ./configure ]; then
-            if [ "$GITHUB_ACTIONS" == "" ] ; then
-                make clean
-                make distclean
-                make clean-bin
-                make clean-zipfiles
-                rm ./configure
-                rm ./makefile
-            fi
+
+    # To make sure you start again from scratch. You can do that : ?cd codeblock-code | svn cleanup --remove-unversioned
+    # before to launch the script.
+    if [ -f ./configure ]; then
+        if [ "${GITHUB_ACTIONS}" == "" ] ; then
+            make clean
+            make distclean
+            make clean-bin
+            make clean-zipfiles
+            rm ./configure
+            rm ./makefile
         fi
+    fi
+
+    echo "+--------------------------------------------------+"
+    echo "|   CodeBLocks:  bootstrap                         |"
+    echo "+--------------------------------------------------+"
+    chmod +x ./bootstrap *.sh
+    ./bootstrap
+    status=$?
+    if [ $status == 0 ] ; then
         echo "+--------------------------------------------------+"
-        echo "|   CodeBLocks:  bootstrap                         |"
+        echo "|   CodeBLocks:  configure                         |"
         echo "+--------------------------------------------------+"
-        chmod +x ./bootstrap *.sh
-        ./bootstrap
-        status=$?
-        if [ $status == 0 ] ; then
-            echo "+--------------------------------------------------+"
-            echo "|   CodeBLocks:  configure                         |"
-            echo "+--------------------------------------------------+"
-            chmod +x configure *.sh
-            if [ -f ./configure ]; then
-                ./configure
-                status=$?
-                if [ $status != 0 ] ; then
-                    echo "+----------------------------------------+"
-                    echo "| ERROR: CodeBLocks configure failed!!!  |"
-                    echo "+----------------------------------------+"
-                    return -1
-                fi
-            else
-                echo "+-------------------------------------------------------------+"
-                echo "| ERROR: CodeBLocks bootstrap failed (no configure output)!!! |"
-                echo "+-------------------------------------------------------------+"
+        chmod +x configure *.sh
+        
+        if [ -f ./configure ]; then
+            ./configure --prefix=${CB_ROOT_DIR}/src/devel31 --with-contrib-plugins=all,-FileManager
+            status=$?
+            if [ $status != 0 ] ; then
+                echo "+----------------------------------------+"
+                echo "| ERROR: CodeBLocks configure failed!!!  |"
+                echo "+----------------------------------------+"
                 return -1
             fi
         else
-            echo "+--------------------------------------------------+"
-            echo "| ERROR: CodeBLocks bootstrap failed!!!            |"
-            echo "+--------------------------------------------------+"
-            return 1
+            echo "+-------------------------------------------------------------+"
+            echo "| ERROR: CodeBLocks bootstrap failed (no configure output)!!! |"
+            echo "+-------------------------------------------------------------+"
+            return -1
         fi
+    else
+        echo "+--------------------------------------------------+"
+        echo "| ERROR: CodeBLocks bootstrap failed!!!            |"
+        echo "+--------------------------------------------------+"
+        return 1
     fi
     
     if [ -f ./makefile ]; then
@@ -321,7 +324,6 @@ function codeblocks_build()
         echo "|   CodeBLocks:  make                              |"
         echo "+--------------------------------------------------+"
         make -j $(($(nproc) -1))
-
         status=$?
         if [ $status != 0 ] ; then
             echo "+-----------------------------------+"
@@ -330,33 +332,43 @@ function codeblocks_build()
             return -1
         fi
 
-        if [ "$GITHUB_ACTIONS" != "true" ] ; then
-            echo "+--------------------------------------------------+"
-            echo "|   CodeBLocks:  bundle                            |"
-            echo "+--------------------------------------------------+"
-            ./bundle.sh
-            status=$?
-            if [ $status != 0 ] ; then
-                echo "+----------------------------------------+"
-                echo "| ERROR: CodeBLocks bundle.sh failed!!!  |"
-                echo "+----------------------------------------+"
-                return -1
-            fi
-            read -r -p 'Would you like to install CodeBlocks? ( type "y" for yes or "n" for no ): '
-            if [ "${REPLY}" == 'y' ] || [ "${REPLY}" == 'Y' ]; then
-                echo "+----------------------------------------+"
-                echo "|   CodeBLocks:  make install            |"
-                echo "+----------------------------------------+"
-                make install
-                if [ $status != 0 ] ; then
-                    echo "+------------------------------------------+"
-                    echo "| ERROR: CodeBLocks make install failed!!! |"
-                    echo "+------------------------------------------+"
-                    return -1
-                fi
-                cp -R ./CodeBlocks.app /Applications
-            fi
+        echo "+----------------------------------------+"
+        echo "|   CodeBLocks:  make install            |"
+        echo "+----------------------------------------+"
+        make install
+        status=$?
+        if [ $status != 0 ] ; then
+            echo "+------------------------------------------+"
+            echo "| ERROR: CodeBLocks make install failed!!! |"
+            echo "+------------------------------------------+"
+            return -1
         fi
+        cp -R ./CodeBlocks.app /Applications
+
+        echo "+--------------------------------------------------+"
+        echo "|   CodeBLocks:  bundle                            |"
+        echo "+--------------------------------------------------+"
+        ./bundle.sh
+        status=$?
+        if [ $status != 0 ] ; then
+            echo "+----------------------------------------+"
+            echo "| ERROR: CodeBLocks bundle.sh failed!!!  |"
+            echo "+----------------------------------------+"
+            return -1
+        fi
+        
+        echo "+--------------------------------------------------+"
+        echo "|   CodeBLocks:  create DMG installer              |"
+        echo "+--------------------------------------------------+"
+        create-dmg CodeBlocks-Installer.dmg CodeBlocks.app
+        status=$?
+        if [ $status != 0 ] ; then
+            echo "+----------------------------------------+"
+            echo "| ERROR: CodeBLocks create-dmg failed!!! |"
+            echo "+----------------------------------------+"
+            return -1
+        fi
+
     else
         echo "+-------------------------------------------+"
         echo "| ERROR: Configure failed (no makefile)!!!! |"
@@ -370,7 +382,7 @@ function codeblocks_build()
 cd "${InitialDir}"
 
 # Un-comment the following to install build dependencies:
-if [ "$GITHUB_ACTIONS" == "true" ] ; then
+if [ "${GITHUB_ACTIONS}" == "true" ] ; then
     install_dependencies
 fi
 
@@ -380,31 +392,70 @@ fi
 # setup variables based on directories found. Variables used in building wxWidgets and Code::Blocks
 setup_variables
 
-if [ "${WX_ROOT_DIR}" = "" ] || [ ! -f "$OUT_WX/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib" ]; then
+if [ "${WX_ROOT_DIR}" = "" ] || [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib" ]; then
+    if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
+        if [ "${WX_ROOT_DIR}" = "" ]; then
+            echo "WX_ROOT_DIR is empty: ${WX_ROOT_DIR}"
+        fi
+        if [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib" ]; then
+            echo "Cannot find: ${OUT_WX}/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib"
+        fi
+    fi
     wxwidgets_build
     status=$?
     if [ $status != 0 ] ; then
         failureDetected="yes"
+        if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
+            echo "wxwidgets_build failure detected."
+        fi
     fi
 else
     echo "Allready built wxWidgets"
 fi
 
 
-if test "x$failureDetected" = "xno"; then :
+if test "x${failureDetected}" = "xno"; then :
     cd "${BUILD_ROOT_DIR}"
-    if [ "${CB_ROOT_DIR}" = "" ] || [ ! -f "$OUT_CB/bin/codeblocks" ]; then
+    if [ "${CB_ROOT_DIR}" = "" ] || [ ! -f "${OUT_CB}/bin/codeblocks" ]; then
+        if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
+            if [ "${CB_ROOT_DIR}" = "" ]; then
+                echo "CB_ROOT_DIR is empty: ${CB_ROOT_DIR}"
+            fi
+            if [ ! -f "${OUT_CB}/bin/codeblocks" ]; then
+                echo "Cannot find: ${OUT_CB}/bin/codeblocks"
+            fi
+        fi
         codeblocks_build
         status=$?
         if [ $status != 0 ] ; then
             failureDetected="yes"
+            if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
+                echo "codeblocks_build failure detected."
+            fi
         fi
     else
         echo "Code::Blocks already built."
+
+        cd "${CB_ROOT_DIR}"
+        if [ "${GITHUB_ACTIONS}" == "true" ] ; then
+            REPLY=Y
+        else
+            read -r -p 'Would you like to build/rebuild Codeblocks? ( type "y" for yes or "n" for no ): '
+        fi
+        if [ "${REPLY}" == "y" ] || [ "${REPLY}" == "Y" ]; then
+            codeblocks_build
+            status=$?
+            if [ $status != 0 ] ; then
+                failureDetected="yes"
+                if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
+                    echo "codeblocks_build failure detected."
+                fi
+            fi
+        fi
     fi
 fi
 
-if test "x$failureDetected" = "xyes"; then :
+if test "x${failureDetected}" = "xyes"; then :
     echo
     echo -e "\\r${RED_START}***************************************************************************************************"
     echo -e "\\r${RED_START}*                                                                                                 *"

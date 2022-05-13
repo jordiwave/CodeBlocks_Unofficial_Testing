@@ -30,32 +30,36 @@ if [ ! -f "bootstrap" ]; then
     fi
 fi
 
-#if [ -f "$PWD/../codeblocks*.dsc" ]; then 
-    # For Linux Debian DEB build cleanup
+if [ -f "../*.deb" ] || [ -d "../bin/codeblocks" ]; then 
     PreviousDir=$PWD
     cd ..
-    echo 'Cleaning Debian files from:    ' $PWD 
-    find . -maxdepth 1 -type f -name "*.log"        | xargs rm -f
-    find . -maxdepth 1 -type f -name "*.dsc"        | xargs rm -f
-    find . -maxdepth 1 -type f -name "*.buildinfo"  | xargs rm -f
-    find . -maxdepth 1 -type f -name "*.changes"    | xargs rm -f
-    find . -maxdepth 1 -type f -name "*.deb"        | xargs rm -f
-    find . -maxdepth 1 -type f -name "*.ddeb"       | xargs rm -f
-    find . -maxdepth 1 -type f -name "*.xz"         | xargs rm -f
-    find . -maxdepth 1 -type f -name "stamp*"       | xargs rm -f
-    [ -d "codeblocks/gtk3-unicode-3.0" ] && rm -rf "codeblocks/gtk3-unicode-3.0"
+    if [ -f "*.deb" ]; then 
+        # For Linux Debian DEB build cleanup
+        echo 'Cleaning Debian deb files from:    ' $PWD 
+        find . -maxdepth 1 -type f -name "*.log"        | xargs rm -f
+        find . -maxdepth 1 -type f -name "*.dsc"        | xargs rm -f
+        find . -maxdepth 1 -type f -name "*.buildinfo"  | xargs rm -f
+        find . -maxdepth 1 -type f -name "*.changes"    | xargs rm -f
+        find . -maxdepth 1 -type f -name "*.deb"        | xargs rm -f
+        find . -maxdepth 1 -type f -name "*.ddeb"       | xargs rm -f
+        find . -maxdepth 1 -type f -name "*.xz"         | xargs rm -f
+        find . -maxdepth 1 -type f -name "stamp*"       | xargs rm -f
+        [ -d "codeblocks/gtk3-unicode-3.0" ] && rm -rf "codeblocks/gtk3-unicode-3.0"
+    fi
+    if [ -d "bin/codeblocks" ]; then 
+        # For MacOS build cleanup
+        echo "Removing MacOS directory:       $PWD/bin/codeblocks"
+        rm -rf "bin/codeblocks"
+    fi
     cd $PreviousDir
-#else
-#    ls -la "$PWD/.."
-#    ls -la "$PWD/../codeblocks_*.dsc"
-#fi
-
+fi
 
 echo 'Cleaning files from directory: ' $PWD
 [ -f "bundle.sh" ]          && rm -f "bundle.sh"
 [ -f "aclocal.m4" ]         && rm -f "aclocal.m4"
+[ -f "CodeBlocks-Installer.dmg" ]  && rm -f "CodeBlocks-Installer.dmg"
 [ -f "codeblocks.pc" ]      && rm -f "codeblocks.pc"
-[ -f "codeblocks.plis" ]    && rm -f "codeblocks.plis"
+[ -f "codeblocks.plist" ]   && rm -f "codeblocks.plist"
 [ -f "codeblocks.spec" ]    && rm -f "codeblocks.spec"
 [ -f "codeblocks.spec.fedora" ]    && rm -f "codeblocks.spec.fedora"
 [ -f "compile" ]            && rm -f "compile"

@@ -31,7 +31,9 @@ Requirements:
     8) SVN and optionally GIT.
     9) CoreUntils
     10) Clangd for the clangd-client
-    
+    11) DMG creation script from https://github.com/create-dmg/create-dmg
+
+
     To install the items above the following are the commands to use for MacOS Big Sir (11.01):
         # Step 2:
             brew install wxwidgets
@@ -47,6 +49,8 @@ Requirements:
             brew install coreutils
         # Step 10:
             brew install llvm
+        # Step 11:
+            brew install create-dmg
 
 To build Code::Blocks:
     1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or
@@ -68,11 +72,11 @@ To build Code::Blocks:
         ./bootstrap
 
     6) Run the following to produce the makefile's for your environment so you can test it or debug before installing it 
-        in the Linux OS directories:
-            ./configure --with-contrib-plugins=all --prefix=$PWD/src/devel31
+        in the MacOS directories:
+            ./configure --with-contrib-plugins=all,-FileManager --prefix=$PWD/src/devel31
 
-        or if you want to install the build in the Linux OS run the following:
-        ./configure --with-contrib-plugins=all
+        or if you want to install the build in the macOS run the following:
+        ./configure --with-contrib-plugins=all,-FileManager
         
         NOTE: This also only needs to be done once or if you make change to the build files used by the configure process.
 
@@ -114,6 +118,12 @@ To build Code::Blocks:
         test the C::B you built:
             cd $PWD/src/devel31/bin
             codeblocks
+
+    10) Run the following script to bundle the files:
+            ./bundle.sh
+
+    11) Create the DMG file
+            create-dmg CodeBlocks-Installer.dmg CodeBlocks.app
 
 Additional Notes/Info:
 - - - - - - - - - - - -

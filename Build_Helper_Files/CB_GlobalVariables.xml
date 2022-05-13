@@ -58,7 +58,7 @@
 	</cb_win64>
 <!-- ====================================================================================== -->
 	<cb_unix>
-				<cb_build>
+		<cb_build>
 			<BASE>~/code/CodeBLocks_Private_Experimental/src</BASE>
 			<INCLUDE>$(#CB_BUILD)/include</INCLUDE>
 			<CFLAGS>-g -O0 -ggdb</CFLAGS>
@@ -68,8 +68,8 @@
 			<PKG_CONFIG_GTKPLUS>gtk+-3.0</PKG_CONFIG_GTKPLUS>
 			<PKG_CONFIG_GDK>gdk-3.0</PKG_CONFIG_GDK>
 			<PKG_CONFIG_GLIB>glib-2.0</PKG_CONFIG_GLIB>
-				</cb_build>
-				<wxwidgets>
+		</cb_build>
+		<wxwidgets>
 			<BASE>""</BASE>
 			<INCLUDE>(#WXWIDGETS)/include</INCLUDE>
 			<LIB>$(#WXWIDGETS)/lib</LIB>
@@ -77,11 +77,11 @@
 			<WX_VERSION>31</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
 			<WX_CONFIG_UNIX>wx-config --version=3.0</WX_CONFIG_UNIX>
-				</wxwidgets>
+		</wxwidgets>
 	</cb_unix>
 <!-- ====================================================================================== -->
 	<cb_macos>
-				<cb_build>
+		<cb_build>
 			<BASE>/Users/Andy/Code/CodeBLocks_Private_Experimental/src</BASE>
 			<INCLUDE>$(#CB_BUILD)/include</INCLUDE>
 			<CFLAGS>-g -O0 -ggdb</CFLAGS>
@@ -89,8 +89,8 @@
 			<C_STD>c90</C_STD>
 			<CPP_STD>gnu++17</CPP_STD>
 			<PKG_CONFIG_GLIB>glib-2.0</PKG_CONFIG_GLIB>
-				</cb_build>
-				<wxwidgets>
+		</cb_build>
+		<wxwidgets>
 			<BASE>/Users/Andy/Code/wxwidgets-code</BASE>
 			<INCLUDE>$(#WXWIDGETS)/include</INCLUDE>
 			<LIB>$(#WXWIDGETS)/lib</LIB>
@@ -98,7 +98,16 @@
 			<WX_VERSION>31</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
 			<WX_CONFIG_MACOS>/usr/local/bin/wx-config --version=3.1</WX_CONFIG_MACOS>
-				</wxwidgets>
+		</wxwidgets>
 	</cb_macos>
+<!-- ====================================================================================== -->
+<!-- ====================================================================================== -->
+	<cb_win64>
+		<cppdap>
+			<BASE>D:\Andrew_Development\Libraries\DebuggerApplication_Protocol_cppdap</BASE>
+			<INCLUDE>$(#CPPDAP)/include</INCLUDE>
+			<LIB>$(#CPPDAP)/build</LIB>
+		</cppdap>
+	</cb_win64>
 <!-- ====================================================================================== -->
 </CodeBlocksGlobalVariableExportConfig>

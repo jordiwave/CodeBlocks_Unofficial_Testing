@@ -311,10 +311,9 @@ RequestExecutionLevel user
 # ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # ==========================================================================================================================
 
-############################
-# Check for Fortran Plugin #
-############################
-# This is required iof you are building from github instead of source forge source repo trunk/branch/tag!!
+################################################
+# Check for Various Optional Plugins and files #
+################################################
 
 ; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
 !macro !defineifexist _VAR_NAME _FILE_NAME
@@ -337,21 +336,20 @@ RequestExecutionLevel user
 
 ${!defineifexist} FORTRAN_PLUGIN_FOUND          ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
 ${!defineifexist} CBKODERS_PLUGIN_FOUND         ${CB_BASE}${CB_SHARE_CB}\cb_koders.zip
-
 ${!defineifexist} CLANGD_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\clangd_client.zip
+${!defineifexist} CLANGD_EXE_FOUND              ${CB_BASE}\clangd.exe
 ${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND    ${CB_BASE}${CB_SHARE_CB}\DisplayEvents.zip
-
 ${!defineifexist} CBBUILDTOOLS_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbBuildTools.zip
 ${!defineifexist} CBMARKDOWN_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbMarkdown.zip
 ${!defineifexist} CBMEMORYVIEW_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbMemoryView.zip
 ${!defineifexist} CBSYSTEMVIEW_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbSystemView.zip
-
 ${!defineifexist} CBDIFF_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbDiff.zip
 ${!defineifexist} GITBLOCKS_PLUGIN_FOUND        ${CB_BASE}${CB_SHARE_CB}\GitBlocks.zip
 ${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND    ${CB_BASE}${CB_SHARE_CB}\CBTortoiseSVN.zip
 ${!defineifexist} CBINNO_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbInno.zip
 ${!defineifexist} CBNSIS_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbNSIS.zip
 ${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   ${CB_BASE}${CB_SHARE_CB}\debugger_gdbmi.zip
+${!defineifexist} PRETTYPRINTERS_FOUND          ${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py
 
 ################################################################################
 # Logging macro - from https://nsis.sourceforge.io/Logging:Enable_Logs_Quickly #
@@ -457,11 +455,16 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             File ${CB_INSTALL_LICENSES_DIR}\lgpl-3.0.txt
             # wget & &za.exe support files 
             File wget.exe
-            # ClangD for use with ClangD_Cleint core plugin
+
+!ifdef CLANGD_EXE_FOUND
+            # ClangD for use with ClangD_Client core plugin
             File ${CB_BASE}\clangd.exe
+!endif
             # ----------------------- NEW OUTPUT PATH -----------------------
+!ifdef PRETTYPRINTERS_FOUND
             SetOutPath $INSTDIR${CB_GDB_PRETTYPRINTERS}
             File ${CB_BASE}${CB_GDB_PRETTYPRINTERS}\*.*
+!endif
             # ----------------------- NEW OUTPUT PATH -----------------------
             SetOutPath $INSTDIR${CB_SHARE_CB}
             File ${CB_BASE}${CB_SHARE_CB}\start_here.zip
@@ -3097,12 +3100,18 @@ Section "-un.Core Files (required)" UNSEC_CORE
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE}
     # ----------------------- GDB PRETTY PRINTERS -----------------------
+!ifdef CB_GDB_PRETTYPRINTERS
     Delete /REBOOTOK $INSTDIR\$INSTDIR${CB_GDB_PRETTYPRINTERS}\*.*
+!endif
     # ----------------------- License files -----------------------
     Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
     Delete /REBOOTOK $INSTDIR\lgpl-3.0.txt
+
+!ifdef CLANGD_EXE_FOUND
     # ClangD for use with ClangD_Cleint core plugin
     Delete /REBOOTOK $INSTDIR\clangd.exe
+!endif
+
     # WGET
     Delete /REBOOTOK $INSTDIR\wget.exe
     # crash handler
@@ -3776,18 +3785,12 @@ Function CompilerInstallerDownloadRun_MinGW
     Call CompilerInstallerDownloadRun
 FunctionEnd
 
-Function CompilerInstallerDownloadRun_TDM
-    push "https://github.com/jmeubank/tdm-gcc/releases/download/v1.2105.1/tdm-gcc-webdl.exe"
-    push "tdm-gcc-webdl.exe"
-    Call CompilerInstallerDownloadRun
-    
-FunctionEnd
+#Function CompilerInstallerDownloadRun_TDM
+#    push "https://github.com/jmeubank/tdm-gcc/releases/download/v1.2105.1/tdm-gcc-webdl.exe"
+#    push "tdm-gcc-webdl.exe"
+#    Call CompilerInstallerDownloadRun
+#FunctionEnd
 
-Function CompilerInstallerDownloadRun_MSYS2
-    push "https://sourceforge.net/projects/msys2/files/Base/msys2-x86_64-latest.exe"
-    push "msys2-x86_64-latest.exe"
-    Call CompilerInstallerDownloadRun
-FunctionEnd
 
 Function CompilerInstallerDownloadRun_Cygwin
     push "https://www.cygwin.com/setup-x86_64.exe"
@@ -3799,13 +3802,13 @@ Var HWND_CompilerDownloadPage
 Var HWND_CompilerDownloadPage.Heading
 Var HWND_CompilerDownloadPage.Checkbox_Mingw_GCC
 Var HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix
-Var HWND_CompilerDownloadPage.Checkbox_TDM_GCC
+#Var HWND_CompilerDownloadPage.Checkbox_TDM_GCC
 Var HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC
 Var HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC
 
 Var CompilerDownloadPage.Checkbox_Mingw_GCC
 Var CompilerDownloadPage.Checkbox_Mingw_GDBFix
-Var CompilerDownloadPage.Checkbox_TDM_GCC
+#Var CompilerDownloadPage.Checkbox_TDM_GCC
 Var CompilerDownloadPage.Checkbox_MSYS2_GCC
 Var CompilerDownloadPage.Checkbox_CYGWIN_GCC
 
@@ -3837,23 +3840,24 @@ connected:
     Pop $HWND_CompilerDownloadPage.Heading
     SetCtlColors $HWND_CompilerDownloadPage.Heading "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
-    ${NSD_CreateCheckbox}  0 50u 100% 10u "MinGW-W64 - supports 32 or 64 bit"
+    ${NSD_CreateCheckbox}  0 60u 100% 10u "MinGW-W64 - supports 32 or 64 bit"
     Pop $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC
     SetCtlColors $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
-    ${NSD_CreateCheckbox} 20 65u 100% 10u "Open GDB web download page so you can upgrade GDB to resolve MinGW GDB issues."
+    ${NSD_CreateCheckbox} 20 90u 100% 10u "Open GDB web download page so you can upgrade GDB to resolve MinGW GDB issues."
     Pop $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix
     SetCtlColors $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
-    ${NSD_CreateCheckbox} 0 90u 100% 10u "TDM GCC - supports 32 or 32 & 64 bit"
-    Pop $HWND_CompilerDownloadPage.Checkbox_TDM_GCC
-    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_TDM_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+# Removed as TDM 10.3 creates a buggy C::B
+#    ${NSD_CreateCheckbox} 0 90u 100% 10u "TDM GCC - supports 32 or 32 & 64 bit"
+#    Pop $HWND_CompilerDownloadPage.Checkbox_TDM_GCC
+#    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_TDM_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
-    ${NSD_CreateCheckbox} 0 130u 100% 10u "MSYS2 - supports 32 and 64 bit"
+    ${NSD_CreateCheckbox} 0 120u 100% 10u "MSYS2 - supports 32 and 64 bit"
     Pop $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC
     SetCtlColors $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
-    ${NSD_CreateCheckbox} 0 170u 100% 10u "Cygwin - supports 64 bit only"
+    ${NSD_CreateCheckbox} 0 150u 100% 10u "Cygwin - supports 64 bit only"
     Pop $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC
     SetCtlColors $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
@@ -3864,23 +3868,27 @@ FunctionEnd
 Function CompilerDownloadPage_Leave
 	${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC    $CompilerDownloadPage.Checkbox_Mingw_GCC
 	${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix $CompilerDownloadPage.Checkbox_Mingw_GDBFix
-    ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_TDM_GCC      $CompilerDownloadPage.Checkbox_TDM_GCC
+    #${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_TDM_GCC      $CompilerDownloadPage.Checkbox_TDM_GCC
     ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC    $CompilerDownloadPage.Checkbox_MSYS2_GCC
     ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC   $CompilerDownloadPage.Checkbox_CYGWIN_GCC
 
     ${If} $CompilerDownloadPage.Checkbox_Mingw_GCC == "1"
         Call CompilerInstallerDownloadRun_MinGW
     ${EndIf}
+
     ${If} $CompilerDownloadPage.Checkbox_Mingw_GDBFix == "1"
         ExecShell "open" "https://github.com/ssbssa/gdb/releases" SW_SHOWNORMAL
     ${EndIf}
 
-    ${If} $CompilerDownloadPage.Checkbox_TDM_GCC == "1"
-        Call CompilerInstallerDownloadRun_TDM
-    ${EndIf}
+    #${If} $CompilerDownloadPage.Checkbox_TDM_GCC == "1"
+    #    Call CompilerInstallerDownloadRun_TDM
+    #${EndIf}
+
     ${If} $CompilerDownloadPage.Checkbox_MSYS2_GCC == "1"
-        Call CompilerInstallerDownloadRun_MSYS2
+        ExecShell "open" "https://github.com/msys2/msys2-installer/releases" SW_SHOWNORMAL
+        #Call CompilerInstallerDownloadRun_MSYS2
     ${EndIf}
+
     ${If} $CompilerDownloadPage.Checkbox_CYGWIN_GCC == "1"
         Call CompilerInstallerDownloadRun_Cygwin
     ${EndIf}
