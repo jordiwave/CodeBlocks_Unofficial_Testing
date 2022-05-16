@@ -4,7 +4,7 @@ CLEANFILES = \
 			$(pkgdata_DATA)
 
 EXTRA_DIST = \
-			manifest.xml $(srcdir)/*.xrc
+			manifest.xml *.xrc
 
 occurrenceshighlighting.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/occurrenceshighlighting.zip manifest.xml *.xrc > /dev/null

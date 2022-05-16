@@ -8,12 +8,7 @@
         <Value author="BYO" />
         <Value authorEmail="byo.spoon@gmail.com" />
         <Value authorWebsite="" />
-        <Value thanksTo="Ann for Being
-Gigi for Faworki
-
-God for Love
-
-Jaakko Salli for wxPropertyGrid" />
+        <Value thanksTo="Ann for Being, Gigi for Faworki, God for Love, Jaakko Salli for wxPropertyGrid" />
         <Value license="GPL" />
     </Plugin>
     <Plugin name="wxSmithMime">

@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -33,6 +36,11 @@ libcbDiff_la_SOURCES = \
 			src/cbTableCtrl.cpp \
 			src/cbUnifiedCtrl.cpp \
 			src/wxDiff.cpp
+
+if CODEBLOCKS_NT
+libcbDiff_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			src/cbDiff.h \
@@ -177,9 +185,9 @@ resources_forZIP = \
 			cb_diff_toolbar.xrc
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/wxsmith/cbDiffConfigPanel.wxs \
-			$(srcdir)/wxsmith/cbDiffSelectFiles.wxs \
+			*.cbp \
+			wxsmith/cbDiffConfigPanel.wxs \
+			wxsmith/cbDiffSelectFiles.wxs \
 			$(resources_forZIP)
 
 pkgdata_DATA = \

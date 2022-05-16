@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -33,6 +36,11 @@ libDoxyBlocks_la_SOURCES = \
 			DoxyBlocks.cpp \
 			ExtractDocs.cpp \
 			DoxyBlocksLogger.cpp
+
+if CODEBLOCKS_NT
+libDoxyBlocks_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			Config.h \
@@ -116,12 +124,11 @@ resources_forZIP = \
 			images/64x64/html.png
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			wxsmith/ConfigPanel.wxs \
 			manifest.xml \
+			manifest.rc \
 			ChangeLog.txt \
-			DoxyBlocks.rc \
-			$(srcdir)/update* \
 			$(resources_forZIP)
 
 pkgdata_DATA = \
@@ -136,4 +143,4 @@ DoxyBlocks.zip: manifest.xml $(resources_forZIP)
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 
 dist_confimages_DATA = \
-			$(srcdir)/*.png
+			*.png

@@ -227,4 +227,4 @@ noinst_HEADERS = \
 			./wxsdataviewlistctrl.h
 
 EXTRA_DIST = \
-			$(srcdir)/wxsmediactrl.*
+			wxsmediactrl.*

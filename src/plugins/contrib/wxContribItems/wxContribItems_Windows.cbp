@@ -121,6 +121,10 @@
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
@@ -170,6 +174,13 @@
 			<Option target="wxKWIC" />
 		</Unit>
 		<Unit filename="KWIC\include\wx\xrc\xh_kwxlinearregulatorhandler.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\manifest.xml">
 			<Option target="wxKWIC" />
 		</Unit>
 		<Unit filename="KWIC\src\wx\KWIC\AngularMeter.cpp">
@@ -247,6 +258,13 @@
 		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\xh_fnb.h">
 			<Option target="wxFlatNoteBook" />
 		</Unit>
+		<Unit filename="wxFlatNotebook\manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\manifest.xml">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
 		<Unit filename="wxFlatNotebook\src\wxFlatNotebook\fnb_customize_dlg.cpp">
 			<Option target="wxFlatNoteBook" />
 		</Unit>
@@ -268,8 +286,22 @@
 		<Unit filename="wxImagePanel\include\wx\wxImagePanel.h">
 			<Option target="wxImagePanel" />
 		</Unit>
+		<Unit filename="wxImagePanel\manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="wxImagePanel" />
+		</Unit>
+		<Unit filename="wxImagePanel\manifest.xml">
+			<Option target="wxImagePanel" />
+		</Unit>
 		<Unit filename="wxImagePanel\src\wxImagePanel.cpp">
 			<Option target="wxImagePanel" />
+		</Unit>
+		<Unit filename="wxSpeedButton\manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="wxSpeedButton" />
+		</Unit>
+		<Unit filename="wxSpeedButton\manifest.xml">
+			<Option target="wxSpeedButton" />
 		</Unit>
 		<Unit filename="wxSpeedButton\wxSpeedButton.cpp">
 			<Option target="wxSpeedButton" />
@@ -353,6 +385,13 @@
 			<Option target="wxChartCtrl" />
 		</Unit>
 		<Unit filename="wxchart\include\wx\yaxiswindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\manifest.xml">
 			<Option target="wxChartCtrl" />
 		</Unit>
 		<Unit filename="wxchart\src\axis.cpp">
@@ -478,6 +517,20 @@
 		<Unit filename="wxled\ledpanel\src\wxledpanel.cpp">
 			<Option target="wxLED" />
 		</Unit>
+		<Unit filename="wxled\manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\manifest.xml">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxmathplot\manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="wxMathPlot" />
+		</Unit>
+		<Unit filename="wxmathplot\manifest.xml">
+			<Option target="wxMathPlot" />
+		</Unit>
 		<Unit filename="wxmathplot\mathplot.cpp">
 			<Option target="wxMathPlot" />
 		</Unit>
@@ -485,6 +538,13 @@
 			<Option target="wxMathPlot" />
 		</Unit>
 		<Unit filename="wxthings\include\wx\things\toggle.h">
+			<Option target="wxCustomButton" />
+		</Unit>
+		<Unit filename="wxthings\manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="wxCustomButton" />
+		</Unit>
+		<Unit filename="wxthings\manifest.xml">
 			<Option target="wxCustomButton" />
 		</Unit>
 		<Unit filename="wxthings\src\toggle.cpp">

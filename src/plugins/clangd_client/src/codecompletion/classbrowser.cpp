@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12314 $
- * $Id: classbrowser.cpp 12314 2021-04-30 18:28:43Z fuscated $
- * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/classbrowser.cpp $
  */
 
 #include <sdk.h>
@@ -180,7 +177,15 @@ ClassBrowser::~ClassBrowser()
         // awake the thread so it can terminate
         m_ClassBrowserSemaphore.Post();
         // free the system-resources
-        m_ClassBrowserBuilderThread->Wait();
+        //- m_ClassBrowserBuilderThread->Wait(); removed, trying to fix MACOS hang //(ph 2022/05/6)
+        // ^^ The above causes infinite wait on  Mac OS //(ph 2022/05/7)
+#if not defined(__WXMAC__)      //(ph 2022/05/8)
+        // But this delete causes crashes on MacOS with the following message:
+        // "Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'NSWindow drag regions should only be invalidated on the Main Thread!'"
+        // Eliminating this delete on the Mac solved the crash. This needs further investigation.
+        // FIXME (ph#): Investigate crash when deleting ClassBrowserBuilderThread on MacOS //(ph 2022/05/7)
+        m_ClassBrowserBuilderThread->Delete();
+#endif
         // according to the wxWidgets-documentation the wxThread object itself has to be deleted explicitly,
         // to free the memory, if it is created on the heap, this is not done by Wait()
         delete m_ClassBrowserBuilderThread;
@@ -1213,7 +1218,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject * activeProject)
     while ((not thread_needs_run)   // the thread already created
             &&  m_ClassBrowserBuilderThread->IsAlive()     // thread is alive: i.e. running or suspended
             &&  m_ClassBrowserBuilderThread->IsRunning()   // running
-            && (! m_ClassBrowserBuilderThread->IsPaused()))   // not paused
+            && (not m_ClassBrowserBuilderThread->IsPaused()))   // not paused
     {
         thread_needs_resume = true;
         m_ClassBrowserBuilderThread->Pause();

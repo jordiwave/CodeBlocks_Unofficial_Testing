@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -56,6 +59,11 @@ libcodecompletion_la_SOURCES = \
 			parser/searchtree.cpp \
 			parser/expression.cpp
 
+if CODEBLOCKS_NT
+libcodecompletion_la_SOURCES += \
+			resources/manifest.rc
+endif
+
 noinst_HEADERS = \
 			ccoptionsdlg.h \
 			ccoptionsprjdlg.h \
@@ -85,7 +93,7 @@ noinst_HEADERS = \
 			parser/expression.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			cctest \
 			testing \
 			wxsmith

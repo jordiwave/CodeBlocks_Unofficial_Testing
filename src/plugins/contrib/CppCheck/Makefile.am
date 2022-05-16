@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -33,11 +36,16 @@ libCppCheck_la_SOURCES = \
 			CppCheckListLog.cpp \
 			ConfigPanel.cpp
 
+if CODEBLOCKS_NT
+libCppCheck_la_SOURCES += \
+			resources/manifest.rc
+endif
+
 noinst_HEADERS = \
 			CppCheck.h \
 			CppCheckListLog.h \
 			ConfigPanel.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			wxsmith

@@ -1,8 +1,11 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
-			-I$(srcdir)/../wxContribItems/wxthings/include
+			-I../wxContribItems/wxthings/include
 
 if CODEBLOCKS_NT_BUILD_INSTALLER
 pluginlibdir = $(pkgdatadir)/plugins
@@ -43,6 +46,11 @@ libThreadSearch_la_SOURCES = \
 			ThreadSearchViewManagerBase.cpp \
 			ThreadSearchViewManagerLayout.cpp \
 			ThreadSearchViewManagerMessagesNotebook.cpp
+
+if CODEBLOCKS_NT
+libThreadSearch_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			DirectoryParamsPanel.h \
@@ -296,11 +304,10 @@ imagesForZip = \
 	resources/images/64x64/workspaceselected.png
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/ThreadSearch.wxg \
-			$(srcdir)/update* \
-			$(srcdir)/manifest.xml \
-			$(srcdir)/resources/ThreadSearch.xcf \
+			*.cbp \
+			ThreadSearch.wxg \
+			manifest.xml \
+			resources/ThreadSearch.xcf \
 			$(imagesForZip)
 
 pkgdata_DATA = \
@@ -310,9 +317,9 @@ CLEANFILES = \
 
 ThreadSearch.zip: manifest.xml $(imagesForZip)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/ThreadSearch.zip manifest.xml > /dev/null
-	PWD=`pwd` cd $(srcdir)/resources && \
+	PWD=`pwd` cd resources && \
 		zip $(PWD)/ThreadSearch.zip $(imagesForZip:resources/images/%=images/%) > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 dist_confimages_DATA = \
-			$(srcdir)/resources/*.png
+			resources/*.png

@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -29,6 +32,11 @@ libbyogames_la_SOURCES = \
 			byoconf.cpp \
 			byosnake.cpp
 
+if CODEBLOCKS_NT
+libbyogames_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			byogameselect.h \
 			byocbtris.h \
@@ -39,8 +47,8 @@ noinst_HEADERS = \
 			byosnake.h
 
 EXTRA_DIST = \
-			$(srcdir)/wxsmith/*.wxs \
-			$(srcdir)/*.cbp \
+			wxsmith/*.wxs \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

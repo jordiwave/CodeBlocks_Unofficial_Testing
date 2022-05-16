@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -36,6 +39,11 @@ libenvvars_la_SOURCES = \
 			envvars_common.cpp \
 			envvars_prjoptdlg.cpp
 
+if CODEBLOCKS_NT
+libenvvars_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			envvars.h \
 			envvars_cfgdlg.h \
@@ -43,7 +51,7 @@ noinst_HEADERS = \
 			envvars_prjoptdlg.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			envvars.xrc \
 			project_settings.xrc \
 			manifest.xml

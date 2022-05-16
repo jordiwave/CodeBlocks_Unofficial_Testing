@@ -1,5 +1,8 @@
 # SUBDIRS = bzip2
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -47,16 +50,19 @@ libModPoller_la_LIBADD = \
 			-lbz2 \
 			$(WX_LIBS)
 
-
 libModPoller_la_SOURCES = \
 			ModPoller.cpp
+
+if CODEBLOCKS_NT
+libModPoller_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			ModPoller.h
 
-
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

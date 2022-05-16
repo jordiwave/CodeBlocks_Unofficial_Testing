@@ -1,11 +1,14 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/plugins/contrib/wxSmith \
-			-I$(srcdir)/wxAuiManager \
-			-I$(srcdir)/wxAuiNotebook \
-			-I$(srcdir)/wxAuiToolBar
+			-IwxAuiManager \
+			-IwxAuiNotebook \
+			-IwxAuiToolBar
 
 if CODEBLOCKS_NT
 AM_CXXFLAGS = \
@@ -56,10 +59,10 @@ libwxSmithAui_la_LIBADD += \
 endif
 
 EXTRA_DIST = \
-			$(srcdir)/images/*.xpm \
-			$(srcdir)/images/*.xcf \
-			$(srcdir)/wxsmith/*.wxs \
-			$(srcdir)/*.cbp \
+			images/*.xpm \
+			images/*.xcf \
+			wxsmith/*.wxs \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \
@@ -85,6 +88,11 @@ libwxSmithAui_la_SOURCES = \
 			./wxAuiToolBar/wxsAuiToolBarSpacer.cpp \
 			./wxAuiToolBar/wxSmithAuiToolBar.cpp \
 			./wxSmithAui.cpp
+
+if CODEBLOCKS_NT
+libwxSmithAui_la_SOURCES += \
+			manifest.rc
+endif
 
 if !CODEBLOCKS_NT_BUILD_INSTALLER
 pkgconfigdir = $(libdir)/pkgconfig

@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -38,6 +41,11 @@ libBrowseTracker_la_SOURCES = \
 			JumpData.cpp \
 			btswitcherdlg.cpp
 
+if CODEBLOCKS_NT
+libBrowseTracker_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			BrowseTracker.h \
 			Version.h \
@@ -53,7 +61,7 @@ noinst_HEADERS = \
 
 resources_forZIP = \
 			BrowseTrackerToolbar.xrc \
-	manifest.xml \
+			manifest.xml \
 			images/16x16/mark_clear.png \
 			images/16x16/mark_next.png \
 			images/16x16/mark.png \
@@ -119,7 +127,7 @@ resources_forZIP = \
 			images/64x64/signpost.png
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			$(resources_forZIP)
 
 pkgdata_DATA = \

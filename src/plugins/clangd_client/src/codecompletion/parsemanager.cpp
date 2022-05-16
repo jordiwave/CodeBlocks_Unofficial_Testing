@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12317 $
- * $Id: ParseManager.cpp 12317 2021-05-03 12:58:43Z ollydbg $
- * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/ParseManager.cpp $
  */
 
 #include <sdk.h>
@@ -225,14 +222,9 @@ ParseManager::ParseManager(LSPEventCallbackHandler * pLSPEventSinkHandler) :
     m_LastResult(-1)
 {
     // parser used when no project is loaded, holds options etc
-    m_TempParser = new Parser(this, nullptr);
+    m_TempParser = new Parser(this, nullptr); // null pProject
     m_Parser     = m_TempParser;
-    ////    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
-    ////    m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
     m_ParserPerWorkspace = false; //(ph 2021/08/26)
-    ////    Connect(ParserCommon::idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ParseManager::OnParserStart));
-    ////    Connect(ParserCommon::idParserEnd,   wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ParseManager::OnParserEnd));
-    ////    Connect(idTimerParsingOneByOne,      wxEVT_TIMER,                 wxTimerEventHandler(ParseManager::OnParsingOneByOneTimer));
     m_pLSPEventSinkHandler = pLSPEventSinkHandler; //(ph 2021/10/23)
     // create Idle time CallbackHandler     //(ph 2021/09/27)
     IdleCallbackHandler * pIdleCallBackHandler = new IdleCallbackHandler();

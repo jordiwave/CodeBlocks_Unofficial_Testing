@@ -1,5 +1,8 @@
 SUBDIRS = depslib resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -79,6 +82,11 @@ libcompiler_la_SOURCES = \
 			compilerGNUFortran.cpp \
 			compilerXML.cpp \
 			directcommands.cpp
+
+if CODEBLOCKS_NT
+libcompiler_la_SOURCES += \
+			resources/manifest.rc
+endif
 
 noinst_HEADERS = \
 			advancedcompileroptionsdlg.h \

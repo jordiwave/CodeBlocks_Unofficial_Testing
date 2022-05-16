@@ -1,6 +1,9 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
-			-I$(srcdir)/include
+			-Iinclude
 
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
@@ -38,6 +41,11 @@ libwximagepanel_la_LIBADD = \
 
 libwximagepanel_la_SOURCES = \
 			src/wxImagePanel.cpp
+
+if CODEBLOCKS_NT
+libwximagepanel_la_SOURCES += \
+			manifest.rc
+endif
 
 sdkdir = $(includedir)/codeblocks/wxContribItems/wxImagePanel/include/wx
 

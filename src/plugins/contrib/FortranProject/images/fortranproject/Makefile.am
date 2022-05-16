@@ -4,4 +4,4 @@ pkgdatadir = $(datadir)/@PACKAGE@/images/fortranproject
 #pkgdatadir = $(cb_plugin_datadir)/images/fortranproject
 
 dist_pkgdata_DATA = \
-			$(srcdir)/*.f90 $(srcdir)/*.py $(srcdir)/*.dem
+			*.f90 *.py *.dem

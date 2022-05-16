@@ -306,6 +306,23 @@
 															<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>8</border>
 														</object>
+														<object class="sizeritem">
+															<object class="wxStaticText" name="ID_STATICTEXT_MTWC">
+																<label> Max parsing threads while compiling:</label>
+															</object>
+															<flag>wxALIGN_CENTER_VERTICAL</flag>
+															<border>5</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxSpinCtrl" name="spnParsersWhileCompiling">
+																<value>0</value>
+																<min>0</min>
+																<max>16</max>
+																<style>wxSP_ARROW_KEYS</style>
+															</object>
+															<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<border>8</border>
+														</object>
 													</object>
 													<flag>wxEXPAND</flag>
 													<border>5</border>

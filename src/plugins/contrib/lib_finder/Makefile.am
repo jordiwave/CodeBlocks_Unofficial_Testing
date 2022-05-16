@@ -1,11 +1,14 @@
 SUBDIRS = lib_finder
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
-			-I$(srcdir)/../wxContribItems/wxFlatNotebook/include \
+			-I../wxContribItems/wxFlatNotebook/include \
 			-I$(top_srcdir)/src/include/scripting/bindings
 
 if CODEBLOCKS_NT_BUILD_INSTALLER
@@ -49,6 +52,11 @@ liblib_finder_la_SOURCES = \
 			defsdownloaddlg.cpp \
 			lib_finder.cpp
 
+if CODEBLOCKS_NT
+liblib_finder_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			librariesdlg.h \
 			projectconfiguration.h \
@@ -68,11 +76,10 @@ noinst_HEADERS = \
 			projectconfigurationpanel.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/update* \
-	readme.txt \
-	manifest.xml \
-			$(srcdir)/wxsmith/*.wxs
+			*.cbp \
+			readme.txt \
+			manifest.xml \
+			wxsmith/*.wxs
 
 pkgdata_DATA = \
 			lib_finder.zip

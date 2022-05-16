@@ -62,4 +62,4 @@ compiler.zip: $(EXTRA_DIST)
 compilers_xmldir = $(datadir)/@PACKAGE@/compilers
 
 dist_compilers_xml_DATA = \
-			$(srcdir)/compilers/*.xml
+			compilers/*.xml

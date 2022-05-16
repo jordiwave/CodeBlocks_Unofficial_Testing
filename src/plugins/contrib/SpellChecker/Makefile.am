@@ -1,9 +1,12 @@
 SUBDIRS = wxspellchecker
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_HUNSPELL_CFLAGS) \
-			-I$(srcdir)/wxspellchecker/include \
+			-Iwxspellchecker/include \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
@@ -21,7 +24,7 @@ AM_CPPFLAGS += \
 			-DwxUSE_UNICODE \
 			-D_WIN64 \
 			-DHUNSPELL_STATIC \
-			-I$(srcdir)/wxspellchecker/include
+			-Iwxspellchecker/include
 endif
 
 if CODEBLOCKS_NT_BUILD_INSTALLER
@@ -71,6 +74,11 @@ libSpellChecker_la_SOURCES = \
 			mythes.cxx \
 			wxThes.cpp
 
+if CODEBLOCKS_NT
+libSpellChecker_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			DictionariesNeededDialog.h \
 			MySpellingDialog.h \
@@ -86,14 +94,13 @@ noinst_HEADERS = \
 			wxThes.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/*.xrc \
-			$(srcdir)/*.png \
+			*.cbp \
+			*.xrc \
+			*.png \
 			wxsmith \
 			hunspell \
 			dictionaries \
-			manifest.xml \
-			$(srcdir)/update*
+			manifest.xml
 
 pkgdata_DATA = \
 			SpellChecker.zip
@@ -107,11 +114,11 @@ SpellChecker.zip: manifest.xml SpellCheckSettingsPanel.xrc
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 
 dist_confimages_DATA = \
-			$(srcdir)/*.png
+			*.png
 
 onlinecheckerconfigdir = $(datadir)/@PACKAGE@/SpellChecker
 dist_onlinecheckerconfig_DATA = \
-			$(srcdir)/OnlineSpellChecking.xml
+			OnlineSpellChecking.xml
 
 onlinecheckerconfig_16dir = $(datadir)/@PACKAGE@/SpellChecker/16x16
 dist_onlinecheckerconfig_16_DATA = \

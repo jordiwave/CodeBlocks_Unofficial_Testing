@@ -3,7 +3,7 @@
     <SdkVersion major="2" minor="16" release="0" />
 	<Plugin name="ToDoList">
 		<Value title="Todo List" />
-		<Value version="0.2" />
+		<Value version="0.3.0" />
 		<Value description="Code::Blocks Todo List plugin" />
 		<Value author="Yiannis An. Mandravellos" />
 		<Value authorEmail="info@codeblocks.org" />

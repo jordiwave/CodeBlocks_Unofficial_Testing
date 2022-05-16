@@ -27,9 +27,9 @@ VS_VERSION_INFO        VERSIONINFO
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
       VALUE "Build",             "07-May-2022 SVN12803"
-      VALUE "Comments",          "Code Snippets allows you to create and save small pieces of code (snippets) for later use.  Documentation is available at the Code::Blocks Wiki at http://wiki.codeblocks.org/index.php?title=Code_Snippets_plugin."
-      VALUE "CompanyName",       "Arto Jonsson"
-      VALUE "Developer",         "Arto Jonsson"
+      VALUE "Comments",          "Code Snippets allows you to create and save small pieces of code (snippets) for later use."
+      VALUE "CompanyName",       "Original author: Arto Jonsson , Maintenance author:Pecan"
+      VALUE "Developer",         "Original author: Arto Jonsson , Maintenance author:Pecan"
       VALUE "FileVersion",       "0.3.2"
       VALUE "InternalName",      "CodeSnippets"
       VALUE "LegalCopyright",    "GPL"

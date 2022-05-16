@@ -17,8 +17,9 @@
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Add before="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip rm $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip" />
 
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip manifest.xml" />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip resources\manifest.xml" />
 
 					<Add after="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets" />
 					<Add after="cmd /c copy .\resources\*.png $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets\ > nul" />
@@ -80,14 +81,6 @@
 		<Unit filename="codesnippetstreectrl.h" />
 		<Unit filename="codesnippetswindow.cpp" />
 		<Unit filename="codesnippetswindow.h" />
-		<Unit filename="generic.Manifest" />
-		<Unit filename="generic.rc">
-			<Option compilerVar="WINDRES" />
-		</Unit>
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
-			<Option compilerVar="WINDRES" />
-		</Unit>
 		<Unit filename="menuidentifiers.h" />
 		<Unit filename="resources\Makefile.am" />
 		<Unit filename="resources\allsnippets.png" />
@@ -97,6 +90,10 @@
 		<Unit filename="resources\manifest.xml" />
 		<Unit filename="resources\options.png" />
 		<Unit filename="resources\optionsdisabled.png" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="resources\snippet.png" />
 		<Unit filename="resources\stop.png" />
 		<Unit filename="resources\stopdisabled.png" />
@@ -110,16 +107,10 @@
 		<Unit filename="snippetproperty.h" />
 		<Unit filename="snippetpropertyform.cpp" />
 		<Unit filename="snippetpropertyform.h" />
-		<Unit filename="snippetsconfig.cpp">
-			<Option weight="40" />
-		</Unit>
-		<Unit filename="snippetsconfig.h">
-			<Option weight="40" />
-		</Unit>
+		<Unit filename="snippetsconfig.cpp" />
+		<Unit filename="snippetsconfig.h" />
 		<Unit filename="snippetsimages.cpp" />
 		<Unit filename="snippetsimages.h" />
-		<Unit filename="update" />
-		<Unit filename="update30" />
 		<Unit filename="version.cpp" />
 		<Unit filename="version.h" />
 		<Extensions>

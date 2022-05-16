@@ -1,9 +1,8 @@
 SUBDIRS = wxchart wxFlatNotebook wxthings wxImagePanel wxSpeedButton KWIC wxled wxmathplot
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp
+			*.cbp
 
-if CODEBLOCKS_NT
 AM_CPPFLAGS = \
 			-DDLL_EXPORT \
 			-DHAVE_W32API_H \
@@ -11,7 +10,6 @@ AM_CPPFLAGS = \
 			-D_WIN64 \
 			-DWXUSINGDLL \
 			-DwxUSE_UNICODE
-endif
 
 if !CODEBLOCKS_NT_BUILD_INSTALLER
 pkgconfigdir = $(libdir)/pkgconfig

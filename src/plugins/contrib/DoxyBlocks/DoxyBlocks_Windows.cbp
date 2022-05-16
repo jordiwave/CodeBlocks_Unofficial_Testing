@@ -80,16 +80,14 @@
 		<Unit filename="ConfigPanel.h" />
 		<Unit filename="DoxyBlocks.cpp" />
 		<Unit filename="DoxyBlocks.h" />
-		<Unit filename="DoxyBlocks.rc">
-			<Option compilerVar="WINDRES" />
-		</Unit>
 		<Unit filename="DoxyBlocksLogger.cpp" />
 		<Unit filename="DoxyBlocksLogger.h" />
 		<Unit filename="Expressions.h" />
 		<Unit filename="ExtractDocs.cpp" />
+		<Unit filename="manifest.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="manifest.xml" />
-		<Unit filename="update" />
-		<Unit filename="update30" />
 		<Unit filename="wxsmith\ConfigPanel.wxs" />
 		<Extensions>
 			<AutoVersioning>

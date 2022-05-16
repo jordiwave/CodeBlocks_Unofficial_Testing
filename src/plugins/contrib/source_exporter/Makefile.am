@@ -1,5 +1,8 @@
 SUBDIRS = wxPdfDocument
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_FONTCONFIG_CFLAGS) \
@@ -42,6 +45,11 @@ libexporter_la_SOURCES = \
 			PDFExporter.cpp \
 			RTFExporter.cpp
 
+if CODEBLOCKS_NT
+libexporter_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			BaseExporter.h \
 			exporter.h \
@@ -51,10 +59,12 @@ noinst_HEADERS = \
 			RTFExporter.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp manifest.xml
+			*.cbp \
+			manifest.xml
 
 pkgdata_DATA = \
 			exporter.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 

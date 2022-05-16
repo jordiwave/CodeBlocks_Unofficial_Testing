@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(WX_GTK_CFLAGS) \
@@ -46,6 +49,11 @@ libcodesnippets_la_SOURCES = \
 			snippetsimages.cpp \
 			version.cpp
 
+if CODEBLOCKS_NT
+libcodesnippets_la_SOURCES += \
+			resources/manifest.rc
+endif
+
 noinst_HEADERS = \
 			codesnippets.h \
 			codesnippetstreectrl.h \
@@ -67,13 +75,10 @@ man_MANS = \
 			codesnippets.1
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			generic.rc \
-			generic.Manifest \
-			$(srcdir)/update* \
+			*.cbp \
 			readme.html \
 			license.txt \
-			manifest.xml \
+			resources/manifest.xml \
 			$(man_MANS)
 endif
 

@@ -421,7 +421,7 @@ class ParseManager : public wxEvtHandler, private ParseManagerBase
         void SetCBViewMode(const BrowserViewMode & mode);
 
     private:
-        friend class CodeCompletion;
+        friend class ClgdCompletion;
 
         ////    /** Start an Artificial Intelligence search algorithm to gather all the matching tokens.
         ////     * The actual AI is in FindAIMatches() below.

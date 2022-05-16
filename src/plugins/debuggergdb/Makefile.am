@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -52,6 +55,11 @@ libdebugger_la_SOURCES = \
 			gdb_driver.cpp \
 			parsewatchvalue.cpp
 
+if CODEBLOCKS_NT
+libdebugger_la_SOURCES += \
+			resources/manifest.rc
+endif
+
 noinst_HEADERS = \
 			cdb_commands.h \
 			cdb_driver.h \
@@ -76,5 +84,5 @@ EXTRA_DIST = \
 			debuggergdb_test_main.cpp \
 			debuggergdb_test_parser.cpp \
 			debuggergdb_test_parser_cdb.cpp \
-			$(srcdir)/*.cbp
+			*.cbp
 

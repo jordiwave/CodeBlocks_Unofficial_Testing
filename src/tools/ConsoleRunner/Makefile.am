@@ -1,6 +1,9 @@
 bin_PROGRAMS = cb_console_runner
 
 if CODEBLOCKS_NT
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = -D__WXMSW__
 endif
 

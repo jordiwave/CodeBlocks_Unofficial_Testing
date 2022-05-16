@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -28,6 +31,11 @@ libAstyle_la_SOURCES = \
 			astyleplugin.cpp \
 			dlgformattersettings.cpp \
 			formattersettings.cpp
+
+if CODEBLOCKS_NT
+libAstyle_la_SOURCES += \
+			resources/manifest.rc
+endif
 
 noinst_HEADERS = \
 			asstreamiterator.h \

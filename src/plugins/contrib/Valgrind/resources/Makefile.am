@@ -1,6 +1,6 @@
 EXTRA_DIST = \
 			manifest.xml \
-			$(srcdir)/images/*.png
+			images/*.png
 
 pkgdata_DATA = \
 			Valgrind.zip
@@ -13,4 +13,4 @@ Valgrind.zip: manifest.xml
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 
 dist_confimages_DATA = \
-			$(srcdir)/images/*.png
+			images/*.png

@@ -4,7 +4,7 @@ if !CODEBLOCKS_NT_BUILD_INSTALLER
 
 desktopdir = $(datadir)/applications
 desktop_DATA = \
-			$(srcdir)/codeblocks.desktop
+			codeblocks.desktop
 
 xdgmimedir = $(datadir)/mime/packages
 xdgmime_DATA = \
@@ -12,12 +12,12 @@ xdgmime_DATA = \
 
 mimeicondir = $(datadir)/icons/hicolor/48x48/mimetypes
 mimeicon_DATA = \
-			$(srcdir)/application-x-codeblocks.png \
-			$(srcdir)/application-x-codeblocks-workspace.png
+			application-x-codeblocks.png \
+			application-x-codeblocks-workspace.png
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = \
-			$(srcdir)/codeblocks.png
+			codeblocks.png
 
 EXTRA_DIST = \
 			$(desktop_DATA) \

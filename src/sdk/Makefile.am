@@ -1,6 +1,9 @@
 SUBDIRS = scripting wxscintilla resources
 DIST_SUBDIRS = scripting wxscintilla resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_GLIB2_CFLAGS) \
@@ -178,6 +181,11 @@ libcodeblocks_la_SOURCES = \
 			mozilla_chardet/src/nsSJISProber.cpp \
 			mozilla_chardet/src/nsUniversalDetector.cpp \
 			mozilla_chardet/src/nsUTF8Prober.cpp
+
+if CODEBLOCKS_NT
+libcodeblocks_la_SOURCES += \
+			resources/resources.rc
+endif
 
 EXTRA_DIST = \
 			mozilla_chardet/include/CharDistribution.h \

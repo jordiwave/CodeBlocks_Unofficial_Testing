@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -47,3 +50,9 @@ libwxsmith_la_LIBADD = \
 
 libwxsmith_la_SOURCES = \
 			wxsmithpluginregistrants.cpp
+
+if CODEBLOCKS_NT
+libwxsmith_la_SOURCES += \
+			manifest.rc
+endif
+

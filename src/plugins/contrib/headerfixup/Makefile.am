@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -30,6 +33,11 @@ libheaderfixup_la_SOURCES = \
 			helper.cpp \
 			protocol.cpp
 
+if CODEBLOCKS_NT
+libheaderfixup_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			bindings.h \
 			configuration.h \
@@ -40,7 +48,7 @@ noinst_HEADERS = \
 			protocol.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			wxsmith/configuration.wxs \
 			wxsmith/execution.wxs \
 			wxsmith/protocol.wxs \

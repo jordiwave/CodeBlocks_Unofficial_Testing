@@ -54,7 +54,7 @@ class DocumentationHelper;
  *  http://wiki.codeblocks.org/index.php?title=Code_Completion_Design
  */
 // ----------------------------------------------------------------------------
-class CodeCompletion : public cbCodeCompletionPlugin
+class ClgdCompletion : public cbCodeCompletionPlugin
 // ----------------------------------------------------------------------------
 {
     public:
@@ -93,9 +93,9 @@ class CodeCompletion : public cbCodeCompletionPlugin
         typedef std::map<wxString, FunctionsScopePerFile> FunctionsScopeMap;
 
         /** Constructor */
-        CodeCompletion();
+        ClgdCompletion();
         /** Destructor */
-        ~CodeCompletion() override;
+        ~ClgdCompletion() override;
 
         // the function below were virtual functions from the base class
         void OnAttach() override;
@@ -272,6 +272,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnCompilerStarted(CodeBlocksEvent & event);
         void OnCompilerFinished(CodeBlocksEvent & event);
 
+        void OnEditorActivatedCallback(wxString filename); //(ph 2022/04/25)
+
         /** CC's own logger, to handle log events sent from other worker threads or itself(the main GUI
          * thread), the log messages will be printed in the "Code::Blocks" log panel.
          */
@@ -360,8 +362,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnToolbarTimer(wxCommandEvent & event);
 
         /** delayed running of editor activated event, only the last activated editor should be considered */
-        //-void OnEditorActivatedTimer(wxTimerEvent& event);
-        void OnEditorActivatedCallback(wxCommandEvent & event);
+        //-old- void OnEditorActivatedTimer(wxTimerEvent& event);
+        void NotifyParserEditorActivated(wxCommandEvent & event);
 
         /** Indicates CC's initialization is done */
         bool                    m_InitDone;

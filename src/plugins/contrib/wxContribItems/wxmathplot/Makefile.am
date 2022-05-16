@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS)
 
@@ -38,6 +41,11 @@ libwxmathplot_la_LIBADD = \
 
 libwxmathplot_la_SOURCES = \
 			./mathplot.cpp
+
+if CODEBLOCKS_NT
+libwxmathplot_la_SOURCES += \
+			manifest.rc
+endif
 
 sdkdir = $(includedir)/codeblocks/wxContribItems/wxMathPlot
 

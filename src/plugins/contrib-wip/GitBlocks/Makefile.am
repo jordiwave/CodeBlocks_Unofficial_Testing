@@ -1,8 +1,12 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
 
 cb_plugin_lib_LTLIBRARIES = \
 			GitBlocks.la
+
 cb_plugin_data_DATA = \
 			GitBlocks.zip GitBlocks.cbplugin
+
 CLEANFILES = \
 			GitBlocks.zip GitBlocks.cbplugin
 
@@ -15,6 +19,11 @@ GitBlocks_la_SOURCES = \
 			src/RemoveDialog.cpp \
 			src/SwitchBranchDialog.cpp \
 			src/SetUserDialog.cpp
+
+if CODEBLOCKS_NT
+GitBlocks_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			include/CloneDialog.h \

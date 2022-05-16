@@ -1,5 +1,8 @@
 bin_PROGRAMS = cb_share_config
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_GLIB2_CFLAGS) \
@@ -25,7 +28,7 @@ man_MANS = \
 			cb_share_config.1
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/wxsmith/*.wxs \
+			*.cbp \
+			wxsmith/*.wxs \
 			$(man_MANS)
 endif

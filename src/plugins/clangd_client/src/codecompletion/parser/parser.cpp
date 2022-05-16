@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 11505 $
- * $Id: parser.cpp 11505 2018-10-20 14:29:48Z ollydbg $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/parser/parser.cpp $
  */
 
 #include <sdk.h>
@@ -989,9 +986,22 @@ void Parser::OnLSP_BatchTimer(cb_unused wxTimerEvent & event)           //(ph 20
     }
 
     parallel_parsing = std::min(parallel_parsing, m_cfg_parallel_processes);
+    int max_parsers_while_compiling = std::min(parallel_parsing, m_cfg_max_parsers_while_compiling);
     // ** Debbuging ** //(ph 2021/09/15)
     //wxString msg = wxString::Format("LSP Parsing stat: parsing(%d) of allowed(%d)",int(pClient->LSP_GetServerFilesParsingCount()), parallel_parsing );
     //pLogMgr->DebugLog(msg);
+
+    // If compiler is busy, check for max allowed parsers running while compiling. (user may have set max==zero) //(ph 2022/04/25)
+    if (GetParseManager()->IsCompilerRunning())
+    {
+        if (int(pClient->LSP_GetServerFilesParsingCount()) >= max_parsers_while_compiling)
+        {
+            // server is parsing max files allowed while compiler is busy.
+            TRACE(wxString::Format("Parser::OnBatchTimer(): Starting m_BatchTimer(Line:%d).", __LINE__));
+            m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY_LONG, wxTIMER_ONE_SHOT);
+            return;
+        }
+    }
 
     if (int(pClient->LSP_GetServerFilesParsingCount()) >= parallel_parsing)
     {
@@ -1166,8 +1176,8 @@ void Parser::ReadOptions()
     wxUnusedVar(ft_dummy);
     // Max number of parallel files allowed to parse
     m_cfg_parallel_processes = std::max(cfg->ReadInt("/max_threads", 1), 1);  //don't allow 0
+    m_cfg_max_parsers_while_compiling = std::min(cfg->ReadInt("/max_parsers_while_compiling", 0), m_cfg_parallel_processes);  //(ph 2022/04/25)
 }
-
 // ----------------------------------------------------------------------------
 void Parser::WriteOptions()
 // ----------------------------------------------------------------------------
@@ -1290,7 +1300,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
 
     if (not GetLSPClient())
     {
-        return;
+        return;    //being paranoid again
     }
 
     wxString lastLSP_Request = GetLSPClient()->GetLastLSP_Request(cbFilename);
@@ -1323,7 +1333,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
     if (not pParser)
     {
         wxString msg;
-        msg << "Error:" << __FUNCTION__;
+        msg << "Error: Missing Parser " << __FUNCTION__;
         msg << wxString::Format("Project:%s, Parser:%p,\nFilename:%s", pProject->GetTitle(), pParser, cbFilename);
         cbMessageBox(msg, "Error");
         msg.Replace("\n", " ");
@@ -1358,9 +1368,10 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
     }
 
     // ----------------------------------------------------------------------------
-    // If this file belongs to the Proxy Poject of non-project files, return //(ph 2022/03/30)
+    // If this file belongs to the Proxy Poject of non-project files, return. //(ph 2022/03/30)
     // We do this to avoid massive textdocument/diagnostics errors on external files
     // because they were parsed/compiled by clangd with this projects compiler settings
+    // which may have nothing to do with an external file for which we have no compile info.
     // ----------------------------------------------------------------------------
     if (pProject == GetParseManager()->GetProxyProject())
     {
@@ -1372,7 +1383,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         return;    //editor has file not belonging to the active project.
     }
 
-    if (not pEditor)    // Background parsing response has no editor associated
+    if (not pEditor)    // Background parsing response has no associated editor.
     {
         FileType filetype = FileTypeOf(cbFilename);
 
@@ -1394,7 +1405,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
             }
         }
 
-        // This is a background parse response for files not open in an editor
+        // This is a background parse response for files not open in an editor.
         // Issue request for textDocument/documentSymbol to update TokenTree     //(ph 2021/03/16)
         if (pProject and pProject->GetFileByFilename(cbFilename, false) and wxFileExists(cbFilename))
         {
@@ -1418,6 +1429,9 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         return;
     }
 
+    // ------------------------------------------------
+    //  Display diagnostics from json response
+    // ------------------------------------------------
     // get diagnostics array of
     //  range{start{line,character}{end{line,character}},
     //  serverity(int),code(int),source(string),message(string),relatedInformation[]
@@ -1452,7 +1466,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         cbMessageBox(msg);
     }
 
-    // fetch diagnostic messages the user has set to ignore;
+    // fetch diagnostic messages the user has set to ignore; (set with right-click on LSP messages log)
     wxArrayString & rIgnoredDiagnostics = GetLSPClient()->GetLSP_IgnoredDiagnostics();
     wxArrayString  aLogLinesToWrite;
     const char STX = '\u0002'; //start-of-text char used as string separator
@@ -1524,9 +1538,11 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
             aLogLinesToWrite.Add(STX + LSPdiagnostic[0] + STX + LSPdiagnostic[1] + STX + LSPdiagnostic[2]);
         }//endfor diagnosticsKnt
 
+        // ------------------------------------------------------
         // Always put out a log message even if zero diagnostics
+        // ------------------------------------------------------
         {
-            // <=== Inner block
+            // <=== Inner block ctor
             //write a separator line to the log and clear syntax error marks from this editor
             wxString timeHMSM =  GetLSPClient() ? GetLSPClient()->LSP_GetTimeHMSM() : "";
             wxString msg = "----Time: " + timeHMSM + "----";
@@ -1554,15 +1570,18 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
             {
                 pEditor->SetErrorLine(-1);
             }
-        }
+        }// <== Inner block dtor
 
+        // ------------------------------------------------------
+        // Write error messages to LSP messages log
+        // ------------------------------------------------------
         for (size_t ii = 0; ii < aLogLinesToWrite.GetCount(); ++ii)
         {
             LSPdiagnostic.Clear();
             LSPdiagnostic = GetArrayFromString(aLogLinesToWrite[ii], wxString(STX));
             //write msg to log
             GetLSPClient()->LSP_GetLog()->Append(LSPdiagnostic);
-            // Mark the line if in error ('notes' read like error to me)
+            // Mark the line if in error ('notes' reads like an error to me)
             int diagLine = std::stoi(LSPdiagnostic[1].ToStdString());
             EditorBase * pEb = Manager::Get()->GetEditorManager()->GetEditor(cbFilename);
             cbEditor * pEd = nullptr;
@@ -1587,7 +1606,8 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
     }
 
     // If new log lines were posted above, focus the log separator line for this editor
-    if (diagnosticsKnt and (logFocusLine > 0))
+    //-if (diagnosticsKnt and (logFocusLine > 0) )
+    if (diagnosticsKnt or (logFocusLine > 0))
     {
         // focus the log to these diagnostics' separator line
         // Dont steal focus from popup windows
@@ -1613,7 +1633,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
             {
                 default:
 
-                    // switch to LSP messages only when user used "save"
+                    // switch to LSP messages log tab only when user used "save"
                     if (not GetLSPClient()->GetSaveFileEventOccured())
                     {
                         break;

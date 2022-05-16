@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -24,15 +27,20 @@ libEditorTweaks_la_SOURCES = \
 			EditorTweaks.cpp \
 			EditorTweaksConfDlg.cpp
 
+if CODEBLOCKS_NT
+libEditorTweaks_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			EditorTweaks.h \
 			EditorTweaksConfDlg.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			EditorTweaksConfDlg.xrc \
 			manifest.xml \
-			$(srcdir)/wxsmith/*.wxs
+			wxsmith/*.wxs
 
 pkgdata_DATA = \
 			EditorTweaks.zip

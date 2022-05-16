@@ -1,3 +1,7 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -30,6 +34,11 @@ libSmartIndentHDL_la_LIBADD = \
 libSmartIndentHDL_la_SOURCES = \
 			SmartIndentHDL.cpp
 
+if CODEBLOCKS_NT
+libSmartIndentHDL_la_SOURCES += \
+			manifest_hdl.rc
+endif
+
 libSmartIndentPascal_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
 			-version-info 0:1:0 \
@@ -42,6 +51,10 @@ libSmartIndentPascal_la_LIBADD = \
 
 libSmartIndentPascal_la_SOURCES = \
 			SmartIndentPascal.cpp
+if CODEBLOCKS_NT
+libSmartIndentPascal_la_SOURCES += \
+			manifest_pascal.rc
+endif
 
 libSmartIndentCpp_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
@@ -55,6 +68,10 @@ libSmartIndentCpp_la_LIBADD = \
 
 libSmartIndentCpp_la_SOURCES = \
 			SmartIndentCpp.cpp
+if CODEBLOCKS_NT
+libSmartIndentCpp_la_SOURCES += \
+			manifest_cpp.rc
+endif
 
 libSmartIndentPython_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
@@ -68,6 +85,10 @@ libSmartIndentPython_la_LIBADD = \
 
 libSmartIndentPython_la_SOURCES = \
 			SmartIndentPython.cpp
+if CODEBLOCKS_NT
+libSmartIndentPython_la_SOURCES += \
+			manifest_python.rc
+endif
 
 libSmartIndentLua_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
@@ -81,6 +102,10 @@ libSmartIndentLua_la_LIBADD = \
 
 libSmartIndentLua_la_SOURCES = \
 			SmartIndentLua.cpp
+if CODEBLOCKS_NT
+libSmartIndentLua_la_SOURCES += \
+			manifest_lua.rc
+endif
 
 libSmartIndentFortran_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
@@ -94,6 +119,10 @@ libSmartIndentFortran_la_LIBADD = \
 
 libSmartIndentFortran_la_SOURCES = \
 			SmartIndentFortran.cpp
+if CODEBLOCKS_NT
+libSmartIndentFortran_la_SOURCES += \
+			manifest_fortran.rc
+endif
 
 libSmartIndentXML_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
@@ -107,6 +136,10 @@ libSmartIndentXML_la_LIBADD = \
 
 libSmartIndentXML_la_SOURCES = \
 			SmartIndentXML.cpp
+if CODEBLOCKS_NT
+libSmartIndentXML_la_SOURCES += \
+			manifest_xml.rc
+endif
 
 noinst_HEADERS = \
 			SmartIndentHDL.h \
@@ -118,7 +151,7 @@ noinst_HEADERS = \
 			SmartIndentXML.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest_hdl.xml \
 			manifest_pascal.xml \
 			manifest_cpp.xml \

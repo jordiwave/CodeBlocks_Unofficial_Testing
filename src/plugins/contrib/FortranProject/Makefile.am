@@ -4,6 +4,9 @@ if !CODEBLOCKS_NT
 ACLOCAL_AMFLAGS = --install -I m4
 endif
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -96,6 +99,11 @@ libFortranProject_la_SOURCES = \
 			workspacebrowserf.cpp \
 			workspaceparserthread.cpp
 
+if CODEBLOCKS_NT
+libFortranProject_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			adddirparserthread.h \
 			autoinsert.h \
@@ -143,7 +151,7 @@ noinst_HEADERS = \
 			workspaceparserthread.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			wxsmith/Bindto.wxs \
 			wxsmith/BindNewType.wxs \
 			wxsmith/FormatIndentDlg.wxs \
@@ -155,8 +163,8 @@ EXTRA_DIST = \
 			resources/project_settings_fortran.xrc \
 			resources/settings.xrc \
 			resources/tab2space.xrc \
-			resources/workspacebrowserf.xrc \
-			update*
+			resources/workspacebrowserf.xrc
+
 #			images/16x16/*.png \
 #			images/20x20/*.png \
 #			images/24x24/*.png \

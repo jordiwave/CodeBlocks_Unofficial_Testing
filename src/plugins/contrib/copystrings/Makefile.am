@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -24,11 +27,16 @@ libcopystrings_la_LIBADD = \
 libcopystrings_la_SOURCES = \
 			copystrings.cpp
 
+if CODEBLOCKS_NT
+libcopystrings_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			copystrings.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

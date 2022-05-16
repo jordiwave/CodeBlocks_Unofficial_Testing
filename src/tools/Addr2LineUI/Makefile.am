@@ -1,6 +1,9 @@
 # only used for CODEBLOCKS_NT
 bin_PROGRAMS = Addr2LineUI
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-Wall \

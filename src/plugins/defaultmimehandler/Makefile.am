@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -34,6 +37,11 @@ libdefaultmimehandler_la_SOURCES = \
 			defaultmimehandler.cpp \
 			editmimetypesdlg.cpp \
 			EmbeddedHtmlPanel.cpp
+
+if CODEBLOCKS_NT
+libdefaultmimehandler_la_SOURCES += \
+			resources/manifest.rc
+endif
 
 noinst_HEADERS = \
 			defaultmimehandler.h \

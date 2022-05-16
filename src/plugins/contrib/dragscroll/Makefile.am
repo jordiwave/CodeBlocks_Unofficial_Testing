@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -26,13 +29,18 @@ libdragscroll_la_SOURCES = \
 			dragscrollcfg.cpp \
 			dragscrollevent.cpp
 
+if CODEBLOCKS_NT
+libdragscroll_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			dragscroll.h \
 			dragscrollcfg.h \
 			dragscrollevent.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

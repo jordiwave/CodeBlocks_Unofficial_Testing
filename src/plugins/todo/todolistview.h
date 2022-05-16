@@ -19,6 +19,7 @@ class wxComboBox;
 class wxButton;
 class wxPanel;
 class wxStaticText;
+class wxCheckBox;
 
 // when user click the "Types" button on the Todo list control panel, it will show a dialog, the
 // dialog can let user to filter which types will be shown in the Todo list.
@@ -34,6 +35,8 @@ class CheckListDialog : public wxDialog
         ~CheckListDialog();
 
         virtual void OkOnButtonClick(wxCommandEvent & event);
+        virtual void OnAllClick(wxCommandEvent & event);
+        virtual void OnListCheck(wxCommandEvent & event);
 
         void AddItem(const wxArrayString & items)
         {
@@ -51,6 +54,7 @@ class CheckListDialog : public wxDialog
     protected:
         wxCheckListBox * m_checkList;
         wxButton    *   m_okBtn;
+        wxCheckBox   *  m_checkAll;
 
     private:
 };
@@ -124,6 +128,8 @@ class ToDoListView : public wxEvtHandler, public ListCtrlLogger
         // user filter, we can show only the specified todo items belongs to a single user
         wxComboBox     *     m_pUser;
         wxStaticText    *    m_pTotal;
+
+        wxArrayString        m_allowedTypes; /**< Allowed types for the current parser run. This variable has to be updated before running the parser function */
 
         // type string array: such as  todo, readme, note, fixme, and so on
         const wxArrayString & m_Types;

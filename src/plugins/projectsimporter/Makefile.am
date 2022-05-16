@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -37,6 +40,11 @@ libprojectsimporter_la_SOURCES = \
 			msvcloader.cpp \
 			msvcworkspacebase.cpp \
 			msvcworkspaceloader.cpp
+
+if CODEBLOCKS_NT
+libprojectsimporter_la_SOURCES += \
+			resources/manifest.rc
+endif
 
 noinst_HEADERS = \
 			projectsimporter.h \

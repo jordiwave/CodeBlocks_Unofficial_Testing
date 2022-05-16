@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -24,11 +27,16 @@ librndgen_la_LIBADD = \
 librndgen_la_SOURCES = \
 			rndgen.cpp
 
+if CODEBLOCKS_NT
+librndgen_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			rndgen.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

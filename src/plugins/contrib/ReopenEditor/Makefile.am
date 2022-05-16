@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -26,15 +29,20 @@ libReopenEditor_la_SOURCES = \
 			ReopenEditorConfDLg.cpp \
 			ReopenEditorListView.cpp
 
+if CODEBLOCKS_NT
+libReopenEditor_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			ReopenEditor.h \
 			ReopenEditorConfDLg.h \
 			ReopenEditorListView.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/*.xrc \
-			$(srcdir)/wxsmith/*.wxs \
+			*.cbp \
+			*.xrc \
+			wxsmith/*.wxs \
 			manifest.xml
 
 pkgdata_DATA = \

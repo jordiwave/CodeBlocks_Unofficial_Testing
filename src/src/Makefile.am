@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -29,7 +32,7 @@ bin_PROGRAMS = codeblocks
 # wxMac resource fork/unbundled app
 install-exec-hook:
 			$(POSTLINK_COMMAND) $(DESTDIR)$(bindir)/codeblocks$(EXEEXT) \
-			$(srcdir)/resources/icons/app.r
+			resources/icons/app.r
 			$(MACSETFILE) -a C $(DESTDIR)$(bindir)/codeblocks$(EXEEXT)
 
 if CODEBLOCKS_NT

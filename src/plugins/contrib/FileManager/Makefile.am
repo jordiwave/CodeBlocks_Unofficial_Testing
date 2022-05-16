@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_GAMIN_CFLAGS) \
@@ -33,6 +36,11 @@ libFileManager_la_SOURCES = \
 			directorymonitor.cpp \
 			se_globals.cpp
 
+if CODEBLOCKS_NT
+libFileManager_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			FileManager.h \
 			FileExplorer.h \
@@ -43,10 +51,10 @@ noinst_HEADERS = \
 			se_globals.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/Resources/fileexplorersettings.xrc \
-			$(srcdir)/Resources/CommitBrowser.xrc \
-			$(srcdir)/manifest.xml
+			*.cbp \
+			Resources/fileexplorersettings.xrc \
+			Resources/CommitBrowser.xrc \
+			manifest.xml
 
 pkgdata_DATA = \
 			FileManager.zip

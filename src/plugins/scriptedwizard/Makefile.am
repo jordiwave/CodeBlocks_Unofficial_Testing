@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -33,6 +36,11 @@ libscriptedwizard_la_SOURCES = \
 			projectpathpanel.cpp \
 			wiz.cpp \
 			wizpage.cpp
+
+if CODEBLOCKS_NT
+libscriptedwizard_la_SOURCES += \
+			resources/manifest.rc
+endif
 
 noinst_HEADERS = \
 			buildtargetpanel.h \

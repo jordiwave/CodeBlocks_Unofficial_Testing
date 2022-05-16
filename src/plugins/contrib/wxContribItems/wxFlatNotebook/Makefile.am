@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(srcdir)/include
@@ -44,6 +47,11 @@ libwxflatnotebook_la_SOURCES = \
 			./src/wxFlatNotebook/renderer.cpp \
 			./src/wxFlatNotebook/wxFlatNotebook.cpp \
 			./src/wxFlatNotebook/xh_fnb.cpp
+
+if CODEBLOCKS_NT
+libwxflatnotebook_la_SOURCES += \
+			manifest.rc
+endif
 
 sdkdir = $(includedir)/codeblocks/wxContribItems/wxFlatNotebook/include/wx/wxFlatNotebook
 

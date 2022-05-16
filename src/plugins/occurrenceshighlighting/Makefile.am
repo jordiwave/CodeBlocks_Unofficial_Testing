@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -29,6 +32,11 @@ liboccurrenceshighlighting_la_SOURCES = \
 			occurrencespanel.cpp \
 			occurrenceshighlightingconfigurationpanel.cpp \
 			highlighter.cpp
+
+if CODEBLOCKS_NT
+liboccurrenceshighlighting_la_SOURCES += \
+			resources/manifest.rc
+endif
 
 noinst_HEADERS = \
 			occurrenceshighlighting.h \

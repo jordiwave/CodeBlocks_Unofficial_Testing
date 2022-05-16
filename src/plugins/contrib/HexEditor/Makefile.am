@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -40,6 +43,11 @@ libHexEditor_la_SOURCES = \
 			SelectStoredExpressionDlg.cpp \
 			TestCasesDlg.cpp
 
+if CODEBLOCKS_NT
+libHexEditor_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			CharacterView.h \
 			DigitView.h \
@@ -67,7 +75,7 @@ EXTRA_DIST = \
 			wxsmith/SearchDialog.wxs \
 			wxsmith/SelectStoredExpressionDlg.wxs \
 			wxsmith/TestCasesDlg.wxs \
-					$(srcdir)/*.cbp \
+					*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

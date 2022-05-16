@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -33,12 +36,16 @@ libValgrind_la_SOURCES = \
 			ValgrindListLog.cpp \
 			valgrind_config.cpp
 
+if CODEBLOCKS_NT
+libValgrind_la_SOURCES += \
+			resources/manifest.rc
+endif
+
 noinst_HEADERS = \
 			Valgrind.h \
 			ValgrindListLog.h \
 			valgrind_config.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/update* \
+			*.cbp \
 			wxsmith/valgrind_config_panel.wxs

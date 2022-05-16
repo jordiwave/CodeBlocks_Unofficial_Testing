@@ -292,6 +292,7 @@ class CCTree
  *  When the thread is started, it is waiting for the semaphore, and once the GUI post the semaphore
  *  the builder will do the dirty job, once finished, it will wait again.
  */
+
 // ----------------------------------------------------------------------------
 class ClassBrowserBuilderThread : public wxThread
 // ----------------------------------------------------------------------------
@@ -430,7 +431,7 @@ class ClassBrowserBuilderThread : public wxThread
          * that only one thread can access to those member variables.
          */
 
-        wxMutex          m_ClassBrowserBuilderThreadMutex;
+        static wxMutex   m_ClassBrowserBuilderThreadMutex; //(ph 2022/05/5)
         ParseManager  *  m_ParseManager;
 
         /** pointers to the CCTree */

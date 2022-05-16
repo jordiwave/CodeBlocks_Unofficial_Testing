@@ -12,13 +12,13 @@
 #include "parsemanager.h"
 #include "parser/parser.h"
 
-class CodeCompletion;
+class ClgdCompletion;
 class DocumentationHelper;
 
 class CCOptionsDlg : public cbConfigurationPanel
 {
     public:
-        CCOptionsDlg(wxWindow * parent, ParseManager * np, CodeCompletion * cc, DocumentationHelper * dh);
+        CCOptionsDlg(wxWindow * parent, ParseManager * np, ClgdCompletion * cc, DocumentationHelper * dh);
         ~CCOptionsDlg() override;
 
         wxString GetTitle() const override
@@ -49,7 +49,7 @@ class CCOptionsDlg : public cbConfigurationPanel
         bool ValidateReplacementToken(wxString & from, wxString & to);
 
         ParseManager    *    m_ParseManager;
-        CodeCompletion   *   m_CodeCompletion;
+        ClgdCompletion   *   m_CodeCompletion;
         ParserBase     &     m_Parser;
         DocumentationHelper * m_Documentation;
         wxString             m_Old_LLVM_MasterPath = wxString();

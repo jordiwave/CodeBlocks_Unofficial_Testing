@@ -47,7 +47,9 @@ ProcUtils::~ProcUtils()
 {
 }
 
+// --------------------------------------------------------------
 void ProcUtils::GetProcTree(std::map<unsigned long, bool> & parentsMap, long pid)
+// --------------------------------------------------------------
 {
 #ifdef __WXMSW__
     OSVERSIONINFO osver ;
@@ -114,8 +116,9 @@ void ProcUtils::GetProcTree(std::map<unsigned long, bool> & parentsMap, long pid
     parentsMap[pid] = true;
 #endif
 }
-
+// --------------------------------------------------------------
 wxString ProcUtils::GetProcessNameByPid(long pid)
+// --------------------------------------------------------------
 {
 #ifdef __WXMSW__
     //go over the process modules and get the full path of
@@ -167,7 +170,12 @@ wxString ProcUtils::GetProcessNameByPid(long pid)
     return (cmd);
 #else
     wxArrayString output;
-    ExecuteCommand(wxT("ps -A -o pid,command --no-heading"), output);
+#if defined (__WXMAC__)
+    // Mac does not like the --no-heading...
+    ExecuteCommand(wxT("ps -A -o pid,command "), output);
+#else
+    ExecuteCommand(wxT("ps -A -o pid,command --no-heading"), output); //(ph 2022/05/11)
+#endif
 
     //parse the output and search for our process ID
     for (size_t i = 0; i < output.GetCount(); i++)
@@ -176,6 +184,12 @@ wxString ProcUtils::GetProcessNameByPid(long pid)
         //remove whitespaces
         line = line.Trim();
         line = line.Trim(false);
+
+        if (line.Contains("PID COMMAND")) //skip any heading //(ph 2022/05/10)
+        {
+            continue;
+        }
+
         //get the process ID
         wxString spid = line.BeforeFirst(wxT(' '));
         long cpid(0);
@@ -192,8 +206,9 @@ wxString ProcUtils::GetProcessNameByPid(long pid)
     return wxEmptyString;	//Not implemented yet
 #endif
 }
-
+// --------------------------------------------------------------
 void ProcUtils::ExecuteCommand(const wxString & command, wxArrayString & output, long flags)
+// --------------------------------------------------------------
 {
 #ifdef __WXMSW__
     wxExecute(command, output, flags);
@@ -212,13 +227,15 @@ void ProcUtils::ExecuteCommand(const wxString & command, wxArrayString & output,
     pclose(fp);
 #endif
 }
-
+// --------------------------------------------------------------
 void ProcUtils::ExecuteInteractiveCommand(const wxString & command)
+// --------------------------------------------------------------
 {
     wxShell(command);
 }
-
+// --------------------------------------------------------------
 void ProcUtils::GetProcessList(std::vector<ProcessEntry> & proclist)
+// --------------------------------------------------------------
 {
 #ifdef __WXMSW__
     OSVERSIONINFO osver ;
@@ -295,10 +312,10 @@ void ProcUtils::GetProcessList(std::vector<ProcessEntry> & proclist)
 #else
     //GTK and other
     wxArrayString output;
-#if defined (__WXGTK__)
-    ExecuteCommand(wxT("ps -A -o pid,command  --no-heading"), output);
-#elif defined (__WXMAC__)
+#if defined (__WXMAC__)
     // Mac does not like the --no-heading...
+    ExecuteCommand(wxT("ps -A -o pid,command  --no-heading"), output);
+#else
     ExecuteCommand(wxT("ps -A -o pid,command "), output);
 #endif
 
@@ -307,6 +324,12 @@ void ProcUtils::GetProcessList(std::vector<ProcessEntry> & proclist)
         wxString line = output.Item(i);
         //remove whitespaces
         line = line.Trim().Trim(false);
+
+        if (line.Contains("PID COMMAND")) //skip any heading line //(ph 2022/05/10)
+        {
+            continue;
+        }
+
         //get the process ID
         ProcessEntry entry;
         wxString spid = line.BeforeFirst(wxT(' '));
@@ -329,8 +352,9 @@ void ProcUtils::GetProcessList(std::vector<ProcessEntry> & proclist)
 
 #endif
 }
-
+// --------------------------------------------------------------
 void ProcUtils::GetChildren(long pid, std::vector<long> & proclist)
+// --------------------------------------------------------------
 {
 #ifdef __WXMSW__
     OSVERSIONINFO osver ;
@@ -411,10 +435,11 @@ void ProcUtils::GetChildren(long pid, std::vector<long> & proclist)
 #else
     //GTK and other
     wxArrayString output;
-#ifdef __WXGTK__
-    ExecuteCommand(wxT("ps -A -o pid,ppid  --no-heading"), output);
-#else
+#if defined (__WXMAC__)
+    // Mac does not like the --no-heading...
     ExecuteCommand(wxT("ps -A -o pid,ppid "), output);
+#else
+    ExecuteCommand(wxT("ps -A -o pid,ppid  --no-heading"), output);
 #endif
 
     //parse the output and search for our process ID
@@ -425,6 +450,12 @@ void ProcUtils::GetChildren(long pid, std::vector<long> & proclist)
         wxString line = output.Item(i);
         //remove whitespaces
         line = line.Trim().Trim(false);
+
+        if (line.Contains("PID PPID")) //skip any heading line //(ph 2022/05/10)
+        {
+            continue;
+        }
+
         //get the process ID
         wxString spid  = line.BeforeFirst(wxT(' '));
         spid.ToLong(&lpid);
@@ -440,8 +471,9 @@ void ProcUtils::GetChildren(long pid, std::vector<long> & proclist)
 
 #endif
 }
-
+// --------------------------------------------------------------
 bool ProcUtils::Shell(const wxString & programConsoleCommand)
+// --------------------------------------------------------------
 {
     wxString cmd;
 #ifdef __WXMSW__
@@ -518,8 +550,9 @@ bool ProcUtils::Shell(const wxString & programConsoleCommand)
 #endif
     return wxExecute(cmd, wxEXEC_ASYNC) != 0;
 }
-
+// --------------------------------------------------------------
 bool ProcUtils::Locate(const wxString & name, wxString & where)
+// --------------------------------------------------------------
 {
     wxString command;
     wxArrayString output;
@@ -545,8 +578,9 @@ bool ProcUtils::Locate(const wxString & name, wxString & where)
 
     return false;
 }
-
+// --------------------------------------------------------------
 void ProcUtils::SafeExecuteCommand(const wxString & command, wxArrayString & output)
+// --------------------------------------------------------------
 {
 #ifdef __WXMSW__
     wxString errMsg;

@@ -1,6 +1,9 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
-			-I$(srcdir)/include
+			-Iinclude
 
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
@@ -39,6 +42,11 @@ libwxcustombutton_la_LIBADD = \
 
 libwxcustombutton_la_SOURCES = \
 			./src/toggle.cpp
+
+if CODEBLOCKS_NT
+libwxcustombutton_la_SOURCES += \
+			manifest.rc
+endif
 
 sdkdir = $(includedir)/codeblocks/wxContribItems/wxthings/include/wx/things
 

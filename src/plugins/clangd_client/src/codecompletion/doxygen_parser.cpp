@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 10145 $
- * $Id: doxygen_parser.cpp 10145 2015-03-10 02:54:16Z ollydbg $
- * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/parser/parser.cpp $
  */
 
 #include <sdk.h>
@@ -755,7 +752,7 @@ DocumentationHelper::Command DocumentationHelper::HrefToCommand(const wxString &
 const wxChar   DocumentationHelper::separatorTag = _T('+');
 const wxString DocumentationHelper::commandTag = _T("cmd=");
 
-DocumentationHelper::DocumentationHelper(CodeCompletion * cc) :
+DocumentationHelper::DocumentationHelper(ClgdCompletion * cc) :
     m_CC(cc),
     m_CurrentTokenIdx(-1),
     m_LastTokenIdx(-1),

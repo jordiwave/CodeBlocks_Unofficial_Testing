@@ -4,15 +4,14 @@ dist_pkgdata_DATA = \
 			tips.txt
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/*.workspace \
+			*.cbp \
+			*.workspace \
 			mac_pack \
-			$(srcdir)/update* \
-			$(srcdir)/batch* \
+			update* \
+			batch* \
 			sdk.doxy
 
 if CODEBLOCKS_NT
 AM_CXXFLAGS = \
 			-DDEPSLIB_WINDOWS
 endif
-

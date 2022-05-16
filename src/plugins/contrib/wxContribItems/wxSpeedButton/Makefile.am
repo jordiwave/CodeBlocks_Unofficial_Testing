@@ -1,6 +1,9 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
-			-I$(srcdir)/include
+			-Iinclude
 
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
@@ -37,6 +40,11 @@ libwxspeedbutton_la_LIBADD = \
 
 libwxspeedbutton_la_SOURCES = \
 			./wxSpeedButton.cpp
+
+if CODEBLOCKS_NT
+libwxspeedbutton_la_SOURCES += \
+			manifest.rc
+endif
 
 sdkdir = $(includedir)/codeblocks/wxContribItems/wxSpeedButton
 

@@ -1,6 +1,9 @@
 TREELIST_DIST = \
-			$(srcdir)/wxtreelist/wxsTreeListCtrl.cpp \
-			$(srcdir)/wxtreelist/wxsTreeListCtrl.h
+			wxtreelist/wxsTreeListCtrl.cpp \
+			wxtreelist/wxsTreeListCtrl.h
+
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
 
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
@@ -10,18 +13,18 @@ AM_CPPFLAGS = \
 			-I$(top_srcdir)/src/plugins/contrib/wxSmith/wxwidgets \
 			-I$(top_srcdir)/src/plugins/contrib/wxSmith/wxwidgets/properties \
 			-I$(top_srcdir)/src/plugins/contrib/wxSmith/properties \
-			-I$(srcdir)/../wxContribItems/wxchart/include \
-			-I$(srcdir)/../wxContribItems/wxFlatNotebook/include \
-			-I$(srcdir)/../wxContribItems/wxImagePanel/include \
-			-I$(srcdir)/../wxContribItems/wxthings/include \
-			-I$(srcdir)/../wxContribItems/KWIC/include \
+			-I../wxContribItems/wxchart/include \
+			-I../wxContribItems/wxFlatNotebook/include \
+			-I../wxContribItems/wxImagePanel/include \
+			-I../wxContribItems/wxthings/include \
+			-I../wxContribItems/KWIC/include \
 			$(TREELIST_INCLUDE) \
-			-I$(srcdir)/../wxContribItems/wxSpeedButton \
-			-I$(srcdir)/../wxContribItems/wxled/gizmosled/include \
-			-I$(srcdir)/../wxContribItems/wxled/lcdWindow/include \
-			-I$(srcdir)/../wxContribItems/wxled/led/include \
-			-I$(srcdir)/../wxContribItems/wxled/ledpanel/include \
-			-I$(srcdir)/../wxContribItems/wxmathplot
+			-I../wxContribItems/wxSpeedButton \
+			-I../wxContribItems/wxled/gizmosled/include \
+			-I../wxContribItems/wxled/lcdWindow/include \
+			-I../wxContribItems/wxled/led/include \
+			-I../wxContribItems/wxled/ledpanel/include \
+			-I../wxContribItems/wxmathplot
 
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
@@ -81,27 +84,27 @@ libwxsmithcontribitems_la_LIBADD += \
 endif
 
 EXTRA_DIST = \
-			$(srcdir)/wxchart/*.xpm \
-			$(srcdir)/wxchart/*.png \
-			$(srcdir)/wximagebutton/*.xpm \
-			$(srcdir)/wximagepanel/*.xpm \
-			$(srcdir)/wxspeedbutton/*.xpm \
-			$(srcdir)/wxthings/*.xpm \
-			$(srcdir)/wxthings/*.png \
-			$(srcdir)/wxflatnotebook/images/*.xpm \
-			$(srcdir)/wxflatnotebook/images/*.png \
-			$(srcdir)/wxSmithKWIC/images/*.xpm \
-			$(srcdir)/wxtreelist/images/*.xpm \
+			wxchart/*.xpm \
+			wxchart/*.png \
+			wximagebutton/*.xpm \
+			wximagepanel/*.xpm \
+			wxspeedbutton/*.xpm \
+			wxthings/*.xpm \
+			wxthings/*.png \
+			wxflatnotebook/images/*.xpm \
+			wxflatnotebook/images/*.png \
+			wxSmithKWIC/images/*.xpm \
+			wxtreelist/images/*.xpm \
 			$(TREELIST_DIST) \
-			$(srcdir)/wxgbsizer/images/*.xpm \
-			$(srcdir)/wxled/images/*.xpm \
-			$(srcdir)/wxSmithPlot/images/*.xpm \
-			$(srcdir)/wxSmithPlot/test/*.h \
-			$(srcdir)/wxSmithPlot/test/*.cpp \
-			$(srcdir)/wxSmithPlot/test/resource.rc \
-			$(srcdir)/wxSmithPlot/test/*.cbp \
-			$(srcdir)/wxSmithPlot/test/wxsmith/*.wxs \
-			$(srcdir)/*.cbp \
+			wxgbsizer/images/*.xpm \
+			wxled/images/*.xpm \
+			wxSmithPlot/images/*.xpm \
+			wxSmithPlot/test/*.h \
+			wxSmithPlot/test/*.cpp \
+			wxSmithPlot/test/resource.rc \
+			wxSmithPlot/test/*.cbp \
+			wxSmithPlot/test/wxsmith/*.wxs \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \
@@ -140,6 +143,11 @@ libwxsmithcontribitems_la_SOURCES = \
 			./wxSmithPlot/wxsText.cpp \
 			./wxSmithPlot/wxsVector.cpp \
 			./wxSmithContribItems.cpp
+
+if CODEBLOCKS_NT
+libwxsmithcontribitems_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			./wxflatnotebook/wxsFlatNotebook.h \

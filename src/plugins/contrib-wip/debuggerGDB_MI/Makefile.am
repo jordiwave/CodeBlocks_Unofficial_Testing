@@ -36,4 +36,4 @@ EXTRA_DIST = $(debugger_gdbmi_RESOURCES) bootstrap codeblocks-debugger-gdbmi.spe
 CLEANFILES = debugger_gdbmi.zip
 
 debugger_gdbmi.zip: $(debugger_gdbmi_RESOURCES)
-	PWD=`pwd` cd $(srcdir)/resource/ && zip $(PWD)/debugger_gdbmi.zip manifest.xml *.xrc > /dev/null
+	PWD=`pwd` cd resource/ && zip $(PWD)/debugger_gdbmi.zip manifest.xml *.xrc > /dev/null

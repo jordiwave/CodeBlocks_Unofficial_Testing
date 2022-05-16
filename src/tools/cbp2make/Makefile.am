@@ -1,5 +1,8 @@
 bin_PROGRAMS = cbp2make
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			-Wall \
 			-Ilib \

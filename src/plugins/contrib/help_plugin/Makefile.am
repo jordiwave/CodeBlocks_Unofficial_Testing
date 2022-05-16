@@ -9,6 +9,9 @@ if ! HAVE_ZLIB
 SUBDIRS += zlib
 endif
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -65,7 +68,7 @@ if ! HAVE_BZIP2
 libhelp_plugin_la_LIBADD += \
 			bzip2/libbzip2.la
 AM_CPPFLAGS += \
-			-I$(srcdir)/bzip2
+			-Ibzip2
 else
 libhelp_plugin_la_LIBADD += \
 			-lbz2
@@ -75,7 +78,7 @@ if ! HAVE_ZLIB
 libhelp_plugin_la_LIBADD += \
 			zlib/libz.la
 AM_CPPFLAGS += \
-			-I$(srcdir)/zlib
+			-Izlib
 else
 libhelp_plugin_la_LIBADD += \
 			-lz
@@ -87,6 +90,11 @@ libhelp_plugin_la_SOURCES = \
 			help_plugin.cpp \
 			man2html.cpp \
 			MANFrame.cpp
+
+if CODEBLOCKS_NT
+libhelp_plugin_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			help_common.h \
@@ -131,7 +139,7 @@ endif
 
 if !CODEBLOCKS_NT_BUILD_INSTALLER
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			Readme.txt \
 			$(resources_forZIP)
 endif

@@ -177,6 +177,10 @@
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
 			<Add library="codeblocks" />
 			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
@@ -228,22 +232,50 @@
 		<Unit filename="manifest_cpp.xml">
 			<Option target="SmartIndentCpp" />
 		</Unit>
+		<Unit filename="manifest_cpp.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option target="SmartIndentCpp" />
+		</Unit>
 		<Unit filename="manifest_fortran.xml">
+			<Option target="SmartIndentFortran" />
+		</Unit>
+		<Unit filename="manifest_fortran.rc" >
+			<Option compilerVar="WINDRES" />
 			<Option target="SmartIndentFortran" />
 		</Unit>
 		<Unit filename="manifest_hdl.xml">
 			<Option target="SmartIndentHDL" />
 		</Unit>
+		<Unit filename="manifest_hdl.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option target="SmartIndentHDL" />
+		</Unit>
 		<Unit filename="manifest_lua.xml">
+			<Option target="SmartIndentLua" />
+		</Unit>
+		<Unit filename="manifest_lua.rc" >
+			<Option compilerVar="WINDRES" />
 			<Option target="SmartIndentLua" />
 		</Unit>
 		<Unit filename="manifest_pascal.xml">
 			<Option target="SmartIndentPascal" />
 		</Unit>
+		<Unit filename="manifest_pascal.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option target="SmartIndentPascal" />
+		</Unit>
 		<Unit filename="manifest_python.xml">
 			<Option target="SmartIndentPython" />
 		</Unit>
+		<Unit filename="manifest_python.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option target="SmartIndentPython" />
+		</Unit>
 		<Unit filename="manifest_xml.xml">
+			<Option target="SmartIndentXML" />
+		</Unit>
+		<Unit filename="manifest_xml.rc" >
+			<Option compilerVar="WINDRES" />
 			<Option target="SmartIndentXML" />
 		</Unit>
 		<Extensions>

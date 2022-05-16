@@ -16,7 +16,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ; fi" />
-					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/codesnippets.zip manifest.xml" />
+					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/codesnippets.zip resources/manifest.xml" />
 					<Mode before="always" />
 					<Mode after="always" />
 				</ExtraCommands>
@@ -60,6 +60,19 @@
 		<Unit filename="codesnippetswindow.cpp" />
 		<Unit filename="codesnippetswindow.h" />
 		<Unit filename="menuidentifiers.h" />
+		<Unit filename="resources\Makefile.am" />
+		<Unit filename="resources\allsnippets.png" />
+		<Unit filename="resources\category.png" />
+		<Unit filename="resources\findf.png" />
+		<Unit filename="resources\findfdisabled.png" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\options.png" />
+		<Unit filename="resources\optionsdisabled.png" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\manifest.rc" />
+		<Unit filename="resources\snippet.png" />
+		<Unit filename="resources\stop.png" />
+		<Unit filename="resources\stopdisabled.png" />
 		<Unit filename="settingsdlg.cpp" />
 		<Unit filename="settingsdlg.h" />
 		<Unit filename="settingsdlgform.cpp" />
@@ -74,7 +87,6 @@
 		<Unit filename="snippetsconfig.h" />
 		<Unit filename="snippetsimages.cpp" />
 		<Unit filename="snippetsimages.h" />
-		<Unit filename="update30" />
 		<Unit filename="version.cpp" />
 		<Unit filename="version.h" />
 		<Extensions>

@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -29,6 +32,11 @@ libtodo_la_SOURCES = \
 			todolist.cpp \
 			todolistview.cpp \
 			todosettingsdlg.cpp
+
+if CODEBLOCKS_NT
+libtodo_la_SOURCES += \
+			resources/manifest.rc
+endif
 
 noinst_HEADERS = \
 			addtododlg.h \

@@ -293,6 +293,7 @@ class Parser : public ParserBase
         cbStyledTextCtrl * GetNewHiddenEditor(const wxString & filename);           //(ph 2021/04/10)
 
         int  m_cfg_parallel_processes;
+        int  m_cfg_max_parsers_while_compiling;
         std::set<wxString> m_FilesParsed; // files parsed by clangd parser      //(ph 2021/10/14)
 
         //(ph 2021/10/23)

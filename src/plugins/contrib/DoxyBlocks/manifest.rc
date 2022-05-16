@@ -1,12 +1,33 @@
-// Code::Blocks resource file generated from the manifext.xml file
-
+/**************************************************************************//**
+ * \file	manifest.rc
+ * \author	Gary Harris
+ * \date	01-02-2010
+ *
+ * DoxyBlocks - doxygen integration for Code::Blocks.					\n
+ * Copyright (C) 2010 Gary Harris.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *****************************************************************************/
+#include "version.h"
 #include "wx/msw/wx.rc"
 
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
-VS_VERSION_INFO        VERSIONINFO
-  FILEVERSION          1,7,663
-  PRODUCTVERSION       2022,05,07,12803
+VS_VERSION_INFO		VERSIONINFO
+  FILEVERSION		RC_FILEVERSION
+  PRODUCTVERSION    2022,05,07,12803
   FILEFLAGSMASK        0x3fL // VS_FFI_FILEFLAGSMASK
   // FILEFLAGS Can be a combination of the following OR'ed flags:
   //    VS_FF_DEBUG,        VS_FF_PATCHED,      VS_FF_PRERELEASE,
@@ -26,34 +47,28 @@ VS_VERSION_INFO        VERSIONINFO
   {
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
-      VALUE "Build",             "07-May-2022 SVN12803"
-      VALUE "Comments",          " Doxygen integration for Code::Blocks. Supported doxygen version: 1.7.3"
-      VALUE "CompanyName",       "Gary Harris"
-      VALUE "Developer",         "Gary Harris"
-      VALUE "FileVersion",       "1.7.663"
-      VALUE "InternalName",      "DoxyBlocks"
-      VALUE "LegalCopyright",    "GPL"
-      VALUE "LegalTrademarks",   "All rights reserved."
-      VALUE "OriginalFilename",  "DoxyBlocks.dll"
-      VALUE "PrivateBuild",      ""
-      VALUE "ProductName",       "DoxyBlocks"
-      VALUE "ProductVersion",    "1.7.663"
-      VALUE "SpecialBuild",      ""
-      VALUE "Support",           "http://cryogen.66ghz.com/"
-      VALUE "Users",             ""
+      VALUE "Build",			"07-May-2022 SVN12803"
+      VALUE "Comments",			"Free to all.\0"
+      VALUE "CompanyName",	    "\0"
+      VALUE "Developer",		"Gary Harris\0"
+      VALUE "FileDescription",	"Doxygen integration for Code::Blocks.\0"
+	  VALUE "FileVersion",		RC_FILEVERSION_STRING
+      VALUE "InternalName",		"DoxyBlocks\0"
+      VALUE "LegalCopyright",	"Copyright 2010 Gary Harris.\0"
+      VALUE "LegalTrademarks",	"All rights reserved.\0"
+      VALUE "OriginalFilename",	"DoxyBlocks.dll\0"
+      VALUE "PrivateBuild",		"\0"
+      VALUE "ProductName",		"DoxyBlocks\0"
+      VALUE "ProductVersion",	RC_FILEVERSION_STRING
+      VALUE "SpecialBuild",		"\0"
+      VALUE "Support",			"http://doxyblocks.sourceforge.net/\0"
+      VALUE "Users",			"Unlimited.\0"
     } // BLOCK "040904E4"
   } // BLOCK "StringFileInfo"
-
   BLOCK "VarFileInfo"
   {
     VALUE "Translation", 0x409, 1252 // 1252 = 0x04E4
-
-    // langID, one of the following language codes.
-    // 0x409 : U.S. English
-    // 0x809 : U.K. English
-    // charsetID, one of the following character-set identifiers.
-    // 1200 : Unicode
-    // 1252 : CharSet=Windows Multilingual
   } // BLOCK "VarFileInfo"
-
 }
+
+

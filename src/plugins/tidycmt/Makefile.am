@@ -1,5 +1,8 @@
 # SUBDIRS = bzip2
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -52,6 +55,11 @@ libtidycmt_la_SOURCES = \
 			tidycmtsettings.cpp \
 			tidycmtsettingswrapper.cpp
 
+if CODEBLOCKS_NT
+libtidycmt_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			tidycmt.h \
 			tidycmtconfig.h \
@@ -59,7 +67,7 @@ noinst_HEADERS = \
 			tidycmtsettingswrapper.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml \
 			TidyCmtSettings.wxs
 

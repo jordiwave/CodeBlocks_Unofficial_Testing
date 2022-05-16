@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include
@@ -23,11 +26,16 @@ libDisplayEvents_la_LIBADD = \
 libDisplayEvents_la_SOURCES = \
 			DisplayEvents.cpp
 
+if CODEBLOCKS_NT
+libDisplayEvents_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			DisplayEvents.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

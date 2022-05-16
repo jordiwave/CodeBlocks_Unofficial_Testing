@@ -1,8 +1,8 @@
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_HUNSPELL_CFLAGS) \
-			-I$(srcdir)/include \
-			-I$(srcdir)/.. \
+			-Iinclude \
+			-I.. \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
 if CODEBLOCKS_NT
@@ -14,7 +14,7 @@ AM_CPPFLAGS += \
 			-D__WXMSW__
 else
 AM_CPPFLAGS += \
-			-I$(srcdir)/../hunspell/src/hunspell \
+			-I../hunspell/src/hunspell \
 			-DHUNSPELL_STATIC
 endif
 

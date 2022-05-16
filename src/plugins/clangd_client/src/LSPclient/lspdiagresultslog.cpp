@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 9203 $
- * $Id: searchresultslog.cpp 9203 2013-07-08 23:07:22Z fuscated $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/searchresultslog.cpp $
  */
 
 //#include "sdk_precomp.h" gets not used because `EXPORT_LIB' not defined [-Winvalid-pch] error

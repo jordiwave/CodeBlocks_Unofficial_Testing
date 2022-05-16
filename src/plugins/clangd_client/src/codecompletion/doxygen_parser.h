@@ -16,7 +16,7 @@
 
 #include "parser/token.h" // TokenIdxSet
 
-class CodeCompletion;
+class ClgdCompletion;
 class TokenTree;
 
 class cbEditor;
@@ -132,7 +132,7 @@ class DocumentationHelper
         static const wxChar   separatorTag;
         static const wxString commandTag;
 
-        DocumentationHelper(CodeCompletion * cc);
+        DocumentationHelper(ClgdCompletion * cc);
         ~DocumentationHelper();
 
         void OnAttach();
@@ -159,7 +159,7 @@ class DocumentationHelper
         /*Members:*/
     protected:
         /** Pointer to CodeComplete object */
-        CodeCompletion * m_CC;
+        ClgdCompletion * m_CC;
         /** Documentation of which token was previously displayed */
         int m_CurrentTokenIdx, m_LastTokenIdx;
         // User options

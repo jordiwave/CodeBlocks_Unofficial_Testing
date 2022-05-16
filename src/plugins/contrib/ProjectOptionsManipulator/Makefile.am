@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -25,15 +28,20 @@ libProjectOptionsManipulator_la_SOURCES = \
 			ProjectOptionsManipulatorDlg.cpp \
 			ProjectOptionsManipulatorResultDlg.cpp
 
+if CODEBLOCKS_NT
+libProjectOptionsManipulator_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			ProjectOptionsManipulator.h \
 			ProjectOptionsManipulatorDlg.h \
 			ProjectOptionsManipulatorResultDlg.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml \
-			$(srcdir)/wxsmith/*.wxs
+			wxsmith/*.wxs
 
 pkgdata_DATA = \
 			ProjectOptionsManipulator.zip

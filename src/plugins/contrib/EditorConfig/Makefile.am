@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -30,13 +33,18 @@ libEditorConfig_la_SOURCES = \
 			EditorConfigUI.cpp \
 			EditorConfig.cpp
 
+if CODEBLOCKS_NT
+libEditorConfig_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			EditorConfig.h \
 			EditorConfigCommon.h \
 			EditorConfigUI.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			wxsmith/EditorConfigUI.wxs \
 			manifest.xml
 

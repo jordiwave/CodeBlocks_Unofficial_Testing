@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -27,6 +30,11 @@ libabbreviations_la_LIBADD = \
 libabbreviations_la_SOURCES = \
 			abbreviations.cpp \
 			abbreviationsconfigpanel.cpp
+
+if CODEBLOCKS_NT
+libabbreviations_la_SOURCES += \
+			resources/manifest.rc
+endif
 
 noinst_HEADERS = \
 			abbreviations.h \

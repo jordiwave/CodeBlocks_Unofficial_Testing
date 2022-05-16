@@ -3,6 +3,9 @@ noinst_PROGRAMS = \
 auto_revision_SOURCES = \
 			autorevision.cpp
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			-I$(top_srcdir)/src/include
 

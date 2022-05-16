@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12287 $
- * $Id: ccoptionsdlg.cpp 12287 2021-01-23 05:46:23Z mortenmacfly $
- * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/ccoptionsdlg.cpp $
  */
 
 #include <sdk.h>
@@ -106,7 +103,7 @@ namespace
 #endif
 }
 // ----------------------------------------------------------------------------
-CCOptionsDlg::CCOptionsDlg(wxWindow * parent, ParseManager * np, CodeCompletion * cc, DocumentationHelper * dh)
+CCOptionsDlg::CCOptionsDlg(wxWindow * parent, ParseManager * np, ClgdCompletion * cc, DocumentationHelper * dh)
 // ----------------------------------------------------------------------------
     : m_ParseManager(np),
       m_CodeCompletion(cc),
@@ -141,6 +138,8 @@ CCOptionsDlg::CCOptionsDlg(wxWindow * parent, ParseManager * np, CodeCompletion 
     // NOTE (Morten#1#): Keep this in sync with files in the XRC file (settings.xrc) and ParseManager.cpp
     XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
     XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->Enable(true);   //(ph 2021/07/17)
+    XRCCTRL(*this, "spnParsersWhileCompiling", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_parsers_while_compiling"), 0));
+    XRCCTRL(*this, "spnParsersWhileCompiling", wxSpinCtrl)->Enable(true);   //(ph 2022/04/25)
     // Page "C / C++ parser (adv.)"
     // NOTE (Morten#1#): Keep this in sync with files in the XRC file (settings.xrc) and parser.cpp
     XRCCTRL(*this, "txtCCFileExtHeader",       wxTextCtrl)->SetValue(cfg->Read(_T("/header_ext"),    _T("h,hpp,hxx,hh,h++,tcc,xpm")));
@@ -262,6 +261,7 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/lspMsgsClearOnSave_check"), (bool) XRCCTRL(*this, "chkLSPMsgsClearOnSave",    wxCheckBox)->GetValue());
     cfg->Write(_T("/LLVM_MasterPath"),                      XRCCTRL(*this, "txtMasterPath",            wxTextCtrl)->GetValue());
     cfg->Write(_T("/max_threads"), (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
+    cfg->Write(_T("/max_parsers_while_compiling"), (int)  XRCCTRL(*this, "spnParsersWhileCompiling", wxSpinCtrl)->GetValue());
     // Page "C / C++ parser (adv.)"
     cfg->Write(_T("/header_ext"),        XRCCTRL(*this, "txtCCFileExtHeader", wxTextCtrl)->GetValue());
     cfg->Write(_T("/empty_ext"), (bool) XRCCTRL(*this, "chkCCFileExtEmpty",  wxCheckBox)->GetValue());
@@ -581,37 +581,46 @@ void CCOptionsDlg::OnFindDirClangd_Dlg(wxCommandEvent & event)
 
     wxFileDialog dlg(this,
                      _("Select clangd executable file"),
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#if defined(__WXMAC__)
                      "/", "", "*",
-                     wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+#if wxCHECK_VERSION(3,1,3)   // wxFD_SHOW_HIDDEN added in 3.1.3
+                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_SHOW_HIDDEN | compatibility::wxHideReadonly);
 #else
-                     "", "", "*.*",
                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
-#endif
+#endif //wx 3.1.3 or greater
+#endif //WXMAC
+#if defined(__WXGTK__)
+    "/", "", "*",
+    wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
+#endif //WXGTK
+#if defined(__WXMSW__)
+    "", "", "*.*",
+    wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
+#endif //WXMSW
     dlg.SetFilterIndex(0);
     PlaceWindow(&dlg);
 
     if (dlg.ShowModal() != wxID_OK)
-    {
-        return;
-    }
+{
+    return;
+}
 
-    //-wxChar dirSep = wxFILE_SEP_PATH;
-    wxString fullPath = dlg.GetPath();
-    wxFileName fname(fullPath);
+//-wxChar dirSep = wxFILE_SEP_PATH;
+wxString fullPath = dlg.GetPath();
+wxFileName fname(fullPath);
 
-    if (not fname.GetName().Contains("clangd")) //could be clangd-12.exe for example
-    {
-        wxString msg = _("Failed to select the clangd executable.");
+if (not fname.GetName().Contains("clangd")) //could be clangd-12.exe for example
+{
+    wxString msg = _("Failed to select the clangd executable.");
         cbMessageBox(msg, _("ERROR"));
         fname.Clear();
     }
 
     // should check the version here and issue warning message
     if (fname.GetFullPath().Length())
-    {
-        ClangLocator clangdLocator;
-        wxString versionID = clangdLocator.GetClangdVersionID(fname.GetFullPath());
+{
+    ClangLocator clangdLocator;
+    wxString versionID = clangdLocator.GetClangdVersionID(fname.GetFullPath());
 
         if (versionID.empty())
         {

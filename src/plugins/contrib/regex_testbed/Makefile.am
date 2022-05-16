@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -26,14 +29,19 @@ libRegExTestbed_la_LIBADD = \
 libRegExTestbed_la_SOURCES = \
 			regexdlg.cpp RegExTestbed.cpp
 
+if CODEBLOCKS_NT
+libRegExTestbed_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			regexdlg.h RegExTestbed.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/regexdlg.xrc \
-			$(srcdir)/manifest.xml \
-			$(srcdir)/wxsmith/RegExDlg.wxs
+			*.cbp \
+			regexdlg.xrc \
+			manifest.xml \
+			wxsmith/RegExDlg.wxs
 
 CLEANFILES = \
 			$(pkgdata_DATA)

@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 11572 $
- * $Id: LSP_SymbolsParser.cpp 11572 2019-02-16 06:52:30Z ollydbg $
- * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/parser/LSP_SymbolsParser.cpp $
  */
 
 #include <sdk.h>

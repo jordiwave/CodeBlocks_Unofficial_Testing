@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -32,6 +35,11 @@ libCscope_la_SOURCES = \
 			CscopeView.cpp \
 			CscopeConfigPanel.cpp
 
+if CODEBLOCKS_NT
+libCscope_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			CscopeConfig.h \
 			CscopeEntryData.h \
@@ -44,7 +52,7 @@ noinst_HEADERS = \
 			CscopeConfigPanel.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

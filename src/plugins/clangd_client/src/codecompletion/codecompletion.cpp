@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
-+ * $Revision: 12304 $
-+ * $Id: codecompletion.cpp 12304 2021-03-16 23:28:31Z fuscated $
-+ * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/codecompletion.cpp $
  */
 
 #include <sdk.h>
@@ -123,7 +120,7 @@ namespace
 // ----------------------------------------------------------------------------
 {
 // this auto-registers the plugin
-PluginRegistrant<CodeCompletion> reg(_T("clangd_client"));
+PluginRegistrant<ClgdCompletion> reg(_T("clangd_client"));
 
 const char STX = '\u0002';
 const wxString STXstring = "\u0002";
@@ -150,7 +147,7 @@ namespace CodeCompletionHelper
 // ----------------------------------------------------------------------------
 {
 // compare method for the sort algorithm for our FunctionScope struct
-inline bool LessFunctionScope(const CodeCompletion::FunctionScope & fs1, const CodeCompletion::FunctionScope & fs2)
+inline bool LessFunctionScope(const ClgdCompletion::FunctionScope & fs1, const ClgdCompletion::FunctionScope & fs2)
 {
     int result = wxStricmp(fs1.Scope, fs2.Scope);
 
@@ -167,7 +164,7 @@ inline bool LessFunctionScope(const CodeCompletion::FunctionScope & fs1, const C
     return result < 0;
 }
 
-inline bool EqualFunctionScope(const CodeCompletion::FunctionScope & fs1, const CodeCompletion::FunctionScope & fs2)
+inline bool EqualFunctionScope(const ClgdCompletion::FunctionScope & fs1, const ClgdCompletion::FunctionScope & fs2)
 {
     int result = wxStricmp(fs1.Scope, fs2.Scope);
 
@@ -422,45 +419,45 @@ int idStartupDelayTimer         = wxNewId(); //(ph 2022/04/19)
 // ----------------------------------------------------------------------------
 // Event table
 // ----------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
-    EVT_UPDATE_UI_RANGE(idMenuGotoFunction, idCurrentProjectReparse, CodeCompletion::OnUpdateUI)
+BEGIN_EVENT_TABLE(ClgdCompletion, cbCodeCompletionPlugin)
+    EVT_UPDATE_UI_RANGE(idMenuGotoFunction, idCurrentProjectReparse, ClgdCompletion::OnUpdateUI)
 
-    EVT_MENU(idMenuGotoFunction,                   CodeCompletion::OnGotoFunction)
-    EVT_MENU(idMenuGotoPrevFunction,               CodeCompletion::OnGotoPrevFunction)
-    EVT_MENU(idMenuGotoNextFunction,               CodeCompletion::OnGotoNextFunction)
-    EVT_MENU(idMenuGotoDeclaration,                CodeCompletion::OnGotoDeclaration)
-    EVT_MENU(idMenuGotoImplementation,             CodeCompletion::OnGotoDeclaration)
-    EVT_MENU(idMenuFindReferences,                 CodeCompletion::OnFindReferences)
-    EVT_MENU(idMenuRenameSymbols,                  CodeCompletion::OnRenameSymbols)
-    EVT_MENU(idClassMethod,                        CodeCompletion::OnClassMethod)
-    EVT_MENU(idUnimplementedClassMethods,          CodeCompletion::OnUnimplementedClassMethods)
-    EVT_MENU(idGotoDeclaration,                    CodeCompletion::OnGotoDeclaration)
-    EVT_MENU(idGotoImplementation,                 CodeCompletion::OnGotoDeclaration)
-    EVT_MENU(idOpenIncludeFile,                    CodeCompletion::OnOpenIncludeFile)
-    EVT_MENU(idMenuOpenIncludeFile,                CodeCompletion::OnOpenIncludeFile)
+    EVT_MENU(idMenuGotoFunction,                   ClgdCompletion::OnGotoFunction)
+    EVT_MENU(idMenuGotoPrevFunction,               ClgdCompletion::OnGotoPrevFunction)
+    EVT_MENU(idMenuGotoNextFunction,               ClgdCompletion::OnGotoNextFunction)
+    EVT_MENU(idMenuGotoDeclaration,                ClgdCompletion::OnGotoDeclaration)
+    EVT_MENU(idMenuGotoImplementation,             ClgdCompletion::OnGotoDeclaration)
+    EVT_MENU(idMenuFindReferences,                 ClgdCompletion::OnFindReferences)
+    EVT_MENU(idMenuRenameSymbols,                  ClgdCompletion::OnRenameSymbols)
+    EVT_MENU(idClassMethod,                        ClgdCompletion::OnClassMethod)
+    EVT_MENU(idUnimplementedClassMethods,          ClgdCompletion::OnUnimplementedClassMethods)
+    EVT_MENU(idGotoDeclaration,                    ClgdCompletion::OnGotoDeclaration)
+    EVT_MENU(idGotoImplementation,                 ClgdCompletion::OnGotoDeclaration)
+    EVT_MENU(idOpenIncludeFile,                    ClgdCompletion::OnOpenIncludeFile)
+    EVT_MENU(idMenuOpenIncludeFile,                ClgdCompletion::OnOpenIncludeFile)
 
-    EVT_MENU(idViewClassBrowser,                   CodeCompletion::OnViewClassBrowser)
-    EVT_MENU(idCurrentProjectReparse,              CodeCompletion::OnCurrentProjectReparse)
-    EVT_MENU(idSelectedProjectReparse,             CodeCompletion::OnReparseSelectedProject)
-    EVT_MENU(idSelectedFileReparse,                CodeCompletion::OnSelectedFileReparse)
-    EVT_MENU(idEditorFileReparse,                  CodeCompletion::OnEditorFileReparse)
-    EVT_MENU(idPauseParsing,                       CodeCompletion::OnSelectedPauseParsing)  //(ph 2021/07/28)
+    EVT_MENU(idViewClassBrowser,                   ClgdCompletion::OnViewClassBrowser)
+    EVT_MENU(idCurrentProjectReparse,              ClgdCompletion::OnCurrentProjectReparse)
+    EVT_MENU(idSelectedProjectReparse,             ClgdCompletion::OnReparseSelectedProject)
+    EVT_MENU(idSelectedFileReparse,                ClgdCompletion::OnSelectedFileReparse)
+    EVT_MENU(idEditorFileReparse,                  ClgdCompletion::OnEditorFileReparse)
+    EVT_MENU(idPauseParsing,                       ClgdCompletion::OnSelectedPauseParsing)  //(ph 2021/07/28)
 
     // CC's toolbar
-    EVT_CHOICE(XRCID("chcCodeCompletionScope"),    CodeCompletion::OnScope)
-    EVT_CHOICE(XRCID("chcCodeCompletionFunction"), CodeCompletion::OnFunction)
+    EVT_CHOICE(XRCID("chcCodeCompletionScope"),    ClgdCompletion::OnScope)
+    EVT_CHOICE(XRCID("chcCodeCompletionFunction"), ClgdCompletion::OnFunction)
 
-    EVT_IDLE(CodeCompletion::OnIdle)
+    EVT_IDLE(ClgdCompletion::OnIdle)
     //-EVT_ACTIVATE(                                  CodeCompletion::OnActivated) does not work for dialogs
     //-EVT_MENU(XRCID("idLSP_Process_Terminated"),    CodeCompletion::OnLSP_ProcessTerminated )     //(ph 2021/06/28)
 
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
-CodeCompletion::CodeCompletion() :
+ClgdCompletion::ClgdCompletion() :
     // ----------------------------------------------------------------------------
     m_InitDone(false),
-    m_pCodeRefactoring(nullptr), //re-initialized in dtor
+    m_pCodeRefactoring(nullptr), //re-initialized in ctor
     m_EditorHookId(0),
     //m_TimerRealtimeParsing(this, idRealtimeParsingTimer),
     m_TimerToolbar(this, idToolbarTimer),
@@ -519,19 +516,19 @@ CodeCompletion::CodeCompletion() :
     }
 
     // handling events send from CCLogger
-    Connect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCLogger));
-    Connect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCDebugLogger));
-    Connect(g_idCCDebugErrorLogger,      wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCDebugLogger));
-    Connect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnToolbarTimer));                  //(ph 2021/07/27)
-    Connect(idToolbarTimer,         wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnToolbarTimer));//(ph 2021/09/11)
+    Connect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCLogger));
+    Connect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
+    Connect(g_idCCDebugErrorLogger,      wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
+    Connect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::OnToolbarTimer));                  //(ph 2021/07/27)
+    Connect(idToolbarTimer,         wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ClgdCompletion::OnToolbarTimer));//(ph 2021/09/11)
     //-Connect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
-    Connect(idStartupDelayTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::DoParseOpenedProjectAndActiveEditor));
+    Connect(idStartupDelayTimer, wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::DoParseOpenedProjectAndActiveEditor));
     Connect(XRCID("idLSP_Process_Terminated"), wxEVT_COMMAND_MENU_SELECTED, //(ph 2021/06/28)
-            wxCommandEventHandler(CodeCompletion::OnLSP_ProcessTerminated));
+            wxCommandEventHandler(ClgdCompletion::OnLSP_ProcessTerminated));
     m_CC_initDeferred = false;
 }
 // ----------------------------------------------------------------------------
-CodeCompletion::~CodeCompletion()
+ClgdCompletion::~ClgdCompletion()
 // ----------------------------------------------------------------------------
 {
     if (m_CC_initDeferred)
@@ -539,18 +536,18 @@ CodeCompletion::~CodeCompletion()
         return;
     }
 
-    Disconnect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCLogger));
-    Disconnect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCDebugLogger));
-    Disconnect(g_idCCDebugErrorLogger,      wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCDebugLogger));
-    Disconnect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnToolbarTimer));
-    Disconnect(idToolbarTimer,         wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnToolbarTimer)); //(ph 2021/09/11)
+    Disconnect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCLogger));
+    Disconnect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
+    Disconnect(g_idCCDebugErrorLogger,      wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
+    Disconnect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::OnToolbarTimer));
+    Disconnect(idToolbarTimer,         wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ClgdCompletion::OnToolbarTimer)); //(ph 2021/09/11)
     //-Disconnect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
-    Disconnect(idStartupDelayTimer,    wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::DoParseOpenedProjectAndActiveEditor));  //(ph 2022/04/19)
+    Disconnect(idStartupDelayTimer,    wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::DoParseOpenedProjectAndActiveEditor));  //(ph 2022/04/19)
     Disconnect(XRCID("idLSP_Process_Terminated"), wxEVT_COMMAND_MENU_SELECTED, //(ph 2021/06/28)
-               wxCommandEventHandler(CodeCompletion::OnLSP_ProcessTerminated));
+               wxCommandEventHandler(ClgdCompletion::OnLSP_ProcessTerminated));
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnAttach()
+void ClgdCompletion::OnAttach()
 // ----------------------------------------------------------------------------
 {
     AppVersion appVersion;
@@ -644,35 +641,35 @@ void CodeCompletion::OnAttach()
     // and tool tip will be handled in ccmanager. The other cases such as caret movement triggers
     // updating the CC's toolbar, modifying the editor causing the real time content reparse will be
     // handled inside cc's own editor hook.
-    EditorHooks::HookFunctorBase * myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
+    EditorHooks::HookFunctorBase * myhook = new EditorHooks::HookFunctor<ClgdCompletion>(this, &ClgdCompletion::EditorEventHook);
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
     // register event sinks
     Manager * pm = Manager::Get();
-    pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnAppDoneStartup));
-    pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED,    new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnWorkspaceChanged));
-    pm->RegisterEventSink(cbEVT_WORKSPACE_CLOSING_BEGIN, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnWorkspaceClosingBegin));
-    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectActivated));
-    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE,        new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectClosed));
-    pm->RegisterEventSink(cbEVT_PROJECT_OPEN,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectOpened)); //(ph 2021/03/8)
-    pm->RegisterEventSink(cbEVT_PROJECT_SAVE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectSaved));
-    pm->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED,   new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileAdded));
-    pm->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileRemoved));
-    pm->RegisterEventSink(cbEVT_EDITOR_SAVE,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorSave));
-    pm->RegisterEventSink(cbEVT_EDITOR_OPEN,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
-    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
-    pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
-    pm->RegisterEventSink(cbEVT_DEBUGGER_STARTED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnDebuggerStarting));
-    pm->RegisterEventSink(cbEVT_DEBUGGER_FINISHED,    new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnDebuggerFinished));
-    pm->RegisterEventSink(cbEVT_PLUGIN_ATTACHED,      new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnPluginAttached));
-    pm->RegisterEventSink(cbEVT_COMPILER_STARTED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnCompilerStarted));
-    pm->RegisterEventSink(cbEVT_COMPILER_FINISHED,    new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnCompilerFinished));
+    pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnAppDoneStartup));
+    pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED,    new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnWorkspaceChanged));
+    pm->RegisterEventSink(cbEVT_WORKSPACE_CLOSING_BEGIN, new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnWorkspaceClosingBegin));
+    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectActivated));
+    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE,        new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectClosed));
+    pm->RegisterEventSink(cbEVT_PROJECT_OPEN,         new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectOpened)); //(ph 2021/03/8)
+    pm->RegisterEventSink(cbEVT_PROJECT_SAVE,         new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectSaved));
+    pm->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED,   new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectFileAdded));
+    pm->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectFileRemoved));
+    pm->RegisterEventSink(cbEVT_EDITOR_SAVE,          new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnEditorSave));
+    pm->RegisterEventSink(cbEVT_EDITOR_OPEN,          new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnEditorOpen));
+    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnEditorActivated));
+    pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,         new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnEditorClosed));
+    pm->RegisterEventSink(cbEVT_DEBUGGER_STARTED,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnDebuggerStarting));
+    pm->RegisterEventSink(cbEVT_DEBUGGER_FINISHED,    new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnDebuggerFinished));
+    pm->RegisterEventSink(cbEVT_PLUGIN_ATTACHED,      new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnPluginAttached));
+    pm->RegisterEventSink(cbEVT_COMPILER_STARTED,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnCompilerStarted));
+    pm->RegisterEventSink(cbEVT_COMPILER_FINISHED,    new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnCompilerFinished));
     //m->RegisterEventSink(cbEVT_PLUGIN_RELEASED,        new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginReleased));
     // m->RegisterEventSink(cbEVT_PLUGIN_INSTALLED,       new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
     //m->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED,     new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
     m_DocHelper.OnAttach();
 }
 // ----------------------------------------------------------------------------
-bool CodeCompletion::CanDetach() const
+bool ClgdCompletion::CanDetach() const
 // ----------------------------------------------------------------------------
 {
     if (m_CC_initDeferred)
@@ -684,7 +681,7 @@ bool CodeCompletion::CanDetach() const
 
     if (not pTopWindow)
     {
-        pTopWindow = ((CodeCompletion *)this)->GetTopWxWindow();
+        pTopWindow = ((ClgdCompletion *)this)->GetTopWxWindow();
     }
 
     int prjCount = Manager::Get()->GetProjectManager()->GetProjects()->GetCount();
@@ -699,7 +696,7 @@ bool CodeCompletion::CanDetach() const
     return true;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnRelease(bool appShutDown)
+void ClgdCompletion::OnRelease(bool appShutDown)
 // ----------------------------------------------------------------------------
 {
     // FYI:
@@ -787,7 +784,7 @@ void CodeCompletion::OnRelease(bool appShutDown)
     }
 }
 // ----------------------------------------------------------------------------
-cbConfigurationPanel * CodeCompletion::GetConfigurationPanel(wxWindow * parent)
+cbConfigurationPanel * ClgdCompletion::GetConfigurationPanel(wxWindow * parent)
 // ----------------------------------------------------------------------------
 {
     if (m_CC_initDeferred)
@@ -803,13 +800,13 @@ cbConfigurationPanel * CodeCompletion::GetConfigurationPanel(wxWindow * parent)
     return new CCOptionsDlg(parent, GetParseManager(), this, &m_DocHelper);
 }
 // ----------------------------------------------------------------------------
-cbConfigurationPanel * CodeCompletion::GetProjectConfigurationPanel(wxWindow * parent, cbProject * project)
+cbConfigurationPanel * ClgdCompletion::GetProjectConfigurationPanel(wxWindow * parent, cbProject * project)
 // ----------------------------------------------------------------------------
 {
     return new CCOptionsProjectDlg(parent, project, GetParseManager());
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::BuildMenu(wxMenuBar * menuBar)
+void ClgdCompletion::BuildMenu(wxMenuBar * menuBar)
 // ----------------------------------------------------------------------------
 {
     // if not attached, exit
@@ -915,7 +912,7 @@ void CodeCompletion::BuildMenu(wxMenuBar * menuBar)
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu * menu, const FileTreeData * data)
+void ClgdCompletion::BuildModuleMenu(const ModuleType type, wxMenu * menu, const FileTreeData * data)
 // ----------------------------------------------------------------------------
 {
     // if not attached, exit
@@ -1067,7 +1064,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu * menu, const
         }
 }
 // ----------------------------------------------------------------------------
-bool CodeCompletion::BuildToolBar(wxToolBar * toolBar)
+bool ClgdCompletion::BuildToolBar(wxToolBar * toolBar)
 // ----------------------------------------------------------------------------
 {
     if (not IsAttached())
@@ -1098,7 +1095,7 @@ bool CodeCompletion::BuildToolBar(wxToolBar * toolBar)
     return true;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnWindowActivated(wxActivateEvent & event) //on Window activated
+void ClgdCompletion::OnWindowActivated(wxActivateEvent & event) //on Window activated
 // ----------------------------------------------------------------------------
 {
     event.Skip();
@@ -1123,7 +1120,7 @@ void CodeCompletion::OnWindowActivated(wxActivateEvent & event) //on Window acti
     ////}
 }
 // --------------------------------------------------------------
-void CodeCompletion::OnPluginAttached(CodeBlocksEvent & event)
+void ClgdCompletion::OnPluginAttached(CodeBlocksEvent & event)
 // --------------------------------------------------------------
 {
     //From DoAddPlugin(plug) in PluginManager;
@@ -1161,7 +1158,7 @@ void CodeCompletion::OnPluginAttached(CodeBlocksEvent & event)
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnIdle(wxIdleEvent & event) //(ph 2020/10/24)
+void ClgdCompletion::OnIdle(wxIdleEvent & event) //(ph 2020/10/24)
 // ----------------------------------------------------------------------------
 {
     event.Skip(); //always event.Skip() to allow others use of idle events
@@ -1185,19 +1182,19 @@ void CodeCompletion::OnIdle(wxIdleEvent & event) //(ph 2020/10/24)
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnCompilerStarted(CodeBlocksEvent & event)
+void ClgdCompletion::OnCompilerStarted(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     GetParseManager()->SetCompilerIsRunning(true);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnCompilerFinished(CodeBlocksEvent & event)
+void ClgdCompletion::OnCompilerFinished(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     GetParseManager()->SetCompilerIsRunning(false);
 }
 // ----------------------------------------------------------------------------
-CodeCompletion::CCProviderStatus CodeCompletion::GetProviderStatusFor(cbEditor * ed)
+ClgdCompletion::CCProviderStatus ClgdCompletion::GetProviderStatusFor(cbEditor * ed)
 // ----------------------------------------------------------------------------
 {
     if (m_CC_initDeferred)
@@ -1228,7 +1225,7 @@ CodeCompletion::CCProviderStatus CodeCompletion::GetProviderStatusFor(cbEditor *
     return ccpsUniversal;
 }
 // ----------------------------------------------------------------------------
-std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto, cbEditor * ed, int & tknStart, int & tknEnd)
+std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto, cbEditor * ed, int & tknStart, int & tknEnd)
 // ----------------------------------------------------------------------------
 {
     // Called directly from ccmanager.cpp to get list of completions
@@ -1373,7 +1370,7 @@ static int CalcStcFontSize(cbStyledTextCtrl * stc)
     return fontSize;
 }
 // unused for clangd at present (2021/10/14) but may be useful in the future
-void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEditor * ed, std::vector<CCToken> & tokens)
+void ClgdCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEditor * ed, std::vector<CCToken> & tokens)
 {
     cbStyledTextCtrl * stc = ed->GetControl();
 
@@ -1422,7 +1419,7 @@ void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEdit
                        GetParseManager()->GetImageList(fontSize)->GetBitmap(PARSER_IMG_MACRO_DEF));
 }
 // ----------------------------------------------------------------------------
-std::vector<CodeCompletion::CCCallTip> CodeCompletion::GetCallTips(int pos, int style, cbEditor * ed, int & argsPos)
+std::vector<ClgdCompletion::CCCallTip> ClgdCompletion::GetCallTips(int pos, int style, cbEditor * ed, int & argsPos)
 // ----------------------------------------------------------------------------
 {
     std::vector<CCCallTip> tips;
@@ -1467,13 +1464,13 @@ std::vector<CodeCompletion::CCCallTip> CodeCompletion::GetCallTips(int pos, int 
     return tips; //signature Help entries from clangd
 }
 // ----------------------------------------------------------------------------
-wxString CodeCompletion::GetDocumentation(const CCToken & token)
+wxString ClgdCompletion::GetDocumentation(const CCToken & token)
 // ----------------------------------------------------------------------------
 {
     return m_DocHelper.GenerateHTML(token.id, GetParseManager()->GetParser().GetTokenTree());
 }
 // ----------------------------------------------------------------------------
-std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEditor * ed, bool & WXUNUSED(allowCallTip))
+std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetTokenAt(int pos, cbEditor * ed, bool & WXUNUSED(allowCallTip))
 // ----------------------------------------------------------------------------
 {
     std::vector<CCToken> tokens;
@@ -1536,14 +1533,14 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEdito
     return tokens; //return empty tokens on first call from ccmanager.
 }
 // ----------------------------------------------------------------------------
-wxString CodeCompletion::OnDocumentationLink(wxHtmlLinkEvent & event, bool & dismissPopup)
+wxString ClgdCompletion::OnDocumentationLink(wxHtmlLinkEvent & event, bool & dismissPopup)
 // ----------------------------------------------------------------------------
 {
     // user has clicked link in HTML documentation popup window
     return m_DocHelper.OnDocumentationLink(event, dismissPopup);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::DoAutocomplete(const CCToken & token, cbEditor * ed)
+void ClgdCompletion::DoAutocomplete(const CCToken & token, cbEditor * ed)
 // ----------------------------------------------------------------------------
 {
     // wxScintilla Callback after code completion selection
@@ -1551,7 +1548,7 @@ void CodeCompletion::DoAutocomplete(const CCToken & token, cbEditor * ed)
     return LSP_DoAutocomplete(token, ed); // Finish code completion for LSP
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::LSP_DoAutocomplete(const CCToken & token, cbEditor * ed)   //(ph 2021/03/8)
+void ClgdCompletion::LSP_DoAutocomplete(const CCToken & token, cbEditor * ed)   //(ph 2021/03/8)
 // ----------------------------------------------------------------------------
 {
     // wxScintilla Callback after code completion selection
@@ -1788,7 +1785,7 @@ void CodeCompletion::LSP_DoAutocomplete(const CCToken & token, cbEditor * ed)   
     stc->ChooseCaretX();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::EditorEventHook(cbEditor * editor, wxScintillaEvent & event)
+void ClgdCompletion::EditorEventHook(cbEditor * editor, wxScintillaEvent & event)
 // ----------------------------------------------------------------------------
 {
     if (!IsAttached() || !m_InitDone)
@@ -1895,7 +1892,7 @@ void CodeCompletion::EditorEventHook(cbEditor * editor, wxScintillaEvent & event
     event.Skip();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::RereadOptions()
+void ClgdCompletion::RereadOptions()
 // ----------------------------------------------------------------------------
 {
     // Keep this in sync with CCOptionsDlg::CCOptionsDlg and CCOptionsDlg::OnApply
@@ -1934,7 +1931,7 @@ void CodeCompletion::RereadOptions()
     m_DocHelper.RereadOptions(cfg);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::UpdateToolBar()
+void ClgdCompletion::UpdateToolBar()
 // ----------------------------------------------------------------------------
 {
     ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
@@ -1967,7 +1964,7 @@ void CodeCompletion::UpdateToolBar()
     m_ToolBar->SetInitialSize();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnUpdateUI(wxUpdateUIEvent & event)
+void ClgdCompletion::OnUpdateUI(wxUpdateUIEvent & event)
 // ----------------------------------------------------------------------------
 {
     wxString NameUnderCursor;
@@ -2011,7 +2008,7 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent & event)
     event.Skip();
 }//OnUpdateUI
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnViewClassBrowser(wxCommandEvent & event)
+void ClgdCompletion::OnViewClassBrowser(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     if (!Manager::Get()->GetConfigManager(_T("clangd_client"))->ReadBool(_T("/use_symbols_browser"), true))
@@ -2026,7 +2023,7 @@ void CodeCompletion::OnViewClassBrowser(wxCommandEvent & event)
     Manager::Get()->ProcessEvent(evt);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnGotoFunction(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     EditorManager * edMan = Manager::Get()->GetEditorManager();
@@ -2087,7 +2084,7 @@ void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent & event)
         // lock failed, do not block the UI thread, call back when idle
         if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))
         {
-            GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnGotoFunction, event);
+            GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::OnGotoFunction, event);
         }
 
         return;
@@ -2180,7 +2177,7 @@ void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent & event)
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnGotoPrevFunction(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnGotoPrevFunction(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     EditorManager * edMan = Manager::Get()->GetEditorManager();
@@ -2217,7 +2214,7 @@ void CodeCompletion::OnGotoPrevFunction(cb_unused wxCommandEvent & event)
     return;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnGotoNextFunction(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnGotoNextFunction(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     EditorManager * edMan = Manager::Get()->GetEditorManager();
@@ -2255,7 +2252,7 @@ void CodeCompletion::OnGotoNextFunction(cb_unused wxCommandEvent & event)
     return;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnClassMethod(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnClassMethod(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     EditorManager * edMan = Manager::Get()->GetEditorManager();
@@ -2277,14 +2274,14 @@ void CodeCompletion::OnClassMethod(cb_unused wxCommandEvent & event)
     DoClassMethodDeclImpl(); // **DEBUGGING**
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnUnimplementedClassMethods(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnUnimplementedClassMethods(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     DoAllMethodsImpl();
 }
 
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnGotoDeclaration(wxCommandEvent & event)
+void ClgdCompletion::OnGotoDeclaration(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     ProjectManager * pPrjMgr = Manager::Get()->GetProjectManager();
@@ -2387,7 +2384,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent & event)
     }
 }//end OnGotoDeclaration()
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnFindReferences(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnFindReferences(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     // -unused- ProjectManager* pPrjMgr = Manager::Get()->GetProjectManager();
@@ -2448,7 +2445,7 @@ void CodeCompletion::OnFindReferences(cb_unused wxCommandEvent & event)
     return;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnRenameSymbols(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnRenameSymbols(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     //-m_pCodeRefactoring->RenameSymbols();
@@ -2489,7 +2486,7 @@ void CodeCompletion::OnRenameSymbols(cb_unused wxCommandEvent & event)
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     wxString lastIncludeFileFrom;
@@ -2603,7 +2600,7 @@ void CodeCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent & event)
     cbMessageBox(wxString::Format(_("Not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnCurrentProjectReparse(wxCommandEvent & event)
+void ClgdCompletion::OnCurrentProjectReparse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     /// Don't do Skip(). All connects and binds are about to be re-established
@@ -2623,7 +2620,7 @@ void CodeCompletion::OnCurrentProjectReparse(wxCommandEvent & event)
         // Parser* pParser = static_cast<Parser*>(m_Parser);
         if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))
         {
-            GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnCurrentProjectReparse, event);
+            GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::OnCurrentProjectReparse, event);
         }
 
         return;
@@ -2682,7 +2679,7 @@ void CodeCompletion::OnCurrentProjectReparse(wxCommandEvent & event)
     }//endif project
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnReparseSelectedProject(wxCommandEvent & event)
+void ClgdCompletion::OnReparseSelectedProject(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     // do NOT event.skip();
@@ -2696,10 +2693,9 @@ void CodeCompletion::OnReparseSelectedProject(wxCommandEvent & event)
     if (locker_result != wxMUTEX_NO_ERROR)
     {
         // lock failed, do not block the UI thread, call back when idle
-        // Parser* pParser = static_cast<Parser*>(m_Parser);
         if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))
         {
-            GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnReparseSelectedProject, event);
+            GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::OnReparseSelectedProject, event);
         }
 
         return;
@@ -2791,7 +2787,7 @@ void CodeCompletion::OnReparseSelectedProject(wxCommandEvent & event)
     return;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnSelectedPauseParsing(wxCommandEvent & event) //(ph 2020/11/22)
+void ClgdCompletion::OnSelectedPauseParsing(wxCommandEvent & event) //(ph 2020/11/22)
 // ----------------------------------------------------------------------------
 {
     // if Ctrl-Shift keys are down, toggle ccLogger external logging on/off
@@ -2853,14 +2849,14 @@ void CodeCompletion::OnSelectedPauseParsing(wxCommandEvent & event) //(ph 2020/1
     }
 }//end OnSelectedPauseParsing
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnSelectedFileReparse(wxCommandEvent & event)
+void ClgdCompletion::OnSelectedFileReparse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     event.Skip();
     return OnLSP_SelectedFileReparse(event); //(ph 2021/05/13)
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnLSP_SelectedFileReparse(wxCommandEvent & event)
+void ClgdCompletion::OnLSP_SelectedFileReparse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     wxTreeCtrl * tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
@@ -2922,13 +2918,13 @@ void CodeCompletion::OnLSP_SelectedFileReparse(wxCommandEvent & event)
     event.Skip();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnEditorFileReparse(wxCommandEvent & event)
+void ClgdCompletion::OnEditorFileReparse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     return OnLSP_EditorFileReparse(event); //(ph 2021/05/13)
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnLSP_EditorFileReparse(wxCommandEvent & event)
+void ClgdCompletion::OnLSP_EditorFileReparse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -2981,7 +2977,7 @@ void CodeCompletion::OnLSP_EditorFileReparse(wxCommandEvent & event)
     }//end if exists
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent & event)
+void ClgdCompletion::OnAppDoneStartup(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     // Verify existent clangd.exe path before creating a proxy project
@@ -3017,14 +3013,14 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent & event)
 
     if (!m_InitDone)
     {
-        // Queue a timer callback to allow time for the splash screen to clear.
-        // Set a timer to do further work later. Allows CB to start faster.
-        // Timer pop will call DoParseOpenedProjectAndActiveEditor()
+        // Set a timer callback to allow time for the splash screen to clear.
+        // Allows CB to appeear to start faster.
+        // Timer pop will call DoParseOpenedProjectAndActiveEditor() to do further work.
         m_TimerStartupDelay.Start(300, wxTIMER_ONE_SHOT);
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnWorkspaceClosingBegin(CodeBlocksEvent & event)
+void ClgdCompletion::OnWorkspaceClosingBegin(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     if (GetParseManager()->GetProxyProject())
@@ -3033,7 +3029,7 @@ void CodeCompletion::OnWorkspaceClosingBegin(CodeBlocksEvent & event)
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent & event)
+void ClgdCompletion::OnWorkspaceChanged(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     // EVT_WORKSPACE_CHANGED is a powerful event, it's sent after any project
@@ -3143,7 +3139,7 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent & event)
     event.Skip();
 }//end onWorkspaceChanged
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnProjectOpened(CodeBlocksEvent & event)
+void ClgdCompletion::OnProjectOpened(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     // This event is called once when a project is opened
@@ -3168,7 +3164,7 @@ void CodeCompletion::OnProjectOpened(CodeBlocksEvent & event)
     return;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnProjectActivated(CodeBlocksEvent & event)
+void ClgdCompletion::OnProjectActivated(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     // FYI: OnEditorOpen can occur before this project activate event
@@ -3260,7 +3256,7 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent & event)
     }
 }//end OnProjectActivated()
 // ----------------------------------------------------------------------------
-bool CodeCompletion::DoLockClangd_CacheAccess(cbProject * pcbProject)
+bool ClgdCompletion::DoLockClangd_CacheAccess(cbProject * pcbProject)
 // ----------------------------------------------------------------------------
 {
     // Multiple processes must not write to the Clangd cashe else crashes happen
@@ -3404,7 +3400,7 @@ bool CodeCompletion::DoLockClangd_CacheAccess(cbProject * pcbProject)
     return success = false;
 }
 // ----------------------------------------------------------------------------
-bool CodeCompletion::DoUnlockClangd_CacheAccess(cbProject * pcbProject)
+bool ClgdCompletion::DoUnlockClangd_CacheAccess(cbProject * pcbProject)
 // ----------------------------------------------------------------------------
 {
     // Multiple processes must not write to the Clangd cache else crashes/asserts
@@ -3482,7 +3478,7 @@ bool CodeCompletion::DoUnlockClangd_CacheAccess(cbProject * pcbProject)
     return success;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnLSP_ProcessTerminated(wxCommandEvent & event)    //(ph 2021/06/28)
+void ClgdCompletion::OnLSP_ProcessTerminated(wxCommandEvent & event)    //(ph 2021/06/28)
 // ----------------------------------------------------------------------------
 {
     cbProject * pProject = (cbProject *)event.GetEventObject();
@@ -3499,7 +3495,7 @@ void CodeCompletion::OnLSP_ProcessTerminated(wxCommandEvent & event)    //(ph 20
     return;
 }
 // ----------------------------------------------------------------------------
-ProcessLanguageClient * CodeCompletion::CreateNewLanguageServiceProcess(cbProject * pcbProject)                                   //(ph 2020/11/4)
+ProcessLanguageClient * ClgdCompletion::CreateNewLanguageServiceProcess(cbProject * pcbProject)                                   //(ph 2020/11/4)
 // ----------------------------------------------------------------------------
 {
 #if defined(cbDEBUG)
@@ -3550,7 +3546,7 @@ ProcessLanguageClient * CodeCompletion::CreateNewLanguageServiceProcess(cbProjec
         m_LSP_Clients[pcbProject] = pLSPclient;
         pLSPclient->SetCBProject(pcbProject);
         pLSPclient->SetLSP_UserEventID(LSPeventID);
-        Bind(wxEVT_COMMAND_MENU_SELECTED, &CodeCompletion::OnLSP_Event, this, LSPeventID);
+        Bind(wxEVT_COMMAND_MENU_SELECTED, &ClgdCompletion::OnLSP_Event, this, LSPeventID);
         wxFileName cbpName(pcbProject->GetFilename());
         wxString rootURI = cbpName.GetPath();
         //-rootURI.Replace("F:", "");
@@ -3585,7 +3581,7 @@ ProcessLanguageClient * CodeCompletion::CreateNewLanguageServiceProcess(cbProjec
     return pLSPclient;
 }
 // ----------------------------------------------------------------------------
-wxString CodeCompletion::GetLineTextFromFile(const wxString & file, const int lineNum) //(ph 2020/10/26)
+wxString ClgdCompletion::GetLineTextFromFile(const wxString & file, const int lineNum) //(ph 2020/10/26)
 // ----------------------------------------------------------------------------
 {
     // Fetch a single line from a text file
@@ -3628,7 +3624,7 @@ wxString CodeCompletion::GetLineTextFromFile(const wxString & file, const int li
     return resultText;
 }
 // ----------------------------------------------------------------------------
-wxString CodeCompletion::GetFilenameFromLSP_Response(wxCommandEvent & event) //(ph 2022/03/29)
+wxString ClgdCompletion::GetFilenameFromLSP_Response(wxCommandEvent & event) //(ph 2022/03/29)
 // ----------------------------------------------------------------------------
 {
     json * pJson = (json *)event.GetClientData();
@@ -3698,7 +3694,7 @@ wxString CodeCompletion::GetFilenameFromLSP_Response(wxCommandEvent & event) //(
     return wxString();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnLSP_Event(wxCommandEvent & event)
+void ClgdCompletion::OnLSP_Event(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     if (Manager::IsAppShuttingDown())
@@ -3950,7 +3946,7 @@ void CodeCompletion::OnLSP_Event(wxCommandEvent & event)
                             }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnLSP_SemanticTokenResponse(wxCommandEvent & event) //(ph 2021/03/16)
+void ClgdCompletion::OnLSP_SemanticTokenResponse(wxCommandEvent & event) //(ph 2021/03/16)
 // ----------------------------------------------------------------------------
 {
     // This is a callback after requesting textDocument/semanticTokens/full
@@ -4017,7 +4013,7 @@ void CodeCompletion::OnLSP_SemanticTokenResponse(wxCommandEvent & event) //(ph 2
     return;
 }//end OnLSP_SemanticTokenResponse
 // ----------------------------------------------------------------------------
-void CodeCompletion::ShutdownLSPclient(cbProject * pProject)
+void ClgdCompletion::ShutdownLSPclient(cbProject * pProject)
 // ----------------------------------------------------------------------------
 {
     if (IsAttached() && m_InitDone)
@@ -4109,7 +4105,7 @@ void CodeCompletion::ShutdownLSPclient(cbProject * pProject)
     }
 }//end ShutdownLSPclient()
 // ----------------------------------------------------------------------------
-void CodeCompletion::CleanUpLSPLogs()
+void ClgdCompletion::CleanUpLSPLogs()
 // ----------------------------------------------------------------------------
 {
     //(ph 2021/02/15)
@@ -4196,7 +4192,7 @@ void CodeCompletion::CleanUpLSPLogs()
         }//end switch
 }//end CleanUpLSPLogs()
 // ----------------------------------------------------------------------------
-void CodeCompletion::CleanOutClangdTempFiles()
+void ClgdCompletion::CleanOutClangdTempFiles()
 // ----------------------------------------------------------------------------
 {
     //(ph 2022/01/18)
@@ -4305,7 +4301,7 @@ void CodeCompletion::CleanOutClangdTempFiles()
 #endif // NOT windows
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnProjectClosed(CodeBlocksEvent & event)
+void ClgdCompletion::OnProjectClosed(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     // After this, the Class Browser needs to be updated. It will happen
@@ -4348,13 +4344,13 @@ void CodeCompletion::OnProjectClosed(CodeBlocksEvent & event)
     event.Skip();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnProjectSaved(CodeBlocksEvent & event)
+void ClgdCompletion::OnProjectSaved(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     event.Skip();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent & event)
+void ClgdCompletion::OnProjectFileAdded(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     if ((not IsAttached()) or (not m_InitDone))
@@ -4392,13 +4388,13 @@ void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent & event)
             // Delay GetLSPclient(pProject)->LSP_DidOpen(pEditor) with a callback.
             // Allows ProjectManager to add ProjectFile* to the project following this
             // event but before the callback event is invoked.
-            CallAfter(&CodeCompletion::OnLSP_ProjectFileAdded, pProject, filename);
+            CallAfter(&ClgdCompletion::OnLSP_ProjectFileAdded, pProject, filename);
     }
 
     GetParseManager()->AddFileToParser(event.GetProject(), event.GetString());
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnLSP_ProjectFileAdded(cbProject * pProject, wxString filename)
+void ClgdCompletion::OnLSP_ProjectFileAdded(cbProject * pProject, wxString filename)
 // ----------------------------------------------------------------------------
 {
     // This is a delayed callback caused by the fact that cbEVT_PROJECT_FILE_ADDED
@@ -4439,7 +4435,7 @@ void CodeCompletion::OnLSP_ProjectFileAdded(cbProject * pProject, wxString filen
     GetLSPclient(pProject)->LSP_DidOpen(pEditor);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnProjectFileRemoved(CodeBlocksEvent & event)
+void ClgdCompletion::OnProjectFileRemoved(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     if (IsAttached() && m_InitDone)
@@ -4468,7 +4464,7 @@ void CodeCompletion::OnProjectFileRemoved(CodeBlocksEvent & event)
 //    event.Skip();
 //}
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnEditorSave(CodeBlocksEvent & event)
+void ClgdCompletion::OnEditorSave(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone && event.GetEditor())
@@ -4490,7 +4486,7 @@ void CodeCompletion::OnEditorSave(CodeBlocksEvent & event)
     }
 }//end OnEditorSave()
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnEditorOpen(CodeBlocksEvent & event)
+void ClgdCompletion::OnEditorOpen(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     /// Note Well: the ProjectFile in the cbEditor is a nullptr
@@ -4509,7 +4505,30 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent & event)
     event.Skip(); //Unnecessary to skip CodeBlockEvents.
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnEditorActivated(CodeBlocksEvent & event)
+void ClgdCompletion::OnEditorActivatedCallback(wxString edfilename)
+// ----------------------------------------------------------------------------
+{
+    // Use to Callback OnEditorActivated() after the Project/Editor managers
+    // set the Editors missing ProjectFile->ParentProject pointer.
+    // Avoids crashes if the editor has closed between the time the callback
+    // was issued and the time the IdleCallbackHander invoked this function.
+    CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED);
+    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+    EditorBase * pEditor = pEdMgr->GetBuiltinEditor(edfilename);
+
+    if (pEditor)
+    {
+        CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED);
+        evt.SetEditor(pEditor);
+        OnEditorActivated(evt);
+    }
+    else
+    {
+        m_OnEditorOpenEventOccured = false;
+    }
+}
+// ----------------------------------------------------------------------------
+void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     TRACE(_T("CodeCompletion::OnEditorActivated(): Enter"));
@@ -4541,7 +4560,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent & event)
             // Here for Language Service Process to send didOpen().
             // The OnEditorOpen() event cannot be used because the editor does not yet have
             // a ProjectFile pointer to determine the files project parent.
-            // This OnEditorActivated() event is occuring BEFORE OnProjectActivated().
+            // This OnEditorActivated() event is occuring prior to OnProjectActivated().
             // The LSP server may not be initialized when editors are opened during project load.
             // To compensate for any missed editor opens, LSP_Initialize() will scan the editors notebook
             // and send didOpen() for files already opened before event OnProjectActivated().
@@ -4550,7 +4569,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent & event)
             // this was a valid open event, not just a user click on the notebook tab, or a
             // mouse focus activation.
             // Find the project and ProjectFile this editor is dependent on.
-            // We need the project and base project .cbp file location
+            // We need a project and base project .cbp file location
             // to do a didOpen() on a file belonging to a non-active project.
             cbProject * pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
 
@@ -4563,7 +4582,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent & event)
 
             if (not pProjectFile)
             {
-                // The ProjectFile* has not yet been entered into the cbEditor object
+                // The ProjectFile* has not yet been entered into the cbEditor object.
                 // Will there ever be a ProjectFile* ? Not for standalone files.
                 Manager::Get()->GetProjectManager()->FindProjectForFile(pEd->GetFilename(), &pProjectFile, false, false);
 
@@ -4571,7 +4590,9 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent & event)
                 {
                     // Callback when the ProjectFile* has actually been stowed into the cbProject.
                     m_OnEditorOpenEventOccured = true;
-                    GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnEditorActivated, event);
+                    //GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnEditorActivated, event);
+                    // ^^ crash when the event goes stale. Use the filename instead of the event.
+                    GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::OnEditorActivatedCallback, event.GetEditor()->GetFilename());
                     return;
                 }
                 else //Activated editor has non-project file
@@ -4611,7 +4632,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent & event)
         {
             // switch ClassBrowser to this editor project/file
             // and update the namespace/function toolbar if needed.
-            GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnEditorActivatedCallback, event);
+            GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::NotifyParserEditorActivated, event);
         }
 
         // We might have an editor that belongs to a non-active project
@@ -4659,7 +4680,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent & event)
     TRACE(_T("CodeCompletion::OnEditorActivated(): Leave"));
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnEditorClosed(CodeBlocksEvent & event)
+void ClgdCompletion::OnEditorClosed(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
@@ -4752,7 +4773,7 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent & event)
 }
 
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnCCLogger(CodeBlocksThreadEvent & event)
+void ClgdCompletion::OnCCLogger(CodeBlocksThreadEvent & event)
 // ----------------------------------------------------------------------------
 {
     if (!Manager::IsAppShuttingDown())
@@ -4762,7 +4783,7 @@ void CodeCompletion::OnCCLogger(CodeBlocksThreadEvent & event)
 }
 
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnCCDebugLogger(CodeBlocksThreadEvent & event)
+void ClgdCompletion::OnCCDebugLogger(CodeBlocksThreadEvent & event)
 // ----------------------------------------------------------------------------
 {
     if (!Manager::IsAppShuttingDown())
@@ -4779,7 +4800,7 @@ void CodeCompletion::OnCCDebugLogger(CodeBlocksThreadEvent & event)
     }
 }
 // ----------------------------------------------------------------------------
-int CodeCompletion::DoClassMethodDeclImpl() //not yet used for clangd plugin
+int ClgdCompletion::DoClassMethodDeclImpl() //not yet used for clangd plugin
 // ----------------------------------------------------------------------------
 {
     // ContextMenu->Insert-> declaration/implementation
@@ -4828,8 +4849,8 @@ int CodeCompletion::DoClassMethodDeclImpl() //not yet used for clangd plugin
         }
 
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idClassMethod);
-        GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnClassMethod, evt);
-        return -5; //parser is busy
+        GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::OnClassMethod, evt);
+        return -5; //parser is busy, try again later
     }
     else
     {
@@ -4870,7 +4891,7 @@ int CodeCompletion::DoClassMethodDeclImpl() //not yet used for clangd plugin
     return success;
 }
 // ----------------------------------------------------------------------------
-int CodeCompletion::DoAllMethodsImpl()
+int ClgdCompletion::DoAllMethodsImpl()
 // ----------------------------------------------------------------------------
 {
     if (!IsAttached() || !m_InitDone)
@@ -4905,14 +4926,14 @@ int CodeCompletion::DoAllMethodsImpl()
     if (lock_result != wxMUTEX_NO_ERROR)
     {
         // lock failed, but don't block UI thread, requeue an idle time callback instead.
-        if (GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))  //verify tries < 8
+        if (not GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))  //verify tries < 8
         {
-            return -6;
+            return -6;    // lock attempt exceeded
         }
 
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idClassMethod);
-        GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnClassMethod, evt);
-        return -5; //parser is busy
+        GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::OnClassMethod, evt);
+        return -5; //parser is busy try again later
     }
     else
     {
@@ -5092,7 +5113,7 @@ int CodeCompletion::DoAllMethodsImpl()
     return success;
 }//end DoAllMethodsImpl()
 // ----------------------------------------------------------------------------
-void CodeCompletion::MatchCodeStyle(wxString & str, int eolStyle, const wxString & indent, bool useTabs, int tabSize)
+void ClgdCompletion::MatchCodeStyle(wxString & str, int eolStyle, const wxString & indent, bool useTabs, int tabSize)
 // ----------------------------------------------------------------------------
 {
     str.Replace(wxT("\n"), GetEOLStr(eolStyle) + indent);
@@ -5109,7 +5130,7 @@ void CodeCompletion::MatchCodeStyle(wxString & str, int eolStyle, const wxString
 }
 // help method in finding the function position in the vector for the function containing the current line
 // ----------------------------------------------------------------------------
-void CodeCompletion::FunctionPosition(int & scopeItem, int & functionItem) const
+void ClgdCompletion::FunctionPosition(int & scopeItem, int & functionItem) const
 // ----------------------------------------------------------------------------
 {
     scopeItem = -1;
@@ -5135,7 +5156,7 @@ void CodeCompletion::FunctionPosition(int & scopeItem, int & functionItem) const
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
+void ClgdCompletion::GotoFunctionPrevNext(bool next /* = false */)
 // ----------------------------------------------------------------------------
 {
     // Original CC code is faster than a LSP request/response
@@ -5233,7 +5254,7 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
 }
 // help method in finding the namespace position in the vector for the namespace containing the current line
 // ----------------------------------------------------------------------------
-int CodeCompletion::NameSpacePosition() const
+int ClgdCompletion::NameSpacePosition() const
 // ----------------------------------------------------------------------------
 {
     int pos = -1;
@@ -5255,7 +5276,7 @@ int CodeCompletion::NameSpacePosition() const
     return pos;
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnScope(wxCommandEvent &)
+void ClgdCompletion::OnScope(wxCommandEvent &)
 // ----------------------------------------------------------------------------
 {
     int sel = m_Scope->GetSelection();
@@ -5267,7 +5288,7 @@ void CodeCompletion::OnScope(wxCommandEvent &)
 }
 
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnFunction(cb_unused wxCommandEvent & event)
+void ClgdCompletion::OnFunction(cb_unused wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     int selSc = (m_Scope) ? m_Scope->GetSelection() : 0;
@@ -5353,7 +5374,7 @@ void CodeCompletion::OnFunction(cb_unused wxCommandEvent & event)
  * @endcode
  */
 // ----------------------------------------------------------------------------
-void CodeCompletion::ParseFunctionsAndFillToolbar()
+void ClgdCompletion::ParseFunctionsAndFillToolbar()
 // ----------------------------------------------------------------------------
 {
     TRACE(_T("ParseFunctionsAndFillToolbar() Entered: m_ToolbarNeedReparse=%d, m_ToolbarNeedRefresh=%d, "),
@@ -5419,7 +5440,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
             // lock failed, do not block the UI thread, call back when idle
             if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))
             {
-                GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::ParseFunctionsAndFillToolbar);
+                GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::ParseFunctionsAndFillToolbar);
             }
 
             return;
@@ -5635,7 +5656,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
     EnableToolbarTools(fileParseFinished);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::FindFunctionAndUpdate(int currentLine)
+void ClgdCompletion::FindFunctionAndUpdate(int currentLine)
 // ----------------------------------------------------------------------------
 {
     if (currentLine == -1)
@@ -5690,7 +5711,7 @@ void CodeCompletion::FindFunctionAndUpdate(int currentLine)
         }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::UpdateFunctions(unsigned int scopeItem)
+void ClgdCompletion::UpdateFunctions(unsigned int scopeItem)
 // ----------------------------------------------------------------------------
 {
     m_Function->Freeze();
@@ -5706,7 +5727,7 @@ void CodeCompletion::UpdateFunctions(unsigned int scopeItem)
     m_Function->Thaw();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::EnableToolbarTools(bool enable)
+void ClgdCompletion::EnableToolbarTools(bool enable)
 // ----------------------------------------------------------------------------
 {
     if (m_Scope)
@@ -5721,7 +5742,7 @@ void CodeCompletion::EnableToolbarTools(bool enable)
 }
 
 // ----------------------------------------------------------------------------
-void CodeCompletion::DoParseOpenedProjectAndActiveEditor(wxTimerEvent & event)
+void ClgdCompletion::DoParseOpenedProjectAndActiveEditor(wxTimerEvent & event)
 // ----------------------------------------------------------------------------
 {
     // Here from the StartupDelay timer pop to let the app startup before parsing.
@@ -5757,7 +5778,7 @@ void CodeCompletion::DoParseOpenedProjectAndActiveEditor(wxTimerEvent & event)
     }
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::UpdateEditorSyntax(cbEditor * ed)
+void ClgdCompletion::UpdateEditorSyntax(cbEditor * ed)
 // ----------------------------------------------------------------------------
 {
     if (!Manager::Get()->GetConfigManager(wxT("clangd_client"))->ReadBool(wxT("/semantic_keywords"), false))
@@ -5795,7 +5816,7 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor * ed)
         // lock failed, do not block the UI thread, call back when idle
         if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))
         {
-            GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::UpdateEditorSyntax, ed);
+            GetIdleCallbackHandler()->QueueCallback(this, &ClgdCompletion::UpdateEditorSyntax, ed);
         }
 
         return;
@@ -5907,7 +5928,7 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor * ed)
     ed->GetControl()->Colourise(0, -1);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnToolbarTimer(wxCommandEvent & event)
+void ClgdCompletion::OnToolbarTimer(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     // Allow others to call OnToolbarTimer() via event.     //(ph 2021/09/11)
@@ -5918,7 +5939,7 @@ void CodeCompletion::OnToolbarTimer(wxCommandEvent & event)
     OnToolbarTimer(evt);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnToolbarTimer(cb_unused wxTimerEvent & event)
+void ClgdCompletion::OnToolbarTimer(cb_unused wxTimerEvent & event)
 // ----------------------------------------------------------------------------
 {
     // Update the Code completion tool bar
@@ -5943,8 +5964,8 @@ void CodeCompletion::OnToolbarTimer(cb_unused wxTimerEvent & event)
     TRACE(_T("CodeCompletion::OnToolbarTimer(): Leave"));
 }
 // ----------------------------------------------------------------------------
-//-void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
-void CodeCompletion::OnEditorActivatedCallback(wxCommandEvent & event)
+//-old- void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
+void ClgdCompletion::NotifyParserEditorActivated(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     // This is the old OnEditorActivatedTimer() which has been deprecated //(ph 2022/02/18)
@@ -6002,7 +6023,7 @@ void CodeCompletion::OnEditorActivatedCallback(wxCommandEvent & event)
     UpdateEditorSyntax();
 }
 // ----------------------------------------------------------------------------
-wxBitmap CodeCompletion::GetImage(ImageId::Id id, int fontSize) //unused
+wxBitmap ClgdCompletion::GetImage(ImageId::Id id, int fontSize) //unused
 // ----------------------------------------------------------------------------
 {
     const int size = cbFindMinSize16to64(fontSize);
@@ -6066,7 +6087,7 @@ wxBitmap CodeCompletion::GetImage(ImageId::Id id, int fontSize) //unused
     }
 }
 // ----------------------------------------------------------------------------
-wxString CodeCompletion::GetTargetsOutFilename(cbProject * pProject)                 //(ph 2021/05/11)
+wxString ClgdCompletion::GetTargetsOutFilename(cbProject * pProject)                 //(ph 2021/05/11)
 // ----------------------------------------------------------------------------
 {
     // Return the build targets output file name or nullString
@@ -6123,7 +6144,7 @@ wxString CodeCompletion::GetTargetsOutFilename(cbProject * pProject)            
     return wxString();
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnDebuggerStarting(CodeBlocksEvent & event)                 //(ph 2021/05/11)
+void ClgdCompletion::OnDebuggerStarting(CodeBlocksEvent & event)                 //(ph 2021/05/11)
 // ----------------------------------------------------------------------------
 {
     cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -6170,12 +6191,12 @@ void CodeCompletion::OnDebuggerStarting(CodeBlocksEvent & event)                
     DoUnlockClangd_CacheAccess(pProject);
 }
 // ----------------------------------------------------------------------------
-void CodeCompletion::OnDebuggerFinished(CodeBlocksEvent & event)                //(ph 2021/05/11)
+void ClgdCompletion::OnDebuggerFinished(CodeBlocksEvent & event)                //(ph 2021/05/11)
 // ----------------------------------------------------------------------------
 {
 }
 // ----------------------------------------------------------------------------
-bool CodeCompletion::ParsingIsVeryBusy()
+bool ClgdCompletion::ParsingIsVeryBusy()
 // ----------------------------------------------------------------------------
 {
     // suggestion: max parallel files parsing should be no more than half of processors
@@ -6189,6 +6210,8 @@ bool CodeCompletion::ParsingIsVeryBusy()
     ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
     int cfg_parallel_processes = std::max(cfg->ReadInt("/max_threads", 1), 1);            //don't allow 0
     max_parallel_processes = std::min(max_parallel_processes, cfg_parallel_processes);
+    //int cfg_parsers_while_compiling  = std::min(cfg->ReadInt("/max_parsers_while_compiling", 0), max_parallel_processes); //(ph 2022/04/25)
+    //int max_parsers_while_compiling  = std::min(cfg_parsers_while_compiling, max_parallel_processes);
     cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
     if (not pEditor)

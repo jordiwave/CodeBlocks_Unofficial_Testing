@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -22,6 +25,12 @@ libxpmanifest_la_LIBADD = \
 
 libxpmanifest_la_SOURCES = \
 			windowsxplooknfeel.cpp
+
+if CODEBLOCKS_NT
+libxpmanifest_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			windowsxplooknfeel.h
 

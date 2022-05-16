@@ -37,7 +37,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.23 2022/04/23-2")
+#define VERSION wxT("0.2.25 2022/05/11")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -68,7 +68,35 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
-//0.2.23-2  2022/04/24 commit ph
+//0.2.25
+//          2022/05/11 More MacOS changes  (Thanks AndrewCo)
+//          Fix illegal PS --no-heading param used in procutils::GetProcessNameByPid()
+//          2022/05/6   Mac changes (Thanks AndrewCo)
+//          Merge AndrewCo ccoptionsdlg.cpp wxFileDialog changes for the MAC
+//          2022/05/4 ph
+//          Change symbol "CodeCompletion" to "ClgdCompletion" to see if it solves the
+//              MacOS problem when both old CodeCompletion and Clangd_client are loaded.
+//              On Mac, it appears that the first occurance of "CodeCompletion" is being
+//              used for both plugins. Causes multiple load errors.
+//0.2.24
+//          2022/04/28 ph
+//          Focus LSP log tab when user saved and  have any log msgs and focus option is true.
+//              Never focus LSP log when compiling and focus options is false.
+//              Parser::OnLSP_DiagnosticsResponse()
+//          2022/04/27 ph
+//          Revert the previous changes in codecompletion.cpp,classbrowser.h,classbrowser.cpp, IdleCallbackHandler.h, parser.cpp
+//              to 220425_194231.7z .
+//              It appears that using the incoming event param is ok. Looks like a deep copy is be made of
+//              the event when used to queue an idle call, because the event param address is different and
+//               changes to the event are present.
+//              And (stupid me) I lost sight that queueing a stack wxCommandEvent is also ok. Seems always done that way.
+//          2022/04/26 ph
+//          Recode Parser::LSP_ParseDocumentSymbols() to allocate callback params on heap, not stack.
+//          2022/04/25 ph
+//          Fix crash when IdleCallback uses stale event in OnEditorActivated()
+//          New option for max parsers allowed during compiling.
+//          Implemented in Parser::OnLSP_BatchTimer()
+//0.2.23    commit 2022/04/25
 //          2022/04/23-2 ph
 //          Code sanity check for calls to Lock/IdleTimeCallbacks to log any loops.
 //              It sets the max Lockout/callbacks to 8 and issues a DebugLogError()

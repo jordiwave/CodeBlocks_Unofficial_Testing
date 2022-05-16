@@ -1,5 +1,8 @@
 SUBDIRS = Resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -30,6 +33,11 @@ libToolsPlus_la_SOURCES = \
 			shellproperties.cpp \
 			ToolsPlus.cpp
 
+if CODEBLOCKS_NT
+libToolsPlus_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			CmdConfigDialog.h \
 			PipedProcessCtrl.h \
@@ -39,12 +47,12 @@ noinst_HEADERS = \
 			ToolsPlus.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/update* \
-			$(srcdir)/manifest.xml
+			*.cbp \
+			manifest.xml
 
 pkgdata_DATA = \
 			ToolsPlus.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 

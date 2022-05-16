@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12287 $
- * $Id: ParseManager_base.cpp 12287 2021-01-23 05:46:23Z mortenmacfly $
- * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/ParseManager_base.cpp $
  */
 
 #include <sdk.h>

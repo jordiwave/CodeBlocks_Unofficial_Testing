@@ -1,6 +1,9 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
-			-I$(srcdir)/include
+			-Iinclude
 
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
@@ -57,6 +60,11 @@ libwxchartctrl_la_SOURCES = \
 			./src/xaxis.cpp \
 			./src/yaxis.cpp
 
+if CODEBLOCKS_NT
+libwxchartctrl_la_SOURCES += \
+			manifest.rc
+endif
+
 sdkdir = $(includedir)/codeblocks/wxContribItems/wxchart/include/wx
 
 if !CODEBLOCKS_NT_BUILD_INSTALLER
@@ -88,6 +96,6 @@ noinst_HEADERS = \
 			./include/wx/label.h
 
 EXTRA_DIST = \
-			$(srcdir)/include/wx/chartart/*.xpm \
-			$(srcdir)/include/wx/chartart/*.bmp
+			include/wx/chartart/*.xpm \
+			include/wx/chartart/*.bmp
 

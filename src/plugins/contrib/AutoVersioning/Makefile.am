@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -33,6 +36,11 @@ libAutoVersioning_la_SOURCES = \
 			avSvnRevision.cpp \
 			avVersionEditorDlg.cpp
 
+if CODEBLOCKS_NT
+libAutoVersioning_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			AutoVersioning.h \
 			avChangesDlg.h \
@@ -44,7 +52,7 @@ noinst_HEADERS = \
 EXTRA_DIST = \
 			wxsmith/avChangesDlg.wxs \
 			wxsmith/avVersionEditorDlg.wxs \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

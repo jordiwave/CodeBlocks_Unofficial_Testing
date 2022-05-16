@@ -1,5 +1,8 @@
 # SUBDIRS = bzip2
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -46,15 +49,19 @@ libloghacker_la_LIBADD = \
 			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-
 libloghacker_la_SOURCES = \
 			loghacker.cpp
+
+if CODEBLOCKS_NT
+libloghacker_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			loghacker.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

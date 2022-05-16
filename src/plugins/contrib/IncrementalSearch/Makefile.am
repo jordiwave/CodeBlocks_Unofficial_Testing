@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -25,14 +28,19 @@ libIncrementalSearch_la_SOURCES = \
 			IncrementalSearch.cpp \
 			IncrementalSearchConfDlg.cpp
 
+if CODEBLOCKS_NT
+libIncrementalSearch_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			IncrementalSearch.h \
 			IncrementalSearchConfDlg.h
 
 resources_forZIP = \
 			IncrementalSearchToolbar.xrc \
-	IncrementalSearchConfDlg.xrc \
-	manifest.xml \
+			IncrementalSearchConfDlg.xrc \
+			manifest.xml \
 			images/16x16/incsearchcase.png \
 			images/16x16/incsearchclear.png \
 			images/16x16/incsearchfocus.png \
@@ -41,7 +49,7 @@ resources_forZIP = \
 			images/16x16/incsearchprev.png \
 			images/16x16/incsearchregex.png \
 			images/16x16/incsearchselectedonly.png \
-	\
+			\
 			images/20x20/incsearchcase.png \
 			images/20x20/incsearchclear.png \
 			images/20x20/incsearchfocus.png \
@@ -50,7 +58,7 @@ resources_forZIP = \
 			images/20x20/incsearchprev.png \
 			images/20x20/incsearchregex.png \
 			images/20x20/incsearchselectedonly.png \
-	\
+			\
 			images/24x24/incsearchcase.png \
 			images/24x24/incsearchclear.png \
 			images/24x24/incsearchfocus.png \
@@ -59,7 +67,7 @@ resources_forZIP = \
 			images/24x24/incsearchprev.png \
 			images/24x24/incsearchregex.png \
 			images/24x24/incsearchselectedonly.png \
-	\
+			\
 			images/28x28/incsearchcase.png \
 			images/28x28/incsearchclear.png \
 			images/28x28/incsearchfocus.png \
@@ -68,7 +76,7 @@ resources_forZIP = \
 			images/28x28/incsearchprev.png \
 			images/28x28/incsearchregex.png \
 			images/28x28/incsearchselectedonly.png \
-	\
+			\
 			images/32x32/incsearchcase.png \
 			images/32x32/incsearchclear.png \
 			images/32x32/incsearchfocus.png \
@@ -111,8 +119,7 @@ resources_forZIP = \
 			images/64x64/incsearchselectedonly.png
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/update* \
+			*.cbp \
 			$(resources_forZIP)
 
 pkgdata_DATA = \
@@ -127,4 +134,4 @@ IncrementalSearch.zip: $(resources_forZIP)
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 
 dist_confimages_DATA = \
-			$(srcdir)/*.png
+			*.png

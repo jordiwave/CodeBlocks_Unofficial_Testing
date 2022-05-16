@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -27,10 +30,15 @@ libSymTab_la_SOURCES = \
 			symtab.cpp \
 			symtabexec.cpp
 
+if CODEBLOCKS_NT
+libSymTab_la_SOURCES += \
+			resources/manifest.rc
+endif
+
 noinst_HEADERS = \
 			symtabconfig.h \
 			symtabexec.h \
 			symtab.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp
+			*.cbp

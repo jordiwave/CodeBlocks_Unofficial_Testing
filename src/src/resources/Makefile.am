@@ -1,10 +1,10 @@
 SUBDIRS = icons images
 
 dist_noinst_DATA = \
-			$(srcdir)/*.xrc \
-			$(srcdir)/*.rc \
-			$(srcdir)/start_here/*.png \
-			$(srcdir)/start_here/*.htm*
+			*.xrc \
+			*.rc \
+			start_here/*.png \
+			start_here/*.htm*
 
 dist_pkgdata_DATA = \
 			resources.zip start_here.zip
@@ -567,17 +567,17 @@ infoPaneImages_forZIP = \
 			images/infopane/64x64/misc.png
 
 resources.zip: \
-			$(srcdir)/*.xrc $(images_forZIP) $(treeImages_forZIP) $(infoPaneImages_forZIP) \
-			$(srcdir)/images/*.png
+			*.xrc $(images_forZIP) $(treeImages_forZIP) $(infoPaneImages_forZIP) \
+			images/*.png
 	PWD=`pwd` cd $(srcdir) && \
 			zip $(PWD)/resources.zip *.xrc images/*.png $(images_forZIP) $(treeImages_forZIP) $(infoPaneImages_forZIP) > /dev/null
 
-start_here.zip: $(srcdir)/start_here/*.htm* $(srcdir)/start_here/*.png
-	PWD=`pwd` cd $(srcdir)/start_here && \
+start_here.zip: start_here/*.htm* start_here/*.png
+	PWD=`pwd` cd start_here && \
 			zip $(PWD)/start_here.zip *.htm* *.png > /dev/null
 
 EXTRA_DIST = \
-			$(srcdir)/*.manifest \
+			*.manifest \
 			$(images_forZIP) \
 			$(infoPaneImages_forZIP) \
 			$(treeImages_forZIP)

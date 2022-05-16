@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -73,6 +76,11 @@ libNassiShneiderman_la_SOURCES = \
 			TextCtrl.cpp \
 			TextCtrlTask.cpp \
 			TextGraph.cpp
+
+if CODEBLOCKS_NT
+libNassiShneiderman_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			bricks.h \
@@ -241,16 +249,16 @@ resources_forZIP = \
 			nassi_shneiderman_toolbar.xrc
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/rc/*.xpm \
-			$(srcdir)/EditTextTask.h \
-			$(srcdir)/EditTextTask.cpp \
-			$(srcdir)/HooverLine.h \
-			$(srcdir)/HooverLine.cpp \
-			$(srcdir)/TaskSelect.h \
-			$(srcdir)/TaskSelect.cpp \
-			$(srcdir)/TaskTest.h \
-			$(srcdir)/TaskTest.cpp \
+			*.cbp \
+			rc/*.xpm \
+			EditTextTask.h \
+			EditTextTask.cpp \
+			HooverLine.h \
+			HooverLine.cpp \
+			TaskSelect.h \
+			TaskSelect.cpp \
+			TaskTest.h \
+			TaskTest.cpp \
 			$(resources_forZIP)
 
 pkgdata_DATA = \

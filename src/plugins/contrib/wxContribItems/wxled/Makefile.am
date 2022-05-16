@@ -1,11 +1,14 @@
 SUBDIRS = gizmosled/include/wx/gizmos lcdWindow/include/wx led/include/wx led/include/xrc ledpanel/include/wx
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
-			-I$(srcdir)/ledpanel/include \
-			-I$(srcdir)/lcdWindow/include \
-			-I$(srcdir)/led/include \
-			-I$(srcdir)/gizmosled/include
+			-Iledpanel/include \
+			-IlcdWindow/include \
+			-Iled/include \
+			-Igizmosled/include
 
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
@@ -55,3 +58,8 @@ libwxled_la_SOURCES = \
 			./ledpanel/src/matrixobject.cpp \
 			./ledpanel/src/wxledfont.cpp \
 			./ledpanel/src/wxledpanel.cpp
+
+if CODEBLOCKS_NT
+libwxled_la_SOURCES += \
+			manifest.rc
+endif

@@ -4,10 +4,10 @@ if CODEBLOCKS_NT
 dist_pkgdata_DATA=
 else
 dist_pkgdata_DATA = \
-			$(srcdir)/*.xpm
+			*.xpm
 endif
 
 EXTRA_DIST = \
-			$(srcdir)/*.ico \
-			$(srcdir)/*.icns \
-			$(srcdir)/app.r
+			*.ico \
+			*.icns \
+			app.r

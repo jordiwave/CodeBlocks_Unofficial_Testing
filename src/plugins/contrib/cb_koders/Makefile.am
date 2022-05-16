@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -24,12 +27,17 @@ libcb_koders_la_SOURCES = \
 			kodersdialog.cpp \
 			cb_koders.cpp
 
+if CODEBLOCKS_NT
+libcb_koders_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			kodersdialog.h \
 			cb_koders.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			wxsmith/KodersDialog.wxs \
 			manifest.xml
 

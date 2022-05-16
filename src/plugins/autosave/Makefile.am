@@ -1,3 +1,7 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -22,12 +26,22 @@ libautosave_la_LIBADD = \
 
 libautosave_la_SOURCES = \
 			autosave.cpp
+
+if CODEBLOCKS_NT
+libautosave_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			autosave.h
+
 EXTRA_DIST = \
-			autosave.xrc manifest.xml
+			autosave.xrc \
+			manifest.xml
+
 pkgdata_DATA = \
 			autosave.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 

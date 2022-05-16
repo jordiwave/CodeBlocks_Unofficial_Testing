@@ -1,11 +1,14 @@
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(SCINTILLA_GTK_CFLAGS) \
-			-I$(srcdir)/include \
-			-I$(srcdir)/src/scintilla/include \
-			-I$(srcdir)/src/scintilla/lexlib \
-			-I$(srcdir)/src/scintilla/src \
+			-Iinclude \
+			-Isrc/scintilla/include \
+			-Isrc/scintilla/lexlib \
+			-Isrc/scintilla/src \
 			-DSCI_LEXER \
 			-DLINK_LEXERS \
 			-DGTK \
@@ -239,18 +242,18 @@ sdk_HEADERS = \
 endif
 
 EXTRA_DIST = \
-			$(srcdir)/Readme \
-			$(srcdir)/build/*.txt \
-			$(srcdir)/build/Makefile \
-			$(srcdir)/build/wxscintilla.* \
-			$(srcdir)/src/scintilla/*.txt \
-			$(srcdir)/src/scintilla/README \
-			$(srcdir)/src/scintilla/include/*.iface \
-			$(srcdir)/src/scintilla/src/*.properties \
-			$(srcdir)/src/scintilla/cppcheck.suppress
+			Readme \
+			build/*.txt \
+			build/Makefile \
+			build/wxscintilla.* \
+			src/scintilla/*.txt \
+			src/scintilla/README \
+			src/scintilla/include/*.iface \
+			src/scintilla/src/*.properties \
+			src/scintilla/cppcheck.suppress
 
 # add upper-case copy
 CLEANFILES = \
 			README
-README: $(srcdir)/Readme
+README: Readme
 	cp -p $< $@

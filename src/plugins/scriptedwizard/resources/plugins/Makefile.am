@@ -10,6 +10,6 @@ dist_pkgdata_DATA = \
 templatesdir = $(pkgdatadir)/templates
 
 dist_templates_DATA = \
-			$(srcdir)/templates/*.cpp \
-			$(srcdir)/templates/*.h \
-			$(srcdir)/templates/*.xml
+			templates/*.cpp \
+			templates/*.h \
+			templates/*.xml

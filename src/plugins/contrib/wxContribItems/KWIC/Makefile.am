@@ -1,8 +1,11 @@
 SUBDIRS = include/wx/KWIC include/wx/xrc
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
-			-I$(srcdir)/include
+			-Iinclude
 
 if CODEBLOCKS_NT
 AM_CPPFLAGS += \
@@ -54,6 +57,11 @@ libwxkwic_la_SOURCES = \
 			./src/wx/xrc/xh_kwxlcddisplayhandler.cpp \
 			./src/wx/xrc/xh_kwxlinearmeterhandler.cpp \
 			./src/wx/xrc/xh_kwxlinearregulatorhandler.cpp
+
+if CODEBLOCKS_NT
+libwxkwic_la_SOURCES += \
+			manifest.rc
+endif
 
 EXTRA_DIST = \
 			CREDITS \

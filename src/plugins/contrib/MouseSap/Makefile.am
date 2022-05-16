@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(WX_GTK_CFLAGS) \
@@ -25,12 +28,17 @@ libMouseSap_la_SOURCES = \
 			MouseSap.cpp \
 			MouseSapCfg.cpp
 
+if CODEBLOCKS_NT
+libMouseSap_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			MouseSap.h \
 			MouseSapCfg.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

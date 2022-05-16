@@ -1,2 +1,2 @@
 EXTRA_DIST = \
-			$(srcdir)/*.wxs
+			*.wxs

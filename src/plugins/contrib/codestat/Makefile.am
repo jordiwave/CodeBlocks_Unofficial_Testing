@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -28,6 +31,11 @@ libcodestat_la_SOURCES = \
 			codestat.cpp \
 			codestatexec.cpp
 
+if CODEBLOCKS_NT
+libcodestat_la_SOURCES += \
+			resources/manifest.rc
+endif
+
 noinst_HEADERS = \
 			codestatconfig.h \
 			codestatexec.h \
@@ -35,6 +43,6 @@ noinst_HEADERS = \
 			language_def.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			InstallationInstructions.txt \
 			BuildInstructions.txt

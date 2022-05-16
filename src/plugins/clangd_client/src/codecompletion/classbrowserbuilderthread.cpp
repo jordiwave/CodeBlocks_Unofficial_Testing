@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12322 $
- * $Id: classbrowserbuilderthread.cpp 12322 2021-05-06 12:59:36Z fuscated $
- * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/classbrowserbuilderthread.cpp $
  */
 
 #include <sdk.h>
@@ -65,13 +62,15 @@
 #define TRACE(format, args...)
 #define TRACE2(format, args...)
 #endif
+
+wxMutex ClassBrowserBuilderThread::m_ClassBrowserBuilderThreadMutex; // Made static member //(ph 2022/05/5)
 // ----------------------------------------------------------------------------
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxEvtHandler * evtHandler, wxSemaphore & sem) :
     // ----------------------------------------------------------------------------
     wxThread(wxTHREAD_JOINABLE),
     m_Parent(evtHandler),
     m_ClassBrowserSemaphore(sem),
-    m_ClassBrowserBuilderThreadMutex(),
+    //-m_ClassBrowserBuilderThreadMutex(), //made static (ph 2022/05/5)
     m_ParseManager(nullptr),
     m_CCTreeTop(nullptr),
     m_CCTreeBottom(nullptr),
@@ -90,7 +89,9 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxEvtHandler * evtHandler, 
 ClassBrowserBuilderThread::~ClassBrowserBuilderThread()
 {
     delete m_CCTreeTop;
+    m_CCTreeTop = nullptr;
     delete m_CCTreeBottom;
+    m_CCTreeBottom = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -119,6 +120,15 @@ bool ClassBrowserBuilderThread::Init(ParseManager     *    pParseManager,
     }
 
     m_ClassBrowserBuilderThreadMutex_Owner = wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__); /*record owner*/
+    /// This Unlocks the ClassBrowserBuilderThreadMutex after any return statement //(ph 2022/05/5)
+    struct ClassBrowserBuilderThreadMutexUnlock
+    {
+        ClassBrowserBuilderThreadMutexUnlock() {}
+        ~ClassBrowserBuilderThreadMutexUnlock()
+        {
+            CC_LOCKER_TRACK_CBBT_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex);
+        }
+    } classBrowserBuilderThreadMutexUnlock;
     m_ParseManager     = pParseManager;
     m_CCTreeTop        = new CCTree();
     m_CCTreeBottom     = new CCTree();
@@ -148,6 +158,7 @@ bool ClassBrowserBuilderThread::Init(ParseManager     *    pParseManager,
 
         if (lock_result != wxMUTEX_NO_ERROR)
         {
+            ///Unlock m_ClassBrowserBuilderThreadMutex !!
             return success = m_Busy = false;
         }
 
@@ -260,15 +271,17 @@ bool ClassBrowserBuilderThread::Init(ParseManager     *    pParseManager,
     }
 
     // ----------------------------------------------------------------
-    CC_LOCKER_TRACK_CBBT_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)   //UNLOCK ClassBrowser
+    //CC_LOCKER_TRACK_CBBT_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)   //deprecated //(ph 2022/05/5)
+    // Unlocked by dtor of above struct ClassBrowserBuilderThreadMutexUnlock
     // ----------------------------------------------------------------
     m_Busy = false;
     return success = true;
 }
 
+// ----------------------------------------------------------------------------
 // Thread function
-
 void * ClassBrowserBuilderThread::Entry()
+// ----------------------------------------------------------------------------
 {
     while (!m_TerminationRequested && !Manager::IsAppShuttingDown())
     {
@@ -308,11 +321,16 @@ void * ClassBrowserBuilderThread::Entry()
         }
 
         m_Busy = false;
+
+        if (TestDestroy())
+        {
+            break;    //(ph 2022/05/6)
+        }
     }
 
     m_ParseManager = nullptr;
-    m_CCTreeTop = nullptr;
-    m_CCTreeBottom = nullptr;
+    //-m_CCTreeTop = nullptr;       Leak! CCTree dtor won't be called from ~ClassBrowserBuilderThread().    //(ph 2022/05/7)
+    //-m_CCTreeBottom = nullptr;    Leak! CCTree dtor won't be called from ~ClassBrowserBuilderThread().    //(ph 2022/05/7)
     return nullptr;
 }
 

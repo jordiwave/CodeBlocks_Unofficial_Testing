@@ -1,5 +1,8 @@
 SUBDIRS = properties wxwidgets . plugin
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
@@ -65,6 +68,11 @@ libwxsmithlib_la_SOURCES = \
 			./wxssettings.cpp \
 			./wxsautoresourcetreeimage.cpp
 
+if CODEBLOCKS_NT
+libwxsmithlib_la_SOURCES += \
+			manifest.rc
+endif
+
 sdkdir = $(includedir)/wxsmith/
 
 if !CODEBLOCKS_NT_BUILD_INSTALLER
@@ -99,15 +107,14 @@ pkgconfig_DATA = \
 endif
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
-			$(srcdir)/*.bat \
-			$(srcdir)/update* \
-			$(srcdir)/wxsmith/* \
+			*.cbp \
+			wxsmith/* \
 			manifest.xml \
 			wxs.doxy
 
 pkgdata_DATA = \
 			wxsmith.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 

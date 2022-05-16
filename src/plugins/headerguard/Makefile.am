@@ -1,5 +1,8 @@
 # SUBDIRS = bzip2
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -46,15 +49,19 @@ libheaderguard_la_LIBADD = \
 			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-
 libheaderguard_la_SOURCES = \
 			headerguard.cpp
+
+if CODEBLOCKS_NT
+libheaderguard_la_SOURCES += \
+			manifest.rc
+endif
 
 noinst_HEADERS = \
 			headerguard.h
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml
 
 pkgdata_DATA = \

@@ -1,5 +1,8 @@
 # SUBDIRS = bzip2
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -58,6 +61,11 @@ libdevpakupdater_la_SOURCES = \
 			mytar.cpp \
 			updatedlg.cpp
 
+if CODEBLOCKS_NT
+libdevpakupdater_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			cbiniparser.h \
 			cbnetwork.h \
@@ -70,7 +78,7 @@ noinst_HEADERS = \
 
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp \
+			*.cbp \
 			manifest.xml \
 			update.xrc
 

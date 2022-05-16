@@ -1,5 +1,8 @@
 SUBDIRS = resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -24,5 +27,11 @@ libclasswizard_la_LIBADD = \
 
 libclasswizard_la_SOURCES = \
 			classwizard.cpp classwizarddlg.cpp
+
+if CODEBLOCKS_NT
+libclasswizard_la_SOURCES += \
+			resources/manifest.rc
+endif
+
 noinst_HEADERS = \
 			classwizard.h classwizarddlg.h

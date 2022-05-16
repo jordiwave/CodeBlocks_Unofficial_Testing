@@ -1,5 +1,8 @@
 SUBDIRS = src/resources
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -94,7 +97,8 @@ libclangd_client_la_SOURCES += \
 			src/winprocess/asyncprocess/procutils.cpp \
 			src/winprocess/asyncprocess/winprocess.cpp \
 			src/winprocess/asyncprocess/winprocess_impl.cpp \
-			src/winprocess/misc/fileutils.cpp
+			src/winprocess/misc/fileutils.cpp \
+			src/resources/manifest.rc
 else
 libclangd_client_la_SOURCES += \
 			src/unixprocess/asyncprocess/UnixProcess.cpp \
@@ -164,4 +168,4 @@ noinst_HEADERS += \
 endif
 
 EXTRA_DIST = \
-			$(srcdir)/*.cbp
+			*.cbp

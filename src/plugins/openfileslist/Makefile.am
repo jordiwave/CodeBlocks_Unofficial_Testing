@@ -1,3 +1,6 @@
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -28,11 +31,18 @@ endif
 
 libopenfileslist_la_SOURCES = \
 			openfileslistplugin.cpp
+
+if CODEBLOCKS_NT
+libopenfileslist_la_SOURCES += \
+			manifest.rc
+endif
+
 noinst_HEADERS = \
 			openfileslistplugin.h
 
 pkgdata_DATA = \
 			openfileslist.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 

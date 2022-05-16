@@ -14,6 +14,9 @@ else
 BUILT_SOURCES =
 endif
 
+.rc.lo:
+	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_builddir)/src/include \
@@ -143,11 +146,11 @@ endif
 
 sdk.h.gch: sdk_precomp.h.gch $(ALLHEADERS)
 	-rm -f sdk.h.gch
-			$(CXXCOMPILE) -o sdk.h.gch -xc++-header $(srcdir)/sdk.h
+			$(CXXCOMPILE) -o sdk.h.gch -xc++-header sdk.h
 
 sdk_precomp.h.gch: $(ALLHEADERS)
 	-rm -f sdk_precomp.h.gch
-			$(CXXCOMPILE) -o sdk_precomp.h.gch -xc++-header $(srcdir)/sdk_precomp.h
+			$(CXXCOMPILE) -o sdk_precomp.h.gch -xc++-header sdk_precomp.h
 
 clean-local:
 	-rm -f sdk.h.gch

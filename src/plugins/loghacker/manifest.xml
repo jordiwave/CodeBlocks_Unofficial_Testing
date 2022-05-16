@@ -3,7 +3,7 @@
     <SdkVersion major="2" minor="16" release="0" />
     <Plugin name="LogHacker">
         <Value title="LogHacker" />
-        <Value version="0" />
+        <Value version="1.0.0" />
         <Value description="Only the fool and the wizard use this tool. Which one are you?" />
         <Value author="Thomas Denk" />
         <Value authorEmail="" />
