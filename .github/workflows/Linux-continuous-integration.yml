@@ -30,6 +30,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Get Ubuntu updates
+        if: runner.os == 'Linux'
+        run: sudo apt-get update
+
       - name: Install Linux Dependencies
         if: runner.os == 'Linux'
         run: sudo apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev build-essential libtool automake autoconf libgtk-3-dev libboost-dev libboost-system-dev libhunspell-dev libgamin-dev 
