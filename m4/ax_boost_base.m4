@@ -184,6 +184,7 @@ AC_DEFUN([_AX_BOOST_BASE_RUNDETECT],[
     succeeded=yes
     found_system=yes
         ],[
+AC_MSG_NOTICE(["ax_boost_base.m4 Line 187"])
         ])
     AC_LANG_POP([C++])
 
@@ -279,6 +280,7 @@ AC_DEFUN([_AX_BOOST_BASE_RUNDETECT],[
         succeeded=yes
         found_system=yes
             ],[
+AC_MSG_NOTICE(["ax_boost_base.m4 Line 283"])
             ])
         AC_LANG_POP([C++])
     fi

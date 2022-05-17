@@ -1,11 +1,39 @@
 #!/bin/bash
 
-CurrentDir=$PWD
+# --------------------------------------------------------------------------------------#
+#                                                                                       #
+# This file is part of the Code::Blocks IDE and licensed under the                      #
+#  GNU General Public License, version 3. http://www.gnu.org/licenses/gpl-3.0.html      #
+#                                                                                       #
+# --------------------------------------------------------------------------------------#
+#                                                                                       #
+#     This bash script builds CodeBlocks on either :                                    #
+#           - Windows using MSYS2 Mingw64                                               #
+#           - Linux                                                                     #
+#                                                                                       #
+# --------------------------------------------------------------------------------------#
 
 if [ "$(id -u)" == "0" ]; then
     echo "You are root. Please run again as a normal user!!!"
     exit 1
 fi
+
+# ----------------------------------------------------------------------------
+# Set build variables
+# ----------------------------------------------------------------------------
+CurrentDir=${PWD}
+
+# -------------------------------------------------------------------------------------------------
+
+if [ "${GITHUB_ACTIONS}" != "true" ] ; then
+    reset
+    # The following is to enable sending the output of this script to the terminal and to the 
+    # file specified:
+    exec > >(tee -i codeBlocks_Update_Dev.log) 2>&1
+    # NOTE: if you want to append to the file change the -i to -ia in the line above.
+fi
+
+# -------------------------------------------------------------------------------------------------
 
 case "$(uname)" in
   Darwin*)
@@ -59,17 +87,6 @@ case "$(uname)" in
     ;;
 esac
 
-# -----------------------------------------------------------------------------
-
-reset
-echo
-echo "+-------------------------------------------------------------------------------------------------+"
-echo "|                                                                                                 |"
-echo "|                           Updating C::B directory build files.                                  |"
-echo "|                                                                                                 |"
-echo "|    Detected OS:                        ${OSDetected}                                                  |"
-
-
 # ----------------------------------------------------------------------------
 # Check where we are running from and go to the C::B source root directory 
 # ----------------------------------------------------------------------------
@@ -97,24 +114,37 @@ CB_SRC=${CB_ROOT}/src
 # Check BUILD_BITS for validity
 # ----------------------------------------------------------------------------
 
-BUILD_BITS=$1
-[ -f  "${CB_SRC}/devel31_64/codeblocks${EXEEXT}" ]  && BUILD_BITS=64
-[ -f  "${CB_SRC}/devel31_32/codeblocks${EXEEXT}" ]  && BUILD_BITS=32
-if ! { [ "${BUILD_BITS}" == "32" ] || [ "${BUILD_BITS}" == "64" ]; }; then
+if [ -d "${CB_SRC}\devel31_32" ] ; then  export BUILD_BITS=32 ; fi
+if [ -d "${CB_SRC}\devel31_64" ] ; then  export BUILD_BITS=64 ; fi
+if [ "${BUILD_BITS}" == "" ] ; then
+    echo "+-------------------------------------------------------------------------------------------------+"
     echo "|                                                                                                 |"
     echo "|             +------------------------------------------------------+                            |"
-    echo "|             | Error: NO build type \"32\" or \"64\" parameter specified.  |                        |"
+    echo "|             | Error: Cannot find build type \"32\" or \"64\".      |                            |"
+    echo "|             |        Cannot find src\devel31_32 or src\devel31_64  |                            |"
     echo "|             |        Please run again with a parameter             |                            |"
     echo "|             +------------------------------------------------------+                            |"
     echo "|                                                                                                 |"
     echo "+-------------------------------------------------------------------------------------------------+"
     echo
     echo BUILD_BITS:${BUILD_BITS}
-    cd $CurrentDir
+    cd ${CurrentDir}
     exit 4
 fi
-echo "|    Development directory is:           ${CB_SRC}/devel31_${BUILD_BITS}                     |"
-echo "|    Detected that you are building for: ${BUILD_BITS} bits                                                  |"
+# -----------------------------------------------------------------------------
+
+echo
+echo "+-------------------------------------------------------------------------------------------------+"
+echo "|                                                                                                 |"
+echo "|                           Updating C::B directory build files.                                  |"
+echo "|                                                                                                 |"
+echo "| Detected OS:   ${OSDetected}                                                               |"
+echo "| Devel dir:     ${CB_SRC}/devel31_${BUILD_BITS}                                        |"
+echo "| CB_ROOT:       ${CB_ROOT}                                                        |"
+echo "| CB_SRC:        ${CB_SRC}                                                         |"
+echo "| BUILD_BITS:    ${BUILD_BITS}                                                                      |"
+echo "| PWD:           ${PWD} |"
+echo "+-------------------------------------------------------------------------------------------------+"
 
 # ----------------------------------------------------------------------------
 # Check if build succeeded

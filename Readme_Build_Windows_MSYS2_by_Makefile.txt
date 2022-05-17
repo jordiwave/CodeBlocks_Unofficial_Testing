@@ -21,7 +21,7 @@ Requirements:
             i) Run the following progam to open a bash shell
                     C:\mssy64\msys2.exe
             ii) In the msys2 bash shell run the following command to install the additional packages
-                    pacman -S msys2-runtime-devel base-devel mingw-w64-x86_64-toolchain mingw-w64-clang-x86_64-toolchain zip unzip svn libtool m4 autoconf automake mingw-w64-x86_64-boost mingw-w64-x86_64-hunspell mingw-w64-x86_64-hunspell-en mingw-w64-x86_64-fontconfig
+                    pacman -S msys2-runtime-devel base-devel mingw-w64-x86_64-toolchain mingw-w64-clang-x86_64-toolchain zip unzip svn libtool m4 autoconf automake mingw-w64-x86_64-boost mingw-w64-x86_64-hunspell mingw-w64-x86_64-hunspell-en mingw-w64-x86_64-fontconfig mingw-w64-x86_64-wxmsw3.1 mingw-w64-x86_64-nsis
 
                 This command will install the following MSYS2 packages along with other dependant packages needed:
                     * msys2-runtime-devel
@@ -40,6 +40,9 @@ Requirements:
                     * mingw-w64-x86_64-hunspell-en
                     * mingw-w64-x86_64-wxmsw3.1
                     * mingw-w64-x86_64-fontconfig
+                    * mingw-w64-x86_64-wxmsw3.1
+                    * mingw-w64-x86_64-nsis
+
             ii) In the msys2 bash shell run the following command to update the msys2 to the latest release:
                     pacman -Syu
 

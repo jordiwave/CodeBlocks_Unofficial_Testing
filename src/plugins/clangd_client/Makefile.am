@@ -16,12 +16,25 @@ if CODEBLOCKS_NT
 AM_CPPFLAGS += \
 			-Isrc/winprocess \
 			-Isrc/winprocess/asyncprocess \
-			-Isrc/winprocess/misc \
+			-Isrc/winprocess/misc
+
+AM_CXXFLAGS = \
 			-DBUILDING_PLUGIN \
 			-DCC_NO_COLLAPSE_ITEM \
 			-DLOGGING \
 			-DDONT_SHOW_SERVER_CONSOLE
-else            
+			-m64 \
+			-pipe \
+			-fmessage-length=0 \
+			-fexceptions \
+			-fno-keep-inline-dllexport \
+			-DHAVE_W32API_H \
+			-D__WXMSW__ \
+			-DWXUSINGDLL \
+			-DcbDEBUG \
+			-DwxUSE_UNICODE \
+			-D_WIN64
+else
 AM_CPPFLAGS += \
 			-Isrc/unixprocess
 endif
@@ -167,5 +180,28 @@ noinst_HEADERS += \
 			src/unixprocess/wxStringHash.h
 endif
 
+resources_forZIP = \
+			src/resources/manifest.xml \
+			src/resources/*.xrc \
+			src/resources/images/16x16/*.png \
+			src/resources/images/20x20/*.png \
+			src/resources/images/24x24/*.png \
+			src/resources/images/28x28/*.png \
+			src/resources/images/32x32/*.png \
+			src/resources/images/40x40/*.png \
+			src/resources/images/48x48/*.png \
+			src/resources/images/56x56/*.png \
+			src/resources/images/64x64/*.png
+
 EXTRA_DIST = \
-			*.cbp
+			*.cbp \
+			$(resources_forZIP)
+
+pkgdata_DATA = \
+			clangd_client.zip
+
+CLEANFILES = \
+			$(pkgdata_DATA)
+
+clangd_client.zip: $(resources_forZIP)
+			PWD=`pwd` cd $(srcdir) && zip $(PWD)/clangd_client.zip $(resources_forZIP) > /dev/null

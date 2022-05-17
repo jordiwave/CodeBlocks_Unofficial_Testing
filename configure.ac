@@ -199,6 +199,7 @@ case $WX_BASENAME in
         dnl only do this if it is really needed
         dnl AM_CONDITIONAL adds _TRUE and _FALSE to the appropriate variables
         dnl if the condition is true, the *_TRUE variable is empty (!)
+
         if test "x$BUILD_FILEMANAGER_TRUE" = "x" -o \
                 "x$BUILD_SPELLCHECKER_TRUE" = "x" -o \
                 "x$BUILD_MOUSESAP_TRUE" = "x" -o \
@@ -207,20 +208,20 @@ case $WX_BASENAME in
                 "x$LINUX_TRUE" = "x" ; then
 
             if test "x$LINUX_TRUE" = "x" ; then
-                if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+                if test "x$HAVE_PKG_CONFIG" = "xyes" ; then
                     PKG_CHECK_MODULES([GLIB2], [glib-2.0])
                 fi
             fi
 
             if test "x$BUILD_SPELLCHECKER_TRUE" = "x" ; then
-                if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+                if test "x$HAVE_PKG_CONFIG" = "xyes" ; then
                     PKG_CHECK_MODULES([HUNSPELL], [hunspell])
                 fi
             fi
 
             if test "x$BUILD_MOUSESAP_TRUE" = "x"  -o \
                     "x$GTK_NOTEBOOK_TRUE" = "x" ; then
-                if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+                if test "x$HAVE_PKG_CONFIG" = "xyes" ; then
                     case $WX_BASENAME in
                         *wx_gtk3*)
                             AC_MSG_NOTICE([gtk3 used])
@@ -239,17 +240,16 @@ case $WX_BASENAME in
             fi
 
             if [ test "x$BUILD_FILEMANAGER_TRUE" = "x" ] && [ test "x$WINDOWS_FALSE" = "x" ] ; then
-                if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+                if test "x$HAVE_PKG_CONFIG" = "xyes" ; then
                     PKG_CHECK_MODULES([GAMIN], [gamin])
                 fi
             fi
 
             if test "x$BUILD_EXPORTER_TRUE" = "x" ; then
-                if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+                if test "x$HAVE_PKG_CONFIG" = "xyes" ; then
                     PKG_CHECK_MODULES([FONTCONFIG], [fontconfig])
                 fi
             fi
-
         fi
 
         if test "x$BUILD_NASSISHNEIDERMAN_TRUE" = "x" ; then
@@ -266,6 +266,7 @@ case $WX_BASENAME in
         CB_HUNSPELL_LIBS="$HUNSPELL_LIBS"
         CB_FONTCONFIG_CFLAGS="$FONTCONFIG_CFLAGS"
         CB_FONTCONFIG_LIBS="$FONTCONFIG_LIBS"
+
         if test "x$WINDOWS_FALSE" = "x" ; then
             WX_GTK_CFLAGS="$GTK_CFLAGS"
             WX_GTK_LIBS="$GTK_LIBS"
@@ -300,7 +301,7 @@ case $WX_BASENAME in
             ])
             PKG_PROG_PKG_CONFIG
 
-            if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+            if test "x$HAVE_PKG_CONFIG" = "xyes" ; then
                 PKG_CHECK_MODULES([HUNSPELL], [hunspell])
             fi
         fi
@@ -385,7 +386,7 @@ AC_MSG_NOTICE(SVN revision SVN_REVISION (SVN_DATE))
 AC_SUBST(REVISION, SVN_REV)
 AC_SUBST(DATE, "SVN_DATE")
 
-if test "x${target_vendor}" = "xapple"; then
+if test "x${target_vendor}" = "xapple" ; then
     AC_CONFIG_FILES([bundle.sh], [chmod +x bundle.sh])
     AC_CONFIG_FILES(codeblocks.plist)
 fi

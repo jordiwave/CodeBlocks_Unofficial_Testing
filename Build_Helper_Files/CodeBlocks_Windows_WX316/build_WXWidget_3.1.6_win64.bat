@@ -2,7 +2,13 @@
 
 @rem ------------------------------------------------------------------------------------------------------------
 @rem GIT NOTES:
+@rem
 @rem @IF NOT EXIST wxWidget_github git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets wxWidget_github
+@rem
+@rem YOU NEED TO EDIT the following files to change the "#define wxUSE_GRAPHICS_DIRECT2D 0" from 0 to 1:
+@rem        include\wx\msw\setup.h
+@rem        include\wx\mswu\setup.h
+@rem
 @rem ------------------------------------------------------------------------------------------------------------
 
 @rem ------------------------------------------------------------------------------------------------------------
@@ -30,7 +36,7 @@ set GCC_ROOT=C:\msys64\mingw%BUILD_BITS%
 @rem Hopefully you will not have to modify anything below
 @rem ==========================================================================================================
 
-if exist wxWidgets-3.1.5_win%BUILD_BITS% set WXWIN=%CD%\wxWidgets-3.1.5_win%BUILD_BITS%
+if exist wxWidgets-3.1.6_win%BUILD_BITS% set WXWIN=%CD%\wxWidgets-3.1.6_win%BUILD_BITS%
 if exist %WXWIN% goto wxWidgetCompleted
 goto ErrNowxWidget
 
@@ -56,7 +62,7 @@ set PATH=%GCC_ROOT%;%GCC_ROOT%\bin;%PATH%
 @cls
 @echo.
 @echo +==============================================================+
-@echo ^| %GCC_ROOT%   WxWidgets 3.1.5   win%BUILD_BITS%  build script    ^|
+@echo ^| %GCC_ROOT%   WxWidgets 3.1.6   win%BUILD_BITS%  build script    ^|
 @echo +==============================================================+
 @echo ^|                                                              ^|
 @echo ^| GCC_ROOT: %GCC_ROOT%                                  ^|
@@ -107,7 +113,7 @@ goto FAIL
 @echo.
 @echo.
 @echo ^+------------------------------------------------------^+
-@echo ^|     Error: NO "wxWidgets-3.1.5" sub directory found  ^|
+@echo ^|     Error: NO "wxWidgets-3.1.6" sub directory found  ^|
 @echo ^+------------------------------------------------------^+
 @echo. 
 @echo.

@@ -60,14 +60,14 @@ copy_deps() {
 				ALL_DEPS="$ALL_DEPS $current_dep"
 				if [[ -f "$dep" ]]
 				then
-				cp "$dep" "$APPDIR/Contents/MacOS/"
-				install_name_tool -id "@executable_path/$current_dep" "$APPDIR/Contents/MacOS/$current_dep"
+					cp "$dep" "$APPDIR/Contents/MacOS/"
+					install_name_tool -id "@executable_path/$current_dep" "$APPDIR/Contents/MacOS/$current_dep"
 				fi
 				if [[ -f "$APPDIR/Contents/MacOS/$current_dep" ]]
 				then
-				copy_deps "$APPDIR/Contents/MacOS/$current_dep"
+					copy_deps "$APPDIR/Contents/MacOS/$current_dep"
+				fi
 			fi
-		fi
 		fi
 	done
 }

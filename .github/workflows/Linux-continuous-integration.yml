@@ -5,50 +5,96 @@ on:
     branches:
       - main
       - master
+    tags:
+      - v*
   pull_request:
     types: [opened, synchronize]
 
 jobs:
   continuous-integration:
-    runs-on: ${{ matrix.os }}
+
     env:
       BUILD_TYPE: Debug
+
     strategy:
       fail-fast: false
-      matrix:
-        # specify a specific compiler to build with each OS separately
-        include:
-          - platform_name: linux
-            os: ubuntu-20.04
-            cxx: g++-11
-          ## NOTE: CXX seems to be ignored on Windows, but specify it anyway for consistency
-          #- platform_name: windows
-          #  os: windows-2019
-          #  cxx: msvc
-          #  cmake_generator: ""
+
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Code::Blocks source
+        uses: actions/checkout@v3
+        with:
+          repository: 'acotty/CodeBlocks_Unofficial_Testing'
+          path: 'CB'
+      # Reference https://github.com/marketplace/actions/checkout
 
       - name: Get Ubuntu updates
-        if: runner.os == 'Linux'
         run: sudo apt-get update
 
       - name: Install Linux Dependencies
-        if: runner.os == 'Linux'
-        run: sudo apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev build-essential libtool automake autoconf libgtk-3-dev libboost-dev libboost-system-dev libhunspell-dev libgamin-dev 
+        run: sudo apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev build-essential libtool automake autoconf libgtk-3-dev libboost-dev libboost-system-dev libhunspell-dev libgamin-dev libbz2-dev debhelper cdbs xsltproc fakeroot zip libjpeg-dev libtiff-dev
 
       - name: Shell Permission Update
-        working-directory: ${{github.workspace}}/Build_Helper_Files/CodeBlocks_Linux
-        shell: bash
+        working-directory: CB/Build_Helper_Files/CodeBlocks_Linux
         run: chmod +x *.sh
 
       - name: Change Permissions
-        working-directory: ${{github.workspace}}/Build_Helper_Files/CodeBlocks_Linux
-        shell: bash
+        working-directory: CB/Build_Helper_Files/CodeBlocks_Linux
         run: ./change_permissions_Linux.sh
 
-      - name: Build CodeBlocks
-        working-directory: ${{github.workspace}}/Build_Helper_Files/CodeBlocks_Linux
-        shell: bash
-        run: ./codeblocks_build.sh
+#      - name: Build CodeBlocks
+#        working-directory: CB/Build_Helper_Files/CodeBlocks_Linux
+#        run: ./codeblocks_build.sh
+
+      - name: Build Debian CodeBlocks
+        working-directory: CB/Build_Helper_Files/CodeBlocks_Linux
+        run: ./codeblocks_build_debian.sh
+
+      - name: Upload CodeBlocks DEB Installer Files
+        uses: actions/upload-artifact@v3
+        with:
+          name: Codeblocks_DEB_Files
+          path: |
+            *.deb
+            *.ddeb
+
+#      - name: Show DEB files
+#        run: |
+#          ls -la *.deb
+
+
+# ====================================================================================================
+#
+# GITHUB_WORKSPACE	The default working directory on the runner for steps, and the default location of your repository 
+# when using the checkout action. For example, /home/runner/work/my-repo-name/my-repo-name.
+# 
+# ====================================================================================================
+#
+#  If you need to work on Github actions then you may want to check out the following repo as it allows 
+#    you to test the workflow and steps on your PC instead of github:
+#  
+#      https://github.com/ChristopherHX/runner.server
+#  
+#  In order to checkout wxwidgets repo you will need to do the following:
+#  a) Create a a Personal Access Token
+#  b) Create a .secrets file with the following line in it:
+#  
+#      GITHUB_TOKEN=replaceThisTextWithYourPersonalAccessToken
+#  
+#  The following is the command line I have been using to test the Windows workflow on my Windows 10 PC from a windows command prompt:
+#  
+#      .\bin\Runner.Client.exe --workflow .github\workflows\Windows-continuous-integration.yml --event push --payload CB_test.json -P windows-2019=-self-hosted
+#  
+#  The CB_test.json file is:
+#  {
+#      "inputs": {
+#          "x": "Hello World from event"
+#      }
+#  }
+#
+# ====================================================================================================

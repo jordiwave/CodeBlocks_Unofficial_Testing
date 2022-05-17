@@ -709,7 +709,23 @@ void ThreadSearch::OnBtnSearchClick(wxCommandEvent & event)
         const long id = controlIDs.Get(ControlIDs::idCboSearchExpr);
         wxComboBox * pCboBox = static_cast<wxComboBox *>(m_pToolbar->FindControl(id));
         wxASSERT(pCboBox != NULL);
-        RunThreadSearch(pCboBox->GetValue());
+        wxString searchValue = pCboBox->GetValue();
+
+        if (searchValue.empty())
+        {
+            // If the user string is empty, we use the last searched string from the combo box
+            const wxArrayString & strings = pCboBox->GetStrings();
+
+            if (strings.size() == 0)
+            {
+                return;
+            }
+
+            searchValue = strings.Item(0);
+            pCboBox->SetValue(searchValue);
+        }
+
+        RunThreadSearch(searchValue);
     }
 }
 
@@ -725,7 +741,9 @@ void ThreadSearch::OnUpdateUIBtnSearch(wxUpdateUIEvent & event)
 
     if (comboBox)
     {
-        event.Enable(!comboBox->GetValue().empty());
+        // If the combo box has old search values we enable the search button.
+        // if the user searches with an empty comboBox we simply repeat the last search
+        event.Enable(comboBox->GetStrings().size() > 0);
     }
 }
 

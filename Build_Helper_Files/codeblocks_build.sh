@@ -18,40 +18,26 @@ if [ "$(id -u)" == "0" ]; then
     exit 1
 fi
 
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# Set build variables
+# ----------------------------------------------------------------------------
+CurrentDir=${PWD}
+WXWIDGET_VERSION="3.1.6"
+BUILD_BITS=64
+failureDetected="no"
 
-reset
-echo
-echo "+-----------------------------------------------------+"
-echo "|  Code::Blocks build script running on " $(uname) "  |"
-if [ "$GITHUB_ACTIONS" == "true" ] ; then
-    echo "|                                                     |"
-    echo "|      You are running under GITHUB ACTIONS.          |"
-    echo "|                                                     |"
-fi
-echo "+-----------------------------------------------------+"
-echo
+# -------------------------------------------------------------------------------------------------
 
-CurrentDir=$PWD
-
-if [ ! -f "bootstrap" ]; then
-    if [ -f "../bootstrap" ]; then
-        cd ..
-    else
-        if [ -f "../../bootstrap" ]; then
-            cd ../..
-        else
-            echo Could not find bootstrap or ../bootstrap or ../../bootstrap
-            cd $CurrentDir
-            exit 2
-        fi
-    fi
+if [ "${GITHUB_ACTIONS}" != "true" ] ; then
+    reset
+    # The following is to enable sending the output of this script to the terminal and to the 
+    # file specified:
+    exec > >(tee -i codeBlocks_Build.log) 2>&1
+    # NOTE: if you want to append to the file change the -i to -ia in the line above.
 fi
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 
-echo "CurrentDir C::B root is: " $PWD
-echo
 case "$(uname)" in
   Darwin*)
     OSDetected="OSX"
@@ -65,214 +51,365 @@ case "$(uname)" in
 
   AIX*)
     echo "AIX is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   bsd*)
     echo "BSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   bsd*)
     echo "BSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   FreeBSD*)
     echo "FreeBSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   solaris*)
     echo "SOLARIS is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   SunOS*)
     echo "SunOS is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   *)
-    echo "unknown: $OSTYPE is not supported"
-    cd $CurrentDir
-    exit 0
+    echo "unknown: ${OSTYPE} is not supported"
+    cd ${CurrentDir}
+    exit 3
     ;;
 esac
 
+# -------------------------------------------------------------------------------------------------
 
-case "$OSDetected" in
+export
+
+echo
+echo "+-------------------------------------------------------------------------+"
+echo "|  Code::Blocks build script running on " $(uname) "           |"
+if [ "${GITHUB_ACTIONS}" == "true" ] ; then
+    echo "|      You are running under GITHUB ACTIONS.                              |"
+    if [ "${OSDetected}" == "Windows" ] ; then
+        if [ "${NUMBER_OF_PROCESSORS}" ==  2 ] ; then
+            echo "|       Setting BUILD_MAKE_CONCURENCY=-j2                                 |"
+            BUILD_MAKE_CONCURENCY=-j2
+        else
+            # using self-hosted local build
+            echo "|       Local self hosted build, so setting BUILD_MAKE_CONCURENCY=-j      |"
+            BUILD_MAKE_CONCURENCY=-j
+        fi
+    else
+        echo "|       Setting BUILD_MAKE_CONCURENCY=-j2                                 |"
+        BUILD_MAKE_CONCURENCY=-j2
+    fi
+else
+    BUILD_MAKE_CONCURENCY=-j
+    echo "|       Non GITHUB ACTIONS build, so setting BUILD_MAKE_CONCURENCY=-j     |"
+fi
+if [ "${OSDetected}" == "Windows" ] ; then
+    echo "|       Windows $(expr substr $(uname -s) 12 4)                                                      |"
+fi
+echo "+-------------------------------------------------------------------------+"
+
+# -------------------------------------------------------------------------------------------------
+if [ ! -f "bootstrap" ]; then
+    if [ -f "../bootstrap" ]; then
+        cd ..
+    else
+        if [ -f "../../bootstrap" ]; then
+            cd ../..
+        else
+            echo Could not find bootstrap or ../bootstrap or ../../bootstrap
+            cd ${CurrentDir}
+            exit 2
+        fi
+    fi
+fi
+
+# -------------------------------------------------------------------------------------------------
+
+echo "| CurrentDir C::B root is: ${PWD}                              |"
+echo "+-------------------------------------------------------------------------+"
+
+case "${OSDetected}" in
+
   OSX* | Linux*)
     unset WX_CONFIG_NAME
     unset WX_CB_BUILD_DIR
     unset BOOST_ROOT
-    prefixDir=$PWD/src/devel31
-    configOptions="--prefix=$prefixDir --with-contrib-plugins=all"
+    prefixDir=${PWD}/src/devel31
+    configOptions="--prefix=${prefixDir} --with-contrib-plugins=all"
     ;;
+
   Windows*)
-    echo "Detected Windows"
-    export WX_CONFIG_NAME=$PWD/wx-config-cb-win64
-    export WX_CB_BUILD_DIR="/d/Andrew_Development/Libraries/wxWidgets-3.1.6_win64"
-    export BOOST_ROOT=/mingw64
-    prefixDir=$PWD/src/devel31_64
-    configOptions="--prefix=$prefixDir --enable-windows-installer-build --with-contrib-plugins=all --with-boost-libdir=$BOOST_ROOT/lib AR_FLAGS=cr"
+    echo "| Detected Windows OS                                                     |"
+
+    if [ ! -d "${WX_CB_BUILD_DIR}" ]; then
+        unset WX_CB_BUILD_DIR
+    fi
+
+    if [ "${GITHUB_ACTIONS}" == "true" ] ; then
+        if [ -d "Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}" ] ; then 
+            export WX_CB_BUILD_DIR=Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}
+        else
+            if [ -d "/d/a/CodeBlocks_Unofficial_Testing/CodeBlocks_Unofficial_Testing/Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}" ] ; then 
+                export WX_CB_BUILD_DIR=/d/a/CodeBlocks_Unofficial_Testing/CodeBlocks_Unofficial_Testing/Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}
+            else
+                if [ -d "/d/a/CodeBlocks_Unofficial_Testing/CodeBlocks_Unofficial_Testing/Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}" ] ; then 
+                    export WX_CB_BUILD_DIR=/d/a/CodeBlocks_Unofficial_Testing/CodeBlocks_Unofficial_Testing/Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}
+                fi
+            fi
+        fi
+    fi
+
+    if [ "${WX_CB_BUILD_DIR}" == "" ]; then
+        WX_DIR_FIND=Libraries/github_wxWidget_${WXWIDGET_VERSION}
+        if [ -d "../${WX_DIR_FIND}" ]; then
+            export WX_CB_BUILD_DIR=${PWD}/../${WX_DIR_FIND}
+        else
+            if [ -d "../../${WX_DIR_FIND}" ]; then
+                export WX_CB_BUILD_DIR=${PWD}/../../${WX_DIR_FIND}
+            else
+                if [ -d "../../../${WX_DIR_FIND}" ]; then
+                    export WX_CB_BUILD_DIR=${PWD}/../../../${WX_DIR_FIND}
+                else
+                    if [ -d "../../../../${WX_DIR_FIND}" ]; then
+                        export WX_CB_BUILD_DIR=${PWD}/../../../../${WX_DIR_FIND}
+                    else
+                        if [ -d "../../../../../${WX_DIR_FIND}" ]; then
+                            export WX_CB_BUILD_DIR=${PWD}/../../../../../${WX_DIR_FIND}
+                        fi
+                    fi
+                fi
+            fi
+        fi
+    fi
+    if [ "${WX_CB_BUILD_DIR}" == "" ]; then
+        WX_DIR_FIND=Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}
+        if [ -d "../${WX_DIR_FIND}" ]; then
+            export WX_CB_BUILD_DIR=${PWD}/../${WX_DIR_FIND}
+        else
+            if [ -d "../../${WX_DIR_FIND}" ]; then
+                export WX_CB_BUILD_DIR=${PWD}/../../${WX_DIR_FIND}
+            else
+                if [ -d "../../../${WX_DIR_FIND}" ]; then
+                    export WX_CB_BUILD_DIR=${PWD}/../../../${WX_DIR_FIND}
+                else
+                    if [ -d "../../../../${WX_DIR_FIND}" ]; then
+                        export WX_CB_BUILD_DIR=${PWD}/../../../../${WX_DIR_FIND}
+                    else
+                        if [ -d "../../../../../${WX_DIR_FIND}" ]; then
+                            export WX_CB_BUILD_DIR=${PWD}/../../../../../${WX_DIR_FIND}
+                        fi
+                    fi
+                fi
+            fi
+        fi
+    fi
+
+    if [ "${WX_CB_BUILD_DIR}" == "" ]; then
+        if [ -d "/d/Andrew_Development/Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}" ] ; then 
+            export WX_CB_BUILD_DIR="/d/Andrew_Development/Libraries/wxWidgets-${WXWIDGET_VERSION}_win${BUILD_BITS}"
+        fi
+        if [ "${WX_CB_BUILD_DIR}" == "" ]; then
+            if [ -d "/d/Andrew_Development/Libraries/github_wxWidget_${WXWIDGET_VERSION}" ] ; then 
+                export WX_CB_BUILD_DIR="/d/Andrew_Development/Libraries/github_wxWidget_${WXWIDGET_VERSION}"
+            fi
+        fi
+    fi
+
+    # -------------------------------------------------------------------------------------------------
+    # Check wxWidget directory exists
+    # -------------------------------------------------------------------------------------------------
+    if [ ! -d "${WX_CB_BUILD_DIR}" ]; then
+        echo "|                                                                         |"
+        echo "|   +-----------------------------------------------------------------+   |"
+        echo "|   | Error: NO WX_CB_BUILD_DIR environment variable set!             |   |"
+        echo "|   |        Please export WX_CB_BUILD_DIR environment and try again. |   |"
+        echo "|   |        WX_CB_BUILD_DIR is wxWidget src root dir                 |   |"
+        echo "|   +-----------------------------------------------------------------+   |"
+        echo "|                                                                         |"
+        echo "+-------------------------------------------------------------------------+"
+        echo
+        echo "a Debug Info - Up one directory: ${PWD}/.. "
+        ls -la ${PWD}/..
+        echo
+        cd ${CurrentDir}
+        exit 4
+    fi
+    export WX_CONFIG_NAME=${PWD}/wx-config-cb-win${BUILD_BITS}
+    export BOOST_ROOT=/mingw${BUILD_BITS}
+    prefixDir=${PWD}/src/devel31_${BUILD_BITS}
+    configOptions="--prefix=${prefixDir} --enable-windows-installer-build --with-contrib-plugins=all --with-boost-libdir=${BOOST_ROOT}/lib AR_FLAGS=cr"
     ;;
+
   *)
     echo "OSDetected not detected for $(uname)"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 5
     ;;
 esac
 
-echo "Configure will set prefix directory to : \"$prefixDir\""
+export WX_CB_BUILD_DIR=$(realpath ${WX_CB_BUILD_DIR})
+echo "| WX_CB_BUILD_DIR: ${WX_CB_BUILD_DIR}     |"
+echo "| BUILD_BITS:      ${BUILD_BITS}                                            |"
+echo "| WX_CONFIG_NAME:  ${WX_CONFIG_NAME}                      |"
+echo "| BOOST_ROOT:      ${BOOST_ROOT}                                 |"
+echo "| prefixDir:       ${prefixDir}                           |"
+echo "| PWD:             ${PWD} |"
+echo "+----------------------------------------------------------------+"
+echo
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 
-CHECK_MARK="\033[2K\033[0;32m\xE2\x9C\x94\033[0m"
-CROSS_MARK="\033[2K\033[0;31m\xE2\x9C\x98\033[0m"
-# 0 reset, 1 bold, 32 green
-GREEN_START="\033[0;1;32m"
-# 0 reset, 1 bold, 5 block slow, 31 red
-RED_START="\033[0;1;5;31m"
-COLOR_REVERT="\033[0m"
+if [ "${GITHUB_ACTIONS}" != "true" ] ; then
+    # ------------------------------------------------------------------------------------------------------------
+    # Setup ANSI color control variables
+    # ------------------------------------------------------------------------------------------------------------
+    ECHO_E="-e"
+    ECHO_N="-e"
+    CR="\\r"
+    CHECK_MARK="\033[2K\033[0;32m\xE2\x9C\x94\033[0m"
+    CROSS_MARK="\033[2K\033[0;31m\xE2\x9C\x98\033[0m"
+    # 0 reset, 1 bold, 32 green
+    GREEN_START="\033[0;1;32m"
+    # 0 reset, 1 bold, 5 block slow, 31 red
+    RED_START="\033[0;1;5;31m"
+    COLOR_REVERT="\033[0m"
+fi
 
-# -----------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
 
 start_datetime=$(date +%s)
-failureDetected="no"
 echo "Start at                                : "$(date +"%d-%b-%Y %T")
 
-# -----------------------------------------------------------------------------
-
-if [ -f ./codeblocks_cleanup.sh ] ; then
+if [ -f codeblocks_cleanup.sh ] ; then
     beforeStepStartTime=$(date +%s)
 
-    echo -n "running ./codeblocks_cleanup.sh"
+    echo ${ECHO_N} "running ./codeblocks_cleanup.sh"
     if ./codeblocks_cleanup.sh  ; then
         durationTotalTime=$(($(date +%s)-start_datetime))
         stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
-        echo -e "\\r${CHECK_MARK}./codeblocks_cleanup.sh finish at  : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+        echo ${ECHO_E} "${CR}${CHECK_MARK}./codeblocks_cleanup.sh finish at  : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
     else
-        echo -e "\\r${CROSS_MARK}./codeblocks_cleanup.sh up failed"
-        cd $CurrentDir
-        exit 1
+        echo ${ECHO_E} "${CR}${CROSS_MARK}./codeblocks_cleanup.sh up failed"
+        cd ${CurrentDir}
+        exit 6
     fi
 fi
 
-# -----------------------------------------------------------------------------
-
+# -------------------------------------------------------------------------------------------------
 # Configure, build & install using selected configuration 
-echo -n "running ./update_revision.sh"
+# -------------------------------------------------------------------------------------------------
+echo "===================================================================================================="
+echo ${ECHO_N} "running ./update_revision.sh"
 beforeStepStartTime=$(date +%s)
-if [ "$GITHUB_ACTIONS" == "true" ] ; then
-    ./update_revision.sh
-    status=$?
-else
-    ./update_revision.sh > z_update_revision_result.txt 2>&1
-    status=$?
-fi
+./update_revision.sh
+status=$?
 if [ $status == 0 ] ; then
     durationTotalTime=$(($(date +%s)-start_datetime))
     stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
-    echo -e "\\r${CHECK_MARK}./update_revision.sh finish at         : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+    echo ${ECHO_E} "${CR}${CHECK_MARK}./update_revision.sh finish at         : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+	echo "===================================================================================================="
 
-    echo -n "running ./boostrap"
+    echo ${ECHO_N} "running ./boostrap"
     beforeStepStartTime=$(date +%s)
 
-    if [ "$GITHUB_ACTIONS" == "true" ] ; then
-        ./bootstrap
-        status=$?
-    else
-        ./bootstrap > z_bootstrap_result.txt 2>&1
-        status=$?
-    fi
+    ./bootstrap
+    status=$?
     if [ $status == 0 ] ; then
         durationTotalTime=$(($(date +%s)-start_datetime))
         stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
-        echo -e "\\r${CHECK_MARK}./Bootstrap finish at                  : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+        echo ${ECHO_E} "${CR}${CHECK_MARK}./Bootstrap finish at                  : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+		echo "===================================================================================================="
 
-        echo -n "running ./configure " $configOptions
+        echo ${ECHO_N} "running ./configure " ${configOptions}
         beforeStepStartTime=$(date +%s)
-        if [ "$GITHUB_ACTIONS" == "true" ] ; then
-            ./configure $configOptions
-            status=$?
-        else
-            ./configure $configOptions > z_configure_result.txt 2>&1
-            status=$?
-        fi
+        ./configure ${configOptions}
+        status=$?
         if [ $status == 0 ] ; then
             durationTotalTime=$(($(date +%s)-start_datetime))
             stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
-            echo -e "\\r${CHECK_MARK}./configure .... finish at             : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+            echo ${ECHO_E} "${CR}${CHECK_MARK}./configure .... finish at             : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+			echo "===================================================================================================="
 
-            echo -n "running make -j14..."
+            echo ${ECHO_N} "running make ${BUILD_MAKE_CONCURENCY}..."
             beforeStepStartTime=$(date +%s)
 
-            if [ "$GITHUB_ACTIONS" == "true" ] ; then
-                make -j14
-                status=$?
-            else
-                make -j14 > z_make_j14_result.txt 2>&1
-                status=$?
-            fi
+            make ${BUILD_MAKE_CONCURENCY}
+            status=$?
             if [ $status == 0 ] ; then
                 durationTotalTime=$(($(date +%s)-start_datetime))
                 stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
-                echo -e "\\r${CHECK_MARK}Make -j14 finish at                    : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+                echo ${ECHO_E} "${CR}${CHECK_MARK}Make -j14 finish at                    : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+				echo "===================================================================================================="
 
-                echo -n "running "make install""
+                echo ${ECHO_N} "running "make install""
                 beforeStepStartTime=$(date +%s)
 
-                if [ "$GITHUB_ACTIONS" == "true" ] ; then
-                    make install
-                    status=$?
-                else
-                    make install > z_makeinstall_result.txt 2>&1
-                    status=$?
-                fi
+                make install
+                status=$?
                 if [ $status == 0 ] ; then
                     durationTotalTime=$(($(date +%s)-start_datetime))
                     stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
-                    echo -e "\\r${CHECK_MARK}Make install finish at                 : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+                    echo ${ECHO_E} "${CR}${CHECK_MARK}Make install finish at                 : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+					echo "===================================================================================================="
 
-                    if [ "$OSDetected" = "Windows" ] ; then
-                        if [ -f ./codeblocks_update_devel.sh ] ; then
-                            echo "Running ./codeblocks_update_devel.sh"
-                            if ./codeblocks_update_devel.sh > z_windows_update_devel_result.txt 2>&1; then
+                    if [ "${OSDetected}" == "Windows" ] ; then
+                        if [ -f Build_Helper_Files/codeblocks_update_devel.sh ] ; then
+                            echo "Running ./Build_Helper_Files/codeblocks_update_devel.sh"
+                            cd Build_Helper_Files
+                            ./codeblocks_update_devel.sh
+							status=$?
+							if [ $status == 0 ] ; then
                                 durationTotalTime=$(($(date +%s)-start_datetime))
                                 stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
-                                echo -e "\\r${CHECK_MARK}codeblocks_update_devel.sh finished at : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+                                echo ${ECHO_E} "${CR}${CHECK_MARK}codeblocks_update_devel.sh finished at : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
                             else
-                                echo -e "\\r${CROSS_MARK}./codeblocks_update_devel.sh failed"
+                                echo ${ECHO_E} "${CR}${CROSS_MARK}./codeblocks_update_devel.sh failed"
                                 failureDetected="yes"
                             fi
+							echo "===================================================================================================="
                         else
-                            echo "You will need to manually update the src/develxxx directory"
+                            echo ${ECHO_E} "${CR}${CROSS_MARK}You will need to manually update the src/devel31_64 directory as the codeblocks_update_devel.sh file could not be found!!!!"
+							failureDetected="yes"
                         fi
+					else
+                        echo "You are not running on Windows"
                     fi
                 else
-                    echo -e "\\r${CROSS_MARK}make install failed"
+                    echo ${ECHO_E} "${CR}${CROSS_MARK}make install failed"
                     failureDetected="yes"
                 fi
             else
-                echo -e "\\r${CROSS_MARK}make failed"
+                echo ${ECHO_E} "${CR}${CROSS_MARK}make failed"
                 failureDetected="yes"
             fi
         else
-            echo -e "\\r${CROSS_MARK}configure failed"
+            echo ${ECHO_E} "${CR}${CROSS_MARK}configure failed"
             failureDetected="yes"
         fi
     else
-        echo -e "\\r${CROSS_MARK}Bootstrap failed"
+        echo ${ECHO_E} "${CR}${CROSS_MARK}Bootstrap failed"
         failureDetected="yes"
     fi
 else
-    echo -e "\\r${CROSS_MARK}./update_revision.sh failed"
+    echo ${ECHO_E} "${CR}${CROSS_MARK}./update_revision.sh failed"
     failureDetected="yes"
 fi
+
+# ------------------------------------------------------------------------------------------------------------
+# Build finished - pass or fail
+# ------------------------------------------------------------------------------------------------------------
 echo "Finished at                                : "$(date +"%d-%b-%Y %T")
 echo
-
 durationTotalTime=$(($(date +%s)-start_datetime))
 echo "+-----------------------------------------------------------+"
 echo "|                                                           |"
@@ -281,36 +418,42 @@ echo "|                                                           |"
 echo "+-----------------------------------------------------------+"
 echo
 
-cd $CurrentDir
+cd ${CurrentDir}
 
-if test "x$failureDetected" = "xyes"; then :
+# -------------------------------------------------------------------------------------------------
+
+if test "x${failureDetected}" = "xyes"; then :
     echo
-    echo -e "\\r${RED_START}***************************************************************************************************"
-    echo -e "\\r${RED_START}*                                                                                                 *"
-    echo -e "\\r${RED_START}*  ######   #     #  #####  #      ######       #######     #     #####  #      #######  ######   *"
-    echo -e "\\r${RED_START}*  #     #  #     #    #    #      #     #      #          # #      #    #      #        #     #  *"
-    echo -e "\\r${RED_START}*  #     #  #     #    #    #      #     #      #         #   #     #    #      #        #     #  *"
-    echo -e "\\r${RED_START}*  ######   #     #    #    #      #     #      #####    #     #    #    #      #####    #     #  *"
-    echo -e "\\r${RED_START}*  #     #  #     #    #    #      #     #      #        #######    #    #      #        #     #  *"
-    echo -e "\\r${RED_START}*  #     #  #     #    #    #      #     #      #        #     #    #    #      #        #     #  *"
-    echo -e "\\r${RED_START}*  ######    #####   #####  #####  ######       #        #     #  #####  #####  #######  ######   *"
-    echo -e "\\r${RED_START}*                                                                                                 *"
-    echo -e "\\r${RED_START}***************************************************************************************************"
-    echo -e "\\r${COLOR_REVERT}"
-    exit 999
+    echo ${ECHO_E} "${CR}${RED_START}***************************************************************************************************"
+    echo ${ECHO_E} "${CR}${RED_START}*                                                                                                 *"
+    echo ${ECHO_E} "${CR}${RED_START}*  ######   #     #  #####  #      ######       #######     #     #####  #      #######  ######   *"
+    echo ${ECHO_E} "${CR}${RED_START}*  #     #  #     #    #    #      #     #      #          # #      #    #      #        #     #  *"
+    echo ${ECHO_E} "${CR}${RED_START}*  #     #  #     #    #    #      #     #      #         #   #     #    #      #        #     #  *"
+    echo ${ECHO_E} "${CR}${RED_START}*  ######   #     #    #    #      #     #      #####    #     #    #    #      #####    #     #  *"
+    echo ${ECHO_E} "${CR}${RED_START}*  #     #  #     #    #    #      #     #      #        #######    #    #      #        #     #  *"
+    echo ${ECHO_E} "${CR}${RED_START}*  #     #  #     #    #    #      #     #      #        #     #    #    #      #        #     #  *"
+    echo ${ECHO_E} "${CR}${RED_START}*  ######    #####   #####  #####  ######       #        #     #  #####  #####  #######  ######   *"
+    echo ${ECHO_E} "${CR}${RED_START}*                                                                                                 *"
+    echo ${ECHO_E} "${CR}${RED_START}***************************************************************************************************"
+    echo ${ECHO_E} "${CR}${COLOR_REVERT}"
+    exit 7
 else
     echo
-    echo -e "\\r${GREEN_START}+--------------------------------------------------------------------------------------+"
-    echo -e "\\r${GREEN_START}|                                                                                      |"
-    echo -e "\\r${GREEN_START}|               *******           **           ********       ********                 |"
-    echo -e "\\r${GREEN_START}|               **    **         ****         **             **                        |"
-    echo -e "\\r${GREEN_START}|               **    **        **  **        **             **                        |"
-    echo -e "\\r${GREEN_START}|               *******        **    **       *********      *********                 |"
-    echo -e "\\r${GREEN_START}|               **            **********             **             **                 |"
-    echo -e "\\r${GREEN_START}|               **            **      **             **             **                 |"
-    echo -e "\\r${GREEN_START}|               **            **      **      ********       ********                  |"
-    echo -e "\\r${GREEN_START}|                                                                                      |"
-    echo -e "\\r${GREEN_START}+--------------------------------------------------------------------------------------+"
-    echo -e "\\r${COLOR_REVERT}"
+    echo ${ECHO_E} "${CR}${GREEN_START}+--------------------------------------------------------------------------------------+"
+    echo ${ECHO_E} "${CR}${GREEN_START}|                                                                                      |"
+    echo ${ECHO_E} "${CR}${GREEN_START}|               *******           **           ********       ********                 |"
+    echo ${ECHO_E} "${CR}${GREEN_START}|               **    **         ****         **             **                        |"
+    echo ${ECHO_E} "${CR}${GREEN_START}|               **    **        **  **        **             **                        |"
+    echo ${ECHO_E} "${CR}${GREEN_START}|               *******        **    **       *********      *********                 |"
+    echo ${ECHO_E} "${CR}${GREEN_START}|               **            **********             **             **                 |"
+    echo ${ECHO_E} "${CR}${GREEN_START}|               **            **      **             **             **                 |"
+    echo ${ECHO_E} "${CR}${GREEN_START}|               **            **      **      ********       ********                  |"
+    echo ${ECHO_E} "${CR}${GREEN_START}|                                                                                      |"
+    echo ${ECHO_E} "${CR}${GREEN_START}+--------------------------------------------------------------------------------------+"
+    echo ${ECHO_E} "${CR}${COLOR_REVERT}"
     exit 0
 fi
+
+# -------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------

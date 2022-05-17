@@ -10,36 +10,30 @@ on:
 
 jobs:
   continuous-integration:
-    runs-on: ${{ matrix.os }}
+
     env:
       BUILD_TYPE: Debug
+
     strategy:
       fail-fast: false
-      matrix:
-        # specify a specific compiler to build with each OS separately
-        include:
-          - platform_name: macOS 11
-            os: macos-11
-            cxx: clang++
-            arch: x86_64
-          ## NOTE: CXX seems to be ignored on Windows, but specify it anyway for consistency
-          #- platform_name: windows
-          #  os: windows-2019
-          #  cxx: msvc
-          #  cmake_generator: ""
+
+    runs-on: macos-11
+
+#      matrix:
+#        # specify a specific compiler to build with each OS separately
+#        include:
+#          - platform_name: macOS 11
+#            os: macos-11
+#            arch: x86_64
+#            cxx: clang++
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Show build environment
-        run: |
-          echo "Environment:"
-          env | sort
-          echo
-          echo "Clang Compiler version:"
-          clang++ --version
-          echo
+      - name: Shell Permission Update
+        working-directory: ${{github.workspace}}/Build_Helper_Files
+        run: chmod +x *.sh
 
       - name: Shell Permission Update
         working-directory: ${{github.workspace}}/Build_Helper_Files/CodeBlocks_MacOS
@@ -52,3 +46,38 @@ jobs:
       - name: Build CodeBlocks
         working-directory: ${{github.workspace}}/Build_Helper_Files/CodeBlocks_MacOS
         run: ./MacOS_codeblocks_build.sh
+
+      - name: Upload CodeBlocks DMG Installer
+        uses: actions/upload-artifact@v3
+        with:
+          path: CodeBlocks*.dmg
+
+#
+# GITHUB_WORKSPACE	The default working directory on the runner for steps, and the default location of your repository 
+# when using the checkout action. For example, /home/runner/work/my-repo-name/my-repo-name.
+# 
+# ====================================================================================================
+#
+#  If you need to work on Github actions then you may want to check out the following repo as it allows 
+#    you to test the workflow and steps on your PC instead of github:
+#  
+#      https://github.com/ChristopherHX/runner.server
+#  
+#  In order to checkout the local runnder  will need to do the following:
+#  a) Create a a Personal Access Token
+#  b) Create a .secrets file with the following line in it:
+#  
+#      GITHUB_TOKEN=replaceThisTextWithYourPersonalAccessToken
+#  
+#  The following is the command line I have been using to test the Windows workflow on my Windows 10 PC from a windows command prompt:
+#  
+#      .\bin\Runner.Client.exe --workflow .github\workflows\Windows-continuous-integration.yml --event push --payload CB_test.json -P windows-2019=-self-hosted
+#  
+#  The CB_test.json file is:
+#  {
+#      "inputs": {
+#          "x": "Hello World from event"
+#      }
+#  }
+#  NOTE: Not testing on Linux or MacOS
+# ====================================================================================================

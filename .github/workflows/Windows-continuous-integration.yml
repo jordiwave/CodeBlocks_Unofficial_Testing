@@ -1,0 +1,180 @@
+name: Windows Integration Builds
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - v*
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  continuous-integration:
+
+    env:
+      BUILD_TYPE: Debug
+
+    strategy:
+      fail-fast: false
+
+    runs-on: windows-2019
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Install MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >
+            zip
+            unzip
+            p7zip
+            msys2-runtime-devel
+            base-devel
+            mingw-w64-x86_64-toolchain
+            svn
+            git
+            libtool
+            m4
+            autoconf
+            automake
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-hunspell
+            mingw-w64-x86_64-hunspell-en
+            mingw-w64-x86_64-fontconfig
+            mingw-w64-x86_64-wxmsw3.1
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-libpng
+            mingw-w64-x86_64-nsis
+
+      - uses: sersoft-gmbh/os-version-action@v1
+        id: os-version
+      
+      - name: Show Windows Version
+        run: echo "Windows version >${{steps.os-version.outputs.version}}<"
+
+#      - name: Display Environment
+#        if: steps.os-version.outputs.version != 10
+#        run: |
+#          alias
+#          export
+
+      - name: configure Pagefile
+        if: steps.os-version.outputs.version != 10
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+          minimum-size: 16GB
+          maximum-size: 16GB
+          disk-root: "C:"
+      # Reference https://github.com/al-cheb/configure-pagefile-action
+
+      - name: Checkout Code::Blocks source
+        uses: actions/checkout@v3
+        with:
+          repository: 'acotty/CodeBlocks_Unofficial_Testing'
+          path: 'CB'
+      # Reference https://github.com/marketplace/actions/checkout
+
+      - name: Checkout wxWidget 3.1.6 source
+        uses: actions/checkout@v3
+        with:
+          repository: 'wxWidgets/wxWidgets'
+          ref: 'v3.1.6'
+          path: 'Libraries/wxWidgets-3.1.6_win64'
+          submodules: 'true'
+      # Reference https://github.com/marketplace/actions/checkout
+
+      - name: Build wxWidgets 3.1.6
+        working-directory: CB\Build_Helper_Files\CodeBlocks_Windows_WX316
+        run: ./build_WXWidget_3.1.6_win64.sh
+
+      - name: Build CodeBlocks
+        working-directory: CB\Build_Helper_Files\CodeBlocks_Windows_WX316
+        run: ./codeblocks_build.sh
+
+#      - name: Get CodeBlocks Nightly build
+#        uses: carlosperate/download-file-action@v1
+#        with:
+#          file-url: https://sourceforge.net/projects/codeblocks/files/Binaries/Nightlies/2022/CB_20220515_rev12813_win64.7z
+#          file-name: CB_20220515_rev12813_win64.7z
+#
+#      - name: Get CodeBlocks Nightly wxWidget DLL
+#        uses: carlosperate/download-file-action@v1
+#        with:
+#          file-url: https://sourceforge.net/projects/codeblocks/files/Binaries/Nightlies/Prerequisites/wxmsw31u_gcc_cb_wx315_2D_gcc810-mingw64.7z
+#          file-name: wxmsw31u_gcc_cb_wx315_2D_gcc810-mingw64.7z
+#
+#      - name: Get CodeBlocks Nightly MinGW  DLL
+#        uses: carlosperate/download-file-action@v1
+#        with:
+#          file-url:  http://sourceforge.net/projects/codeblocks/files/Binaries/Nightlies/Prerequisites/Mingw64dlls8.1.0.7z
+#          file-name: Mingw64dlls8.1.0.7z
+#
+#      - name: Unzip CodeBlocks Nightly 7z Files
+#        run: 7z x CB_20220515_rev12813_win64.7z -oCB/src/output31_64
+#
+#      - name: Unzip CodeBlocks Nightly 7z Files
+#        run: 7z x CB_20220515_rev12813_win64.7z -oCB/src/devel31_64
+#
+#      - name: Unzip CodeBlocks Nightly wxWidget DLL
+#        run: 7z x wxmsw31u_gcc_cb_wx315_2D_gcc810-mingw64.7z -oCB/src/output31_64
+#
+#      - name: Unzip CodeBlocks Nightly MinGW  DLL
+#        run: 7z x Mingw64dlls8.1.0.7z -oCB/src/output31_64
+
+      - name: Create CodeBlocks x64 Output Directory from Develop directory
+        working-directory: CB\src
+        run: ./Unix_Output_Create.sh
+
+      - name: Create CodeBlocks x64 NSIS Installer
+        working-directory: CB\Build_Helper_Files\CodeBlocks_Windows_WX316
+        run: ./build_Installer.sh
+
+      - name: Upload CodeBlocks Installer
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            CB\windows_installer\CodeBlocks-*.exe
+
+      - name: Upload CodeBlocks Output Files
+        uses: actions/upload-artifact@v3
+        with:
+          name: Codeblocks_Windows_Output_Zip
+          path: |
+            CB\src\output31_64\*
+
+#
+# GITHUB_WORKSPACE	The default working directory on the runner for steps, and the default location of your repository 
+# when using the checkout action. For example, /home/runner/work/my-repo-name/my-repo-name.
+# 
+# ====================================================================================================
+#
+#  If you need to work on Github actions then you may want to check out the following repo as it allows 
+#    you to test the workflow and steps on your PC instead of github:
+#  
+#      https://github.com/ChristopherHX/runner.server
+#  
+#  In order to checkout the local runnder  will need to do the following:
+#  a) Create a a Personal Access Token
+#  b) Create a .secrets file with the following line in it:
+#  
+#      GITHUB_TOKEN=replaceThisTextWithYourPersonalAccessToken
+#  
+#  The following is the command line I have been using to test the Windows workflow on my Windows 10 PC from a windows command prompt:
+#  
+#      .\bin\Runner.Client.exe --workflow .github\workflows\Windows-continuous-integration.yml --event push --payload CB_test.json -P windows-2019=-self-hosted
+#  
+#  The CB_test.json file is:
+#  {
+#      "inputs": {
+#          "x": "Hello World from event"
+#      }
+#  }
+#  NOTE: Not testing on Linux or MacOS
+# ====================================================================================================

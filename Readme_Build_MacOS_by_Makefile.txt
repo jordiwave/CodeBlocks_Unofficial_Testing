@@ -58,20 +58,26 @@ To build Code::Blocks:
 
     2) Make sure the source code directory does not have spaces or any non ASCII characters.
 
-    3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or the 
+    3) In a terminal (e.g. bash) go to the following directory in the sources from SVN or GIT or the 
          directory you uncompressed the snapshot into.
 
-    4) Instead of performing steps 6 through 8 you can run the following script:
+         Build_Helper_Files/CodeBlocks_MacOS
+
+    4) Run teh following scripts:
+        chmod +x *.sh
+        ./change_permissions_MacOS.sh
+
+    5) Instead of performing steps 6 through 12 you can run the following script:
         ./MacOS_codeblocks_build.sh
        
         The MacOS_codeblocks_build.sh script checks for errors and if something fails please look at the script to find which
-          log file to check to see what failure occured so you can fix it.
+          log file to check to see what failure occurred so you can fix it.
         If the MacOS_codeblocks_build.sh script passes then goto the last step
 
-    5) Run the following to configure the project files for your environment:
+    6) Run the following to configure the project files for your environment:
         ./bootstrap
 
-    6) Run the following to produce the makefile's for your environment so you can test it or debug before installing it 
+    7) Run the following to produce the makefile's for your environment so you can test it or debug before installing it 
         in the MacOS directories:
             ./configure --with-contrib-plugins=all,-FileManager --prefix=$PWD/src/devel31
 
@@ -100,13 +106,13 @@ To build Code::Blocks:
                             NassiShneiderman, ProjectOptionsManipulator, profiler, regex, ReopenEditor, rndgen, smartindent, spellchecker,
                             symtab, ThreadSearch, ToolsPlus, Valgrind, wxcontrib, wxsmith, wxsmithcontrib, wxsmithaui
 
-    7) Run the following to build Code::Blocks
+    8) Run the following to build Code::Blocks
         make
 
         If you want to save the make results to a file then run the following command:
             make > make_result.txt 2>&1
 
-    8) Run the following to copy all of the relevant files into the install directory structure:
+    9) Run the following to copy all of the relevant files into the install directory structure:
         make install
        
        Notes: 
@@ -114,15 +120,15 @@ To build Code::Blocks:
         b) If you want to save the make results to a file then run the following command:
             make > make_result.txt 2>&1
 
-    9) If you run the ./codeblocks_build.sh of configured C::B with the "--prefix=$PWD/src/devel31" option then run the following to 
+    10) If you run the ./codeblocks_build.sh of configured C::B with the "--prefix=$PWD/src/devel31" option then run the following to 
         test the C::B you built:
             cd $PWD/src/devel31/bin
             codeblocks
 
-    10) Run the following script to bundle the files:
+    11) Run the following script to bundle the files:
             ./bundle.sh
 
-    11) Create the DMG file
+    12) Create the DMG file
             create-dmg CodeBlocks-Installer.dmg CodeBlocks.app
 
 Additional Notes/Info:

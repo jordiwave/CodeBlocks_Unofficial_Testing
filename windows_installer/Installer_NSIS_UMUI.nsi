@@ -1,6 +1,6 @@
 # Debugging:
 #!define BUILD_TYPE 64
-#!define NIGHTLY_BUILD_SVN 12776_EXPERIMENTAL_PLUS
+#!define NIGHTLY_BUILD_SVN 12818_EXPERIMENTAL_PLUS
 
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
@@ -20,7 +20,7 @@
 # To compile this script:                                           #
 #                                                                   #
 # 1) Download and install NSIS (v3) from here:                      #
-#      http://nsis.sourceforge.net/Download                         #
+#      https://nsis.sourceforge.net/Download                         #
 #                                                                   #
 # 2) Download and install the Ultra-Modern UI:                      #
 #      https://github.com/SuperPat45/UltraModernUI                  #
@@ -82,7 +82,7 @@ Unicode True
     !undef NIGHTLY_BUILD_SVN
   !endif
 !else
-  !define NIGHTLY_BUILD_SVN 12680_PLUS
+  !define NIGHTLY_BUILD_SVN 12818_PLUS
 !endif
 
 # Possibly required to adjust manually:
@@ -169,7 +169,7 @@ BrandingText "Code::Blocks"
     #!define VERSION     ${CURRENT_DATE_YEAR_NO_CENTURY}.${CURRENT_DATE_MONTH}
 !endif
 !define COMPANY          "The Code::Blocks Team"
-!define URL              http://www.codeblocks.org
+!define URL              https://www.codeblocks.org
 !define CB_SPLASH        ${CB_INSTALL_GRAPHICS_DIR}\${CB_SPLASH_FILENAME}
 !define CB_LOGO          ${CB_INSTALL_GRAPHICS_DIR}\${CB_LOGO_FILENAME}
 !define CB_LICENSE       ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
@@ -240,9 +240,6 @@ ShowUninstDetails show
 ;!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME "MultiUserInstallModeDirectory"
 !define MULTIUSER_INSTALLMODEPAGE_SHOWUSERNAME
 !include MultiUser.nsh
-
-# Reserved Files
-ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 
 # Installer pages
 Var STARTMENU_FOLDER_INSTALL
@@ -315,7 +312,7 @@ RequestExecutionLevel user
 # Check for Various Optional Plugins and files #
 ################################################
 
-; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
+; See https://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
 !macro !defineifexist _VAR_NAME _FILE_NAME
 	!tempfile _TEMPFILE
 #    !if /FileExists "${_FILE_NAME}"
@@ -350,6 +347,17 @@ ${!defineifexist} CBINNO_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbInno.
 ${!defineifexist} CBNSIS_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbNSIS.zip
 ${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   ${CB_BASE}${CB_SHARE_CB}\debugger_gdbmi.zip
 ${!defineifexist} PRETTYPRINTERS_FOUND          ${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py
+${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      ${CB_BASE}\libcodeblocks.dll
+
+# Reserved Files
+${!defineifexist} RESERVE_UNICODE_FOUND        ${NSISDIR}\Plugins\unicode\AdvSplash.dll
+!ifdef RESERVER_UNICODE_FOUND
+    ReserveFile "${NSISDIR}\Plugins\unicode\AdvSplash.dll"
+!endif    
+${!defineifexist} RESERVE_X86_UNICODE_FOUND   ${NSISDIR}\Plugins\x86-unicode\advsplash.dll
+!ifdef RESERVE_X86_UNICODE_FOUND
+    ReserveFile "${NSISDIR}\Plugins\x86-unicode\advsplash.dll"
+!endif    
 
 ################################################################################
 # Logging macro - from https://nsis.sourceforge.io/Logging:Enable_Logs_Quickly #
@@ -413,7 +421,11 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             File ${CB_BASE}\cb_console_runner.exe
             File ${CB_BASE}\CbLauncher.exe
             #File ${CB_BASE}\cctest.exe   # CB developer testing only
+!ifdef WINDOWS_MAKE_BUILD_FOUND            
+            File ${CB_BASE}\libcodeblocks.dll
+!else
             File ${CB_BASE}\codeblocks.dll
+!endif
             File ${CB_BASE}\codeblocks.exe
             # MinGW DLL's for thread handling etc.
 !if ${BUILD_TYPE} == 64
@@ -520,11 +532,11 @@ SectionGroup "!Default install" SECGRP_DEFAULT
                 CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\$(^Name) License.lnk"                 "$INSTDIR\gpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks license"
                 CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\$(^Name) SDK License.lnk"             "$INSTDIR\lgpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks SDK license"
                 SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links
-                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Web Site.lnk"              "http://www.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE website"
-                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Forums.lnk"                "http://forums.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE discussion forums"
-                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) WiKi.lnk"                  "http://wiki.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE WiKi site"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Web Site.lnk"              "https://www.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE website"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Forums.lnk"                "https://forums.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE discussion forums"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) WiKi.lnk"                  "https://wiki.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE WiKi site"
                 CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Tickets.lnk"               "https://sourceforge.net/p/codeblocks/tickets/" "" "" 0 SW_SHOWNORMAL  "" "Report bugs/enhancements for Code::Blocks"
-                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) beginner instructions.lnk" "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks beginner install and user guide"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) beginner instructions.lnk" "https://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks beginner install and user guide"
             !insertmacro MUI_STARTMENU_WRITE_END
 
             WriteRegStr HKCU "${REGKEY}\Components" "Program Shortcut" 1
@@ -4161,7 +4173,7 @@ Function InstallFinishPage_Leave
         ExecShell open "$INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm"
     ${EndIf}
     ${If} $HWND_FinishPage.OpenBeginnerGuidePDF_State = "1"
-        ExecShell open "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf"
+        ExecShell open "https://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf"
     ${EndIf}
 
 FunctionEnd

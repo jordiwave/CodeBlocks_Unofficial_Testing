@@ -24,6 +24,12 @@ class DLLIMPORT cbSearchResultsLog : public ListCtrlLogger, public wxEvtHandler
         }
 
         wxWindow * CreateControl(wxWindow * parent) override;
+
+        /** \brief Check if the log window is visible for the user
+         *
+         * \return true if the log window is visible for the user
+         */
+        bool IsVisible();
     protected:
         void OnDoubleClick(wxCommandEvent & event);
         void SyncEditor(int selIndex);

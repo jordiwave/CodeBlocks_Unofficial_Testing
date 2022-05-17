@@ -1971,16 +1971,37 @@ SQInteger ProjectManager_GetProject(HSQUIRRELVM v)
 
 SQInteger ProjectManager_SetProject(HSQUIRRELVM v)
 {
-    // this, project, refresh
-    ExtractParams3<ProjectManager *, cbProject *, bool> extractor(v);
+    const int numArgs = sq_gettop(v);
 
-    if (!extractor.Process("ProjectManager::SetProject"))
+    if (numArgs == 2)
     {
-        return extractor.ErrorMessage();
-    }
+        // this, Project
+        ExtractParams2<ProjectManager *, cbProject *> extractor(v);
 
-    extractor.p0->SetProject(extractor.p1, extractor.p2);
-    return 0;
+        if (!extractor.Process("ProjectManager::SetProject"))
+        {
+            return extractor.ErrorMessage();
+        }
+
+        extractor.p0->SetProject(extractor.p1, true);
+        return 0;
+    }
+    else
+        if (numArgs == 3)
+        {
+            // this, Project, refresh
+            ExtractParams3<ProjectManager *, cbProject *, bool> extractor(v);
+
+            if (!extractor.Process("ProjectManager::SetProject"))
+            {
+                return extractor.ErrorMessage();
+            }
+
+            extractor.p0->SetProject(extractor.p1, extractor.p2);
+            return 0;
+        }
+
+    return sq_throwerror(v, _SC("ProjectManager::SetProject: Wrong parameter count!"));
 }
 
 SQInteger ProjectManager_LoadWorkspace(HSQUIRRELVM v)

@@ -1,0 +1,30 @@
+Symptom: Windows GDB debugging SLOW zz...zzzzz
+==============================================
+Windows is very slow at debugging....zzzzzzz
+This is caused by MS low level heap code designed to do allot of extra checking when debugging!!!!! MS issue, not GDB....
+
+
+For background info see:
+https://stackoverflow.com/questions/27380443/why-is-gdb-so-slow-in-windows
+https://preshing.com/20110717/the-windows-heap-is-slow-when-launched-from-the-debugger/
+
+To fix this in Code::Blocks:
+============================
+1) Settings-> Environment-> Environment Variables->Add:
+        Key =   _NO_DEBUG_HEAP
+        Value = 1
+2) Ok
+3) Project->Properties->EnvVars option->Select environment....->default
+
+
+To fix this globally in Windows :
+=================================
+1) On the Windows taskbar, right-click the Windows Start icon and select System.
+2) In the Settings window, on the right under Related Settings, click Advanced system settings. ...
+3) On the Advanced tab, click Environment Variables. ...
+4) Under the System Varibles list click on the "New.." button
+5) Click New to create the following new environment variable:
+        Variable Name =   _NO_DEBUG_HEAP
+        Variable Value = 1
+6) Clock on ok, ok ok to back out od the settings.
+7) Restart Windows.

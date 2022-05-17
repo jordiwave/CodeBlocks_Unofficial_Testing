@@ -1,3 +1,4 @@
 #!/bin/bash
 
-../codeblocks_build.sh
+cd ..
+./codeblocks_build.sh

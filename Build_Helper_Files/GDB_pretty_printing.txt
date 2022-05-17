@@ -1,0 +1,32 @@
+BOOST:
+======
+    https://github.com/ruediger/Boost-Pretty-Printer
+
+LIBSTDC++:
+==========
+    C:\msys64\mingw64\share\gcc-10.3.0\python\libstdcxx\__init__.py
+
+    .gdbinit
+    --------
+        python
+        import sys 
+        sys.path.insert(0, '/usr/share/gcc-9/python')
+        from libstdcxx.v6.printers import register_libstdcxx_printers
+        register_libstdcxx_printers (None)
+        end
+
+RUST:
+=====
+    https://github.com/intellij-rust/intellij-rust/tree/master/prettyPrinters
+
+QT4 & 5 (BOTH)
+==============
+    https://github.com/KDE/kdevelop/blob/master/plugins/gdb/printers/qt.py
+
+QT5:
+====
+    https://github.com/Lekensteyn/qt5printers
+
+WxWidget:
+=========
+    F:\Andrew_Development\wxWidgets-3.1.5\misc\gdb\print.py

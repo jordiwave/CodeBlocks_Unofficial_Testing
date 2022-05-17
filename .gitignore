@@ -2,13 +2,10 @@
 /src/devel*
 /src/output*
 /src/*.log
-compile_commands.json
 *.layout
 *.depend
-*.cache
-# autorevision.h
 *.bmarks
-Makefile.in
+**/Makefile.in
 /build*
 /configure
 /aclocal.m4
@@ -25,13 +22,13 @@ Makefile.in
 /config.guess
 /config.sub
 *.cbTemp
+**/.cache
+**/compile_commands.json
 *.o
 ZZ_BUILD.txt
 windows_installer/codeblocks*.exe
 windows_installer/*.7z
 windows_installer/*.7z.*
-*compile_commands.json
-*.cbplugin
-*.zip
-*.zip
-/src/plugins/contrib-wip/debuggerDAP
+**/clangd_client.cbplugin
+**/clangd_client.zip
+**/Clangd_Client.dll
