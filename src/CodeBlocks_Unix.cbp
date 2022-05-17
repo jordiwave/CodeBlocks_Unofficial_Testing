@@ -160,7 +160,7 @@
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.a" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug --prefix=/mnt/d/Andrew_Development/Work_Installers/CodeBLocks_Private_Experimental/src/devel31_64/" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug --prefix=$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />

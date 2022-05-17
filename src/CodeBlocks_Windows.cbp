@@ -682,7 +682,7 @@
 
 					<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard  mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard" />
 					<Add after="cmd /c dir plugins\scriptedwizard\resources\Makefile.am /s/b >MakefileNoCopy.txt" />
-					<Add after="xcopy /Q /F /Y /S /Exclude:MakefileNoCopy.txt plugins\scriptedwizard\resources\* D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental\src\devel31_64\share\CodeBlocks\templates\wizard\" />
+					<Add after="xcopy /Q /F /Y /S /Exclude:MakefileNoCopy.txt plugins\scriptedwizard\resources\* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard\" />
 					<Add after="cmd /c if exist MakefileNoCopy.txt del MakefileNoCopy.txt" />
 					<Mode after="always" />
 				</ExtraCommands>
