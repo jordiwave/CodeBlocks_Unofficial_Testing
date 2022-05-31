@@ -50,7 +50,7 @@ jobs:
       - name: Upload CodeBlocks DMG Installer
         uses: actions/upload-artifact@v3
         with:
-          path: CodeBlocks*.dmg
+          path: CodeBlocks-Installer.dmg
 
 #
 # GITHUB_WORKSPACE	The default working directory on the runner for steps, and the default location of your repository 
