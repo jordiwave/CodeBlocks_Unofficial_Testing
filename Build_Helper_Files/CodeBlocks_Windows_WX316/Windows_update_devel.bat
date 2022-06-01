@@ -86,7 +86,7 @@ cd /d %PrevDirectory%
 @rem ---------------------------------------------------------------------------------------------------------
 :RunUpdateBatchFile
 echo Start the update
-call update.bat 31_%BUILD_BITS% C:\msys64\mingw%BUILD_BITS%
+call Windows_Ouput_Create.bat 31_%BUILD_BITS% C:\msys64\mingw%BUILD_BITS%
 echo Finished the update
 
 @goto Finish

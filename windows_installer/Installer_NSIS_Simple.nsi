@@ -1,6 +1,6 @@
 # Debugging:
 #!define BUILD_TYPE 64
-#!define NIGHTLY_BUILD_SVN 12818_EXPERIMENTAL_PLUS
+#!define NIGHTLY_BUILD_SVN 12825_EXPERIMENTAL_PLUS
 
 ###########################################################################################
 # The installer is divided into 5 main sections (section groups):                         #
@@ -79,7 +79,7 @@ Unicode True
     !undef NIGHTLY_BUILD_SVN
   !endif
 !else
-  !define NIGHTLY_BUILD_SVN 12818_EXPERIMENTAL_PLUS
+  !define NIGHTLY_BUILD_SVN 12825_EXPERIMENTAL_PLUS
 !endif
 
 # Possibly required to adjust manually:
@@ -255,7 +255,6 @@ Page Custom InstallFinishPage_Show InstallFinishPage_Leave
 # ========================= Installer languages =========================
 !insertmacro MUI_LANGUAGE "English" # first language is the default language
 
-
 ##########################################
 # NSIS Installer Privilege CONFIGURATION #
 ##########################################
@@ -297,30 +296,31 @@ RequestExecutionLevel user
 !macroend
 !define !defineifexist "!insertmacro !defineifexist"
 
-${!defineifexist} FORTRAN_PLUGIN_FOUND          ${CB_BASE}${CB_PLUGINS}\FortranProject.dll
-${!defineifexist} CBKODERS_PLUGIN_FOUND         ${CB_BASE}${CB_PLUGINS}\cb_koders.dll
-${!defineifexist} CLANGD_PLUGIN_FOUND           ${CB_BASE}${CB_PLUGINS}\clangd_client.dll
-${!defineifexist} CLANGD_EXE_FOUND              ${CB_BASE}\clangd.exe
-${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND    ${CB_BASE}${CB_PLUGINS}\DisplayEvents.dll
-${!defineifexist} CBBUILDTOOLS_PLUGIN_FOUND     ${CB_BASE}${CB_PLUGINS}\cbBuildTools.dll
-${!defineifexist} CBMARKDOWN_PLUGIN_FOUND       ${CB_BASE}${CB_PLUGINS}\cbMarkdown.dll
-${!defineifexist} CBMEMORYVIEW_PLUGIN_FOUND     ${CB_BASE}${CB_PLUGINS}\cbMemoryView.dll
-${!defineifexist} CBSYSTEMVIEW_PLUGIN_FOUND     ${CB_BASE}${CB_PLUGINS}\cbSystemView.dll
-${!defineifexist} CBDIFF_PLUGIN_FOUND           ${CB_BASE}${CB_PLUGINS}\cbDiff.dll
-${!defineifexist} GITBLOCKS_PLUGIN_FOUND        ${CB_BASE}${CB_PLUGINS}\GitBlocks.dll
-${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND    ${CB_BASE}${CB_PLUGINS}\CBTortoiseSVN.dll
-${!defineifexist} CBINNO_PLUGIN_FOUND           ${CB_BASE}${CB_PLUGINS}\cbInno.dll
-${!defineifexist} CBNSIS_PLUGIN_FOUND           ${CB_BASE}${CB_PLUGINS}\cbNSIS.dll
-${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   ${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll
-${!defineifexist} PRETTYPRINTERS_FOUND          ${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py
-${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      ${CB_BASE}\libcodeblocks.dll
+${!defineifexist} FORTRAN_PLUGIN_FOUND          "${CB_BASE}${CB_PLUGINS}\FortranProject.dll"
+${!defineifexist} CBKODERS_PLUGIN_FOUND         "${CB_BASE}${CB_PLUGINS}\cb_koders.dll"
+${!defineifexist} CLANGD_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\clangd_client.dll"
+${!defineifexist} CLANGD_EXE_FOUND              "${CB_BASE}\clangd.exe"
+${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND    "${CB_BASE}${CB_PLUGINS}\DisplayEvents.dll"
+${!defineifexist} CBBUILDTOOLS_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\cbBuildTools.dll"
+${!defineifexist} CBMARKDOWN_PLUGIN_FOUND       "${CB_BASE}${CB_PLUGINS}\cbMarkdown.dll"
+${!defineifexist} CBMEMORYVIEW_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\cbMemoryView.dll"
+${!defineifexist} CBSYSTEMVIEW_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\cbSystemView.dll"
+${!defineifexist} CBDIFF_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbDiff.dll"
+${!defineifexist} GITBLOCKS_PLUGIN_FOUND        "${CB_BASE}${CB_PLUGINS}\GitBlocks.dll"
+${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND    "${CB_BASE}${CB_PLUGINS}\CBTortoiseSVN.dll"
+${!defineifexist} CBINNO_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbInno.dll"
+${!defineifexist} CBNSIS_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbNSIS.dll"
+${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   "${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll"
+${!defineifexist} PRETTYPRINTERS_FOUND          "${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py"
+${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      "${CB_BASE}\libcodeblocks.dll"
 
 # Reserved Files
-${!defineifexist} RESERVE_UNICODE_FOUND        ${NSISDIR}\Plugins\unicode\AdvSplash.dll
+${!defineifexist} RESERVE_UNICODE_FOUND         "${NSISDIR}\Plugins\unicode\AdvSplash.dll"
+
 !ifdef RESERVER_UNICODE_FOUND
     ReserveFile "${NSISDIR}\Plugins\unicode\AdvSplash.dll"
 !endif    
-${!defineifexist} RESERVE_X86_UNICODE_FOUND   ${NSISDIR}\Plugins\x86-unicode\advsplash.dll
+${!defineifexist} RESERVE_X86_UNICODE_FOUND   "${NSISDIR}\Plugins\x86-unicode\advsplash.dll"
 !ifdef RESERVE_X86_UNICODE_FOUND
     ReserveFile "${NSISDIR}\Plugins\x86-unicode\advsplash.dll"
 !endif    

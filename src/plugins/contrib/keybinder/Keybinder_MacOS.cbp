@@ -50,11 +50,10 @@
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --libs`" />
 		</Linker>
-		<Unit filename="DebugLogging.h" />
 		<Unit filename="cJSON.cpp" />
 		<Unit filename="cJSON.h" />
-		<Unit filename="cbKeyConfigPanel.h" />
 		<Unit filename="cbKeyConfigPanel.cpp" />
+		<Unit filename="cbKeyConfigPanel.h" />
 		<Unit filename="cbKeybinder.cpp" />
 		<Unit filename="cbKeybinder.h" />
 		<Unit filename="clKeyboardBindingConfig.cpp" />

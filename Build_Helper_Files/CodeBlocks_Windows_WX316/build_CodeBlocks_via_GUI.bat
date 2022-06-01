@@ -80,7 +80,7 @@ if not exist %CB_ROOT%\codeblocks.exe goto ErrNoCBExe
 @echo.
 
 @rem ----------------------------------------------------------------
-@rem Ask the user if they want to run the update.bat after the build
+@rem Ask the user if they want to run the Windows_Ouput_Create.bat after the build
 @rem ----------------------------------------------------------------
 :QuestionsStart
 if exist ".objs31_%BUILD_BITS%"   goto QuestionCleanupStart
@@ -103,9 +103,9 @@ if exist "output31_%BUILD_BITS%"  del /q "output31_%BUILD_BITS%" > nul
 
 :QuestionUpdateStart
 @echo.
-set /p UserInput=Do you want to run the update.bat after the compilation finishes [Y/N]?
-if /I "%UserInput%" EQU "Y" @echo You have chosen to run the update.bat after the compilation finishes.
-if /I "%UserInput%" NEQ "Y" @echo You have chosen NOT to run the update.bat.
+set /p UserInput=Do you want to run the Windows_Ouput_Create.bat after the compilation finishes [Y/N]?
+if /I "%UserInput%" EQU "Y" @echo You have chosen to run the Windows_Ouput_Create.bat after the compilation finishes.
+if /I "%UserInput%" NEQ "Y" @echo You have chosen NOT to run the Windows_Ouput_Create.bat.
 @echo.
 @echo.
 
@@ -186,14 +186,14 @@ if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" copy "%WXWIN%\lib\gcc_dll\wx
 :CopyFilesFinish
 
 @rem -------------------------------------------------------------------------------
-@rem Run the update.bat if the user wanted it to run and we did not spawn the build 
+@rem Run the Windows_Ouput_Create.bat if the user wanted it to run and we did not spawn the build 
 @rem -------------------------------------------------------------------------------
 :UpdateStart
 if "%SpawnBuild%" == "True" goto UpdateFinish
 if /I "%UserInput%" NEQ "Y" goto UpdateFinish
 @echo.
-@echo Running "call update.bat %BUILD_BITS% %GCC_ROOT%"
-call update.bat %BUILD_BITS% %GCC_ROOT% > nul
+@echo Running "call Windows_Ouput_Create.bat %BUILD_BITS% %GCC_ROOT%"
+call Windows_Ouput_Create.bat %BUILD_BITS% %GCC_ROOT% > nul
 @echo.
 @echo.
 :UpdateFinish

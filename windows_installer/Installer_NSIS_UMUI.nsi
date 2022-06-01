@@ -1,44 +1,44 @@
 # Debugging:
 #!define BUILD_TYPE 64
-#!define NIGHTLY_BUILD_SVN 12818_EXPERIMENTAL_PLUS
+#!define NIGHTLY_BUILD_SVN 12825_EXPERIMENTAL_PLUS
 
-#####################################################################
+###########################################################################################
 # The installer is divided into 5 main sections (section groups):   #
 # "Default"           -> includes C::B core and core plugins        #
 # "Lexers"            -> includes C::B lexers for different langs   #
 # "Contrib plugins"   -> includes C::B contrib plugins              #
 # "C::B share config" -> includes the C::B Share Config tool        #
 # "C::B Launcher"     -> includes CbLauncher                        #
-#####################################################################
-# What to do to add a new installer section (e.g. a new plugin):    #
-# 1.) Add Installer section                                         #
-# 2.) Add Uninstaller section (files in reverse order of installer) #
-# 3.) Add macro to uninstaller functions                            #
-# 4.) Add section description                                       #
-# --> Basically you need to add stuff at 4 places! :-)              #
-#####################################################################
-# To compile this script:                                           #
-#                                                                   #
-# 1) Download and install NSIS (v3) from here:                      #
-#      https://nsis.sourceforge.net/Download                         #
-#                                                                   #
-# 2) Download and install the Ultra-Modern UI:                      #
-#      https://github.com/SuperPat45/UltraModernUI                  #
-#                                                                   #
-# 3) Update the following or check out the Build_NSIS_64bit.bat     #
-#       file:                                                       #
-#    * BUILD_TYPE for 32 or 64 bit                                  #
-#    * BUILD_TYPE for 32 or 64 bit                                  #
-#                                                                   #
-# 4) run NSIS using this command line or via the MakeNSISW.exe GUI  #
-#   C:\PATH_TO\NSIS\makensis.exe setup.nsi                          #
-# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
-# You may also need to adjust "RequestExecutionLevel admin/user" ,  #
-# see below.                                                        #
-# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
-# NOTE: The latest 32 bit wget zip is available from :              #
-#   https://eternallybored.org/misc/wget/                           #
-# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #######################
+###########################################################################################
+# What to do to add a new installer section (e.g. a new plugin):                          #
+# 1.) Add Installer section                                                               #
+# 2.) Add Uninstaller section (files in reverse order of installer)                       #
+# 3.) Add macro to uninstaller functions                                                  #
+# 4.) Add section description                                                             #
+# --> Basically you need to add stuff at 4 places! :-)                                    #
+###########################################################################################
+# To compile this script:                                                                 #
+#                                                                                         #
+# 1) Download and install NSIS (v3) from here:                                            #
+#      https://nsis.sourceforge.net/Download                                              #
+#                                                                                         #
+# 2) Download and install the Ultra-Modern UI:                                            #
+#      https://github.com/SuperPat45/UltraModernUI                                        #
+#                                                                                         #
+# 3) Update the following or check out the Build_NSIS_64bit.bat                           #
+#       file:                                                                             #
+#    * BUILD_TYPE for 32 or 64 bit                                                        #
+#    * BUILD_TYPE for 32 or 64 bit                                                        #
+#                                                                                         #
+# 4) run NSIS using this command line or via the MakeNSISW.exe GUI                        #
+#   C:\PATH_TO\NSIS\makensis.exe setup.nsi                                                #
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  --  -  -  #
+# You may also need to adjust "RequestExecutionLevel admin/user" ,                        #
+# see below.                                                                              #
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  --  -  -  #
+# NOTE: The latest 32 bit wget zip is available from :                                    #
+#   https://eternallybored.org/misc/wget/                                                 #
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  --  -  -  #
 #                                                                                         #
 # To fix the background color issue in NSIS Multi user page modify                        #
 # the "Function "${PRE}"" in the MultiUser.nsh the code to add the                        #
@@ -82,7 +82,7 @@ Unicode True
     !undef NIGHTLY_BUILD_SVN
   !endif
 !else
-  !define NIGHTLY_BUILD_SVN 12818_PLUS
+  !define NIGHTLY_BUILD_SVN 12825_EXPERIMENTAL_PLUS
 !endif
 
 # Possibly required to adjust manually:
@@ -241,7 +241,7 @@ ShowUninstDetails show
 !define MULTIUSER_INSTALLMODEPAGE_SHOWUSERNAME
 !include MultiUser.nsh
 
-# Installer pages
+# ========================= Installer pages =========================
 Var STARTMENU_FOLDER_INSTALL
 Var STARTMENU_FOLDER_UNINSTALL
 
@@ -275,7 +275,7 @@ Page Custom InstallFinishPage_Show InstallFinishPage_Leave
 
 !insertmacro UMUI_PAGE_ABORT
 
-# Un-Installer pages
+# ========================= Un-Installer pages =========================
 !insertmacro MUI_UNPAGE_WELCOME
     !define UMUI_MAINTENANCEPAGE_MODIFY
     !define UMUI_MAINTENANCEPAGE_REPAIR
@@ -287,7 +287,8 @@ Page Custom InstallFinishPage_Show InstallFinishPage_Leave
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_UNPAGE_FINISH
 !insertmacro UMUI_UNPAGE_ABORT
-# Installer languages
+
+# ========================= Installer languages =========================
 !insertmacro MUI_LANGUAGE "English" # first language is the default language
 
 ##########################################
@@ -331,30 +332,31 @@ RequestExecutionLevel user
 !macroend
 !define !defineifexist "!insertmacro !defineifexist"
 
-${!defineifexist} FORTRAN_PLUGIN_FOUND          ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
-${!defineifexist} CBKODERS_PLUGIN_FOUND         ${CB_BASE}${CB_SHARE_CB}\cb_koders.zip
-${!defineifexist} CLANGD_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\clangd_client.zip
-${!defineifexist} CLANGD_EXE_FOUND              ${CB_BASE}\clangd.exe
-${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND    ${CB_BASE}${CB_SHARE_CB}\DisplayEvents.zip
-${!defineifexist} CBBUILDTOOLS_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbBuildTools.zip
-${!defineifexist} CBMARKDOWN_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbMarkdown.zip
-${!defineifexist} CBMEMORYVIEW_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbMemoryView.zip
-${!defineifexist} CBSYSTEMVIEW_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbSystemView.zip
-${!defineifexist} CBDIFF_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbDiff.zip
-${!defineifexist} GITBLOCKS_PLUGIN_FOUND        ${CB_BASE}${CB_SHARE_CB}\GitBlocks.zip
-${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND    ${CB_BASE}${CB_SHARE_CB}\CBTortoiseSVN.zip
-${!defineifexist} CBINNO_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbInno.zip
-${!defineifexist} CBNSIS_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbNSIS.zip
-${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   ${CB_BASE}${CB_SHARE_CB}\debugger_gdbmi.zip
-${!defineifexist} PRETTYPRINTERS_FOUND          ${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py
-${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      ${CB_BASE}\libcodeblocks.dll
+${!defineifexist} FORTRAN_PLUGIN_FOUND          "${CB_BASE}${CB_PLUGINS}\FortranProject.dll"
+${!defineifexist} CBKODERS_PLUGIN_FOUND         "${CB_BASE}${CB_PLUGINS}\cb_koders.dll"
+${!defineifexist} CLANGD_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\clangd_client.dll"
+${!defineifexist} CLANGD_EXE_FOUND              "${CB_BASE}\clangd.exe"
+${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND    "${CB_BASE}${CB_PLUGINS}\DisplayEvents.dll"
+${!defineifexist} CBBUILDTOOLS_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\cbBuildTools.dll"
+${!defineifexist} CBMARKDOWN_PLUGIN_FOUND       "${CB_BASE}${CB_PLUGINS}\cbMarkdown.dll"
+${!defineifexist} CBMEMORYVIEW_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\cbMemoryView.dll"
+${!defineifexist} CBSYSTEMVIEW_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\cbSystemView.dll"
+${!defineifexist} CBDIFF_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbDiff.dll"
+${!defineifexist} GITBLOCKS_PLUGIN_FOUND        "${CB_BASE}${CB_PLUGINS}\GitBlocks.dll"
+${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND    "${CB_BASE}${CB_PLUGINS}\CBTortoiseSVN.dll"
+${!defineifexist} CBINNO_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbInno.dll"
+${!defineifexist} CBNSIS_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbNSIS.dll"
+${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   "${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll"
+${!defineifexist} PRETTYPRINTERS_FOUND          "${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py"
+${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      "${CB_BASE}\libcodeblocks.dll"
 
 # Reserved Files
-${!defineifexist} RESERVE_UNICODE_FOUND        ${NSISDIR}\Plugins\unicode\AdvSplash.dll
+${!defineifexist} RESERVE_UNICODE_FOUND         "${NSISDIR}\Plugins\unicode\AdvSplash.dll"
+
 !ifdef RESERVER_UNICODE_FOUND
     ReserveFile "${NSISDIR}\Plugins\unicode\AdvSplash.dll"
 !endif    
-${!defineifexist} RESERVE_X86_UNICODE_FOUND   ${NSISDIR}\Plugins\x86-unicode\advsplash.dll
+${!defineifexist} RESERVE_X86_UNICODE_FOUND   "${NSISDIR}\Plugins\x86-unicode\advsplash.dll"
 !ifdef RESERVE_X86_UNICODE_FOUND
     ReserveFile "${NSISDIR}\Plugins\x86-unicode\advsplash.dll"
 !endif    
@@ -396,7 +398,7 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 
     # Short explanation:
     # Section    "!Name" -> Section is bold
-    # Section /o "Name"  -> Section is optional and not selectd by default
+    # Section /o "Name"  -> Section is optional and not selected by default
     # Section    "-Name" -> Section is hidden an cannot be unselected
 
     # C::B core begin
@@ -1955,6 +1957,17 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         SectionIn 1 2
         SetOutPath $INSTDIR
         SetOverwrite on
+!ifdef WINDOWS_MAKE_BUILD_FOUND
+        File ${CB_BASE}\libwxsmithlib.dll
+        File ${CB_BASE}\libwxchartctrl.dll
+        File ${CB_BASE}\libwxcustombutton.dll
+        File ${CB_BASE}\libwxflatnotebook.dll
+        File ${CB_BASE}\libwximagepanel.dll
+        File ${CB_BASE}\libwxkwic.dll
+        File ${CB_BASE}\libwxled.dll
+        File ${CB_BASE}\libwxmathplot.dll
+        File ${CB_BASE}\libwxspeedbutton.dll
+!else
         File ${CB_BASE}\wxsmithlib.dll
         File ${CB_BASE}\wxchartctrl.dll
         File ${CB_BASE}\wxcustombutton.dll
@@ -1964,6 +1977,7 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         File ${CB_BASE}\wxled.dll
         File ${CB_BASE}\wxmathplot.dll
         File ${CB_BASE}\wxspeedbutton.dll
+!endif
         SetOutPath $INSTDIR${CB_SHARE_CB}
         File ${CB_BASE}${CB_SHARE_CB}\wxsmith.zip
         File ${CB_BASE}${CB_SHARE_CB}\wxSmithAui.zip
@@ -3812,16 +3826,16 @@ FunctionEnd
 
 Var HWND_CompilerDownloadPage
 Var HWND_CompilerDownloadPage.Heading
+Var HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC
 Var HWND_CompilerDownloadPage.Checkbox_Mingw_GCC
 Var HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix
 #Var HWND_CompilerDownloadPage.Checkbox_TDM_GCC
-Var HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC
 Var HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC
 
+Var CompilerDownloadPage.Checkbox_MSYS2_GCC
 Var CompilerDownloadPage.Checkbox_Mingw_GCC
 Var CompilerDownloadPage.Checkbox_Mingw_GDBFix
 #Var CompilerDownloadPage.Checkbox_TDM_GCC
-Var CompilerDownloadPage.Checkbox_MSYS2_GCC
 Var CompilerDownloadPage.Checkbox_CYGWIN_GCC
 
 
@@ -3848,41 +3862,47 @@ connected:
         Abort
     ${EndIf}
 
-    ${NSD_CreateLabel} 0 0 100% 20u "Please select compiler(s) to download the installer and run it.$\r$\nOnce you have selected the options you want click Next."
+    ${NSD_CreateLabel}    10 0 100% 20u "Please select compiler(s) to download the installer and run it.$\r$\nOnce you have selected the options you want click Next."
     Pop $HWND_CompilerDownloadPage.Heading
     SetCtlColors $HWND_CompilerDownloadPage.Heading "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
-    ${NSD_CreateCheckbox}  0 60u 100% 10u "MinGW-W64 - supports 32 or 64 bit"
+    ${NSD_CreateCheckbox} 10 30u 100% 10u "MSYS2 - supports 32 and 64 bit"
+    Pop $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC
+    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    ${NSD_CreateCheckbox} 10 70u 100% 10u "MinGW-W64 - supports 32 or 64 bit"
     Pop $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC
     SetCtlColors $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
-    ${NSD_CreateCheckbox} 20 90u 100% 10u "Open GDB web download page so you can upgrade GDB to resolve MinGW GDB issues."
+    ${NSD_CreateCheckbox} 30 90u 100% 10u "Open GDB web download page so you can upgrade GDB to resolve MinGW GDB issues."
     Pop $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix
     SetCtlColors $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    ${NSD_CreateCheckbox} 10 110u 100% 10u "Cygwin - supports 64 bit only"
+    Pop $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC
+    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
 # Removed as TDM 10.3 creates a buggy C::B
 #    ${NSD_CreateCheckbox} 0 90u 100% 10u "TDM GCC - supports 32 or 32 & 64 bit"
 #    Pop $HWND_CompilerDownloadPage.Checkbox_TDM_GCC
 #    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_TDM_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
-    ${NSD_CreateCheckbox} 0 120u 100% 10u "MSYS2 - supports 32 and 64 bit"
-    Pop $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC
-    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
-
-    ${NSD_CreateCheckbox} 0 150u 100% 10u "Cygwin - supports 64 bit only"
-    Pop $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC
-    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
     nsDialogs::Show
    
 FunctionEnd
 
 Function CompilerDownloadPage_Leave
+    ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC    $CompilerDownloadPage.Checkbox_MSYS2_GCC
 	${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC    $CompilerDownloadPage.Checkbox_Mingw_GCC
 	${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix $CompilerDownloadPage.Checkbox_Mingw_GDBFix
     #${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_TDM_GCC      $CompilerDownloadPage.Checkbox_TDM_GCC
-    ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC    $CompilerDownloadPage.Checkbox_MSYS2_GCC
     ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC   $CompilerDownloadPage.Checkbox_CYGWIN_GCC
+
+    ${If} $CompilerDownloadPage.Checkbox_MSYS2_GCC == "1"
+        ExecShell "open" "https://github.com/msys2/msys2-installer/releases" SW_SHOWNORMAL
+        #Call CompilerInstallerDownloadRun_MSYS2
+    ${EndIf}
 
     ${If} $CompilerDownloadPage.Checkbox_Mingw_GCC == "1"
         Call CompilerInstallerDownloadRun_MinGW
@@ -3892,18 +3912,13 @@ Function CompilerDownloadPage_Leave
         ExecShell "open" "https://github.com/ssbssa/gdb/releases" SW_SHOWNORMAL
     ${EndIf}
 
-    #${If} $CompilerDownloadPage.Checkbox_TDM_GCC == "1"
-    #    Call CompilerInstallerDownloadRun_TDM
-    #${EndIf}
-
-    ${If} $CompilerDownloadPage.Checkbox_MSYS2_GCC == "1"
-        ExecShell "open" "https://github.com/msys2/msys2-installer/releases" SW_SHOWNORMAL
-        #Call CompilerInstallerDownloadRun_MSYS2
-    ${EndIf}
-
     ${If} $CompilerDownloadPage.Checkbox_CYGWIN_GCC == "1"
         Call CompilerInstallerDownloadRun_Cygwin
     ${EndIf}
+
+    #${If} $CompilerDownloadPage.Checkbox_TDM_GCC == "1"
+    #    Call CompilerInstallerDownloadRun_TDM
+    #${EndIf}
 
 FunctionEnd
 # ========================================================================================================================
@@ -4117,12 +4132,12 @@ Function InstallFinishPage_Show
 connected:
     ${if} ${RebootFlag}
         ;Radio buttons for reboot page
-        ${NSD_CreateRadioButton} 10u 160u 100% 10u "$(MUI_TEXT_FINISH_REBOOTNOW)"
+        ${NSD_CreateRadioButton} 10u 150u 100% 10u "$(MUI_TEXT_FINISH_REBOOTNOW)"
         Pop $HWND_FinishPage.RebootNow
         ${NSD_SetState} $HWND_FinishPage.RebootNow 0
         SetCtlColors $HWND_FinishPage.RebootNow "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"        
 
-        ${NSD_CreateRadioButton} 10u 170u 100% 10u "$(MUI_TEXT_FINISH_REBOOTLATER)"
+        ${NSD_CreateRadioButton} 10u 160u 100% 10u "$(MUI_TEXT_FINISH_REBOOTLATER)"
         Pop $HWND_FinishPage.RebootLater
         ${NSD_SetState} $HWND_FinishPage.RebootLater 1
         SetCtlColors $HWND_FinishPage.RebootLater "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
@@ -4130,7 +4145,7 @@ connected:
 
  
     ;Link
-    ${NSD_CreateLink} 10u 190u 100% 10u "${URL}"
+    ${NSD_CreateLink} 10u 170u 100% 10u "${URL}"
     Pop $HWND_FinishPage.CodeBlocksLink
     SetCtlColors $HWND_FinishPage.CodeBlocksLink "${MUI_FINISHPAGE_LINK_COLOR}" "${MUI_BGCOLOR}"
     ${NSD_OnClick} $HWND_FinishPage.CodeBlocksLink OpenFinishPageLink
