@@ -1262,7 +1262,7 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto
                 || (wxString(wxT("<\"/")).Find(curChar) != wxNOT_FOUND    // #include directive
                     && !stc->IsPreprocessor(style)))
         {
-            return tokens;
+            return tokens;  //return empty tokens container
         }
     }
 
@@ -1274,21 +1274,36 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto
     if (m_CompletionTokens.size())
     {
         // We have some completions, hand them back to ccmanager
-
         // **debugging** LogManager* pLogMgr = CCLogger::Get()->;
         //for (size_t tknNdx; tknNdx<m_CompletionTokens.size(); ++tknNdx)
         //for (cbCodeCompletionPlugin::CCToken tknNdx : m_CompletionTokens)
-
         // **debugging** pLogMgr->DebugLog("-------------------Completions-------------------------");
+        bool caseSensitive = GetParseManager()->GetParser().Options().caseSensitive;
+        wxString pattern  = stc->GetTextRange(tknStart, tknEnd);
+
         for (size_t ii = 0; ii < m_CompletionTokens.size(); ++ii)
         {
             // **debugging** CCToken look = m_CompletionTokens[ii];
-            if (m_CompletionTokens[ii].displayName.empty())
+            wxString tkn_displayName = m_CompletionTokens[ii].displayName;
+
+            if (tkn_displayName.empty())
             {
                 continue;
             }
 
-            tokens.push_back(m_CompletionTokens[ii]);
+            //wxString tkn_name = m_CompletionTokens[ii].name;
+            if (not caseSensitive)
+            {
+                pattern = pattern.Lower();
+                tkn_displayName = tkn_displayName.Lower();
+                //tkn_name = tkn_name.Lower();
+            }
+
+            if (tkn_displayName.StartsWith(pattern))
+            {
+                tokens.push_back(m_CompletionTokens[ii]);
+            }
+
             // **debugging** info
             //wxString cmpltnStr = wxString::Format(
             //        "Completion:id[%d],category[%d],weight[%d],displayName[%s],name[%s]",
@@ -1301,7 +1316,7 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto
             //pLogMgr->DebugLog(cmpltnStr);
         }
 
-        m_CompletionTokens.clear();
+        m_CompletionTokens.clear(); //clear to use next time and return the tokens
         return tokens;
     }
 
@@ -6208,8 +6223,8 @@ bool ClgdCompletion::ParsingIsVeryBusy()
     }
 
     ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
-    int cfg_parallel_processes = std::max(cfg->ReadInt("/max_threads", 1), 1);            //don't allow 0
-    max_parallel_processes = std::min(max_parallel_processes, cfg_parallel_processes);
+    int cfg_parallel_processes    = std::max(cfg->ReadInt("/max_threads", 1), 1);            //don't allow 0
+    max_parallel_processes        = std::min(max_parallel_processes, cfg_parallel_processes);
     //int cfg_parsers_while_compiling  = std::min(cfg->ReadInt("/max_parsers_while_compiling", 0), max_parallel_processes); //(ph 2022/04/25)
     //int max_parsers_while_compiling  = std::min(cfg_parsers_while_compiling, max_parallel_processes);
     cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();

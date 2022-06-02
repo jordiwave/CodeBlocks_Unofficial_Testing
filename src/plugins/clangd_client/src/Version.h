@@ -1,23 +1,7 @@
-// ----------------------------------------------------------------------------
 /*
-	This file is part of CodeCompletion, a plugin for Code::Blocks
-	Copyright (C) 2007 Pecan Heber
-
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
 */
-// ----------------------------------------------------------------------------
 
 #ifndef VERSION_H
 #define VERSION_H
@@ -37,7 +21,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.25 2022/05/11")
+#define VERSION wxT("0.2.28 2022/05/28")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -68,6 +52,22 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.28
+//          2022/05/28
+//          Guard previous fix with "if not platform::windows" else alot of errs with clangd 13.0.0
+//          2022/05/25
+//          Apply AndrewCo ticket 39; Match clangd QueryDriver file separaters to  compile_commands.json
+//              to assure #include <file> headers are found.
+//          2022/05/23
+//          if defined cbDEBUG output messagbox on lock max tries exceeded in IncrDebugCallbackOk()
+//0.2.27
+//			2022/05/16
+//          Honor user option "Maximum allowed Code-Completion matches"
+//0.2.26
+//			2022/05/16
+//          Merge MacOS changes to main repo (Thanks AndrewCo)
+//			Support case sensitive option for code completion
+//          Fix possible crash when editor is closed before IdleTimeCallback OnEditorActivated event
 //0.2.25
 //          2022/05/11 More MacOS changes  (Thanks AndrewCo)
 //          Fix illegal PS --no-heading param used in procutils::GetProcessNameByPid()

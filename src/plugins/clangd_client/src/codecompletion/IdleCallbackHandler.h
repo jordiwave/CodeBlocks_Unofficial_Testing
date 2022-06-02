@@ -384,7 +384,11 @@ class IdleCallbackHandler: public wxEvtHandler
 
             if (m_DebugCallback[funcLine] > 8)
             {
-                Manager::Get()->GetLogManager()->DebugLogError(wxString::Format("%s Lock Failure count exceeded.", funcLine));
+                wxString msg = wxString::Format("%s Lock Failure count exceeded.", funcLine);
+                Manager::Get()->GetLogManager()->DebugLogError(msg);
+#if defined(cbDEBUG)
+                cbMessageBox(msg, "Error: IdleCallback/Lock Failure");
+#endif
             }
 
             return m_DebugCallback[funcLine] < 8;

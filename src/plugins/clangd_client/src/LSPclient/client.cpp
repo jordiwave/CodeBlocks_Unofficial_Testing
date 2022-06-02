@@ -304,6 +304,12 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject * pProject, const c
     }
 
     QuoteStringIfNeeded(queryDriver);
+
+    if (not platform::windows)
+    {
+        queryDriver.Replace("\\", "/");    //AndrewCo ticket 39  applied: 2022/05/25
+    }
+
     command += " --query-driver=" + queryDriver;
     // suggestion: -j=# should be no more than half of processors
     int max_parallel_processes = std::max(1, wxThread::GetCPUCount());
@@ -1371,7 +1377,7 @@ void ProcessLanguageClient::OnLSP_Response(wxThreadEvent & threadEvent)
         cbMessageBox("OnLSP_Response() error: %s", e.what());
     }
 
-#if defined(LOGGING)
+#if defined(cbDEBUG)
     std::string see = pJson->dump(); // **debugging**
 #endif //LOGGING
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
@@ -1440,7 +1446,7 @@ void ProcessLanguageClient::OnIDResult(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     json * pJson = (json *)event.GetClientData();
-    //#if defined(LOGGING)
+    //#if defined(cbDEBUG)
     //    std::string see = pJson->dump(); //debugging
     //#endif //LOGGING
     wxCommandEvent lspevt(wxEVT_COMMAND_MENU_SELECTED, GetLSP_UserEventID());
@@ -1483,7 +1489,7 @@ void ProcessLanguageClient::OnIDResult(wxCommandEvent & event)
                 {
                     lspevt.SetString(idValue +  STX + "result");
                     json resultValue = pJson->at("result"); // now array
-#if defined(LOGGING)
+#if defined(cbDEBIG)
                     //std::string see = resultValue.dump(); //debugging
 #endif //LOGGING
                 }// if textDocument/def... textDocument/decl...

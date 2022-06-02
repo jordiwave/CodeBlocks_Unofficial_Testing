@@ -314,9 +314,9 @@ void ProcUtils::GetProcessList(std::vector<ProcessEntry> & proclist)
     wxArrayString output;
 #if defined (__WXMAC__)
     // Mac does not like the --no-heading...
-    ExecuteCommand(wxT("ps -A -o pid,command  --no-heading"), output);
-#else
     ExecuteCommand(wxT("ps -A -o pid,command "), output);
+#else
+    ExecuteCommand(wxT("ps -A -o pid,command  --no-heading"), output);
 #endif
 
     for (size_t i = 0; i < output.GetCount(); i++)

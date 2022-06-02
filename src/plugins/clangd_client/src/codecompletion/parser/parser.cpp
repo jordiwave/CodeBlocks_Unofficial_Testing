@@ -460,7 +460,6 @@ bool Parser::IsOkToUpdateClassBrowserView()
     }
 
     return true;
-    return false;
 }
 // ----------------------------------------------------------------------------
 void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
@@ -657,8 +656,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
         if (IsOkToUpdateClassBrowserView() and
                 ((++prevDocumentSymbolsFilesProcessed >= 4) or (pClient->LSP_GetServerFilesParsingCount() == 0)))
         {
-            //update every x file parsed or when last file was parsed by LSP server
-            //-dprevClassBrowserUpdateTOD = pClient->GetNowMilliSeconds();
+            //update after x file parsed or when last file was parsed by LSP server
             m_pParseManager->UpdateClassBrowser();
             prevDocumentSymbolsFilesProcessed = 0;
             //Refresh the CC toolbar internal data if this file is the active editors file
@@ -1959,7 +1957,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent & event)
 
                 for (unsigned refindx = 0; refindx < m_pReferenceValues->GetCount(); refindx += 3)
                 {
-#if defined(LOGGING) //debugging
+#if defined(cbDEBUG) //debugging
                     wxString reffilenm = m_pReferenceValues->Item(refindx);
                     wxString refline   = m_pReferenceValues->Item(refindx + 1);
                     wxString reftext   = m_pReferenceValues->Item(refindx + 2);
@@ -2133,7 +2131,7 @@ void Parser::OnLSP_DeclDefResponse(wxCommandEvent & event)
             {
                 // "result":[{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.h","range":{"start":{"line":26,"character":12},"end":{"line":26,"character":22}}}]}
                 json resultObj = resultValue[resultIdx]; //position to uri results
-#if defined(LOGGING)
+#if defined(cbDEBUG)
                 std::string see = resultValue.dump(); //debugging
 #endif //LOGGING
                 wxString filenameStr = resultObj.at("uri").get<std::string>();
@@ -2369,8 +2367,10 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<cbCode
             json valueItems = pJson->at("result").at("items");
             // -unused- Parser* pParser = (Parser*)GetParseManager()->GetParserByProject(pProject);
             wxString filename = pEditor->GetFilename();
+            ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+            size_t CCMaxMatches = cfg->ReadInt(_T("/max_matches"), 16384);
 
-            for (size_t itemNdx = 0; itemNdx < valueItemsCount && itemNdx < 10; ++itemNdx)
+            for (size_t itemNdx = 0; itemNdx < valueItemsCount && itemNdx < CCMaxMatches; ++itemNdx)
             {
                 wxString labelValue = valueItems[itemNdx].at("label").get<std::string>();
                 labelValue.Trim(true).Trim(false);
