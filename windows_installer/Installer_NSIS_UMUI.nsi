@@ -1171,18 +1171,18 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             WriteRegStr HKCU "${REGKEY}\Components" "Class Wizard plugin" 1
         SectionEnd
 
-        Section "Code Completion plugin"  SEC_CODECOMPLETION
-            SectionIn 1 2
-            SetOutPath $INSTDIR${CB_SHARE_CB}
-            SetOverwrite on
-            File ${CB_BASE}${CB_SHARE_CB}\codecompletion.zip
-            SetOutPath $INSTDIR${CB_PLUGINS}
-            File ${CB_BASE}${CB_PLUGINS}\codecompletion.dll
-            SetOutPath $INSTDIR${CB_IMG_SETTINGS}
-            File ${CB_BASE}${CB_IMG_SETTINGS}\codecompletion.png
-            File ${CB_BASE}${CB_IMG_SETTINGS}\codecompletion-off.png
-            WriteRegStr HKCU "${REGKEY}\Components" "Code Completion plugin" 1
-        SectionEnd
+#        Section "Code Completion plugin"  SEC_CODECOMPLETION
+#            SectionIn 1 2
+#            SetOutPath $INSTDIR${CB_SHARE_CB}
+#            SetOverwrite on
+#            File ${CB_BASE}${CB_SHARE_CB}\codecompletion.zip
+#            SetOutPath $INSTDIR${CB_PLUGINS}
+#            File ${CB_BASE}${CB_PLUGINS}\codecompletion.dll
+#            SetOutPath $INSTDIR${CB_IMG_SETTINGS}
+#            File ${CB_BASE}${CB_IMG_SETTINGS}\codecompletion.png
+#            File ${CB_BASE}${CB_IMG_SETTINGS}\codecompletion-off.png
+#            WriteRegStr HKCU "${REGKEY}\Components" "Code Completion plugin" 1
+#        SectionEnd
 
 !ifdef CLANGD_PLUGIN_FOUND
         Section "Clangd Client plugin" SEC_CLANGD_CLIENT
@@ -2470,13 +2470,13 @@ Section "-un.Class Wizard plugin" UNSEC_CLASSWIZARD
     DeleteRegValue HKCU "${REGKEY}\Components" "Class Wizard plugin"
 SectionEnd
 
-Section "-un.Code Completion plugin" UNSEC_CODECOMPLETION
-    Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\codecompletion-off.png
-    Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\codecompletion.png
-    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\codecompletion.dll
-    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\codecompletion.zip
-    DeleteRegValue HKCU "${REGKEY}\Components" "Code Completion plugin"
-SectionEnd
+#Section "-un.Code Completion plugin" UNSEC_CODECOMPLETION
+#    Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\codecompletion-off.png
+#    Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\codecompletion.png
+#    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\codecompletion.dll
+#    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\codecompletion.zip
+#    DeleteRegValue HKCU "${REGKEY}\Components" "Code Completion plugin"
+#SectionEnd
 
 !ifdef CLANGD_PLUGIN_FOUND
 Section "-un.Clangd Client plugin" UNSEC_CLANGD_CLIENT
@@ -3500,7 +3500,7 @@ CheckUserTypeDone:
     !insertmacro SELECT_UNSECTION "AStyle plugin"                      ${UNSEC_ASTYLE}
     !insertmacro SELECT_UNSECTION "Autosave plugin"                    ${UNSEC_AUTOSAVE}
     !insertmacro SELECT_UNSECTION "Class Wizard plugin"                ${UNSEC_CLASSWIZARD}
-    !insertmacro SELECT_UNSECTION "Code Completion plugin"             ${UNSEC_CODECOMPLETION}
+#    !insertmacro SELECT_UNSECTION "Code Completion plugin"             ${UNSEC_CODECOMPLETION}
 !ifdef CLANGD_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "Clangd Client plugin"               ${UNSEC_CLANGD_CLIENT}
 !endif
@@ -3622,7 +3622,7 @@ FunctionEnd
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ASTYLE}              "Source code formatter. Uses AStyle to reformat your sources."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUTOSAVE}            "Saves your work in regular intervals."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLASSWIZARD}         "Provides an easy way to create a new C++ class file pair."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_CODECOMPLETION}      "Provides a symbols browser for your projects and code-completion inside the editor."
+#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_CODECOMPLETION}      "Provides a symbols browser for your projects and code-completion inside the editor."
 !ifdef CLANGD_PLUGIN_FOUND
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLANGD_CLIENT}          "Provides a ClangD client  browser for your projects and code-completion inside the editor. Currently only C++."
 !endif
