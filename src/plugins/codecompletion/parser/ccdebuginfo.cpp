@@ -88,7 +88,7 @@ inline void SaveCCDebugInfo(const wxString & fileDesc, const wxString & content)
     }
     else
     {
-        cbMessageBox(_("Cannot create file ") + fname, _("CC Debug Info"));
+        cbMessageBox(wxString::Format(_("Cannot create file %s"), fname), _("CC Debug Info"));
     }
 }
 }// namespace CCDebugInfoHelper

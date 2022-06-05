@@ -125,7 +125,7 @@ Compiler::Compiler(const Compiler & other) :
     CompileOptionsBase(other),
     m_ParentID(other.m_ParentID.IsEmpty() ? other.m_ID : other.m_ParentID)
 {
-    m_Name = _("Copy of ") + other.m_Name;
+    m_Name = wxString::Format(_("Copy of %s"), other.m_Name);
     m_MultiLineMessages = other.m_MultiLineMessages;
     // generate unique ID
     // note that this copy constructor is protected and can only be called
@@ -864,7 +864,7 @@ void Compiler::LoadDefaultOptions(const wxString & name, int recursion)
 
     if (doc.IsEmpty())
     {
-        wxString msg(_("Error: file 'options_") + name + _(".xml' not found."));
+        const wxString msg(wxString::Format(_("Error: file 'options_%s.xml' not found."), name));
         Manager::Get()->GetLogManager()->Log(msg);
         cbMessageBox(msg, _("Compiler options"), wxICON_ERROR);
         return;
@@ -872,7 +872,7 @@ void Compiler::LoadDefaultOptions(const wxString & name, int recursion)
 
     if (recursion > 5)
     {
-        wxString msg(_("Warning: '") + doc + _("' not loaded due to excessive recursion."));
+        const wxString msg(wxString::Format(_("Warning: '%s' not loaded due to excessive recursion."), doc));
         Manager::Get()->GetLogManager()->LogWarning(msg);
         cbMessageBox(msg, _("Compiler options"), wxICON_EXCLAMATION);
         return;
@@ -880,7 +880,7 @@ void Compiler::LoadDefaultOptions(const wxString & name, int recursion)
 
     if (!options.Load(doc))
     {
-        wxString msg(_("Error: Compiler options file '") + doc + _("' not found for compiler '") + name + wxT("'."));
+        const wxString msg(wxString::Format(_("Error: Compiler options file '%s' not found for compiler '%s'."), doc, name));
         Manager::Get()->GetLogManager()->Log(msg);
         cbMessageBox(msg, _("Compiler options"), wxICON_ERROR);
         return;
@@ -888,7 +888,7 @@ void Compiler::LoadDefaultOptions(const wxString & name, int recursion)
 
     if (options.GetRoot()->GetName() != wxT("CodeBlocks_compiler_options"))
     {
-        wxString msg(_("Error: Invalid Code::Blocks compiler options file for compiler '") + name + wxT("'."));
+        const wxString msg(wxString::Format(_("Error: Invalid Code::Blocks compiler options file for compiler '%s'."), name));
         Manager::Get()->GetLogManager()->Log(msg);
         cbMessageBox(msg, _("Compiler options"), wxICON_ERROR);
         return;
@@ -1401,19 +1401,19 @@ void Compiler::LoadRegExArray(const wxString & name, bool globalPrecedence, int 
 
     if (doc.IsEmpty())
     {
-        Manager::Get()->GetLogManager()->Log(_("Error: file 'options_") + name + _(".xml' not found"));
+        Manager::Get()->GetLogManager()->Log(wxString::Format(_("Error: file 'options_%s.xml' not found"), name));
         return;
     }
 
     if (recursion > 5)
     {
-        Manager::Get()->GetLogManager()->LogWarning(_("Warning: '") + doc + _("' not loaded due to excessive recursion"));
+        Manager::Get()->GetLogManager()->LogWarning(wxString::Format(_("Warning: '%s' not loaded due to excessive recursion"), doc));
         return;
     }
 
     if (!options.Load(doc))
     {
-        Manager::Get()->GetLogManager()->Log(_("Error parsing ") + doc);
+        Manager::Get()->GetLogManager()->Log(wxString::Format(_("Error parsing %s"), doc));
         return;
     }
 
@@ -1579,16 +1579,14 @@ static bool CmpVersion(int & result, const wxString & first, const wxString & se
 
         if (!GetNextValue(&valueFirst, &indexFirst, first, lengthFirst))
         {
-            const wxString msg = wxString::Format(_("CmpVersion: Invalid first compiler test string \"%s\""),
-                                                  first);
+            const wxString msg = wxString::Format(_("CmpVersion: Invalid first compiler test string \"%s\""), first);
             Manager::Get()->GetLogManager()->DebugLog(msg);
             return false;
         }
 
         if (!GetNextValue(&valueSecond, &indexSecond, second, lengthSecond))
         {
-            const wxString msg = wxString::Format(_("CmpVersion: Invalid second compiler test string \"%s\""),
-                                                  second);
+            const wxString msg = wxString::Format(_("CmpVersion: Invalid second compiler test string \"%s\""), second);
             Manager::Get()->GetLogManager()->DebugLog(msg);
             return false;
         }
@@ -1699,11 +1697,6 @@ bool Compiler::EvalXMLCondition(const wxXmlNode * node)
             wxGetEnv("PATH", &origPath);     // save path
             wxSetEnv("PATH", path + origPath); // change path
             cmd[0] = GetExecName(cmd[0]);
-            //LogManager *log = Manager::Get()->GetLogManager();
-            //log->Log(wxString::Format("PATH environment original:  %s (%s %d)", origPath, __FILE__, __LINE__));
-            //log->Log(wxString::Format("PATH environment pre-apped: %s (%s %d)", path, __FILE__, __LINE__));
-            //log->Log(wxString::Format("cmd[0] : %s (%s %d)", cmd[0], __FILE__, __LINE__));
-            //
             long ret = -1;
             wxArrayString output;
 
@@ -1744,8 +1737,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode * node)
                     if ((partCount != 1) && (partCount != 3))
                     {
                         val = false;
-                        const wxString msg = wxString::Format(_("Invalid argument \"%s\" in compiler test"),
-                                                              attr->GetValue());
+                        const wxString msg = wxString::Format(_("Invalid argument \"%s\" in compiler test"), attr->GetValue());
                         Manager::Get()->GetLogManager()->DebugLog(msg);
                     }
                     else
@@ -1811,8 +1803,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode * node)
                         else
                         {
                             val = false;
-                            const wxString msg = wxString::Format(_("Can not compile regex \"%s\" in compiler test"),
-                                                                  parts[0]);
+                            const wxString msg = wxString::Format(_("Can not compile regex \"%s\" in compiler test"), parts[0]);
                             Manager::Get()->GetLogManager()->DebugLog(msg);
                         }
                     }
@@ -1923,8 +1914,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode * node)
                 // Unknown test
                 val = false;
                 LogManager * log = Manager::Get()->GetLogManager();
-                log ->DebugLog(wxString::Format(_("EvalXMLCondition: Unknown compiler test \"%s\""),
-                                                name));
+                log ->DebugLog(wxString::Format(_("EvalXMLCondition: Unknown compiler test \"%s\""), name));
             }
         }
 

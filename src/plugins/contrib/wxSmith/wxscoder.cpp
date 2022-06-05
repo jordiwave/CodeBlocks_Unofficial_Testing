@@ -14,7 +14,6 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
-*
 */
 
 #include "wxscoder.h"
@@ -73,9 +72,9 @@ wxsCoder::~wxsCoder()
 void wxsCoder::AddCode(const wxString & FileName, const wxString & Header, const wxString & End, const wxString & Code, bool Immediately, bool CodeHasHeader, bool CodeHasEnd)
 {
     wxMutexLocker Lock(DataMutex);
-    wxString FixedFileName = NormalizeFileName(FileName);
+    const wxString FixedFileName(NormalizeFileName(FileName));
 
-    if (FixedFileName.IsEmpty())
+    if (FixedFileName.empty())
     {
         return;
     }
@@ -122,7 +121,7 @@ wxString wxsCoder::GetCode(const wxString & FileName, const wxString & Header, c
     wxMutexLocker Lock(DataMutex);
     wxString FixedFileName = NormalizeFileName(FileName);
     FlushFile(FixedFileName);
-    int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
+    const int TabSize = Manager::Get()->GetConfigManager("editor")->ReadInt("/tab_size", 4);
     // Checking if editor is opened
     EditorManager * EM = Manager::Get()->GetEditorManager();
     assert(EM != 0);
@@ -138,7 +137,7 @@ wxString wxsCoder::GetCode(const wxString & FileName, const wxString & Header, c
 
         if (Position == -1)
         {
-            return _T("");
+            return "";
         }
 
         // Counting number of indentation spaces which will be removed at
@@ -148,14 +147,14 @@ wxString wxsCoder::GetCode(const wxString & FileName, const wxString & Header, c
 
         while (--SpacesPos >= 0)
         {
-            wxChar ch = Ctrl->GetCharAt(SpacesPos);
+            const wxChar ch = Ctrl->GetCharAt(SpacesPos);
 
-            if (ch == _T('\t'))
+            if (ch == '\t')
             {
                 SpacesCut += TabSize;
             }
             else
-                if ((ch == _T('\n')) || (ch == _T('\r')))
+                if ((ch == '\n') || (ch == '\r'))
                 {
                     break;
                 }
@@ -171,7 +170,7 @@ wxString wxsCoder::GetCode(const wxString & FileName, const wxString & Header, c
 
         if (EndPosition == -1)
         {
-            return _T("");
+            return "";
         }
 
         // Fixing up positions to include / exclude header and/or ending sequence
@@ -193,7 +192,7 @@ wxString wxsCoder::GetCode(const wxString & FileName, const wxString & Header, c
 
         if (!Detector.IsOK())
         {
-            return _T("");
+            return "";
         }
 
         wxString Content = Detector.GetWxStr();
@@ -201,7 +200,7 @@ wxString wxsCoder::GetCode(const wxString & FileName, const wxString & Header, c
 
         if (Position == -1)
         {
-            return _T("");
+            return "";
         }
 
         int SpacesCut = 0;
@@ -209,14 +208,14 @@ wxString wxsCoder::GetCode(const wxString & FileName, const wxString & Header, c
 
         while (--SpacesPos >= 0)
         {
-            wxChar ch = Content.GetChar(SpacesPos);
+            const wxChar ch = Content.GetChar(SpacesPos);
 
-            if (ch == _T('\t'))
+            if (ch == '\t')
             {
                 SpacesCut += TabSize;
             }
             else
-                if ((ch == _T('\n')) || (ch == _T('\r')))
+                if ((ch == '\n') || (ch == '\r'))
                 {
                     break;
                 }
@@ -236,7 +235,7 @@ wxString wxsCoder::GetCode(const wxString & FileName, const wxString & Header, c
 
         if (EndPosition == -1)
         {
-            return _T("");
+            return "";
         }
 
         if (IncludeEnd)
@@ -271,7 +270,7 @@ wxString wxsCoder::GetFullCode(const wxString & FileName, wxFontEncoding & Encod
         EncodingDetector Detector(FixedFileName);
         Encoding = Detector.GetFontEncoding();
         UseBOM = Detector.GetBOMSizeInBytes() > 0;
-        return Detector.IsOK() ? Detector.GetWxStr() : _T("");
+        return Detector.IsOK() ? Detector.GetWxStr() : wxString();
     }
 }
 
@@ -306,14 +305,14 @@ void wxsCoder::PutFullCode(const wxString & FileName, const wxString & Code, wxF
     {
         if (!cbSaveToFile(FixedFileName, Code, Encoding, UseBOM))
         {
-            Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write file '%s'"), FixedFileName.wx_str()));
+            Manager::Get()->GetLogManager()->Log(wxString::Format(_("wxSmith: Couldn't write file '%s'"), FixedFileName));
         }
     }
 }
 
 void wxsCoder::FlushFile(const wxString & FileName)
 {
-    int Index = CodeChangesFiles.Index(FileName);
+    const int Index = CodeChangesFiles.Index(FileName);
 
     if (Index == wxNOT_FOUND)
     {
@@ -354,7 +353,7 @@ void wxsCoder::FlushFile(const wxString & FileName)
 
         if (!Detector.IsOK())
         {
-            Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't open and properly read file '%s'"), FileName.wx_str()));
+            Manager::Get()->GetLogManager()->Log(wxString::Format(_("wxSmith: Couldn't open and properly read file '%s'"), FileName));
             return;
         }
 
@@ -375,7 +374,7 @@ void wxsCoder::FlushFile(const wxString & FileName)
             //wxStopWatch SW;
             if (!cbSaveToFile(FileName, Content, Detector.GetFontEncoding(), Detector.GetBOMSizeInBytes() > 0))
             {
-                Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write data to file '%s'"), FileName.wx_str()));
+                Manager::Get()->GetLogManager()->Log(wxString::Format(_("wxSmith: Couldn't write data to file '%s'"), FileName));
             }
             else
             {
@@ -394,24 +393,24 @@ void wxsCoder::FlushFile(const wxString & FileName)
 bool wxsCoder::ApplyChangesEditor(cbEditor * Editor, const wxString & Header, const wxString & End, wxString & Code, bool CodeHasHeader, bool CodeHasEnd, wxString & EOL)
 {
     cbStyledTextCtrl * Ctrl = Editor->GetControl();
-    int FullLength = Ctrl->GetLength();
+    const int FullLength = Ctrl->GetLength();
 
-    if (EOL.IsEmpty())
+    if (EOL.empty())
     {
         // Detecting EOL style in source
-        for (int i = 0; i < FullLength; i++)
+        for (int i = 0; i < FullLength; ++i)
         {
-            wxChar ch = Ctrl->GetCharAt(i);
+            const wxChar ch = Ctrl->GetCharAt(i);
 
-            if (ch == _T('\n') || ch == _T('\r'))
+            if (ch == '\n' || ch == '\r')
             {
                 EOL = ch;
 
                 if (++i < FullLength)
                 {
-                    wxChar ch2 = Ctrl->GetCharAt(i);
+                    const wxChar ch2 = Ctrl->GetCharAt(i);
 
-                    if ((ch2 == _T('\n') || ch2 == _T('\r')) && ch != ch2)
+                    if ((ch2 == '\n' || ch2 == '\r') && ch != ch2)
                     {
                         EOL.Append(ch2);
                     }
@@ -430,9 +429,9 @@ bool wxsCoder::ApplyChangesEditor(cbEditor * Editor, const wxString & Header, co
 
     if (Position == -1)
     {
-        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
-                                                    Header.wx_str(),
-                                                    Editor->GetFilename().wx_str()));
+        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
+                                                                   Header,
+                                                                   Editor->GetFilename()));
         return false;
     }
 
@@ -443,9 +442,9 @@ bool wxsCoder::ApplyChangesEditor(cbEditor * Editor, const wxString & Header, co
 
     if (EndPosition == -1)
     {
-        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
-                                                    Header.wx_str(),
-                                                    Editor->GetFilename().wx_str()));
+        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
+                                                                   Header,
+                                                                   Editor->GetFilename()));
         return false;
     }
 
@@ -455,9 +454,9 @@ bool wxsCoder::ApplyChangesEditor(cbEditor * Editor, const wxString & Header, co
 
     while (--IndentPos >= 0)
     {
-        wxChar ch = Ctrl->GetCharAt(IndentPos);
+        const wxChar ch = Ctrl->GetCharAt(IndentPos);
 
-        if ((ch == _T('\n')) || (ch == _T('\r')))
+        if ((ch == '\n') || (ch == '\r'))
         {
             break;
         }
@@ -465,9 +464,8 @@ bool wxsCoder::ApplyChangesEditor(cbEditor * Editor, const wxString & Header, co
 
     while (++IndentPos < Position)
     {
-        wxChar ch = Ctrl->GetCharAt(IndentPos);
-        BaseIndentation.Append(
-            (ch == _T('\t')) ? _T('\t') : _T(' '));
+        const wxChar ch = Ctrl->GetCharAt(IndentPos);
+        BaseIndentation.Append((ch == '\t') ? '\t' : ' ');
     }
 
     Code = RebuildCode(BaseIndentation, Code.c_str(), (int)Code.Length(), EOL);
@@ -491,7 +489,7 @@ bool wxsCoder::ApplyChangesEditor(cbEditor * Editor, const wxString & Header, co
 
     // Make sure that the code we're replacing is not folded. Otherwise scintilla
     // does some weird things
-    int lineEnd = Ctrl->LineFromPosition(EndPosition);
+    const int lineEnd = Ctrl->LineFromPosition(EndPosition);
 
     for (int line = Ctrl->LineFromPosition(Position); line <= lineEnd; line++)
     {
@@ -510,22 +508,22 @@ bool wxsCoder::ApplyChangesString(wxString & BaseContent, const wxString & Heade
 {
     wxString Content = BaseContent;
 
-    if (EOL.IsEmpty())
+    if (EOL.empty())
     {
         // Detecting EOL in this sources
         for (size_t i = 0; i < Content.Length(); i++)
         {
-            wxChar ch = Content.GetChar(i);
+            const wxChar ch = Content.GetChar(i);
 
-            if (ch == _T('\n') || ch == _T('\r'))
+            if (ch == '\n' || ch == '\r')
             {
                 EOL = ch;
 
                 if (++i < Content.Length())
                 {
-                    wxChar ch2 = Content.GetChar(i);
+                    const wxChar ch2 = Content.GetChar(i);
 
-                    if ((ch2 == _T('\n') || ch2 == _T('\r')) && ch != ch2)
+                    if ((ch2 == '\n' || ch2 == '\r') && ch != ch2)
                     {
                         EOL.Append(ch2);
                     }
@@ -541,7 +539,7 @@ bool wxsCoder::ApplyChangesString(wxString & BaseContent, const wxString & Heade
 
     if (Position == -1)
     {
-        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""), Header.wx_str()));
+        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("wxSmith: Couldn't find code with header:\n\t\"%s\""), Header));
         return false;
     }
 
@@ -560,7 +558,7 @@ bool wxsCoder::ApplyChangesString(wxString & BaseContent, const wxString & Heade
 
     if (EndPosition == -1)
     {
-        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\""), Header.wx_str()));
+        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\""), Header));
         return false;
     }
 
@@ -575,9 +573,9 @@ bool wxsCoder::ApplyChangesString(wxString & BaseContent, const wxString & Heade
 
     while (--IndentPos >= 0)
     {
-        wxChar ch = Result.GetChar(IndentPos);
+        const wxChar ch = Result.GetChar(IndentPos);
 
-        if ((ch == _T('\n')) || (ch == _T('\r')))
+        if ((ch == '\n') || (ch == '\r'))
         {
             break;
         }
@@ -585,9 +583,8 @@ bool wxsCoder::ApplyChangesString(wxString & BaseContent, const wxString & Heade
 
     while (++IndentPos < IndentMax)
     {
-        wxChar ch = Result.GetChar(IndentPos);
-        BaseIndentation.Append(
-            (ch == _T('\t')) ? _T('\t') : _T(' '));
+        const wxChar ch = Result.GetChar(IndentPos);
+        BaseIndentation.Append((ch == '\t') ? '\t' : ' ');
     }
 
     Code = RebuildCode(BaseIndentation, Code.c_str(), Code.Length(), EOL);
@@ -608,15 +605,16 @@ bool wxsCoder::ApplyChangesString(wxString & BaseContent, const wxString & Heade
 wxString wxsCoder::RebuildCode(wxString & BaseIndentation, const wxChar * Code, int CodeLen, wxString & EOL)
 {
     wxString Tab;
-    bool UseTab = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
-    int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
+    ConfigManager * CfgMan = Manager::Get()->GetConfigManager("editor");
+    const bool UseTab = CfgMan->ReadBool("/use_tab", false);
 
     if (!UseTab)
     {
-        Tab.Append(_T(' '), TabSize);
+        const int TabSize = CfgMan->ReadInt("/tab_size", 4);
+        Tab.Append(' ', TabSize);
     }
 
-    if (EOL.IsEmpty())
+    if (EOL.empty())
     {
         EOL = GetEOLStr();
     }
@@ -629,24 +627,26 @@ wxString wxsCoder::RebuildCode(wxString & BaseIndentation, const wxChar * Code, 
     {
         switch (*Code)
         {
-            case _T('\n'):
-            {
-                while (!Result.IsEmpty() &&
-                        (Result.Last() == _T(' ') || Result.Last() == _T('\t')))
+            case '\n':
+                while (!Result.empty() && (Result.Last() == ' ' || Result.Last() == '\t'))
                 {
                     Result.RemoveLast();
                 }
 
                 Result << BaseIndentation;
                 break;
-            }
 
-            case _T('\t'):
+            case '\t':
                 if (UseTab)
                 {
-                    Result << Tab;
-                    break;
+                    Result << *Code;
                 }
+                else
+                {
+                    Result << Tab;
+                }
+
+                break;
 
             default:
                 Result << *Code;
@@ -660,7 +660,7 @@ wxString wxsCoder::RebuildCode(wxString & BaseIndentation, const wxChar * Code, 
 
 wxString wxsCoder::CutSpaces(wxString Code, int Count)
 {
-    int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
+    int TabSize = Manager::Get()->GetConfigManager("editor")->ReadInt("/tab_size", 4);
 
     if (TabSize < 1)
     {
@@ -672,8 +672,8 @@ wxString wxsCoder::CutSpaces(wxString Code, int Count)
 
     for (;;)
     {
-        int PosN = Code.Find(_T("\n"));
-        int PosR = Code.Find(_T("\r"));
+        const int PosN = Code.Find("\n");
+        const int PosR = Code.Find("\r");
 
         if ((PosN < 0) && (PosR < 0))
         {
@@ -701,8 +701,7 @@ wxString wxsCoder::CutSpaces(wxString Code, int Count)
 
         while (Code.Length())
         {
-            if ((Code[0] != _T('\n')) &&
-                    (Code[0] != _T('\r')))
+            if ((Code[0] != '\n') && (Code[0] != '\r'))
             {
                 break;
             }
@@ -712,14 +711,14 @@ wxString wxsCoder::CutSpaces(wxString Code, int Count)
 
         int LeftSpaces = Count;
 
-        while (Code.Length() && LeftSpaces > 0)
+        while (!Code.empty() && LeftSpaces > 0)
         {
-            if (Code[0] == _T(' '))
+            if (Code[0] == ' ')
             {
                 LeftSpaces--;
             }
             else
-                if (Code[0] == _T('\t'))
+                if (Code[0] == '\t')
                 {
                     LeftSpaces -= TabSize;
                 }
@@ -731,7 +730,7 @@ wxString wxsCoder::CutSpaces(wxString Code, int Count)
             Code.Remove(0, 1);
         }
 
-        Result.Append(_T('\n'));
+        Result.Append('\n');
     }
 
     Result.Append(Code);

@@ -1047,8 +1047,8 @@ void CompilerGCC::SetupEnvironment()
     if ((binPath.IsEmpty() || (pathList.Index(binPath, caseSens) == wxNOT_FOUND)))
     {
         InfoWindow::Display(_("Environment error"),
-                            _("Can't find compiler executable in your configured search path's for ") + compiler->GetName() + _T('\n'));
-        Manager::Get()->GetLogManager()->DebugLogError(F(_T("Can't find compiler executable in your configured search path's (for %s)..."), compiler->GetName().wx_str()));
+                            wxString::Format(_("Can't find compiler executable in your configured search paths for %s\n"), compiler->GetName()));
+        Manager::Get()->GetLogManager()->DebugLogError(wxString::Format(_("Can't find compiler executable in your configured search paths (for %s)..."), compiler->GetName()));
         return; // Failed to locate compiler executable in path's as provided!
     }
 
@@ -1062,7 +1062,8 @@ void CompilerGCC::SetupEnvironment()
         envPath += (pathApp + pathList[i]);
     }
 
-    // log->Log(wxString::Format("PATH environment updated: %s (%s %d)", envPath, __FILE__, __LINE__));
+    //    Manager::Get()->GetLogManager()->DebugLogError(_T("Updating compiler PATH environment:"));
+    //    Manager::Get()->GetLogManager()->DebugLogError(envPath);
 
     if (!wxSetEnv(_T("PATH"), envPath))
     {
@@ -1200,9 +1201,9 @@ void CompilerGCC::DoRegisterCompilers()
     {
         wxXmlDocument compiler;
 
-        if (!compiler.Load(compilers[i]) || compiler.GetRoot()->GetName() != wxT("CodeBlocks_compiler"))
+        if (!compiler.Load(compilers[i]) || compiler.GetRoot()->GetName() != "CodeBlocks_compiler")
         {
-            Manager::Get()->GetLogManager()->Log(_("Error: Invalid Code::Blocks compiler definition '") + compilers[i] + wxT("'."));
+            Manager::Get()->GetLogManager()->Log(wxString::Format(_("Error: Invalid Code::Blocks compiler definition '%s'."), compilers[i]));
         }
         else
         {
@@ -1961,7 +1962,7 @@ void CompilerGCC::DoRecreateTargetMenu()
             if (m_TargetMenu && x < maxTargetInMenus)
             {
                 wxString help;
-                help.Printf(_("Build target '%s' in current project"), GetTargetString(x).wx_str());
+                help.Printf(_("Build target '%s' in current project"), GetTargetString(x));
                 m_TargetMenu->AppendCheckItem(idMenuSelectTargetOther[x], GetTargetString(x), help);
             }
 
