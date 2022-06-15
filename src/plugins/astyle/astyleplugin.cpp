@@ -163,7 +163,7 @@ void AStylePlugin::OnFormatProject(wxCommandEvent & /*event*/)
                 {
                     FormatFile(filename);
 
-                    if (false == progressDlg.Update(i++, wxString(_("Formatting ")) + pf->relativeFilename))
+                    if (!progressDlg.Update(i++, wxString::Format(_("Formatting %s"), pf->relativeFilename)))
                     {
                         break;
                     }

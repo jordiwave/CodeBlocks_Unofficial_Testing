@@ -3,6 +3,7 @@
 @REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
 setlocal
 SET CurrentDir="%CD%"
+set WXWIDGET_VERSION=3.1.7
 
 for /f "tokens=4-7 delims=[.] " %%i in ('ver') do (if %%i==Version (set WIN_Version=%%j.%%k) else (set WIN_Version=%%i.%%j))
 
@@ -29,9 +30,9 @@ set GCC_ROOT=C:\msys64\mingw%BUILD_BITS%
 @rem set GCC_ROOT=C:\TDM-GCC-64
 
 @rem WXWIN is the wxWidgets root directory that you have all ready built from source 
-if exist "..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%"
-if exist "..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%"
-if exist "..\..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%"
+if exist "..\Libraries\wxWidgets-%WXWIDGET_VERSION%_win%BUILD_BITS%"       CALL :NORMALIZEPATH "..\Libraries\wxWidgets-%WXWIDGET_VERSION%_win%BUILD_BITS%"
+if exist "..\..\Libraries\wxWidgets-%WXWIDGET_VERSION%_win%BUILD_BITS%"    CALL :NORMALIZEPATH "..\..\Libraries\wxWidgets-%WXWIDGET_VERSION%_win%BUILD_BITS%"
+if exist "..\..\..\Libraries\wxWidgets-%WXWIDGET_VERSION%_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-%WXWIDGET_VERSION%_win%BUILD_BITS%"
 SET WXWIN=%RETVAL%
 if not exist "%WXWIN%" goto ErrNowxWidget
 

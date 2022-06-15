@@ -1269,7 +1269,7 @@ int CodeBlocksApp::BatchJob()
     {
         m_pBatchBuildDialog = m_Frame->GetBatchBuildDialog();
         PlaceWindow(m_pBatchBuildDialog);
-        wxString title = _("Building '") + wxFileNameFromPath(wxString(argv[argc - 1])) + _("' (target '")  + m_BatchTarget + _T("')");
+        const wxString title(wxString::Format(_("Building '%s' (target '%s')"), wxFileNameFromPath(wxString(argv[argc - 1])), m_BatchTarget));
         tbIcon = new wxTaskBarIcon();
         tbIcon->SetIcon(
 #ifdef __WXMSW__
@@ -1278,8 +1278,8 @@ int CodeBlocksApp::BatchJob()
             wxIcon(app_xpm),
 #endif // __WXMSW__
             title);
-        wxString bb_title = m_pBatchBuildDialog->GetTitle();
-        m_pBatchBuildDialog->SetTitle(bb_title + _T(" - ") + title);
+        const wxString bb_title(m_pBatchBuildDialog->GetTitle());
+        m_pBatchBuildDialog->SetTitle(bb_title + " - " + title);
         m_pBatchBuildDialog->Show();
         // Clean up after the window is closed
         m_pBatchBuildDialog->Bind(wxEVT_CLOSE_WINDOW, &CodeBlocksApp::OnCloseBatchBuildWindow, this);
@@ -1339,7 +1339,7 @@ void CodeBlocksApp::OnCloseBatchBuildWindow(wxCloseEvent & evt)
 
     if (compiler != nullptr && compiler->IsRunning())
     {
-        if (cbMessageBox(_T("Build still running. Do you want stop the build process?"), appglobals::AppName, wxICON_QUESTION | wxYES_NO, m_pBatchBuildDialog) == wxID_YES)
+        if (cbMessageBox(_("Build still running. Do you want stop the build process?"), appglobals::AppName, wxICON_QUESTION | wxYES_NO, m_pBatchBuildDialog) == wxID_YES)
         {
             evt.Veto();
             compiler->KillProcess();

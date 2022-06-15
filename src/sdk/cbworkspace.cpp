@@ -125,7 +125,7 @@ bool cbWorkspace::Save(bool force)
 
     if (!ret)
     {
-        cbMessageBox(_("Couldn't save workspace ") + m_Filename.GetFullPath() + _("\n(Maybe the file is write-protected?)"), _("Warning"), wxICON_WARNING);
+        cbMessageBox(wxString::Format(_("Couldn't save workspace %s\n(Maybe the file is write-protected?)"), m_Filename.GetFullPath()), _("Warning"), wxICON_WARNING);
     }
 
     return ret;

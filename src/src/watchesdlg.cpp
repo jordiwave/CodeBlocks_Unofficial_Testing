@@ -1197,17 +1197,17 @@ void WatchesDlg::MenuCopyToClipboardData(cb_unused wxCommandEvent & event)
     {
         if (wxTheClipboard->IsSupported(wxDF_TEXT))
         {
-            wxBusyCursor wait;
             WatchesProperty * selected = static_cast<WatchesProperty *>(m_grid->GetSelection());
 
-            if (!selected)
+            if (selected)
             {
-                wxTheClipboard->Close();
-                return;
-            }
+                wxString value = selected->GetValueAsString(wxPG_FULL_VALUE);
 
-            wxString value = selected->GetValueAsString(wxPG_FULL_VALUE);
-            wxTheClipboard->SetData(new wxTextDataObject(value));
+                if (!value.empty())
+                {
+                    wxTheClipboard->SetData(new wxTextDataObject(value));
+                }
+            }
         }
 
         wxTheClipboard->Close();
@@ -1220,28 +1220,25 @@ void WatchesDlg::MenuCopyToClipboardRow(cb_unused wxCommandEvent & event)
     {
         if (wxTheClipboard->IsSupported(wxDF_TEXT))
         {
-            wxBusyCursor wait;
             WatchesProperty * selected = static_cast<WatchesProperty *>(m_grid->GetSelection());
 
-            if (!selected)
+            if (selected)
             {
-                wxTheClipboard->Close();
-                return;
+                cb::shared_ptr<cbWatch> watch = selected->GetWatch();
+
+                if (watch)
+                {
+                    wxString symbol;
+                    watch->GetSymbol(symbol);
+                    wxString value = selected->GetValueAsString(wxPG_FULL_VALUE);
+                    wxString result = wxString::Format(_("[symbol =%s] , [value =%s]\n"), symbol, value);
+
+                    if (!result.empty())
+                    {
+                        wxTheClipboard->SetData(new wxTextDataObject(result));
+                    }
+                }
             }
-
-            cb::shared_ptr<cbWatch> watch = selected->GetWatch();
-
-            if (!watch)
-            {
-                wxTheClipboard->Close();
-                return;
-            }
-
-            wxString symbol;
-            watch->GetSymbol(symbol);
-            wxString value = selected->GetValueAsString(wxPG_FULL_VALUE);
-            wxString result = wxString::Format(_("[symbol =%s] , [value =%s]\n"), symbol, value);
-            wxTheClipboard->SetData(new wxTextDataObject(result));
         }
 
         wxTheClipboard->Close();
@@ -1254,44 +1251,41 @@ void WatchesDlg::MenuCopyToClipboardTree(cb_unused wxCommandEvent & event)
     {
         if (wxTheClipboard->IsSupported(wxDF_TEXT))
         {
-            wxBusyCursor wait;
             WatchesProperty * selected = static_cast<WatchesProperty *>(m_grid->GetSelection());
 
-            if (!selected)
+            if (selected)
             {
-                wxTheClipboard->Close();
-                return;
+                cb::shared_ptr<cbWatch> watch = selected->GetWatch();
+
+                if (watch)
+                {
+                    wxString watchRootSymbol, result, resultWatch;
+                    // Get parent until one less than root.
+                    cb::shared_ptr<cbWatch> watchRoot = cbGetRootWatch(watch);
+                    watchRoot->GetSymbol(watchRootSymbol);
+
+                    while ((watchRoot != watch) && (watchRoot != watch->GetParent()))
+                    {
+                        watch = watch->GetParent();
+                    }
+
+                    // If not Local variable go up again to the variable root
+                    if (!watchRootSymbol.IsSameAs("Locals") && (watchRoot != watch))
+                    {
+                        watch = watch->GetParent();
+                    }
+
+                    result += wxString('-', 20) + '\n';
+                    WatchToString(resultWatch, *watch);
+                    result += resultWatch;
+                    result += wxString('-', 20) + '\n';
+
+                    if (!result.empty())
+                    {
+                        wxTheClipboard->SetData(new wxTextDataObject(result));
+                    }
+                }
             }
-
-            cb::shared_ptr<cbWatch> watch = selected->GetWatch();
-
-            if (!watch)
-            {
-                wxTheClipboard->Close();
-                return;
-            }
-
-            wxString watchRootSymbol, result, resultWatch;
-            // Get parent until one less than root.
-            cb::shared_ptr<cbWatch> watchRoot = cbGetRootWatch(watch);
-            watchRoot->GetSymbol(watchRootSymbol);
-
-            while ((watchRoot != watch) && (watchRoot != watch->GetParent()))
-            {
-                watch = watch->GetParent();
-            }
-
-            // If not Local variable go up again to the variable root
-            if (!watchRootSymbol.IsSameAs("Locals") && (watchRoot != watch))
-            {
-                watch = watch->GetParent();
-            }
-
-            result += wxString('-', 20) + '\n';
-            WatchToString(resultWatch, *watch);
-            result += resultWatch;
-            result += wxString('-', 20) + '\n';
-            wxTheClipboard->SetData(new wxTextDataObject(result));
         }
 
         wxTheClipboard->Close();
@@ -1415,9 +1409,15 @@ static void GetColumnWidths(wxClientDC & dc, wxPropertyGrid * grid, wxPGProperty
     for (unsigned ii = 0; ii < root->GetChildCount(); ++ii)
     {
         wxPGProperty * p = root->Item(ii);
+#if wxCHECK_VERSION(3, 1, 7)
+        width[0] = std::max(width[0], state->GetColumnFullWidth(p, 0));
+        width[1] = std::max(width[1], state->GetColumnFullWidth(p, 1));
+        width[2] = std::max(width[2], state->GetColumnFullWidth(p, 2));
+#else
         width[0] = std::max(width[0], state->GetColumnFullWidth(dc, p, 0));
         width[1] = std::max(width[1], state->GetColumnFullWidth(dc, p, 1));
         width[2] = std::max(width[2], state->GetColumnFullWidth(dc, p, 2));
+#endif
     }
 
     for (unsigned ii = 0; ii < root->GetChildCount(); ++ii)

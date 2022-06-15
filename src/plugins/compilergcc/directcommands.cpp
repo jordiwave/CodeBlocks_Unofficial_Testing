@@ -258,7 +258,7 @@ void DirectCommands::CheckForToLongCommandLine(wxString & executableCmd, wxArray
 
         if (!wxFileName::Mkdir(relative.GetPath(), wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL))
         {
-            outputCommandArray.Add(COMPILER_ERROR_LOG + _("Could not create directory for ") + responseFilePath);
+            outputCommandArray.Add(COMPILER_ERROR_LOG + wxString::Format(_("Could not create directory for %s"), responseFilePath));
             return;
         }
 
@@ -1017,7 +1017,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget * target,
 
     if (!dstname.IsEmpty() && !CreateDirRecursively(dstname, 0755))
     {
-        cbMessageBox(_("Can't create output directory ") + dstname);
+        cbMessageBox(wxString::Format(_("Can't create output directory %s"), dstname));
     }
 
     // add actual link command
@@ -1087,7 +1087,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget * target,
             case clogSimple: // fall-through
             case clogNone:   // fall-through
             default: // linker always simple log (if not full)
-                ret.Add(COMPILER_SIMPLE_LOG + _("Linking ") + kind_of_output + _T(": ") + output);
+                ret.Add(COMPILER_SIMPLE_LOG + wxString::Format(_("Linking %s: %s"), kind_of_output, output));
                 break;
         }
 

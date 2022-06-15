@@ -2370,9 +2370,9 @@ void CompilerOptionsDlg::OnOptionChanged(wxPropertyGridEvent & event)
 
                 if (against && against->enabled)
                 {
-                    wxString message = (option->checkMessage.IsEmpty() ?
-                                        wxT("\"") + option->name + _("\" conflicts with \"") + against->name + wxT("\".") :
-                                        option->checkMessage);
+                    const wxString message(option->checkMessage.empty() ?
+                                           wxString::Format(_("\"%s\" conflicts with \"%s\"."), option->name, against->name) :
+                                           option->checkMessage);
                     AnnoyingDialog dlg(_("Compiler options conflict"),
                                        message,
                                        wxART_INFORMATION,
@@ -2791,7 +2791,7 @@ void CompilerOptionsDlg::OnAddCompilerClick(cb_unused wxCommandEvent & event)
     wxString compilerNameOriginal = CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetName();
     wxString value = cbGetTextFromUser(_("Please enter the new compiler's name:"),
                                        _("Add new compiler"),
-                                       _("Copy of ") + compilerNameOriginal,
+                                       wxString::Format(_("Copy of %s"), compilerNameOriginal),
                                        this);
 
     if (!value.IsEmpty())
@@ -3081,7 +3081,7 @@ void CompilerOptionsDlg::OnRemoveLibClick(cb_unused wxCommandEvent & event)
 
     if (num == 1) // mimic old behaviour
     {
-        if (cbMessageBox(_("Remove library '") + lstLibs->GetString(sels[0]) + _("' from the list?"),
+        if (cbMessageBox(wxString::Format(_("Remove library '%s' from the list?"), lstLibs->GetString(sels[0])),
                          _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
         {
             lstLibs->Delete(sels[0]);

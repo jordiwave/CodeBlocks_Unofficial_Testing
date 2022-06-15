@@ -24,7 +24,7 @@ CB_WxWidgetDir="$WX_CB_BUILD_DIR"
 else
     cat 1>&2 <<EOF
     You have not setup the CB_WxWidgetDir environment variable.
-       export WX_CB_BUILD_DIR="/d/Libraries/wxWidgets-3.1.5_win64"
+       export WX_CB_BUILD_DIR="/d/Libraries/wxWidgets-3.1.7_win64"
 EOF
 
     exit $1
@@ -413,9 +413,7 @@ is_cross()  { [ "xno" = "xyes" ]; }
 
 # Determine the base directories we require.
 prefix=${input_option_prefix-${this_prefix:-/mingw64}}
-if [ "x${MSYSTEM}" = "xMINGW32" ] || [ "x${MSYSTEM}" = "xMINGW64" ]; then
-    prefix=$(cygpath -m ${prefix})
-fi
+prefix=$(cygpath -m ${prefix})
 exec_prefix=${input_option_exec_prefix-${input_option_prefix-${this_exec_prefix:-${prefix}}}}
 wxconfdir="${exec_prefix}/lib/wx/config"
 
@@ -961,8 +959,8 @@ bindir="${exec_prefix}/bin"
 [ -z "$output_option_prefix"        ] || echo $prefix
 [ -z "$output_option_exec_prefix"   ] || echo $exec_prefix
 [ -z "$output_option_release"       ] || echo "3.1"
-[ -z "$output_option_version"       ] || echo "3.1.5"
-[ -z "$output_option_version_full"  ] || echo "3.1.5.0"
+[ -z "$output_option_version"       ] || echo "3.1.7"
+[ -z "$output_option_version_full"  ] || echo "3.1.7.0"
 [ -z "$output_option_basename"      ] || echo "wx_mswu"
 [ -z "$output_option_cc"            ] || echo "gcc"
 [ -z "$output_option_cxx"           ] || echo "g++ -std=gnu++14"
@@ -1041,8 +1039,8 @@ fi
 # Additional configuration for individual library components.
 ldflags_gl=""
 
-ldlibs_base="-lwxregexu-3.1 -lwxscintilla-3.1  -lz  -lexpat  -lpng -lz  -ljpeg -L/mingw64/lib -ltiff  -llzma  -ljbig -lz -lrpcrt4 -loleaut32 -lole32 -luuid -llzma -luxtheme -lwinspool -lwinmm -lshell32 -lshlwapi -lcomctl32 -lcomdlg32 -ladvapi32 -lversion -lwsock32 -lgdi32 -loleacc -lwinhttp"
-ldlibs_core="-lpng -lz -ljpeg -L/mingw64/lib -ltiff -llzma -ljbig "
+ldlibs_base="-lwxregexu-3.1 -lwxscintilla-3.1  -lz  -lexpat  -lpng -lz  -ljpeg -L/mingw64/lib -ltiff   -ljbig -lz -lrpcrt4 -loleaut32 -lole32 -luuid -luxtheme -lwinspool -lwinmm -lshell32 -lshlwapi -lcomctl32 -lcomdlg32 -ladvapi32 -lversion -lws2_32 -lgdi32 -loleacc -lwinhttp"
+ldlibs_core="-lpng -lz -ljpeg -L/mingw64/lib -ltiff -ljbig "
 ldlibs_gl="-lopengl32 -lglu32"
 ldlibs_html=""
 ldlibs_media=""
@@ -1227,12 +1225,12 @@ if is_monolithic; then
             wx_libs=
         fi
 
-        wx_libs="-pipe -Wl,--dynamicbase,--high-entropy-va,--nxcompat,--default-image-base-high -Wl,--subsystem,windows -mwindows `lib_flags_for $wx_libs`"
+        wx_libs="-pipe -Wl,--subsystem,windows -mwindows `lib_flags_for $wx_libs`"
 
         # We still need the core lib deps for a static build though
         if is_static; then
             link_deps="${libdir}/libwx_mswu-3.1.a"
-            wx_libs="$wx_libs $link_deps $ldlibs_core $ldlibs_base"
+            wx_libs="$wx_libs $link_deps $ldlibs_html $ldlibs_media $ldlibs_stc $ldlibs_webview $ldlibs_core $ldlibs_xml $ldlibs_base"
         else
             # wx_libs="$wx_libs -lwx_mswu-3.1"
             # For CB monolithic build
@@ -1268,7 +1266,7 @@ else    # MONOLITHIC = 0
         using_gui=no
         for i in $wx_libs ; do
             if match_field "$i" xrc html qa adv core; then
-                _guildflags="-pipe -Wl,--dynamicbase,--high-entropy-va,--nxcompat,--default-image-base-high -Wl,--subsystem,windows -mwindows"
+                _guildflags="-pipe -Wl,--subsystem,windows -mwindows"
                 using_gui=yes
                 break
             fi

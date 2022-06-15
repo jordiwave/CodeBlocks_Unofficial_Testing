@@ -3,6 +3,8 @@
 @REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
 setlocal
 SET CurrentDir="%CD%"
+set WXWIDGET_VERSION=3.1.7
+set WXWIDGET_DLL_FILEVERSION=317u
 
 @rem change to the CB source root directory
 cd ..\..\src
@@ -28,7 +30,7 @@ goto BuildBitError
 @rem WXWIN is the wxWidgets root directory that you have all ready built from source 
 @rem if exist %CD%\..\wxWidgets_github set WXWIN=%CD%\..\wxWidgets_github
 @rem if exist %WXWIN% goto wxWidgetCompleted
-CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%"
+CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-%WXWIDGET_VERSION%_win%BUILD_BITS%"
 SET WXWIN=%RETVAL%
 if not exist %WXWIN% goto ErrNowxWidget
 
@@ -180,8 +182,8 @@ if "%BUILD_BITS%" == "64" if exist "%GCC_ROOT%\bin\libgcc_s_seh-1.dll"        co
 if exist "%GCC_ROOT%\bin\libwinpthread-1.dll"       copy "%GCC_ROOT%\bin\libwinpthread-1.dll"       devel31_%BUILD_BITS% > nul
 if exist "%GCC_ROOT%\bin\libstdc++-6.dll"           copy "%GCC_ROOT%\bin\libstdc++-6.dll"           devel31_%BUILD_BITS% > nul
 
-if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gcc_cb.dll"    copy "%WXWIN%\lib\gcc_dll\wxmsw*_gcc_cb.dll"    devel31_%BUILD_BITS% > nul
-if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" copy "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" devel31_%BUILD_BITS% > nul
+if exist "%WXWIN%\lib\gcc_dll\wxmsw%WXWIDGET_DLL_FILEVERSION%_gcc_cb.dll"    copy "%WXWIN%\lib\gcc_dll\wxmsw%WXWIDGET_DLL_FILEVERSION%_gcc_cb.dll"    devel31_%BUILD_BITS% > nul
+if exist "%WXWIN%\lib\gcc_dll\wxmsw%WXWIDGET_DLL_FILEVERSION%_gl_gcc_cb.dll" copy "%WXWIN%\lib\gcc_dll\wxmsw%WXWIDGET_DLL_FILEVERSION%_gl_gcc_cb.dll" devel31_%BUILD_BITS% > nul
 
 :CopyFilesFinish
 
@@ -226,7 +228,7 @@ goto Finish
 @echo.
 @echo.
 @echo ^+------------------------------------------------------^+
-@echo ^|     Error: NO "wxWidgets-3.1.6" sub directory found  ^|
+@echo ^|     Error: NO "wxWidgets-%WXWIDGET_VERSION%" sub directory found  ^|
 @echo ^+------------------------------------------------------^+
 @echo. 
 @echo.

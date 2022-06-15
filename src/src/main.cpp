@@ -2538,7 +2538,7 @@ bool MainFrame::OpenGeneric(const wxString & filename, bool addToHistory)
             // warn user that "Files extension handler" is disabled
             if (!plugin)
             {
-                cbMessageBox(_("Could not open file ") + filename + _(",\nbecause no extension handler could be found."), _("Error"), wxICON_ERROR);
+                cbMessageBox(wxString::Format(_("Could not open file %s,\nbecause no extension handler could be found."), filename), _("Error"), wxICON_ERROR);
                 return false;
             }
 
@@ -6762,4 +6762,9 @@ void MainFrame::OnGetGlobalAccels(wxCommandEvent & event)
     }
 
     return;
+}
+
+bool MainFrame::IsLogPaneVisible()
+{
+    return m_LayoutManager.GetPane(m_pInfoPane).IsShown();
 }

@@ -369,7 +369,7 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
         void FindTargetsDebugger();
         void RefreshUI();
         void CreateWindows();
-        void DestoryWindows();
+        void DestroyWindows();
 
         void OnProjectActivated(CodeBlocksEvent & event);
         void OnTargetSelected(CodeBlocksEvent & event);

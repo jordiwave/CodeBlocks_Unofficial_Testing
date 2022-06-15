@@ -22,7 +22,7 @@ fi
 # Set build variables
 # ----------------------------------------------------------------------------
 CurrentDir=${PWD}
-WXWIDGET_VERSION="3.1.6"
+WXWIDGET_VERSION="3.1.7"
 BUILD_BITS=64
 failureDetected="no"
 
