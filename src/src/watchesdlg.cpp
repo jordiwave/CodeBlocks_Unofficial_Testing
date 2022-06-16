@@ -72,9 +72,9 @@ BEGIN_EVENT_TABLE(WatchesDlg, wxPanel)
     EVT_MENU(idMenuExamineMemory, WatchesDlg::OnMenuExamineMemory)
     EVT_MENU(idMenuAutoUpdate, WatchesDlg::OnMenuAutoUpdate)
     EVT_MENU(idMenuUpdate, WatchesDlg::OnMenuUpdate)
-    EVT_MENU(idMenuCopyToClipboardData, WatchesDlg::MenuCopyToClipboardData)
-    EVT_MENU(idMenuCopyToClipboardRow, WatchesDlg::MenuCopyToClipboardRow)
-    EVT_MENU(idMenuCopyToClipboardTree, WatchesDlg::MenuCopyToClipboardTree)
+    EVT_MENU(idMenuCopyToClipboardData, WatchesDlg::OnMenuCopyToClipboardData)
+    EVT_MENU(idMenuCopyToClipboardRow, WatchesDlg::OnMenuCopyToClipboardRow)
+    EVT_MENU(idMenuCopyToClipboardTree, WatchesDlg::OnMenuCopyToClipboardTree)
 END_EVENT_TABLE()
 
 struct WatchesDlg::WatchItemPredicate
@@ -879,9 +879,6 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent & event)
         m.Append(idMenuDelete, _("Delete"), _("Delete the currently selected watch"));
         m.Append(idMenuDeleteAll, _("Delete All"), _("Delete all watches"));
         m.AppendSeparator();
-        m.Append(idMenuCopyToClipboardData, _("Copy data to clipboard"), _("Copy data to the clipboard"));
-        m.Append(idMenuCopyToClipboardRow, _("Copy row to clipboard"), _("Copy row data to the clipboard"));
-        m.Append(idMenuCopyToClipboardTree, _("Copy tree to clipboard"), _("Copy tree data to the clipboard"));
 
         if (prop->GetLabel() == wxEmptyString)
         {
@@ -892,6 +889,21 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent & event)
 
         if (watch)
         {
+            wxString value;
+            watch->GetValue(value);
+
+            if (!value.IsEmpty())
+            {
+                m.Append(idMenuCopyToClipboardData, _("Copy data to clipboard"), _("Copy data to the clipboard"));
+            }
+
+            m.Append(idMenuCopyToClipboardRow, _("Copy row to clipboard"), _("Copy row data to the clipboard"));
+
+            if (watch->GetChildCount() > 0)
+            {
+                m.Append(idMenuCopyToClipboardTree, _("Copy tree to clipboard"), _("Copy tree data to the clipboard"));
+            }
+
             int disabled = cbDebuggerPlugin::WatchesDisabledMenuItems::Empty;
             DebuggerManager * dbgManager = Manager::Get()->GetDebuggerManager();
             cb::shared_ptr<cbWatch> rootWatch = cbGetRootWatch(watch);
@@ -1191,30 +1203,7 @@ void WatchesDlg::WatchToString(wxString & result, const cbWatch & watch, const w
     }
 }
 
-void WatchesDlg::MenuCopyToClipboardData(cb_unused wxCommandEvent & event)
-{
-    if (wxTheClipboard->Open())
-    {
-        if (wxTheClipboard->IsSupported(wxDF_TEXT))
-        {
-            WatchesProperty * selected = static_cast<WatchesProperty *>(m_grid->GetSelection());
-
-            if (selected)
-            {
-                wxString value = selected->GetValueAsString(wxPG_FULL_VALUE);
-
-                if (!value.empty())
-                {
-                    wxTheClipboard->SetData(new wxTextDataObject(value));
-                }
-            }
-        }
-
-        wxTheClipboard->Close();
-    }
-}
-
-void WatchesDlg::MenuCopyToClipboardRow(cb_unused wxCommandEvent & event)
+void WatchesDlg::OnMenuCopyToClipboardData(cb_unused wxCommandEvent & event)
 {
     if (wxTheClipboard->Open())
     {
@@ -1228,15 +1217,9 @@ void WatchesDlg::MenuCopyToClipboardRow(cb_unused wxCommandEvent & event)
 
                 if (watch)
                 {
-                    wxString symbol;
-                    watch->GetSymbol(symbol);
-                    wxString value = selected->GetValueAsString(wxPG_FULL_VALUE);
-                    wxString result = wxString::Format(_("[symbol =%s] , [value =%s]\n"), symbol, value);
-
-                    if (!result.empty())
-                    {
-                        wxTheClipboard->SetData(new wxTextDataObject(result));
-                    }
+                    wxString result;
+                    watch->GetValue(result);
+                    wxTheClipboard->SetData(new wxTextDataObject(result));
                 }
             }
         }
@@ -1245,12 +1228,40 @@ void WatchesDlg::MenuCopyToClipboardRow(cb_unused wxCommandEvent & event)
     }
 }
 
-void WatchesDlg::MenuCopyToClipboardTree(cb_unused wxCommandEvent & event)
+void WatchesDlg::OnMenuCopyToClipboardRow(cb_unused wxCommandEvent & event)
 {
     if (wxTheClipboard->Open())
     {
         if (wxTheClipboard->IsSupported(wxDF_TEXT))
         {
+            WatchesProperty * selected = static_cast<WatchesProperty *>(m_grid->GetSelection());
+
+            if (selected)
+            {
+                cb::shared_ptr<cbWatch> watch = selected->GetWatch();
+
+                if (watch)
+                {
+                    wxString result, symbol, value;
+                    watch->GetSymbol(symbol);
+                    watch->GetValue(value);
+                    result = wxString::Format(_("[symbol =%s] , [value =%s]\n"), symbol, value);
+                    wxTheClipboard->SetData(new wxTextDataObject(result));
+                }
+            }
+        }
+
+        wxTheClipboard->Close();
+    }
+}
+
+void WatchesDlg::OnMenuCopyToClipboardTree(cb_unused wxCommandEvent & event)
+{
+    if (wxTheClipboard->Open())
+    {
+        if (wxTheClipboard->IsSupported(wxDF_TEXT))
+        {
+            wxBusyCursor wait;
             WatchesProperty * selected = static_cast<WatchesProperty *>(m_grid->GetSelection());
 
             if (selected)
@@ -1279,11 +1290,7 @@ void WatchesDlg::MenuCopyToClipboardTree(cb_unused wxCommandEvent & event)
                     WatchToString(resultWatch, *watch);
                     result += resultWatch;
                     result += wxString('-', 20) + '\n';
-
-                    if (!result.empty())
-                    {
-                        wxTheClipboard->SetData(new wxTextDataObject(result));
-                    }
+                    wxTheClipboard->SetData(new wxTextDataObject(result));
                 }
             }
         }
