@@ -540,7 +540,7 @@ void ProjectManagerUI::RebuildTree()
     if (time >= 100)
     {
         LogManager * log = Manager::Get()->GetLogManager();
-        log->Log(wxString::Format("ProjectManagerUI::RebuildTree %.3f sec", time / 1000.0f));
+        log->Log(wxString::Format(_("ProjectManagerUI::RebuildTree took %.3f seconds"), time / 1000.0f));
     }
 }
 
@@ -1977,7 +1977,7 @@ void ProjectManagerUI::OnRemoveFileFromProject(wxCommandEvent & event)
             if (time >= 100)
             {
                 LogManager * log = Manager::Get()->GetLogManager();
-                log->Log(wxString::Format("ProjectManagerUI::OnRemoveFileFromProject took: %.3f seconds for %d files.",
+                log->Log(wxString::Format(_("ProjectManagerUI::OnRemoveFileFromProject took: %.3f seconds for %d files."),
                                           time / 1000.0f, int(indices.GetCount())));
             }
 

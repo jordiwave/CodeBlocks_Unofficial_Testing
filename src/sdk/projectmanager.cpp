@@ -1016,7 +1016,7 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString & filelist, cb
         if (time >= 100)
         {
             LogManager * log = Manager::Get()->GetLogManager();
-            log->Log(wxString::Format("ProjectManager::AddMultipleFilesToProject took: %.3f seconds for %d files.",
+            log->Log(wxString::Format(_("ProjectManager::AddMultipleFilesToProject took: %.3f seconds for %d files."),
                                       time / 1000.0f, int(addedFiles.GetCount())));
         }
     }

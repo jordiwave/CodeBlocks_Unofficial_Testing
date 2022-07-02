@@ -14,6 +14,9 @@
     #include <wx/frame.h>
 #endif // wxUSE_POPUPWIN
 
+#include "parser/parser_base.h"
+#include "parsemanager.h"
+
 #include "parser/token.h" // TokenIdxSet
 
 class ClgdCompletion;
@@ -102,9 +105,9 @@ struct DoxygenParser
 };
 
 }//namespace Doxygen
-
-
+// ----------------------------------------------------------------------------
 class DocumentationHelper
+// ----------------------------------------------------------------------------
 {
 
     public:
@@ -132,13 +135,16 @@ class DocumentationHelper
         static const wxChar   separatorTag;
         static const wxString commandTag;
 
-        DocumentationHelper(ClgdCompletion * cc);
+    public:
+        DocumentationHelper(ParseManager * pParseManager);
         ~DocumentationHelper();
 
         void OnAttach();
         void OnRelease();
         wxString GenerateHTML(int tokenIdx, TokenTree * tree);
         wxString GenerateHTML(const TokenIdxSet & tokensIdx, TokenTree * tree);
+        wxString GenerateHTML(int tokenIdx, wxString & hoverString, ParserBase * pParser);    //(ph 2022/06/11)
+        wxString GenerateHTMLbyHover(int tokenIdx, wxString & hoverString, ParserBase * pParser); //(ph 2022/06/18)
         void RereadOptions(ConfigManager * cfg);
         void WriteOptions(ConfigManager * cfg);
 
@@ -158,12 +164,13 @@ class DocumentationHelper
 
         /*Members:*/
     protected:
-        /** Pointer to CodeComplete object */
-        ClgdCompletion * m_CC;
+        /** Pointer to Parse manager */
+        ParseManager * m_pParseManager;
         /** Documentation of which token was previously displayed */
         int m_CurrentTokenIdx, m_LastTokenIdx;
         // User options
         bool m_Enabled;
+
 };
 
 #endif //DOXYGENPARSER_H

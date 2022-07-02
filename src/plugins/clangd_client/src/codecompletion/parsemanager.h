@@ -380,6 +380,15 @@ class ParseManager : public wxEvtHandler, private ParseManagerBase
         {
             return pProject == m_pProxyProject;
         }
+        // Fetch the ProxyParser used to parse non-project owned files
+        ParserBase * GetProxyParser()
+        {
+            return m_pProxyParser;
+        }
+        bool IsProxyParser(ParserBase * pParser)
+        {
+            return pParser == m_pProxyParser;
+        }
 
     protected:
         /** When a Parser is created, we need a full parsing stage including:
@@ -610,6 +619,8 @@ class ParseManager : public wxEvtHandler, private ParseManagerBase
         ParserBase         *         m_TempParser = nullptr;
         /** active Parser object pointer */
         ParserBase         *         m_Parser;
+        /** Proxy Parser object pointer used to parse non-project owned files*/
+        ParserBase         *         m_pProxyParser;
 
         ////    /** a delay timer to parser every project in sequence */
         ////    wxTimer                      m_TimerParsingOneByOne;

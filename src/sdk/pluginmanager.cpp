@@ -819,9 +819,17 @@ void PluginManager::RegisterPlugin(const wxString & name,
     int release;
     versionProc(&major, &minor, &release);
 
-    if (major != PLUGIN_SDK_VERSION_MAJOR ||
-            minor != PLUGIN_SDK_VERSION_MINOR ||
-            release != PLUGIN_SDK_VERSION_RELEASE)
+    if (major > PLUGIN_SDK_VERSION_MAJOR ||
+            (
+                major == PLUGIN_SDK_VERSION_MAJOR &&
+                minor > PLUGIN_SDK_VERSION_MINOR
+            ) ||
+            (
+                major == PLUGIN_SDK_VERSION_MAJOR &&
+                minor == PLUGIN_SDK_VERSION_MINOR &&
+                release > PLUGIN_SDK_VERSION_RELEASE
+            )
+       )
     {
         // wrong version: in this case, inform the user...
         wxString fmt;
@@ -1370,7 +1378,7 @@ void PluginManager::LoadAllPlugins()
             }
             catch (cbException & exception)
             {
-                Manager::Get()->GetLogManager()->Log(_T("[failed]"));
+                Manager::Get()->GetLogManager()->Log(_("[failed]"));
                 exception.ShowErrorMessage(false);
                 wxString msg;
                 msg.Printf(_("Plugin \"%s\" failed to load...\n"

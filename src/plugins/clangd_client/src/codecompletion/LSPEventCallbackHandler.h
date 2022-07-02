@@ -12,6 +12,7 @@
 #include "wx/event.h"
 #include "wx/window.h"
 #include "manager.h"
+#include "logmanager.h"
 
 #ifdef HAVE_OVERRIDE
     #define wxOVERRIDE override
@@ -230,6 +231,13 @@ class LSPEventCallbackHandler: public wxEvtHandler
             // ----------------------------------------------------------------------------
             if (m_LSPEventCallbackQueue.count(lspRRID))
             {
+                //    // **Debugging**  show queue contents
+                //    LogManager* pLogMgr = Manager::Get()->GetLogManager();
+                //    for (auto const& x : m_LSPEventCallbackQueue)
+                //    {
+                //        wxString msg = wxString::Format("%s Key:%i value: %p", __FUNCTION__, x.first, x.second);
+                //        pLogMgr->DebugLog(msg);
+                //    }
                 LSPEventCallbackMap::iterator mit = m_LSPEventCallbackQueue.find(lspRRID);
 
                 if (mit != m_LSPEventCallbackQueue.end())

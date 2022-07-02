@@ -2,6 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
+ * $Revision: 67 $
+ * $Id: doxygen_parser.cpp 67 2022-06-30 18:38:38Z pecanh $
+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/doxygen_parser.cpp $
  */
 
 #include <sdk.h>
@@ -19,13 +22,26 @@
 
 #include <cbstyledtextctrl.h>
 
+#include "parser/parser_base.h" //(ph 2022/06/13)
 #include "doxygen_parser.h"
 
 #include "cbcolourmanager.h"
 #include "codecompletion.h"
 
+// ----------------------------------------------------------------------------
+namespace
+// ----------------------------------------------------------------------------
+{
+[[gnu::unused]] bool wxFound(int result)
+{
+    return result != wxNOT_FOUND;
+};
+
+}
 // Doxygen documents parser
+// ----------------------------------------------------------------------------
 namespace Doxygen
+// ----------------------------------------------------------------------------
 {
 /*  source: http://www.stack.nl/~dimitri/doxygen/commands.html
     Some commands have one or more arguments. Each argument has a
@@ -440,7 +456,9 @@ bool DoxygenParser::HandleNewLine(const wxString & doc, wxString & output,
 
 /*Documentation Popup*/
 
+// ----------------------------------------------------------------------------
 namespace HTMLTags
+// ----------------------------------------------------------------------------
 {
 static const wxString br = _T("<br>");
 static const wxString sep = _T(" ");
@@ -752,8 +770,10 @@ DocumentationHelper::Command DocumentationHelper::HrefToCommand(const wxString &
 const wxChar   DocumentationHelper::separatorTag = _T('+');
 const wxString DocumentationHelper::commandTag = _T("cmd=");
 
-DocumentationHelper::DocumentationHelper(ClgdCompletion * cc) :
-    m_CC(cc),
+//DocumentationHelper::DocumentationHelper(ClgdCompletion* cc) : //(ph 2022/06/15)
+//    m_CC(cc),
+DocumentationHelper::DocumentationHelper(ParseManager * pParseManager) :
+    m_pParseManager(pParseManager),
     m_CurrentTokenIdx(-1),
     m_LastTokenIdx(-1),
     m_Enabled(true)
@@ -782,6 +802,389 @@ void DocumentationHelper::OnAttach()
 void DocumentationHelper::OnRelease()
 {
     // TODO: Is this function still needed?
+}
+// ----------------------------------------------------------------------------
+wxString DocumentationHelper::GenerateHTML(int tokenIdx, wxString & hoverString, ParserBase * pParser)     //(ph 2022/06/11)
+// ----------------------------------------------------------------------------
+{
+    //LSP version //(ph 2022/06/13)
+    //http://docs.wxwidgets.org/2.8/wx_wxhtml.html#htmltagssupported
+    using namespace HTMLTags;
+
+    if (tokenIdx == -1)
+    {
+        return wxEmptyString;
+    }
+
+    cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    cbStyledTextCtrl * pControl = pEditor ? pEditor->GetControl() : nullptr;
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    wxUnusedVar(pLogMgr);
+    ColourManager * colours = Manager::Get()->GetColourManager();
+    wxString html = _T("<html><body bgcolor=\"");
+    html += colours->GetColour(wxT("cc_docs_back")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\" text=\"");
+    html += colours->GetColour(wxT("cc_docs_fore")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\" link=\"");
+    html += colours->GetColour(wxT("cc_docs_link")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\">");
+    html += _T("<a name=\"top\"></a>");
+    // Fetch semanticToken info for tokenIdx
+    std::string semName = pParser->GetSemanticTokenNameAt(tokenIdx);
+    int semLength = pParser->GetSemanticTokenLengthAt(tokenIdx);
+    int semType   = pParser->GetSemanticTokenTypeAt(tokenIdx);
+    int semCol    = pParser->GetSemanticTokenColumnNumAt(tokenIdx);
+    int semLine   = pParser->GetSemanticTokenLineNumAt(tokenIdx);
+    int semMods   = pParser->GetSemanticTokenModifierAt(tokenIdx);
+
+    if (semLength or semType or semCol or semLength or semMods) {;}//don't show as unused
+
+    if (semName.empty())
+    {
+        return wxString();
+    }
+
+    wxString semLineText = pControl->GetLine(semLine);
+    // get string array of hover info separated at /n chars.
+    hoverString.Replace("\n\n", "\n"); //remove double newline chars
+    wxArrayString vHoverInfo = GetArrayFromString(hoverString, "\n");
+    //    // **Debugging**
+    //    for (size_t ii=0; ii<vHoverInfo.size(); ++ii)
+    //        pLogMgr->DebugLog(wxString::Format("vHoverInfo[%d]:%s", int(ii), vHoverInfo[ii]));
+    wxString doxyDoc = wxString();
+    m_CurrentTokenIdx = tokenIdx;
+    /// FIXME (ph#): Show a simplified Documentation Popup until we learn how wxHTML works. //(ph 2022/06/17)
+    html += pre1;
+
+    for (size_t ii = 0; ii < vHoverInfo.size(); ++ii)
+    {
+        html += vHoverInfo[ii] + "\n";
+
+        if (ii == 1)
+        {
+            html += "\n"; //extra newline before printing source
+
+            //skip over the comments
+            for (size_t jj = ii; jj < vHoverInfo.size(); ++jj)
+            {
+                if (vHoverInfo[jj].StartsWith("// In "))
+                {
+                    ii = jj - 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    html  += pre0;
+    html += br;
+    html += br + br;
+    // Append 'close' link:
+    html += _T(" ") + CommandToAnchor(cmdClose, _T("Close"));
+    html += _T(" <a href=\"#top\">Top</a> ");
+    html += _T("</body></html>");
+    return html;
+}
+// ----------------------------------------------------------------------------
+wxString DocumentationHelper::GenerateHTMLbyHover(int semTokenIdx, wxString & hoverString, ParserBase * pParser)  //(ph 2022/06/18)
+// ----------------------------------------------------------------------------
+{
+    //http://docs.wxwidgets.org/2.8/wx_wxhtml.html#htmltagssupported
+    // Use the clangd Hover and SemanticTokens responses to generate a TokenTree entry for GenerateHTML()
+    using namespace HTMLTags;
+
+    if (semTokenIdx == -1)
+    {
+        return wxEmptyString;
+    }
+
+    cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    cbStyledTextCtrl * pControl = pEditor ? pEditor->GetControl() : nullptr;
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    wxUnusedVar(pLogMgr);
+    cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+    // Fetch semanticToken info for tokenIdx
+    wxString semName = pParser->GetSemanticTokenNameAt(semTokenIdx);
+    int semLength = pParser->GetSemanticTokenLengthAt(semTokenIdx);
+    int semType   = pParser->GetSemanticTokenTypeAt(semTokenIdx);
+    int semCol    = pParser->GetSemanticTokenColumnNumAt(semTokenIdx);
+    int semLine   = pParser->GetSemanticTokenLineNumAt(semTokenIdx);
+    int semMods   = pParser->GetSemanticTokenModifierAt(semTokenIdx);
+
+    if (semLength or semType or semCol or semLength or semMods) {;}//don't show as unused
+
+    if (semName.empty())
+    {
+        return wxString();
+    }
+
+    // In case of error, use the html popup as output area
+    wxString html = _T("<html><body bgcolor=\"");
+    html += _T("<a name=\"top\"></a>");
+    wxString semLineText = pControl->GetLine(semLine);
+    // Example Hover contents: L"instance-method HelloWxWorldFrame::OnAbout\n\nType: void\nParameters:\n- wxCommandEvent & event\n\n// In HelloWxWorldFrame\nprivate: void HelloWxWorldFrame::OnAbout(wxCommandEvent &event)"
+    // get string array of hover info separated at /n chars.
+    // **Debugging**
+    pLogMgr->DebugLog(wxString::Format("%s HoverInfo[%s}", __FUNCTION__, hoverString));
+    hoverString.Replace("\n\n", "\n"); //remove double newline chars
+    wxArrayString vHoverInfo = GetArrayFromString(hoverString, "\n");
+    // **Debugging**
+    //    for (size_t ii=0; ii<vHoverInfo.size(); ++ii)
+    //        pLogMgr->DebugLog(wxString::Format("vHoverInfo[%d]:%s", int(ii), vHoverInfo[ii]));
+    // Find items from hover data (parent and token type
+    wxString hoverFullParentText;
+    wxString hoverTypeStr;
+    wxString hoverFullDecl;
+    wxString hoverFullType;
+    wxString hoverFullName;
+    wxString hoverArgs;
+    TokenScope ccTokenScope = tsUndefined; //private/public/protected
+    int hoverNsPosn   = 0;
+    int hoverArgsPosn = 0;
+
+    for (size_t ii = 0; ii < vHoverInfo.size(); ++ii)
+    {
+        if (vHoverInfo[ii].StartsWith("Type: "))    //type
+        {
+            hoverTypeStr = vHoverInfo[ii].Mid(6);
+        }
+
+        if (vHoverInfo[ii].StartsWith("// In "))    //parent
+        {
+            hoverFullParentText = vHoverInfo[ii].Mid(6);
+
+            //lines after " In " contain the full declaration
+            for (size_t jj = ii + 1; jj < vHoverInfo.size(); ++jj)
+            {
+                hoverFullDecl.size() ? hoverFullDecl += " " : hoverFullDecl;
+                hoverFullDecl += vHoverInfo[jj];
+            }
+        }
+    }//endfor vHoverInfo
+
+    //If there was no "// In " hover line, grab the declaration from last lines
+    if (hoverFullDecl.empty())
+    {
+        for (size_t ii = vHoverInfo.size(); --ii > 0;)
+        {
+            hoverFullDecl.Prepend(vHoverInfo[ii]);
+
+            if (not hoverFullDecl.StartsWith(" "))
+            {
+                break;
+            }
+        }
+    }
+
+    wxString hoverNs ; //-= token->GetNamespace();
+    int     colonsPosn       =  0;
+    int     ccParentTokenIdx =  0;
+    int     ccTokenIdx       = -1; //tree index for semantic token (semName)
+    bool hoverIsFunction =  vHoverInfo[0].StartsWith("function");
+    hoverIsFunction |= vHoverInfo[0].StartsWith("method");
+    hoverIsFunction |= vHoverInfo[0].StartsWith("instance-method");
+
+    if (wxFound(colonsPosn = hoverFullParentText.find("::")))
+    {
+        hoverNs = hoverFullParentText.Mid(0, colonsPosn + 2);
+    }
+
+    if ((colonsPosn == wxNOT_FOUND) and hoverFullParentText.size())
+    {
+        hoverNs = hoverFullParentText + "::";
+        colonsPosn = hoverFullParentText.Length();
+    }
+
+    if (hoverNs.EndsWith("::"))
+    {
+        colonsPosn = hoverNs.Length() - 2;    //point to colons
+    }
+
+    hoverNsPosn = hoverFullDecl.find(hoverNs); //Is "<namespace>::" in full declaration
+
+    if (hoverNs.size())
+    {
+        hoverFullType = wxFound(hoverNsPosn) ? hoverFullDecl.Mid(0, hoverNsPosn) :
+                        hoverFullDecl.Mid(0, hoverFullDecl.find(semName));
+
+        if (hoverIsFunction)
+        {
+            hoverArgsPosn = hoverFullType.Length()
+                            + (wxFound(hoverNsPosn) ? hoverNs.Length() : 0)
+                            + semName.Length() ;
+            hoverArgs = hoverFullDecl.Mid(hoverArgsPosn);
+
+            if (hoverArgs.size() and hoverArgs.StartsWith("("))
+            {
+                hoverArgs = hoverArgs.Mid(1).RemoveLast(1);
+            }
+        }
+    }
+    else // "namespace::" is not in full declaration
+    {
+        hoverFullName = vHoverInfo[0].AfterFirst(' '); //eg:"variable varInFunction"
+        hoverFullType = hoverFullDecl.Mid(0, hoverFullDecl.find(hoverFullName));
+        hoverArgsPosn = hoverFullType.Length() + semName.Length();
+        hoverArgs = hoverFullDecl.Mid(hoverArgsPosn);
+    }
+
+    if (hoverFullType.size()) //set ccToken scope
+    {
+        if (hoverFullType.StartsWith("public"))
+        {
+            ccTokenScope = TokenScope::tsPublic;
+        }
+        else
+            if (hoverFullType.StartsWith("private"))
+            {
+                ccTokenScope = TokenScope::tsPrivate;
+            }
+            else
+                if (hoverFullType.StartsWith("protected"))
+                {
+                    ccTokenScope = TokenScope::tsProtected;
+                }
+    }
+
+    wxString hoverNsName;
+    wxString hoverFunctionName;
+    TokenTree * pTokenTree = nullptr;
+
+    // if function, the parent is the namespace else parent is function name
+    if (hoverIsFunction and hoverNs.size())
+    {
+        hoverNsName = hoverNs.Mid(0, colonsPosn);
+        hoverFunctionName = semName;
+    }
+    else
+        if (hoverNs.size()) // hover info is not for function, might be variable
+        {
+            hoverNsName = hoverFullParentText.Mid(0, colonsPosn);
+            hoverFunctionName = hoverFullParentText.Mid(colonsPosn + 2);
+        }
+        else // hover info has no namespace
+        {
+            // no Namespace, could be function or variable
+            if (hoverIsFunction)
+            {
+                hoverNsName = wxString();
+                hoverFunctionName = hoverFullName; //global function
+            }
+            else // global item other than global function
+            {
+                hoverNsName = wxString();
+                hoverFunctionName = wxString();
+            }
+        }
+
+    if (hoverFullParentText.empty())
+    {
+        hoverFullParentText = "<global>";
+    }
+
+    if (hoverFullParentText.size())
+        switch (1)  //try to find the parent in the token tree
+        {
+            default:
+                /// Lock the token tree
+                // -------------------------------------------------
+                //CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)           //LOCK TokenTree
+                // -------------------------------------------------
+                auto lock_result = s_TokenTreeMutex.LockTimeout(250);
+
+                if (lock_result != wxMUTEX_NO_ERROR)
+                {
+                    // Don't block UI thread. Just return empty result
+                    html += "Token tree is busy, try again...<br>";
+                    return html;
+                }
+
+                s_TokenTreeMutex_Owner = wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__); /*record owner*/
+                pTokenTree = pParser->GetTokenTree();
+                size_t fileIdx = pTokenTree->GetFileIndex(pEditor->GetFilename());
+
+                if (not fileIdx)
+                {
+                    break;
+                }
+
+                //Convert semType to ccToken kind
+                ccParentTokenIdx = -1; //say its not found
+                TokenKind ccTokenKind = pParser->ConvertLSPSemanticTypeToCCTokenKind(semType);
+                // Find tree token id for the parent (parent name was obtained from hover info)
+                // Can only look for namespaces or function. Tree has no variables
+                TokenKind ccTokenParentKind = hoverNsName.size() ? TokenKind::tkAnyContainer : TokenKind::tkAnyFunction ;
+
+                if (hoverNsName.size())
+                {
+                    ccParentTokenIdx = pTokenTree->TokenExists(hoverNsName, -1, ccTokenParentKind);
+                }
+
+                if (not hoverIsFunction) //The namespace already found is the parent of a function
+                    // find function parent of this variable etc.
+                {
+                    ccParentTokenIdx = pTokenTree->TokenExists(hoverFunctionName, ccParentTokenIdx, tkAnyFunction);
+                }
+
+                if (wxFound(ccParentTokenIdx) or (hoverFullParentText == "<global>"))
+                {
+                    // There are no variables in the token tree, but let's look anyway for other types
+                    ccTokenIdx = pTokenTree->TokenExists(semName, ccParentTokenIdx, ccTokenKind);
+                    Token * pCCToken =  nullptr;
+
+                    if (wxFound(ccTokenIdx))
+                    {
+                        pCCToken = pTokenTree->at(ccTokenIdx);
+                    }
+
+                    if (pCCToken and pCCToken->m_IsTemp)
+                    {
+                        pTokenTree->erase(ccTokenIdx);
+                        pCCToken = nullptr;
+                    }
+
+                    if (not pCCToken)
+                    {
+                        pCCToken = new Token(semName, fileIdx, semLine + 1, ++pTokenTree->m_TokenTicketCount);
+                        pCCToken->m_FullType = hoverFullType;
+                        pCCToken->m_BaseType = hoverTypeStr;
+                        pCCToken->m_Name = semName;
+                        pCCToken->m_Args = hoverArgs;
+                        pCCToken->m_BaseArgs = hoverArgs;
+                        pCCToken->m_ImplFileIdx = fileIdx;
+                        pCCToken->m_ImplLineStart = 1; //?? is this what is  expected
+                        pCCToken->m_ImplLineEnd = pControl->GetLineCount() - 1; //?? is this what is expected
+                        pCCToken->m_Scope = ccTokenScope;
+                        pCCToken->m_TokenKind = ccTokenKind;
+                        pCCToken->m_IsLocal = true;
+
+                        if (semLineText.Trim(0).StartsWith("const "))
+                        {
+                            pCCToken->m_IsConst = true;
+                        }
+
+                        if (semLineText.Contains(" noexcept "))
+                        {
+                            pCCToken->m_IsNoExcept = true;
+                        }
+
+                        pCCToken->m_ParentIndex = ccParentTokenIdx;
+                        pCCToken->m_UserData = pProject;
+                        pCCToken->m_IsTemp = true;
+                        ccTokenIdx = pTokenTree->insert(pCCToken);
+                    }//endelse
+                }//endif ccParentTokenIdx
+
+                // -------------------------------------------------
+                /// Unlock the token tree
+                // -------------------------------------------------
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)     //UNlock TokenTree
+        }
+
+    if ((wxFound(ccTokenIdx) and pTokenTree))
+    {
+        wxString html = GenerateHTML(ccTokenIdx, pTokenTree);
+        return html;
+    }
+
+    return wxString();
 }
 // ----------------------------------------------------------------------------
 wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree * tree)
@@ -1100,7 +1503,7 @@ void DocumentationHelper::SaveTokenIdx()
 wxString DocumentationHelper::OnDocumentationLink(wxHtmlLinkEvent & event, bool & dismissPopup)
 // ----------------------------------------------------------------------------
 {
-    TokenTree * tree = m_CC->GetParseManager()->GetParser().GetTokenTree();
+    TokenTree * tree = m_pParseManager->GetParser().GetTokenTree();
     const wxString & href = event.GetLinkInfo().GetHref();
     wxString args;
     long int tokenIdx;

@@ -183,7 +183,7 @@ cbSVWindow::cbSVWindow(wxWindow * parent) : wxPanel(parent, wxID_ANY, wxDefaultP
     m_reader = new cbSVDFileReader();
     m_device = new SVDDevice();
     m_CurSVDFile = wxEmptyString;
-    m_pg_first_page->SetColumnCount(4);
+    // m_pg_first_page->SetColumnCount(4);
     m_pg_first_page->Append(new wxPropertyCategory(_T("Category per")));
     m_searchTimer = new wxTimer(this, ID_SEARCH_TIMER);
     wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);

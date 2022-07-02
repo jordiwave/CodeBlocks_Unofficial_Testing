@@ -294,8 +294,6 @@ void CompileOptionsBase::RemoveBuildScript(const wxString & script)
     }
 }
 
-
-
 void CompileOptionsBase::SetCommandsBeforeBuild(const wxArrayString & commands)
 {
     if (m_CmdsBefore == commands)

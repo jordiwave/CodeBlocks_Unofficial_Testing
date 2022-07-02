@@ -1356,7 +1356,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
 
                     if (validSF.GetLine().ToLong(&line))
                     {
-                        m_pDriver->Log(wxString::Format(_T("Displaying first frame with valid source info (#%d)"), validFrameNumber));
+                        m_pDriver->Log(wxString::Format(_("Displaying first frame with valid source info (#%d)"), validFrameNumber));
                         m_pDriver->ShowFile(validSF.GetFilename(), line);
                     }
                 }
@@ -1369,7 +1369,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
 
                     // can't call m_pDriver->SwitchToFrame() here
                     // because it causes a cascade update, never stopping...
-                    //m_pDriver->Log(wxString::Format(_T("Switching to frame #%d which has valid source info"), validFrameNumber));
+                    //m_pDriver->Log(wxString::Format(_("Switching to frame #%d which has valid source info"), validFrameNumber));
                     //The following output:
                     //>>>>>>cb_gdb:
                     //> frame 1
@@ -1739,7 +1739,7 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
 
             if (apos == wxString::npos)
             {
-                m_pDriver->Log(_T("Failure finding \"Stack level \""));
+                m_pDriver->Log(_("Failure finding \"Stack level \""));
                 apos = p_output.length();
             }
 
@@ -1756,7 +1756,7 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
             }
             else
             {
-                m_pDriver->Log(_T("Failure matching reg_output"));
+                m_pDriver->Log(_("Failure matching reg_output"));
             }
 
             //process 'info frame'

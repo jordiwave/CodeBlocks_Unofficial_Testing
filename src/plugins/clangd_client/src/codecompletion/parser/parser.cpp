@@ -2,6 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
+ * $Revision: 67 $
+ * $Id: parser.cpp 67 2022-06-30 18:38:38Z pecanh $
+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parser/parser.cpp $
  */
 
 #include <sdk.h>
@@ -49,6 +52,7 @@
 #include "cbauibook.h"              //(ph 2021/09/16)
 #include "../IdleCallbackHandler.h" //(ph 2021/09/27)
 #include "../gotofunctiondlg.h"
+#include "ccmanager.h"              //(ph 2022/06/15)
 
 #ifndef CB_PRECOMP
     #include "editorbase.h"
@@ -130,11 +134,18 @@ std::deque<json *> LSP_ParserDocumentSymbolsQueue; // cf: OnLSP_ParseDocumentSys
 Parser::Parser(ParseManager * parent, cbProject * project) :
     // ----------------------------------------------------------------------------
     m_pParseManager(parent),
-    m_Project(project),
+    m_ParsersProject(project),
     m_BatchTimer(this, wxNewId()),
-    m_ParserState(ParserCommon::ptCreateParser)
+    m_ParserState(ParserCommon::ptCreateParser),
+    m_DocHelper(parent)           //(ph 2022/06/15) parent must be ClgdCompletion*
 {
     m_LSP_ParserDone = false;
+
+    if (m_ParsersProject and (m_ParsersProject->GetTitle() == "~ProxyProject~"))
+    {
+        m_ProxyProject = m_ParsersProject;
+    }
+
     ReadOptions();
     ConnectEvents();
 }
@@ -396,7 +407,7 @@ void Parser::LSP_OnClientInitialized(cbProject * pProject)        //(ph 2021/11/
 // ----------------------------------------------------------------------------
 {
     // Once the LSP client is initialized, do call LSP DidOpen()s for project files
-    if (pProject != m_Project)
+    if (pProject != GetParsersProject())
     {
         return;    //sanity check
     }
@@ -467,7 +478,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
 {
     CCLogger * pLogMgr =  CCLogger::Get();
     // Validate that this parser is associated with a project
-    cbProject * pProject = m_Project;
+    cbProject * pProject = m_ParsersProject;
 
     if (not pProject)
     {
@@ -523,9 +534,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
         ProcessLanguageClient * pClient = GetLSPClient();
         ProjectFile * pProjectFile = pProject->GetFileByFilename(filename, false);
 
-        if ((not pClient) or (not pProjectFile)
-                //-or (ftSource != FileTypeOf(pProjectFile->relativeFilename) ) //(ph 2021/10/30)
-           )
+        if ((not pClient) or (not pProjectFile))
         {
             LSP_ParserDocumentSymbolsQueue.pop_front(); //delete the current json queue pointer
 
@@ -625,7 +634,9 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
 
         //-const size_t   result  = m_TokenTree->GetFileStatusCountForIndex(fileIdx); // **debugging**
         fileIdx = m_TokenTree->InsertFileOrGetIndex(filename);
+        // ----------------------------------------------------------------------------
         // Initialize Tokenizer and Parse this json symbols response into the Token Tree
+        // ----------------------------------------------------------------------------
         bool parse_rc = pLSP_SymbolsParser->Parse(pJson, pProject);
         TRACE(wxString::Format("%s()->Parse() returned[%s]", __FUNCTION__, parse_rc ? "true" : "false"));
 
@@ -730,12 +741,12 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
 //   return;
 //}
 // ----------------------------------------------------------------------------
-void Parser::OnLSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
+void Parser::LSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
 // ----------------------------------------------------------------------------
 {
     // The pJsonData must be copied because the data will be freed on return to caller.
     // Validate that this file belongs to this projects parser
-    cbProject * pProject = m_Project;
+    cbProject * pProject = m_ParsersProject;
 
     if (not pProject)
     {
@@ -749,6 +760,7 @@ void Parser::OnLSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
         return;
     }
 
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
     /// Do Not free pJson, it will be freed in CodeCompletion::LSP_Event()
     json * pJson = (json *)event.GetClientData();
     // most ParserThreadOptions was copied from m_Options
@@ -780,15 +792,44 @@ void Parser::OnLSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
         pLSP_SymbolsParser->m_SemanticTokensModifiers = this->m_SemanticTokensModifiers;
     }
 
-    // **debugging**
-    //size_t typesCnt = pLSP_SymbolsParser->m_SemanticTokensTypes.size();
-    //size_t modifiersCnt = pLSP_SymbolsParser->m_SemanticTokensModifiers.size();
-    //for (size_t ii=0; ii<pLSP_SymbolsParser->m_SemanticTokensTypes.size(); ++ii)
-    //{
-    //    wxString msg = pLSP_SymbolsParser->m_SemanticTokensTypes[ii];
-    //    if (1) asm("int3"); /*trap*/
-    //}
-    pLSP_SymbolsParser->Parse(pJson, pProject);
+    // clear the older SemanticToken responses
+    m_SemanticTokensVec.clear();
+    // **Sanity check** assure that editor is still activated
+    cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
+    if (not pEditor)
+    {
+        return;
+    }
+
+    if (pEditor->GetFilename() != filename)
+    {
+        return;    //may have been closed or de-activated
+    }
+
+    // **debugging** Show Semantic token legends
+    //    size_t typesCnt = pLSP_SymbolsParser->m_SemanticTokensTypes.size();
+    //    size_t modifiersCnt = pLSP_SymbolsParser->m_SemanticTokensModifiers.size();
+    //    for (size_t ii=0; ii<pLSP_SymbolsParser->m_SemanticTokensTypes.size(); ++ii)
+    //    {
+    //        wxString msg = pLSP_SymbolsParser->m_SemanticTokensTypes[ii];
+    //        if (1) asm("int3"); /*trap*/
+    //    }
+    // **Sanity check**
+    int fileIdx = m_TokenTree->GetFileIndex(filename);
+
+    if (not fileIdx)
+    {
+        pLogMgr->DebugLogError(wxString::Format("%s() Error: Missing TokenTree fileIdx for %s", __PRETTY_FUNCTION__, filename));
+    }
+
+    bool parse_rc = pLSP_SymbolsParser->Parse(pJson, pProject);
+
+    // **Sanity check**
+    if (not parse_rc)
+    {
+        pLogMgr->DebugLogError(wxString::Format("%s() Error: Failed Semantic token parse for %s", __PRETTY_FUNCTION__, filename));
+    }
 
     if (pLSP_SymbolsParser)
     {
@@ -796,26 +837,6 @@ void Parser::OnLSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
     }
 
     m_LSP_ParserDone = true;
-    // Issue a request for textDocument/documentSymbol which contain range specifications
-    // which textDocument/semanticTokens does not provide.
-    // Issue request for textDocument/semanticTokens to update TokenTree     //(ph 2021/03/16)
-    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
-    EditorBase * pEdBase = pEdMgr->IsOpen(filename);
-    cbEditor * pEditor = nullptr;
-
-    if (pEdBase)
-    {
-        pEditor = pEdMgr->GetBuiltinEditor(pEdBase);
-    }
-
-    if (pEditor)
-    {
-        if (m_pLSP_Client->GetLSP_Initialized(pEditor))
-        {
-            //??? causing a loop ??m_pLSP_Client->LSP_RequestSymbols(pEditor);
-        }
-    }
-
     return;
 }//OnLSP_ParseSemanticTokens
 // ----------------------------------------------------------------------------
@@ -864,7 +885,7 @@ bool Parser::AddFile(const wxString & filename, cbProject * project, cb_unused b
     // this function will lock the token tree twice
     // the first place is the function IsFileParsed() function
     // then the AddParse() call
-    if (project != m_Project)
+    if (project != m_ParsersProject)
     {
         return false;
     }
@@ -886,7 +907,7 @@ bool Parser::AddFile(const wxString & filename, cbProject * project, cb_unused b
 bool Parser::UpdateParsingProject(cbProject * project)
 // ----------------------------------------------------------------------------
 {
-    if (m_Project == project)
+    if (m_ParsersProject == project)
     {
         return true;
     }
@@ -900,7 +921,7 @@ bool Parser::UpdateParsingProject(cbProject * project)
         }
         else
         {
-            m_Project = project;
+            m_ParsersProject = project;
             return true;
         }
 }
@@ -952,7 +973,7 @@ void Parser::OnLSP_BatchTimer(cb_unused wxTimerEvent & event)           //(ph 20
         return;
     }
 
-    cbProject * pProject = m_Project; //This parsers cbProject
+    cbProject * pProject = GetParsersProject(); //This parsers cbProject
     DebuggerManager * pDebugMgr = Manager::Get()->GetDebuggerManager();
     cbDebuggerPlugin * pActiveDebugger = pDebugMgr->GetActiveDebugger();
     LogManager * pLogMgr =  Manager::Get()->GetLogManager();
@@ -1001,6 +1022,7 @@ void Parser::OnLSP_BatchTimer(cb_unused wxTimerEvent & event)           //(ph 20
         }
     }
 
+    // If clangd is using max allowed cpu cores, try later
     if (int(pClient->LSP_GetServerFilesParsingCount()) >= parallel_parsing)
     {
         // server is busy parsing max files allowed to be parsed at same time.
@@ -1308,7 +1330,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
     // Find the parser for this file, else use the ProxyProject parser //(ph 2022/04/14)
     if (not pProject)
     {
-        pProject = m_Project;
+        pProject = GetParsersProject();
     }
 
     if (not pParser)
@@ -1383,10 +1405,10 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
 
     if (not pEditor)    // Background parsing response has no associated editor.
     {
-        FileType filetype = FileTypeOf(cbFilename);
+        ParserCommon::EFileType filetype = ParserCommon::FileType(cbFilename);  //(ph 2022/06/1)
 
         // If usr didn't set "show inheritance" skip symbols request for headers
-        if (not(filetype == ftSource))
+        if (not(filetype == ParserCommon::ftSource))
         {
             ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
             bool cfgShowInheritance = cfg->ReadBool(_T("/browser_show_inheritance"),    false);
@@ -1677,17 +1699,6 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
             GetLSPClient()->LSP_RequestSymbols(pEditor);
         }
     }
-
-    // Belay this for later development
-    //    // Issue request for textDocument/semanticTokens to update TokenTree     //(ph 2021/03/16)
-    //    if (pEditor)
-    //    {
-    //       if (GetLSP_Initialized(pEditor) )
-    //       {
-    //            RegisterLSP_Callback(XRCID("textDocument/semanticTokens/full"),&CodeCompletion::OnLSP_SemanticTokenResponse);
-    //            GetLSPClient(pEditor)->LSP_RequestSemanticTokens(pEditor);
-    //       }
-    //    }
 }//end OnLSP_DiagnosticsResponse
 
 //(ph 2021/10/23)
@@ -2300,14 +2311,183 @@ void Parser::OnLSP_RequestedSymbolsResponse(wxCommandEvent & event) //(ph 2021/0
     // Didnt we already remove the file in publishDiagnostics response event?
     // But just in case we didnt get here from there...
     pClient->LSP_RemoveFromServerFilesParsing(uriFilename);
+
+    // Ask for SemanticTokens usable by CodeCompletion since there are no local variables
+    // in the document/sysmbols response. (only if Document popup is option is checked)
+    if (pEditor and (pEditor == pEdMgr->GetActiveEditor()))
+    {
+        RequestSemanticTokens(pEditor);
+    }
+
     return;
-}//end OnLSP_RequestedSymbolsResponse()
+}
+// ----------------------------------------------------------------------------
+void Parser::RequestSemanticTokens(cbEditor * pEditor)
+// ----------------------------------------------------------------------------
+{
+    // Issue request for textDocument/semanticTokens to update vSemanticTokens  //(ph 2022/06/10)
+    //RegisterLSP_Callback(XRCID("textDocument/semanticTokens/full"),&Parser::OnLSP_SemanticTokenResponse);
+    // Register a callback redirected to OnLSP_GoToNextFunctionResponse() for the LSP response
+    //?size_t rrid = GetParseManager()->GetLSPEventSinkHandler()->LSP_RegisterEventSink(XRCID("textDocument/semanticTokens/full"), pParser, &ClgdCompletion::OnLSP_SemanticTokenResponse, event);
+    bool useDocumentationPopup = Manager::Get()->GetConfigManager("ccmanager")->ReadBool("/documentation_popup", false);
+
+    if (not useDocumentationPopup)
+    {
+        return;
+    }
+
+    cbEditor * pActiveEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
+    if (pActiveEditor != pEditor)
+    {
+        return;    //may have been closed or de-activated
+    }
+
+    // **Debugging** //(ph 2022/06/29)
+    Manager::Get()->Get()->GetLogManager()->DebugLog(wxString::Format("%s() Requesting SemanticTokens for %s", __FUNCTION__, pEditor->GetFilename()));
+
+    if (pEditor and GetLSPClient())
+    {
+        GetLSPClient()->LSP_RequestSemanticTokens(pEditor);
+    }
+}
+// ----------------------------------------------------------------------------
+void Parser::OnLSP_RequestedSemanticTokensResponse(wxCommandEvent & event) //(ph 2021/03/12)
+// ----------------------------------------------------------------------------
+{
+    // This is a callback after requesting textDocument/Symbol (request done at end of OnLSP_RequestedSymbolsResponse() )
+    // Currently, we allow SemanticTokens for the BuiltinActiveEditor only,
+    // ----------------------------------------------------------------------------
+    ///  GetClientData() contains ptr to json object
+    ///  DONT free it! The return to OnLSP_Event() will free it as a unique_ptr
+    // ----------------------------------------------------------------------------
+    json * pJson = (json *)event.GetClientData();
+    wxString idStr = event.GetString();
+    wxString URI = idStr.AfterFirst(STX);
+
+    if (URI.Contains(STX))
+    {
+        URI = URI.BeforeFirst(STX);    //filename
+    }
+
+    wxString uriFilename = fileUtils.FilePathFromURI(URI);      //(ph 2021/12/21)
+    cbEditor * pEditor =  nullptr;
+    cbProject * pProject = nullptr;
+    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+    EditorBase * pEdBase = pEdMgr->IsOpen(uriFilename);
+
+    if (pEdBase)
+    {
+        pEditor = pEdMgr->GetBuiltinActiveEditor();
+
+        if (not pEditor or (pEditor->GetFilename() != uriFilename))
+        {
+            return;
+        }
+
+        ProjectFile * pProjectFile = pEditor->GetProjectFile();
+
+        if (pProjectFile)
+        {
+            pProject = pProjectFile->GetParentProject();
+        }
+
+        if ((not pProjectFile) or (not pProject))
+        {
+            return;
+        }
+
+        ParserBase * pParser = GetParseManager()->GetParserByProject(pProject);
+
+        if (not pParser)
+        {
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
+
+    if (not pProject)
+    {
+        pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+    }
+
+    ProcessLanguageClient * pClient = GetLSPClient();
+    // Queue the the json data to OnLSP_ParseDocumentSymbols() event, passing it the json pointer
+    // The json data will be placed in a queue to be processed during OnIdle() events. //(ph 2021/09/11)
+    wxCommandEvent symEvent(wxEVT_COMMAND_MENU_SELECTED, XRCID("textDocument/semanticTokens"));
+    symEvent.SetString(uriFilename);
+    symEvent.SetClientData(pJson);
+    LSP_ParseSemanticTokens(symEvent); //Call directly
+
+    if (not pEditor)    //Background parsing response for file not open in an editor
+    {
+        // This must be a background parsed file. Issue didClose() to the server
+        // Note: this will cause an empty textDocument/publishDiagnostic response from the idiot server.
+        pClient->LSP_DidClose(uriFilename, pProject);
+    }
+
+    // Didnt we already remove the file in publishDiagnostics response event?
+    // But just in case we didnt get here from there...
+    pClient->LSP_RemoveFromServerFilesParsing(uriFilename);
+    return;
+}//end OnLSP_RequestedSemanticTokensResponse()
+// ----------------------------------------------------------------------------
+int Parser::FindSemanticTokenEntryFromCompletion(cbCodeCompletionPlugin::CCToken & cctoken, int completionTokenKind)
+// ----------------------------------------------------------------------------
+{
+    // Find a SemanticToken entry for this cctoken
+    //The cctokenKind  parameter comes from the "kind" field of the clangd completion response
+    std::string tknName = cctoken.name.ToStdString();
+    std::vector<int> semanticTokensIndexes;
+    // convert the completion kind to a semanticToken type
+    int semanticTokenType = ConvertLSPCompletionSymbolKindToSemanticTokenType(completionTokenKind);
+    int knt = GetSemanticTokensWithName(tknName, semanticTokensIndexes);
+
+    if (not knt)
+    {
+        return -1;
+    }
+
+    for (int ii = 0; ii < knt; ++ii)
+    {
+        int semTknIdx = semanticTokensIndexes[ii];
+        // **Debugging**
+#if defined(cbDEBUG)
+        std::string semName = GetSemanticTokenNameAt(semTknIdx);
+        int semLength = GetSemanticTokenLengthAt(semTknIdx);
+        int semType = GetSemanticTokenTypeAt(semTknIdx);
+        int semCol  = GetSemanticTokenColumnNumAt(semTknIdx);
+        int semLine = GetSemanticTokenLineNumAt(semTknIdx);
+        int semMods = GetSemanticTokenModifierAt(semTknIdx);
+
+        if (semLength or semType or semCol or semLine or semMods) {;} //STFU!
+
+#endif
+        int semtknEntryKind = GetSemanticTokenTypeAt(semTknIdx);
+        int semtknEntryModifiers = GetSemanticTokenModifierAt(semTknIdx);
+
+        if (semtknEntryKind != semanticTokenType)
+        {
+            continue;
+        }
+
+        if (semtknEntryModifiers & LSP_SemanticTokenModifier::Declaration)
+        {
+            return semTknIdx;
+        }
+    }
+
+    return -1;
+}
 // ----------------------------------------------------------------------------
 void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<cbCodeCompletionPlugin::CCToken> & v_CompletionTokens)
 // ----------------------------------------------------------------------------
 {
     // ----------------------------------------------------
-    // textDocument completion event
+    // textDocument/completion event
     // ----------------------------------------------------
     cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
@@ -2329,6 +2509,10 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<cbCode
     {
         return;
     }
+
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    wxUnusedVar(pLogMgr); //STFU !!
+    bool useDocumentationPopup = Manager::Get()->GetConfigManager("ccmanager")->ReadBool("/documentation_popup", false);
 
     // keep a persistent completion array for other routines to use
     if (v_CompletionTokens.size())
@@ -2373,6 +2557,13 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<cbCode
             for (size_t itemNdx = 0; itemNdx < valueItemsCount && itemNdx < CCMaxMatches; ++itemNdx)
             {
                 wxString labelValue = valueItems[itemNdx].at("label").get<std::string>();
+                labelValue.Trim(0).Trim(1); //(ph 2022/06/25) clangd returning prefixed blank
+                //#if wxCHECK_VERSION(3,1,5) //3.1.5 or higher
+                //wxString badBytes = "\xE2\x80\xA6"; // wx3.0 produces an empty string
+                //labelValue.Replace(badBytes, ""); //happens withing empty params "()" // asserts on wx3.0
+                //badBytes = "\xE2\x80\xA2";
+                //labelValue.Replace(badBytes, ""); //happens withing empty params "()"
+                //#endif
                 labelValue.Trim(true).Trim(false);
 
                 if (labelValue.empty())
@@ -2384,26 +2575,42 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<cbCode
                 // tokens.push_back(CCToken(token->m_Index, token->m_Name + dispStr, token->m_Name, token->m_IsTemp ? 0 : 5, iidx));
                 // CCToken(int _id, const wxString& dispNm, int categ = -1) :
                 //                id(_id), category(categ), weight(5), displayName(dispNm), name(dispNm) {}
+                wxString filterText = valueItems[itemNdx].at("filterText").get<std::string>();  //(ph 2022/06/20)
                 int labelKind = valueItems[itemNdx].at("kind").get<int>();
-                cbCodeCompletionPlugin::CCToken cctoken(labelKind, labelValue);
-                cctoken.id = labelKind; //needed by DoAutoComplete()
+                cbCodeCompletionPlugin::CCToken cctoken(-1, labelValue);    //id and name
+                cctoken.id = -1;                                            //needed Documentation popups, set below.
                 // cctoken.category used by CB for image index // FIXME (ph#): implement completion images?
-                cctoken.category = -1; //used by CB for image index //(ph 2021/12/31)
-                cctoken.weight = 5; // FIXME (ph#): could use this to good effect
+                cctoken.category = -1;                                      //used by CB for image index //(ph 2021/12/31)
+                cctoken.weight = 5;                                         // FIXME (ph#): could use this to good effect
                 cctoken.displayName = labelValue;
                 cctoken.name = labelValue;
+
+                if (filterText.size())
+                {
+                    cctoken.name = filterText;    //(ph 2022/06/20)
+                }
+
+                // if using HTML popup change id to a matching tokens index in m_SemanticTokensVec //(ph 2022/06/14)
+                if (useDocumentationPopup)
+                {
+                    cctoken.id = FindSemanticTokenEntryFromCompletion(cctoken, labelKind);
+                }
+
                 v_CompletionTokens.push_back(cctoken);
                 // **debugging**
-                //wxString cmpltnStr = wxString::Format(
-                //        "Completion:id[%d],category[%d],weight[%d],displayName[%s],name[%s]",
-                //                        v_CompletionTokens[itemNdx].id,
-                //                        v_CompletionTokens[itemNdx].category,
-                //                        v_CompletionTokens[itemNdx].weight,
-                //                        v_CompletionTokens[itemNdx].displayName,
-                //                        v_CompletionTokens[itemNdx].name
-                //                        );
-                //pLogMgr->DebugLog(cmpltnStr);
-            }//for items
+                //    for (size_t ij=0; ij<v_CompletionTokens.size(); ++ij)
+                //    {
+                //        wxString cmpltnStr = wxString::Format(
+                //                "Completion:id[%d],category[%d],weight[%d],displayName[%s],name[%s]",
+                //                                v_CompletionTokens[ij].id,
+                //                                v_CompletionTokens[ij].category,
+                //                                v_CompletionTokens[ij].weight,
+                //                                v_CompletionTokens[ij].displayName,
+                //                                v_CompletionTokens[ij].name
+                //                                );
+                //        pLogMgr->DebugLog(cmpltnStr);
+                //    }//endfor
+            }//endfor itemNdx
 
             if (v_CompletionTokens.size())
             {
@@ -2425,6 +2632,179 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<cbCode
             CCLogger::Get()->DebugLog(msg);
         }
 }//end OnLSP_CompletionResponse
+// ----------------------------------------------------------------------------
+wxString Parser::GetCompletionPopupDocumentation(const cbCodeCompletionPlugin::CCToken & token)
+// ----------------------------------------------------------------------------
+{
+    //-oldCC- return m_DocHelper.GenerateHTML(token.id, GetParseManager()->GetParser().GetTokenTree());
+    // For clangd client we issue a hover request to get clangd data
+    // OnLSP_CompletionPopupHoverResponse will push the data int m_HoverTokens and
+    // reissue the GetDocumentation request
+    if (not m_HoverCompletionString.Length()) //if empty array, ask for hover data
+    {
+        m_HoverCCTokenPending = token; //save the token param on first call from ccManager
+        bool useDocumentationPopup = Manager::Get()->GetConfigManager("ccmanager")->ReadBool("/documentation_popup", false);
+
+        if (not useDocumentationPopup)
+        {
+            return wxString();
+        }
+
+        if (token.id == -1)
+        {
+            return wxString();
+        }
+
+        // Get the editor position for the parameter token
+        cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+        if (not pProject)
+        {
+            return wxString();
+        }
+
+        ParserBase * pParser = GetParseManager()->GetParserByProject(pProject);
+
+        if (not pParser)
+        {
+            return wxString();
+        }
+
+        cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
+        if (not pEditor)
+        {
+            return wxString();
+        }
+
+        cbStyledTextCtrl * pControl = pEditor->GetControl();
+
+        if (not pEditor)
+        {
+            return wxString();
+        }
+
+        wxString tokenName  = pParser->GetSemanticTokenNameAt(token.id);
+        int edLineNum       = pParser->GetSemanticTokenLineNumAt(token.id);
+        int edColNum        = pParser->GetSemanticTokenColumnNumAt(token.id);
+        int edPosition      = pControl->PositionFromLine(edLineNum);
+        edPosition += edColNum + 1;
+        // invoke LSP_Hover() to get additional info like namespace etc
+        // Register event sink function to receive clangd response function
+        wxCommandEvent event;
+        event.SetInt(token.id);
+        size_t rrid = GetParseManager()->GetLSPEventSinkHandler()->LSP_RegisterEventSink(XRCID("textDocument/hover"), (Parser *)pParser, &Parser::OnLSP_CompletionPopupHoverResponse, event);
+        GetLSPClient()->LSP_Hover(pEditor, edPosition, rrid);
+        //-nogo-GetTokenAt(edPosition, pEditor, isFalse);
+        return wxString();
+    }
+    else // have hover info, format it and return completion documentation popup
+    {
+        // we have hover data to pass to the html popup routine
+        //return m_DocHelper.GenerateHTML(int(token.id), &GetParseManager()->GetParser()); //(ph 2022/06/11)
+        // -save - wxString htmlInfo = m_DocHelper.GenerateHTML(int(m_HoverCCTokenPending.id), m_HoverCompletionString,  &GetParseManager()->GetParser()); //(ph 2022/06/11)
+        wxString htmlInfo = m_DocHelper.GenerateHTMLbyHover(int(m_HoverCCTokenPending.id), m_HoverCompletionString,  &GetParseManager()->GetParser()); //(ph 2022/06/18)
+        m_HoverCompletionString.Clear();
+        return htmlInfo;
+    }
+}
+
+// ----------------------------------------------------------------------------
+void Parser::OnLSP_CompletionPopupHoverResponse(wxCommandEvent & event)
+// ----------------------------------------------------------------------------
+{
+    // receives hover response issued for Documentation popup info //(ph 2022/06/14)
+    // ----------------------------------------------------
+    // textDocument hover event
+    // ----------------------------------------------------
+    cbEditor * pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
+    if (not pEditor)
+    {
+        return;
+    }
+
+    ProjectFile * pProjectFile = pEditor->GetProjectFile();
+
+    if (not pProjectFile)
+    {
+        return;
+    }
+
+    cbProject * pProject = pEditor->GetProjectFile()->GetParentProject();
+
+    if (not pProject)
+    {
+        return;
+    }
+
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+
+    if (m_HoverCompletionString.Length())
+    {
+        m_HoverCompletionString.clear();
+    }
+
+    wxString evtString = event.GetString();
+
+    if (not evtString.Contains("textDocument/hover"))
+    {
+        wxString msg = wxString::Format("%s: Received non textDocument/Hover response", __FUNCTION__);
+        pLogMgr->DebugLogError(msg);
+        return;
+    }
+
+    /// GetClientData() contains ptr to json object, dont free it, OnLSP_Event will free it as a unique_ptr
+    json * pJson = (json *)event.GetClientData();
+
+    if (evtString.EndsWith(wxString(STX) + "result"))
+        try
+        {
+            //Info:
+            // {"jsonrpc":"2.0","id":"textDocument/hover","result":
+            //    {"contents":["#include <iostream>",
+            //                  {"language":"cpp","value":"bool myFunction(std::string aString)"}
+            //                ],
+            //     "range":{"start":{"line":12,"character":4},"end":{"line":12,"character":14}}
+            //    }
+            //  }
+            // I'm confused about what LSP is returning here. Doesn't match the documentation.
+            size_t valueResultCount = pJson->at("result").size();
+
+            if (not valueResultCount)
+            {
+                return;
+            }
+
+            size_t valueItemsCount = pJson->at("result").at("contents").size();
+
+            if (not valueItemsCount)
+            {
+                return;
+            }
+
+            json contents = pJson->at("result").at("contents");
+            wxString contentsValue = contents.at("value").get<std::string>();
+            //#if wxCHECK_VERSION(3,1,5) //3.1.5 or higher
+            //// wx3.0 cannot produce the utf8 string
+            //wxString badBytes =  "\xE2\x86\x92" ; //Wierd chars in hover results
+            //contentsValue.Replace(badBytes, "Type:"); // asserts on wx3.0
+            //#endif
+            contentsValue.Trim(0).Trim(1); //wx3.0 sees a prefixed blank
+            m_HoverCompletionString = contentsValue;
+
+            if (m_HoverCompletionString.Length())
+            {
+                Manager::Get()->GetCCManager()->NotifyDocumentation();
+            }
+        }//endif results try
+        catch (std::exception & e)
+        {
+            wxString msg = wxString::Format("%s %s", __FUNCTION__, e.what());
+            CCLogger::Get()->DebugLog(msg);
+            cbMessageBox(msg);
+        }
+}//end OnLSP_CompletionPopupHoverResponse
 // ----------------------------------------------------------------------------
 void Parser::OnLSP_HoverResponse(wxCommandEvent & event, std::vector<cbCodeCompletionPlugin::CCToken> & v_HoverTokens, int n_HoverLastPosition)
 // ----------------------------------------------------------------------------
@@ -2491,15 +2871,44 @@ void Parser::OnLSP_HoverResponse(wxCommandEvent & event, std::vector<cbCodeCompl
 
             json contents = pJson->at("result").at("contents");
             wxString contentsValue = contents.at("value").get<std::string>();
-            wxString badBytes =  "\xE2\x86\x92" ; //Wierd chars in hover results `->` char
-            contentsValue.Replace("\n\n" + badBytes, " -> ");
-            contentsValue.Replace("\n\n", "\n"); //reduce the number of newlines
-            v_HoverTokens.push_back(cbCodeCompletionPlugin::CCToken(0, contentsValue));
+            // Example Hover contents: L"instance-method HelloWxWorldFrame::OnAbout\n\nType: void\nParameters:\n- wxCommandEvent & event\n\n// In HelloWxWorldFrame\nprivate: void HelloWxWorldFrame::OnAbout(wxCommandEvent &event)"
+            // get string array of hover info separated at /n chars.
+            wxString hoverString = contentsValue;
+            hoverString.Replace("\n\n", "\n"); //remove double newline chars
+            wxArrayString vHoverInfo = GetArrayFromString(hoverString, "\n");
+            // **Debugging**
+            // LogManager* pLogMgr = Manager::Get()->GetLogManager();
+            //    for (size_t ii=0; ii<vHoverInfo.size(); ++ii)
+            //        pLogMgr->DebugLog(wxString::Format("vHoverInfo[%d]:%s", int(ii), vHoverInfo[ii]));
+            // Find items from hover data and cut the chaff
+            wxString hoverText;
+
+            for (size_t ii = 0, foundIn = false; ii < vHoverInfo.size(); ++ii)
+            {
+                if (ii < 2)
+                {
+                    hoverText += vHoverInfo[ii] + "\n";    //type and return value
+                }
+
+                if (vHoverInfo[ii].StartsWith("// In "))    //parent
+                {
+                    hoverText += vHoverInfo[ii] += "\n";
+                    foundIn = true;
+                    continue;
+                }
+
+                if (foundIn)
+                {
+                    hoverText += vHoverInfo[ii] + "\n";
+                };
+            }//endfor vHoverInfo
+
+            v_HoverTokens.push_back(cbCodeCompletionPlugin::CCToken(0, hoverText));
 
             if (v_HoverTokens.size())
             {
                 //re-invoke cbEVT_EDITOR_TOOLTIP now that there's data to display
-                //int tooltipMode = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/tooltip_mode"), 1);
+                //-int tooltipMode = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/tooltip_mode"), 1);
                 CodeBlocksEvent evt(cbEVT_EDITOR_TOOLTIP);
                 cbEditor * pEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
                 cbStyledTextCtrl * stc = pEd->GetControl();
@@ -2625,21 +3034,19 @@ void Parser::OnLSP_SignatureHelpResponse(wxCommandEvent & event, std::vector<cbC
                 evt.SetEditor(pEd);
                 evt.SetExtraLong(0);
                 evt.SetString(wxT("evtfrom menu"));
-                CCLogger::Get()->DebugLog("---------------LSP:SignatureHelp Results:-----------");
-
-                for (size_t itemidx = 0; itemidx < v_SignatureTokens.size(); ++itemidx)
-                {
-                    cbCodeCompletionPlugin::CCCallTip tkn = v_SignatureTokens[itemidx] ;
-                    wxString logMsg(wxString::Format("%d:%s", int(itemidx), tkn.tip));
-                    CCLogger::Get()->DebugLog(logMsg);
-                }
-
+                //    CCLogger::Get()->DebugLog("---------------LSP:SignatureHelp Results:-----------");
+                //    for(size_t itemidx=0; itemidx<v_SignatureTokens.size(); ++itemidx)
+                //    {
+                //        cbCodeCompletionPlugin::CCCallTip tkn = v_SignatureTokens[itemidx] ;
+                //        wxString logMsg(wxString::Format("%d:%s", int(itemidx), tkn.tip  ));
+                //        CCLogger::Get()->DebugLog(logMsg);
+                //    }
                 Manager::Get()->ProcessEvent(evt);
             }//endif SignatureTokens
         }//endif results try
         catch (std::exception & e)
         {
-            wxString msg = wxString::Format("OnLSP_HoverResponse %s", e.what());
+            wxString msg = wxString::Format("%s %s", __FUNCTION__, e.what());
             CCLogger::Get()->DebugLog(msg);
             cbMessageBox(msg);
         }
@@ -3202,4 +3609,3 @@ void Parser::WalkDocumentSymbols(json & jref, wxString & filename, int & nextVec
 
     return;
 }
-

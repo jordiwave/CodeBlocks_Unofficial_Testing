@@ -624,7 +624,12 @@ bool cbAuiNotebook::MovePage(wxWindow * page, size_t new_idx)
 bool cbAuiNotebook::AddPage(wxWindow * page,
                             const wxString & caption,
                             bool select,
-                            const wxBitmap & bitmap)
+#if wxCHECK_VERSION(3,1,6)   // Parameter changed in 3.1.6 , https://github.com/wxWidgets/wxWidgets/commit/391080e77d7f78d5d136f30fc5ac02ee89e6ec2e
+    const wxBitmapBundle & bitmap
+#else
+    const wxBitmap & bitmap
+#endif
+                           )
 {
     bool result = wxAuiNotebook::AddPage(page, caption, select, bitmap);
     MinimizeFreeSpace();
@@ -635,7 +640,12 @@ bool cbAuiNotebook::InsertPage(size_t page_idx,
                                wxWindow * page,
                                const wxString & caption,
                                bool select,
-                               const wxBitmap & bitmap)
+#if wxCHECK_VERSION(3,1,6)   // Parameter changed in 3.1.6 , https://github.com/wxWidgets/wxWidgets/commit/391080e77d7f78d5d136f30fc5ac02ee89e6ec2e
+    const wxBitmapBundle & bitmap
+#else
+    const wxBitmap & bitmap
+#endif
+                              )
 {
     bool result = wxAuiNotebook::InsertPage(page_idx, page, caption, select, bitmap);
     MinimizeFreeSpace();

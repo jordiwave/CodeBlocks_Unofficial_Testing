@@ -71,6 +71,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-fPIC" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --cflags`" />
 			<Add option="-DBUILDING_PLUGIN" />

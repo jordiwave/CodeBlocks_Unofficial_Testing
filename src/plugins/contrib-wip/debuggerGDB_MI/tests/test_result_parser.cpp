@@ -1,4 +1,4 @@
-#include <tr1/memory>
+#include <memory>
 #include <UnitTest++.h>
 
 #include "cmd_result_parser.h"

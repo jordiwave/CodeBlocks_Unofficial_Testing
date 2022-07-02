@@ -23,7 +23,7 @@
 					<Add after="if [ -f cbDiff.zip ] ; then rm cbDiff.zip ; fi" />
 					<Add after="if [ -f libcbDiff.so ] ; then rm libcbDiff.so ; fi" />
 					<Add after="zip -jq9 cbMemoryView.zip manifest.xml *.xrc" />
-					<Add after="zip -Rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbDiff.zip images/64x64/*.png images/56x56/*.png images/48x48/*.png images/40x40/*.png images/32x32/*.png images/28x28/*.png images/24x24/*.png images/20x20/*.png images/16x16/*.png cb_diff_toolbar.xrc" />
+					<Add after="zip -Rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbDiff.zip images/64x64/*.png images/56x56/*.png images/48x48/*.png images/40x40/*.png images/32x32/*.png images/28x28/*.png images/24x24/*.png images/20x20/*.png images/16x16/*.png cb_diff_toolbar.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

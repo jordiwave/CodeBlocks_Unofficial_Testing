@@ -2,6 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
+ * $Revision: 66 $
+ * $Id: ccoptionsdlg.cpp 66 2022-06-18 16:45:19Z pecanh $
+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/ccoptionsdlg.cpp $
  */
 
 #include <sdk.h>
@@ -180,6 +183,8 @@ CCOptionsDlg::CCOptionsDlg(wxWindow * parent, ParseManager * np, ClgdCompletion 
     XRCCTRL(*this, "chkComplexMacros", wxCheckBox)->Hide();
     // Page "Symbol browser"
     XRCCTRL(*this, "chkInheritance",        wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
+    // FIXME (ph#): Display inheritance is causin a loop //(ph 2022/05/31)
+    XRCCTRL(*this, "chkInheritance",        wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkExpandNS",           wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().expandNS);
     XRCCTRL(*this, "chkTreeMembers",        wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().treeMembers);
     // Page Documentation
@@ -269,6 +274,8 @@ void CCOptionsDlg::OnApply()
     // Page "Symbol browser"
     cfg->Write(_T("/use_symbols_browser"), (bool)!XRCCTRL(*this, "chkNoSB",        wxCheckBox)->GetValue());
     cfg->Write(_T("/browser_show_inheritance"), (bool) XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue());
+    // // FIXME (ph#): Show Inheritance is causing a loop
+    cfg->Write(_T("/browser_show_inheritance"), false);//(bool) XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue());
     cfg->Write(_T("/browser_expand_ns"), (bool) XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->GetValue());
     cfg->Write(_T("/as_floating_window"), (bool) XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->GetValue());
     cfg->Write(_T("/browser_tree_members"), (bool) XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue());
@@ -313,6 +320,8 @@ void CCOptionsDlg::OnApply()
     //}
     // Page "Symbol browser"
     m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
+    // FIXME (ph#): Show inheritance is causing a loop (ph 2022/05/31)
+    m_Parser.ClassBrowserOptions().showInheritance = false; //XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
     m_Parser.ClassBrowserOptions().expandNS        = XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->GetValue();
     m_Parser.ClassBrowserOptions().treeMembers     = XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue();
     // Page "Documentation"
@@ -417,7 +426,9 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent & event)
     XRCCTRL(*this, "txtCCFileExtSource",      wxTextCtrl)->Enable(en);
     // Page "Symbol browser"
     en = !XRCCTRL(*this, "chkNoSB",           wxCheckBox)->GetValue();
-    XRCCTRL(*this, "chkInheritance",          wxCheckBox)->Enable(en);
+    // FIXME (ph#): Show inhertance is causing aloop (ph 2022/05/31)
+    //XRCCTRL(*this, "chkInheritance",          wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkInheritance",          wxCheckBox)->Enable(false);
     XRCCTRL(*this, "chkExpandNS",             wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkFloatCB",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkTreeMembers",          wxCheckBox)->Enable(en);

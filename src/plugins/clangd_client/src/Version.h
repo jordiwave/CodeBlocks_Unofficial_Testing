@@ -1,7 +1,11 @@
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
-*/
+ *
+ * $Revision: 67 $
+ * $Id: Version.h 67 2022-06-30 18:38:38Z pecanh $
+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/Version.h $
+ */
 
 #ifndef VERSION_H
 #define VERSION_H
@@ -21,7 +25,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.28 2022/05/28")
+#define VERSION wxT("0.2.30 2022/06/29")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -52,6 +56,47 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.30
+//          2022/06/29
+//          Cut the chaff from hover response in Parser::OnLSP_HoverResponse()
+//          Parser::LSP_ParseSemanticTokens() add sanity checks for race condition.
+//              The editor requesting SemanticTokens may have been closed or deactivated.
+//              Added checks in Parser::OnLSP_RequestedSemanticTokensResponse() for same reason.
+//          2022/06/28
+//          Create patch to ccmanager.cpp fix ignoring completion triggers with same length.
+//          Replace asm("int3") with DebugLogError calls (LSP_ParseSemanticTokens() etal.)
+//          Remove all redundant utf bad string usage
+//          2022/06/27
+//          To allow "clangd-<version>", check the clangd name with StartsWith(clangdexe) instead of <name>==clangdexe
+//          Fix Namespace vs function vs other DocumentPopup display (DocumentationHelper::GenerateHTMLbyHover() )
+//              Use hover info to distinguish types and add missing items to tokentree so html links display work correctly.
+//          Remove non-asci junk in conpletion items and hover items. (ProcessLanguageClient::readJson(json &json))
+//              example: \xE2\x80\xA6  \xE2\x86\x92 \xE2\x80\xA2
+//          2022/06/22
+//          Fix DocumentPopup with clangd data and re-instate GenerateHTML().
+//          Use the clangd Hover and SemanticTokens responses to generate a TokenTree entry for GenerateHTML()
+//          Implement clangd SemanticTokens request to get data missing in the token tree.
+//          using <string>.utf8_string() on data sent to clangd eliminated most non-utf8 chars in responses
+//          Eliminate remaining non-utf8 with <string>.Replace() (in completion responses)
+//          Bad utf8 bytes are \xE2\x80\xA6 withing empty "()" function/method argements
+//          Bad utf8 bytes are "\xE2\x86\x92" clobbering "Type:" in hover responses.
+//0.2.29
+//          2022/06/17 Commit 2022/06/18 rev 66
+//          Produce a simplified Documentation popup until I can understand what doxygen_parser is doing.
+//          2022/06/6
+//          Fix crash in UpdateClassBrowserView() bec parser was still in parser list after being deleted.
+//          Correct some typos (ollydbg ticket #46)
+//          Change all "cbMessageBox("Editors file is not yet parsed.");" to InfoWindow::Display(...); (ollydbg ticket #47)
+//          2022/06/4
+//          ProxyProject was grabbing files that belong to a project.
+//              pProxyProject was being placed in the parsers old m_project ptr.
+//              Separated use of m_project to m_ProxyProject and m_ParsersProject
+//          2022/06/1
+//          Use ParserCommon:FileType() instead of Globals::FileTypeOf() to support
+//              user specified files.
+//          2022/05/31
+//          Restrict "~ProxyProject~" to 1 cpu process only (client.cpp)
+//              Avoids max cpu spikes because clangd for active project is already using half of all cores.
 //0.2.28
 //          2022/05/28
 //          Guard previous fix with "if not platform::windows" else alot of errs with clangd 13.0.0

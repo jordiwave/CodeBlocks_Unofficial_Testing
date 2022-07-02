@@ -5,13 +5,13 @@ CLEANFILES = \
 
 resources_forZIP = \
 			clclassbrowser.xrc \
-	clcodecompletion_toolbar.xrc \
-	clinsert_class_method.xrc \
-	clproject_settings.xrc \
-	clselectincludefile.xrc \
-	clsettings.xrc \
-	manifest.xml\
-	\
+			clcodecompletion_toolbar.xrc \
+			clinsert_class_method.xrc \
+			clproject_settings.xrc \
+			clselectincludefile.xrc \
+			clsettings.xrc \
+			manifest.xml\
+			\
 			images/16x16/class.png \
 			images/16x16/class_folder.png \
 			images/16x16/class_private.png \
@@ -62,7 +62,7 @@ resources_forZIP = \
 			images/16x16/var_private.png \
 			images/16x16/var_protected.png \
 			images/16x16/var_public.png \
-	\
+			\
 			images/20x20/class.png \
 			images/20x20/class_folder.png \
 			images/20x20/class_private.png \
@@ -113,7 +113,7 @@ resources_forZIP = \
 			images/20x20/var_private.png \
 			images/20x20/var_protected.png \
 			images/20x20/var_public.png \
-	\
+			\
 			images/24x24/class.png \
 			images/24x24/class_folder.png \
 			images/24x24/class_private.png \
@@ -164,7 +164,7 @@ resources_forZIP = \
 			images/24x24/var_private.png \
 			images/24x24/var_protected.png \
 			images/24x24/var_public.png \
-	\
+			\
 			images/28x28/class.png \
 			images/28x28/class_folder.png \
 			images/28x28/class_private.png \
@@ -215,7 +215,7 @@ resources_forZIP = \
 			images/28x28/var_private.png \
 			images/28x28/var_protected.png \
 			images/28x28/var_public.png \
-	\
+			\
 			images/32x32/class.png \
 			images/32x32/class_folder.png \
 			images/32x32/class_private.png \
@@ -266,7 +266,7 @@ resources_forZIP = \
 			images/32x32/var_private.png \
 			images/32x32/var_protected.png \
 			images/32x32/var_public.png \
-	\
+			\
 			images/40x40/class.png \
 			images/40x40/class_folder.png \
 			images/40x40/class_private.png \
@@ -317,7 +317,7 @@ resources_forZIP = \
 			images/40x40/var_private.png \
 			images/40x40/var_protected.png \
 			images/40x40/var_public.png \
-	\
+			\
 			images/48x48/class.png \
 			images/48x48/class_folder.png \
 			images/48x48/class_private.png \
@@ -368,7 +368,7 @@ resources_forZIP = \
 			images/48x48/var_private.png \
 			images/48x48/var_protected.png \
 			images/48x48/var_public.png \
-	\
+			\
 			images/56x56/class.png \
 			images/56x56/class_folder.png \
 			images/56x56/class_private.png \
@@ -419,7 +419,7 @@ resources_forZIP = \
 			images/56x56/var_private.png \
 			images/56x56/var_protected.png \
 			images/56x56/var_public.png \
-	\
+			\
 			images/64x64/class.png \
 			images/64x64/class_folder.png \
 			images/64x64/class_private.png \

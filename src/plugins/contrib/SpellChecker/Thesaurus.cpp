@@ -58,7 +58,7 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
     }
     else
     {
-        Manager::Get()->GetLogManager()->Log(_T("SpellChecker: Thesaurus files '") + idxpath + _T("' not found!"));
+        Manager::Get()->GetLogManager()->Log(wxString::Format(_("SpellChecker: Thesaurus files '%s' not found!"), idxpath));
 
         if (!wxDirExists(idxpath.BeforeLast(wxFILE_SEP_PATH)) || !wxDirExists(datpath.BeforeLast(wxFILE_SEP_PATH)))
         {
@@ -106,7 +106,7 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
         if (!altIdx.IsEmpty() && !altDat.IsEmpty() && wxFileExists(altIdx) && wxFileExists(altDat))
         {
             m_pT = new  wxThes(altIdx, altDat);
-            Manager::Get()->GetLogManager()->Log(wxT("SpellChecker: Loading '") + altIdx + wxT("' instead..."));
+            Manager::Get()->GetLogManager()->Log(wxString::Format(_("SpellChecker: Loading '%s' instead..."), altIdx));
         }
     }
 }

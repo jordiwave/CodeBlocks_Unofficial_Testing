@@ -1,0 +1,257 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ */
+
+#include <wx/checkbox.h>
+#include <wx/choice.h>
+#include <wx/filedlg.h>
+#include <wx/intl.h>
+#include <wx/radiobox.h>
+#include <wx/spinctrl.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+
+#include <sdk.h>
+#include <configmanager.h>
+#include <macrosmanager.h>
+
+#include "dlg_SettingsOptions.h"
+
+namespace dbg_DAP
+{
+class DebuggerConfigurationPanel : public wxPanel
+{
+    public:
+        void ValidateExecutablePath()
+        {
+            wxTextCtrl * pathCtrl = XRCCTRL(*this, "txtDAPExecutable", wxTextCtrl);
+            wxString path = pathCtrl->GetValue();
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(path);
+
+            if (!wxFileExists(path))
+            {
+                pathCtrl->SetForegroundColour(*wxWHITE);
+                pathCtrl->SetBackgroundColour(*wxRED);
+                pathCtrl->SetToolTip(_("Full path to the debugger's executable. Executable can't be found on the filesystem!"));
+            }
+            else
+            {
+                pathCtrl->SetForegroundColour(wxNullColour);
+                pathCtrl->SetBackgroundColour(wxNullColour);
+                pathCtrl->SetToolTip(_("Full path to the debugger's executable."));
+            }
+
+            pathCtrl->Refresh();
+        }
+
+    private:
+        void OnBrowse(cb_unused wxCommandEvent & event)
+        {
+            wxString oldPath = XRCCTRL(*this, "txtDAPExecutable", wxTextCtrl)->GetValue();
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(oldPath);
+            wxFileDialog dlg(this,
+                             _("Select executable file"),
+                             wxEmptyString,
+                             oldPath,
+                             wxFileSelectorDefaultWildcardStr,
+                             wxFD_OPEN | wxFD_FILE_MUST_EXIST
+#if defined(__WXMAC__) and  wxCHECK_VERSION(3,1,3)   // wxFD_SHOW_HIDDEN added in 3.1.3
+                             | wxFD_SHOW_HIDDEN | compatibility::wxHideReadonly   // Needed to access /usr etc on MAC
+#endif //WXMAC and //wx 3.1.3 or greater
+                            );
+            PlaceWindow(&dlg);
+
+            if (dlg.ShowModal() == wxID_OK)
+            {
+                wxString newPath = dlg.GetPath();
+                XRCCTRL(*this, "txtDAPExecutable", wxTextCtrl)->ChangeValue(newPath);
+            }
+        }
+
+        void OnTextChange(cb_unused wxCommandEvent & event)
+        {
+            ValidateExecutablePath();
+        }
+
+    private:
+        DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(DebuggerConfigurationPanel, wxPanel)
+    EVT_BUTTON(XRCID("btnBrowse"), DebuggerConfigurationPanel::OnBrowse)
+    EVT_TEXT(XRCID("txtDAPExecutable"), DebuggerConfigurationPanel::OnTextChange)
+END_EVENT_TABLE()
+
+DebuggerConfiguration::DebuggerConfiguration(const ConfigManagerWrapper & config) : cbDebuggerConfiguration(config)
+{
+}
+
+cbDebuggerConfiguration * DebuggerConfiguration::Clone() const
+{
+    return new DebuggerConfiguration(*this);
+}
+
+wxPanel * DebuggerConfiguration::MakePanel(wxWindow * parent)
+{
+    DebuggerConfigurationPanel * panel = new DebuggerConfigurationPanel;
+
+    if (!wxXmlResource::Get()->LoadPanel(panel, parent, "dlgDebuggerOptions_DAP"))
+    {
+        return panel;
+    }
+
+    XRCCTRL(*panel, "txtDAPExecutable", wxTextCtrl)->ChangeValue(GetDAPExecutable(false));
+    panel->ValidateExecutablePath();
+    XRCCTRL(*panel, "txtPortNumber",            wxTextCtrl)->ChangeValue(GetDAPPortNumber());
+    XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->ChangeValue(GetInitialCommands());
+    XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->SetMinSize(wxSize(-1, 75));;
+    XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->SetValue(GetFlag(WatchFuncLocalsArgs));
+    XRCCTRL(*panel, "chkCatchExceptions",       wxCheckBox)->SetValue(GetFlag(CatchExceptions));
+    XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->SetValue(GetFlag(EvalExpression));
+    XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->SetValue(GetFlag(AddOtherProjectDirs));
+    XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->SetValue(GetFlag(DoNotRun));
+    XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->SetValue(GetFlag(PersistDebugElements));
+    XRCCTRL(*panel, "choDisassemblyFlavor",     wxChoice)->SetSelection(m_config.ReadInt("disassembly_flavor", 0));
+    XRCCTRL(*panel, "txtInstructionSet",        wxTextCtrl)->ChangeValue(m_config.Read("instruction_set", wxEmptyString));
+    return panel;
+}
+
+bool DebuggerConfiguration::SaveChanges(wxPanel * panel)
+{
+    m_config.Write("dap_executable",        XRCCTRL(*panel, "txtDAPExecutable",        wxTextCtrl)->GetValue());
+    m_config.Write("port_number",           XRCCTRL(*panel, "txtPortNumber",           wxTextCtrl)->GetValue());
+    m_config.Write("init_commands",         XRCCTRL(*panel, "txtInit",                 wxTextCtrl)->GetValue());
+    m_config.Write("watch_locals_and_args", XRCCTRL(*panel, "chkWatchLocalsandArgs",   wxCheckBox)->GetValue());
+    m_config.Write("catch_exceptions",      XRCCTRL(*panel, "chkCatchExceptions",      wxCheckBox)->GetValue());
+    m_config.Write("eval_tooltip",          XRCCTRL(*panel, "chkTooltipEval",          wxCheckBox)->GetValue());
+    m_config.Write("add_other_search_dirs", XRCCTRL(*panel, "chkAddForeignDirs",       wxCheckBox)->GetValue());
+    m_config.Write("do_not_run",            XRCCTRL(*panel, "chkDoNotRun",             wxCheckBox)->GetValue());
+    m_config.Write("persist_debug_elements", XRCCTRL(*panel, "chkPersistDebugElements", wxCheckBox)->GetValue());
+    m_config.Write("disassembly_flavor",    XRCCTRL(*panel, "choDisassemblyFlavor",    wxChoice)->GetSelection());
+    m_config.Write("instruction_set",       XRCCTRL(*panel, "txtInstructionSet",       wxTextCtrl)->GetValue());
+    return true;
+}
+
+bool DebuggerConfiguration::GetFlag(Flags flag)
+{
+    switch (flag)
+    {
+        case WatchFuncLocalsArgs:
+            return m_config.ReadBool("watch_locals_and_args", true);
+
+        case CatchExceptions:
+            return m_config.ReadBool("catch_exceptions", true);
+
+        case EvalExpression:
+            return m_config.ReadBool("eval_tooltip", false);
+
+        case AddOtherProjectDirs:
+            return m_config.ReadBool("add_other_search_dirs", false);
+
+        case DoNotRun:
+            return m_config.ReadBool("do_not_run", false);
+
+        case PersistDebugElements:
+            return m_config.ReadBool("persist_debug_elements", false);
+
+        default:
+            return false;
+    }
+}
+void DebuggerConfiguration::SetFlag(Flags flag, bool value)
+{
+    switch (flag)
+    {
+        case WatchFuncLocalsArgs:
+            m_config.Write("watch_locals_and_args", value);
+            break;
+
+        case CatchExceptions:
+            m_config.Write("catch_exceptions", value);
+            break;
+
+        case EvalExpression:
+            m_config.Write("eval_tooltip", value);
+            break;
+
+        case AddOtherProjectDirs:
+            m_config.Write("add_other_search_dirs", value);
+            break;
+
+        case DoNotRun:
+            m_config.Write("do_not_run", value);
+            break;
+
+        case PersistDebugElements:
+            m_config.Write("persist_debug_elements", value);
+
+        default:
+            ;
+    }
+}
+
+wxString DebuggerConfiguration::GetDAPExecutable(bool expandMacro)
+{
+    wxString result = m_config.Read("dap_executable", wxEmptyString);
+
+    if (expandMacro)
+    {
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(result);
+    }
+
+    return !result.empty() ? result : cbDetectDebuggerExecutable("lldb-vscode");
+}
+
+wxString DebuggerConfiguration::GetDAPPortNumber()
+{
+    wxString result = m_config.Read("port_number", wxEmptyString);
+    return result;
+}
+
+wxString DebuggerConfiguration::GetDisassemblyFlavorCommand()
+{
+    int disassembly_flavour = m_config.ReadInt("disassembly_flavor", 0);
+    wxString flavour = "set disassembly-flavor ";
+
+    switch (disassembly_flavour)
+    {
+        case 1: // AT & T
+        {
+            flavour << "att";
+            break;
+        }
+
+        case 2: // Intel
+        {
+            flavour << "intel";
+            break;
+        }
+
+        case 3: // Custom
+        {
+            wxString instruction_set = m_config.Read("instruction_set", wxEmptyString);
+            flavour << instruction_set;
+            break;
+        }
+
+        default: // including case 0: // System default
+            if (platform::windows)
+            {
+                flavour << "att";
+            }
+            else
+            {
+                flavour << "intel";
+            }
+    }// switch
+
+    return flavour;
+}
+
+wxString DebuggerConfiguration::GetInitialCommands()
+{
+    return m_config.Read("init_commands", wxEmptyString);
+}
+
+} // namespace dbg_DAP

@@ -29,6 +29,7 @@
 #include "macrosmanager.h"
 #include "compilercommandgenerator.h"
 #include "wx/textfile.h"        //to modify .Clangd file containing log and cache file lock
+#include "infowindow.h"
 
 #include <lspdiagresultslog.h>   // LSP diagnostics log
 
@@ -317,6 +318,12 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject * pProject, const c
     if (max_parallel_processes > 1)
     {
         max_parallel_processes = max_parallel_processes >> 1;    //use only half of cpus
+    }
+
+    // Restrict the "~ProxyProject~" to avoid excess cpu usage since active project will use half of processes     //(ph 2022/05/31)
+    if (pProject->GetTitle() == "~ProxyProject~")
+    {
+        max_parallel_processes = 1;
     }
 
     // I dont think I want to set "maximum usable threads" to the same as "max parsing threads". Some threads should
@@ -1044,6 +1051,8 @@ void ProcessLanguageClient::ReadLSPinput(int startPosn, int length, std::string 
 
         if (out.length())
         {
+            //            if (m_std_LSP_IncomingStr.find("{\"id\":\"textDocument/hover") != std::string::npos) //{"id":"textDocument/hover
+            //                asm("int3");
             //writeClientLog(wxString::Format("Read()\n:%s", wxString(out)) ); // **Debugging**
             size_t nextHdrPosn = m_std_LSP_IncomingStr.find("Content-Length: ", 1);
 
@@ -1126,8 +1135,23 @@ bool ProcessLanguageClient::readJson(json & json)
         writeClientLog(wxString::Format(">>> readJson() len:%d:\n%s", length, inputbuf.c_str()));
     }
 
-    // remove any imva;od utf8 chars
+    // remove any imvalid utf8 chars
     bool validData = DoValidateUTF8data(inputbuf);
+
+    // Remove some extended ascii chars that have clobber completion and hover responses
+    if (inputbuf.find("{\"id\":\"textDocument/hover") != std::string::npos) //{"id":"textDocument/hover
+    {
+        std::string badBytes =  "\xE2\x86\x92" ; //Wierd chars in hover results
+        std_ReplaceAll(inputbuf, badBytes, " ");
+    }
+
+    if (inputbuf.find("{\"id\":\"textDocument/completion") != std::string::npos) //{"id":"textDocument/completion
+    {
+        std::string badBytes =  "\xE2\x80\xA2" ; //Wierd chars in completion empty params
+        std_ReplaceAll(inputbuf, badBytes, " ");
+        badBytes = "\xE2\x80\xA6"; // wx3.0 produces an empty string
+        std_ReplaceAll(inputbuf, badBytes, " ");
+    }
 
     if (not validData)
     {
@@ -1663,7 +1687,7 @@ void ProcessLanguageClient::OnMethodParams(wxCommandEvent & event)
 wxString ProcessLanguageClient::GetRRIDvalue(wxString & lspHdrString)
 // ----------------------------------------------------------------------------
 {
-    // RRID == RequestResponseID, an int to redirect responses to the requestor
+    // RRID == RequestRedirectionID, an int to redirect responses to the requestor
     int posn = wxNOT_FOUND;
     long lspRRID = 0;
     wxString RRIDstr;
@@ -1909,7 +1933,7 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor * pcbEd)
         return false;
     }
 
-    // Open only .c* or .h* file types
+    // Open only ParserCommon::EFileType extensions specified in config
     ProjectFile * pProjectFile = pcbEd->GetProjectFile();
 
     if (not pProjectFile)
@@ -1917,9 +1941,9 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor * pcbEd)
         return false;
     }
 
-    FileType filetype = FileTypeOf(pProjectFile->relativeFilename);
+    ParserCommon::EFileType filetype = ParserCommon::FileType(pProjectFile->relativeFilename);
 
-    if (not((filetype == ftHeader) or (filetype == ftSource)))
+    if (not((filetype == ParserCommon::ftHeader) or (filetype == ParserCommon::ftSource)))
     {
         return false;
     }
@@ -1954,9 +1978,13 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor * pcbEd)
 
     // save current length of the file
     m_FileLinesHistory[pcbEd] = pCntl->GetLineCount();
-    wxString strText = pCntl->GetText();
-    //-const char* pText = strText.mb_str();        //works //(ph 2022/01/17)
-    const char * pText = strText.ToUTF8();          //ollydbg  220115 did not solve illegal utf8char
+#if wxCHECK_VERSION(3,1,5) //3.1.5 or higher
+    wxString strText = pCntl->GetText().utf8_string(); //solves most illegal utf8chars
+#else
+    //const char* pText = strText.mb_str();         //works //(ph 2022/01/17)
+    wxString strText = pCntl->GetText().ToUTF8();  //ollydbg  220115 did not solve illegal utf8chars
+#endif
+    const char * pText = strText.c_str();
     writeClientLog(wxString::Format("<<< LSP_DidOpen:%s", docuri.c_str()));
 
     try
@@ -2025,9 +2053,9 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject * pProject)
         return false;
     }
 
-    FileType filetype = FileTypeOf(pProjectFile->relativeFilename);
+    ParserCommon::EFileType filetype = ParserCommon::FileType(pProjectFile->relativeFilename); //(ph 2022/06/1)
 
-    if (not((filetype == ftHeader) or (filetype == ftSource)))
+    if (filetype == ParserCommon::ftOther)  // if not header or source
     {
         return false;
     }
@@ -2059,8 +2087,9 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject * pProject)
         return false;
     }
 
-#if wxCHECK_VERSION(3,1,0)
-    std::string strText = pCtrl->GetText().ToStdString(wxConvUTF8);
+#if wxCHECK_VERSION(3,1,0) //3.1.0 or higher
+    //std::string strText = pCtrl->GetText().ToStdString(wxConvUTF8);
+    std::string strText = pCtrl->GetText().utf8_string(); //(ph 2022/06/22)
 #else
     std::string strText = std::string(pCtrl->GetText().utf8_str());
 #endif
@@ -2227,7 +2256,7 @@ void ProcessLanguageClient::LSP_DidSave(cbEditor * pcbEd)
 
     if (not GetLSP_IsEditorParsed(pcbEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pcbEd->GetFilename()));
         return;
     }
 
@@ -2292,7 +2321,7 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor * pcbEd, int argCaretPos
 
     if (not GetLSP_IsEditorParsed(pcbEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pcbEd->GetFilename()));
         return;
     }
 
@@ -2328,7 +2357,7 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor * pcbEd, int argCaretPos
     // CB goto implementation == LSP GoToDefinition
     if (id)
     {
-        //RRID == RequestResponseID to return response to original requestor routine
+        //RRID == RequestRedirectionID to return response to original requestor routine
         wxString reqID = wxString::Format("%cRRID%d", STX, int(id));
         reqID.Replace(wxString::Format("%c%c", STX, STX), STX);
 
@@ -2384,7 +2413,7 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor * pcbEd, int argCaretPo
 
     if (not GetLSP_IsEditorParsed(pcbEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pcbEd->GetFilename()));
         return;
     }
 
@@ -2418,7 +2447,7 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor * pcbEd, int argCaretPo
 
     if (id)
     {
-        // RRID is aRequestResponseID used to return cland response to requestor
+        // RRID is a RequestResponseID used to return cland response to requestor
         wxString reqID = wxString::Format("%cRRID%d", STX, int(id));
         reqID.Replace(wxString::Format("%c%c", STX, STX), STX);
 
@@ -2480,7 +2509,7 @@ void ProcessLanguageClient::LSP_FindReferences(cbEditor * pEd, int argCaretPosit
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
         return;
     }
 
@@ -2559,7 +2588,7 @@ void ProcessLanguageClient::LSP_RequestRename(cbEditor * pEd, int argCaretPositi
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
         return;
     }
 
@@ -2612,7 +2641,7 @@ void ProcessLanguageClient::LSP_RequestRename(cbEditor * pEd, int argCaretPositi
 }//end LSP_FindReferences()
 
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t id)
+void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t rrid)
 // ----------------------------------------------------------------------------
 {
     // goto signature
@@ -2633,7 +2662,7 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t id)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
         return;
     }
 
@@ -2657,17 +2686,17 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t id)
     writeClientLog(wxString::Format("<<< LSP_GetSymbols:\n%s", docuri.c_str()));
     // Tell LSP server when text has changed
     LSP_DidChange(pEd);
-    wxString idHdr = fileURI;
+    wxString rridHdr = fileURI;
 
-    if (id)
+    if (rrid)
     {
-        idHdr.Append(wxString::Format("%cRRID%d", STX, int(id))); // set ResponseRequestID
-        idHdr.Replace(wxString::Format("%c%c", STX, STX), STX);
+        rridHdr.Append(wxString::Format("%cRRID%d", STX, int(rrid))); // set ResponseRequestID
+        rridHdr.Replace(wxString::Format("%c%c", STX, STX), STX);
     }
 
     try
     {
-        DocumentSymbolByID(docuri, idHdr.ToStdString());
+        DocumentSymbolByID(docuri, rridHdr.ToStdString());
     }
     catch (std::exception & err)
     {
@@ -2681,7 +2710,7 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t id)
     return ;
 }//end LSP_RequestSymbols()
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject * pProject, size_t id) //(ph 2021/04/11)
+void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject * pProject, size_t rrid) //(ph 2021/04/11)
 // ----------------------------------------------------------------------------
 {
 #if defined(cbDEBUG)
@@ -2724,18 +2753,18 @@ void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject * pP
 
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     writeClientLog(wxString::Format("<<< LSP_GetSymbols:\n%s", docuri.c_str()));
-    wxString idHdr = fileURI;
+    wxString rridHdr = fileURI;
 
-    if (id)
+    if (rrid)
     {
-        idHdr.Append(wxString::Format("%cRRID%d", STX, int(id))); // set RequestResponseID used to return response to requestor
-        idHdr.Replace(wxString::Format("%c%c", STX, STX), STX);
+        rridHdr.Append(wxString::Format("%cRRID%d", STX, int(rrid))); // set RequestResponseID used to return response to requestor
+        rridHdr.Replace(wxString::Format("%c%c", STX, STX), STX);
     }
 
     //try { DocumentSymbol(docuri); }
     try
     {
-        DocumentSymbolByID(docuri, idHdr.ToStdString());
+        DocumentSymbolByID(docuri, rridHdr.ToStdString());
     }
     catch (std::exception & err)
     {
@@ -2750,12 +2779,12 @@ void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject * pP
     return ;
 }//end LSP_RequestSymbols()
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t id)           //(ph 2021/03/16)
+void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t rrid)           //(ph 2021/03/16)
 // ----------------------------------------------------------------------------
 {
     // goto signature
 #if defined(cbDEBUG)
-    cbAssertNonFatal(pEd && "LSP_GetSymbols called with nullptr");
+    cbAssertNonFatal(pEd && "LSP_RequestSemanticTokens called with nullptr");
 #endif
 
     if (not pEd)
@@ -2771,7 +2800,7 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t id)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
         return;
     }
 
@@ -2802,15 +2831,15 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t id)
     (pEd);
 
     //get symbols
-    if (id)
+    if (rrid)
     {
-        //RRID == RequestResponseID used to return the response data to the requestor
-        wxString idHdr = wxString::Format("%s%cRRID%d", fileURI, STX, id);
-        idHdr.Replace(wxString::Format("%c%c", STX, STX), STX);
+        //RRID == RequestRedirectionID used to return the response data to the requestor
+        wxString rridHdr = wxString::Format("%s%cRRID%d", fileURI, STX, rrid);
+        rridHdr.Replace(wxString::Format("%c%c", STX, STX), STX);
 
         try
         {
-            SemanticTokensByID(docuri, idHdr.ToStdString());
+            SemanticTokensByID(docuri, rridHdr.ToStdString());
         }
         catch (std::exception & err)
         {
@@ -2839,6 +2868,74 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t id)
     SetLastLSP_Request(pEd->GetFilename(), "textDocument/documentTokens");
     return ;
 }//end LSP_RequestSymbols()
+// ----------------------------------------------------------------------------
+void ProcessLanguageClient::LSP_RequestSemanticTokens(wxString filename, cbProject * pProject, size_t rrid)
+// ----------------------------------------------------------------------------
+{
+#if defined(cbDEBUG)
+    cbAssertNonFatal(pProject && "LSP_RequestSemanticTokens() called with null Project ptr");
+    cbAssertNonFatal(filename.Length() && "LSP_RequestSemanticTokens() called with null filename");
+#endif
+
+    if ((not pProject) or (not filename.Length()))
+    {
+        return;
+    }
+
+    if (not GetLSP_Initialized())
+    {
+        wxString msg = "LSP: attempt to LSP_RequestSemanticTokens() before initialization.";
+        msg += wxString::Format("\n %s() Line:%d", __FUNCTION__, __LINE__);
+        cbMessageBox(msg);
+        return ;
+    }
+
+    if ((not pProject) or (not pProject->GetFileByFilename(filename, false)))
+    {
+        return;
+    }
+
+    if (not wxFileExists(filename))
+    {
+        return;
+    }
+
+    wxString fileURI = fileUtils.FilePathToURI(filename);
+    fileURI.Replace("\\", "/");
+    //-fileURI.MakeLower().Replace("f:", "");
+    std::unique_ptr<cbStyledTextCtrl> pCtrl = std::unique_ptr<cbStyledTextCtrl>(GetNewHiddenEditor(filename));
+
+    if (not pCtrl)
+    {
+        return;
+    }
+
+    DocumentUri docuri = DocumentUri(fileURI.c_str());
+    writeClientLog(wxString::Format("<<< LSP_RequestSemanticTokens:\n%s", docuri.c_str()));
+    wxString rridHdr = fileURI;
+
+    if (rrid)
+    {
+        rridHdr.Append(wxString::Format("%cRRID%d", STX, int(rrid))); // set RequestResponseID used to return response to requestor
+        rridHdr.Replace(wxString::Format("%c%c", STX, STX), STX);
+    }
+
+    //try { DocumentSymbol(docuri); }
+    try
+    {
+        SemanticTokensByID(docuri, fileURI.ToStdString());
+    }
+    catch (std::exception & err)
+    {
+        //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
+        wxString errMsg(wxString::Format("\nLSP_RequestSemanticTokens() error: %s\n%s", err.what(), docuri.c_str()));
+        writeClientLog(errMsg);
+        cbMessageBox(errMsg);
+    }
+
+    SetLastLSP_Request(filename, "textDocument/documentTokens");
+    return ;
+}//end LSP_SemanticTokens()
 // ----------------------------------------------------------------------------
 void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
 // ----------------------------------------------------------------------------
@@ -2916,7 +3013,7 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        cbMessageBox("LSP_DidChange(): Editor's file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
         return;
     }
 
@@ -2954,9 +3051,13 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
     ///- hasChangedLineCount = true; //(ph 2021/07/26) //(ph 2021/10/11) clangd v13 looks ok
     if ((hasChangedLineCount) or (lineChangedNbr >= oldLineCount - 1))
         // send the whole editor text to the server.
-    {
-        edText = pCtrl->GetText();
-    }
+        // Assure text is UTF8 before handing to DidChange()
+#if wxCHECK_VERSION(3,1,5) //3.1.5 or higher
+        edText = pCtrl->GetText().utf8_string();    //(ph 2022/06/22)
+
+#else
+        edText = pCtrl->GetText().ToUTF8();
+#endif
     else
     {
         // send only the one line that changed. //(send previous, current, and next line maybe??)
@@ -2970,9 +3071,7 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
         didChangeEvent.range = range;
     }
 
-    // Assure text is UTF8 before handing to DidChange()
     didChangeEvent.text = edText;
-    // didChangeEvent.text = edText.ToUTF8(); Trying to find bad utf8 problem
     std::vector<TextDocumentContentChangeEvent> tdcce{didChangeEvent};
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     // **debugging**
@@ -3002,7 +3101,7 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
     return;
 }//end LSP_DidChange()
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::LSP_Completion(cbEditor * pEd)
+void ProcessLanguageClient::LSP_CompletionRequest(cbEditor * pEd, int rrid)
 // ----------------------------------------------------------------------------
 {
     // Code completion
@@ -3023,7 +3122,7 @@ void ProcessLanguageClient::LSP_Completion(cbEditor * pEd)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
         return;
     }
 
@@ -3088,10 +3187,11 @@ void ProcessLanguageClient::LSP_Completion(cbEditor * pEd)
     return ;
 }//end LSP_Completion()
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::LSP_Hover(cbEditor * pEd, int posn)
+void ProcessLanguageClient::LSP_Hover(cbEditor * pEd, int posn, int rrid)
 // ----------------------------------------------------------------------------
 {
     // Hover
+    //rrid param is Request redirection id.
 #if defined(cbDEBUG)
     cbAssertNonFatal(pEd && "LSP_Hover called with nullptr");
 #endif
@@ -3109,7 +3209,7 @@ void ProcessLanguageClient::LSP_Hover(cbEditor * pEd, int posn)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
         return;
     }
 
@@ -3135,17 +3235,38 @@ void ProcessLanguageClient::LSP_Hover(cbEditor * pEd, int posn)
     writeClientLog(wxString::Format("<<< Hover:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
     // Inform LSP server if text has changed
     LSP_DidChange(pEd);
+    wxString rridHdr = fileURI;
 
-    try
+    if (rrid) //if Requesting redirection id
     {
-        Hover(docuri, position);
+        rridHdr.Append(wxString::Format("%cRRID%d", STX, int(rrid))); // set ResponseRequestID
+        rridHdr.Replace(wxString::Format("%c%c", STX, STX), STX);
+
+        try
+        {
+            HoverByID(docuri, position, rridHdr.ToStdString());
+        }
+        catch (std::exception & err)
+        {
+            //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
+            wxString errMsg(wxString::Format("\nLSP_Hover() error: %s\n%s", err.what(), docuri.c_str()));
+            writeClientLog(errMsg);
+            cbMessageBox(errMsg);
+        }
     }
-    catch (std::exception & err)
+    else //ordinary request without redirection
     {
-        //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
-        wxString errMsg(wxString::Format("\nLSP_Hover() error: %s\n%s", err.what(), docuri.c_str()));
-        writeClientLog(errMsg);
-        cbMessageBox(errMsg);
+        try
+        {
+            Hover(docuri, position);
+        }
+        catch (std::exception & err)
+        {
+            //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
+            wxString errMsg(wxString::Format("\nLSP_Hover() error: %s\n%s", err.what(), docuri.c_str()));
+            writeClientLog(errMsg);
+            cbMessageBox(errMsg);
+        }
     }
 
     SetLastLSP_Request(pEd->GetFilename(), "textDocument/hover");
@@ -3173,7 +3294,7 @@ void ProcessLanguageClient::LSP_SignatureHelp(cbEditor * pEd, int posn)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        cbMessageBox("Editors file is not yet parsed.");
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
         return;
     }
 
@@ -3533,8 +3654,8 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget * 
                            ? pfd.object_dir_flat_native : pfd.object_dir_native;
     // lookup file's type
     const FileType ft = FileTypeOf(pf->relativeFilename);
-    bool is_resource = ft == ftResource;
-    bool is_header   = ft == ftHeader;
+    bool is_resource = (ft == ftResource);
+    bool is_header   = (ft == ftHeader) or (ParserCommon::FileType(pf->relativeFilename) == ParserCommon::ftHeader); //(ph 2022/06/1)
     // allowed resources under all platforms: makes sense when cross-compiling for
     // windows under linux.
     // and anyway, if the user is dumb enough to try to compile resources without
@@ -3722,7 +3843,7 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject * pProject, Project
     wxArrayString compileCommands;
 
     // Clangd wants source files, not header files
-    if (FileTypeOf(pProjectFile->relativeFilename) == ftHeader)
+    if (ParserCommon::FileType(pProjectFile->relativeFilename) == ParserCommon::ftHeader)
     {
         // find the matching source file to this header file
         wxFileName fnFilename(pProjectFile->file);
@@ -3733,12 +3854,12 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject * pProject, Project
 
             if (pf and (pf->file.GetName() == fnFilename.GetName()))
             {
-                if (FileTypeOf(pf->relativeFilename) == ftHeader)
+                if (ParserCommon::FileType(pf->relativeFilename) == ParserCommon::ftHeader)
                 {
                     continue;
                 }
 
-                if ((FileTypeOf(pf->relativeFilename) == ftSource)
+                if ((ParserCommon::FileType(pf->relativeFilename) == ParserCommon::ftSource)
                         or (FileTypeOf(pf->relativeFilename) == ftTemplateSource))
                 {
                     compileCommands = GetCompileFileCommand(pTarget, pf);
@@ -4011,8 +4132,9 @@ void ProcessLanguageClient::UpdateCompilationDatabase(cbProject * pProject, wxSt
 
     if (pProjectFile and (pProjectFile->file.GetFullPath() == filename))
     {
-        if ((FileTypeOf(pProjectFile->relativeFilename) == ftHeader)
-                or (FileTypeOf(pProjectFile->relativeFilename) == ftSource)
+        ParserCommon::EFileType eft = ParserCommon::FileType(pProjectFile->relativeFilename);
+
+        if ((eft == ParserCommon::ftHeader) or (eft == ParserCommon::ftSource)
                 or (FileTypeOf(pProjectFile->relativeFilename) == ftTemplateSource))
         {
             if (AddFileToCompileDBJson(pProject, pTarget,  pProjectFile->file.GetFullPath(), &jdb))

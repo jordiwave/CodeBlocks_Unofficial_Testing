@@ -33,6 +33,7 @@
     #include <wx/xrc/xmlres.h>
 #endif
 
+#include <wx/dataview.h>
 #include <wx/radiobox.h>
 
 #include "annoyingdialog.h"
@@ -49,7 +50,10 @@
 #include "scripting/bindings/sc_utils.h"
 #include "scripting/bindings/sc_typeinfo_all.h"
 #include "virtualbuildtargetsdlg.h"
+#include "uservarmanager.h"
 
+#include <set>
+#include <algorithm>
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1,                                          ProjectOptionsDlg::OnUpdateUI)
@@ -90,6 +94,9 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnRemovePreScripts"),                    ProjectOptionsDlg::OnRemoveScript)
     EVT_SPIN_UP(XRCID("spnPreScripts"),                         ProjectOptionsDlg::OnScriptMoveUp)
     EVT_SPIN_DOWN(XRCID("spnPreScripts"),                       ProjectOptionsDlg::OnScriptMoveDown)
+
+    EVT_DATAVIEW_ITEM_VALUE_CHANGED(XRCID("lstGlobalVars"),     ProjectOptionsDlg::OnHandleGlobarVariablesEditDone)
+    EVT_DATAVIEW_ITEM_START_EDITING(XRCID("lstGlobalVars"),     ProjectOptionsDlg::OnHandleGlobarVariablesEditStarted)
 END_EVENT_TABLE()
 
 // class constructor
@@ -131,6 +138,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow * parent, cbProject * project)
     XRCCTRL(*this, "txtNotes", wxTextCtrl)->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(ProjectOptionsDlg::OnKeyDown), nullptr, this);
     // scripts
     BuildScriptsTree();
+    BuildGlobalVariablesView();
     // make sure everything is laid out properly
     // before adding panels from plugins
     // we don't want the dialog to become huge ;)
@@ -162,6 +170,178 @@ void ProjectOptionsDlg::OnKeyDown(wxKeyEvent & event)
     }
 
     event.Skip();
+}
+
+enum GlobalVarCol
+{
+    colIsUsed = 0,
+    colStored,
+    colName,
+    colCurValue,
+    colDefValue,
+    coldDesc
+};
+
+
+void ProjectOptionsDlg::OnHandleGlobarVariablesEditDone(wxDataViewEvent & evt)
+{
+    wxDataViewListCtrl * listCtrl = XRCCTRL(*this, "lstGlobalVars", wxDataViewListCtrl);
+    wxDataViewItem item = evt.GetItem();
+
+    if (item.IsOk())
+    {
+        wxUIntPtr indx = listCtrl->GetItemData(item);
+
+        if (indx >= 0 && indx < m_VarList.size())
+        {
+            ProjectVarView & dataItem = m_VarList[indx];
+            wxVariant val;
+            listCtrl->GetValue(val, listCtrl->ItemToRow(item), evt.GetColumn());
+
+            if (val.IsNull())
+            {
+                return;
+            }
+
+            switch (evt.GetColumn())
+            {
+                case colIsUsed:
+                    break;
+
+                case colStored:
+                    dataItem.m_inProject = val.GetBool();
+                    break;
+
+                case colName:
+                    break;
+
+                case colCurValue:
+                    break;
+
+                case coldDesc:
+                    dataItem.m_desc = val.GetString();
+                    break;
+
+                case colDefValue:
+                    dataItem.m_def = val.GetString();
+                    break;
+            }
+        }
+    }
+}
+
+void ProjectOptionsDlg::OnHandleGlobarVariablesEditStarted(wxDataViewEvent & evt)
+{
+    wxDataViewListCtrl * listCtrl = XRCCTRL(*this, "lstGlobalVars", wxDataViewListCtrl);
+    wxDataViewItem item = evt.GetItem();
+
+    if (item.IsOk())
+    {
+        wxUIntPtr indx = listCtrl->GetItemData(item);
+
+        if (indx >= 0 && indx < m_VarList.size())
+        {
+            ProjectVarView & dataItem = m_VarList[indx];
+
+            switch (evt.GetColumn())
+            {
+                case colIsUsed:
+                    break;
+
+                case colStored:
+                    break;
+
+                case colName:
+                    break;
+
+                case colCurValue:
+                    break;
+
+                case coldDesc:
+                case colDefValue:
+                    if (!dataItem.m_inProject)
+                    {
+                        cbMessageBox(_("The variable has to be stored in the project to add description or default value.\nPlease check the \"Stored\" column to edit"), _("Please select \"Stored\" first."), wxICON_EXCLAMATION | wxOK);
+                        evt.Veto();
+                    }
+
+                    break;
+            }
+        }
+    }
+}
+
+void ProjectOptionsDlg::BuildGlobalVariablesView()
+{
+    const wxString & filename = m_Project->GetFilename();
+    wxString buffer;
+    wxFile file(filename);
+
+    if (!cbRead(file, buffer))
+    {
+        return;
+    }
+
+    XRCCTRL(*this, "lblWarnProjectNotSaved", wxStaticText)->Show(m_Project->GetModified());
+    UserVariableManager * mgr = Manager::Get()->GetUserVariableManager();
+    wxDataViewListCtrl * listCtrl = XRCCTRL(*this, "lstGlobalVars", wxDataViewListCtrl);
+    wxDataViewColumn * usedInPrjCol =    listCtrl->AppendToggleColumn("U", wxDATAVIEW_CELL_INERT);
+    wxDataViewColumn * storedInPrjCol =  listCtrl->AppendToggleColumn("S", wxDATAVIEW_CELL_ACTIVATABLE);
+    wxDataViewColumn * nameCol =         listCtrl->AppendTextColumn("Name", wxDATAVIEW_CELL_INERT);
+    wxDataViewColumn * currentValCol =   listCtrl->AppendTextColumn("Current value", wxDATAVIEW_CELL_INERT);
+    wxDataViewColumn * defValueCol =     listCtrl->AppendTextColumn("Default value", wxDATAVIEW_CELL_EDITABLE);
+    wxDataViewColumn * descrCol =        listCtrl->AppendTextColumn("Description", wxDATAVIEW_CELL_EDITABLE);
+#if wxCHECK_VERSION(3,1,0)
+    usedInPrjCol->SetWidth(listCtrl->FromDIP(20));
+    storedInPrjCol->SetWidth(listCtrl->FromDIP(20));
+    nameCol->SetWidth(listCtrl->FromDIP(100));
+    defValueCol->SetWidth(listCtrl->FromDIP(100));
+    currentValCol->SetWidth(listCtrl->FromDIP(100));
+    descrCol->SetWidth(listCtrl->FromDIP(200));
+#endif
+    std::vector<ProjectGlobalVariableEntry> currentVariables = m_Project->GetGlobalVariables();
+    std::set<wxString> vars;
+    mgr->CollectVariableNames(buffer, vars);
+
+    for (const ProjectGlobalVariableEntry & entry : currentVariables)
+    {
+        std::set<wxString>::iterator varItr = vars.find(entry.name);
+        bool usedInProject = varItr != vars.end();
+        m_VarList.push_back(ProjectVarView(entry, usedInProject));
+
+        if (usedInProject)
+        {
+            vars.erase(varItr);
+        }
+    }
+
+    for (const wxString & var : vars)
+    {
+        m_VarList.push_back(ProjectVarView(var));
+    }
+
+    for (size_t i = 0; i < m_VarList.size() ; ++i)
+    {
+        const ProjectVarView & view = m_VarList[i];
+        const wxString varName = view.m_name;
+        wxVector<wxVariant> data;
+        data.push_back(wxVariant(view.m_used));
+        data.push_back(wxVariant(view.m_inProject));
+        data.push_back(wxVariant(view.m_name));
+
+        if (mgr->Exists(varName))
+        {
+            data.push_back(wxVariant(mgr->Replace(varName)));
+        }
+        else
+        {
+            data.push_back(wxVariant(""));
+        }
+
+        data.push_back(wxVariant(view.m_def));
+        data.push_back(wxVariant(view.m_desc));
+        listCtrl->AppendItem(data, wxUIntPtr(i));
+    }
 }
 
 void ProjectOptionsDlg::BuildScriptsTree()
@@ -1563,6 +1743,18 @@ void ProjectOptionsDlg::EndModal(int retCode)
             cbConfigurationPanel * panel = m_PluginPanels[i];
             panel->OnApply();
         }
+
+        std::vector<ProjectGlobalVariableEntry> newList;
+
+        for (const ProjectVarView & var :  m_VarList)
+        {
+            if (var.m_inProject)
+            {
+                newList.push_back(ProjectGlobalVariableEntry(var.m_name, var.m_desc, var.m_def));
+            }
+        }
+
+        m_Project->SetGlobalVariables(newList);
     }
     else
     {

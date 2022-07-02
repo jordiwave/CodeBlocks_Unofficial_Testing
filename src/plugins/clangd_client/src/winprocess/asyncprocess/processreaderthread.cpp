@@ -101,7 +101,8 @@ void * ProcessReaderThread::Entry()
                                 //-b.swap(buff);
                                 //e.SetProcess(m_process);
                                 //m_notifiedWindow->AddPendingEvent(e);
-                                std::string stdstr = buff.ToStdString();
+                                //std::string stdstr = buff.ToStdString(); loses data
+                                std::string stdstr = buff.utf8_string(); //(ph 2022/06/20)
                                 e.SetPayload<std::string *>(&stdstr);
                                 m_notifiedWindow->ProcessEvent(e);
                             }
@@ -115,7 +116,8 @@ void * ProcessReaderThread::Entry()
                                 //b.swap(buffErr);
                                 //e.SetProcess(m_process);
                                 //m_notifiedWindow->AddPendingEvent(e);
-                                std::string stdstr = buffErr.ToStdString();
+                                //-std::string stdstr = buffErr.ToStdString(); loses data
+                                std::string stdstr = buff.utf8_string();
                                 e.SetPayload<std::string *>(&stdstr);
                                 m_notifiedWindow->ProcessEvent(e);
                             }

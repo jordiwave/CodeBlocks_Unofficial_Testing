@@ -238,8 +238,9 @@ class LSP_SymbolsParser
 
         /** actually run the syntax analysis*/
         void DoParse();
-        bool DoParseDocumentSymbols(json *, cbProject * pProject);
-        bool DoParseSemanticTokens();
+        bool DoParseDocumentSymbols(json * pJson, cbProject * pProject);
+        bool DoParseSemanticTokens(json * pJson, cbProject * pProject); //(ph 2022/06/7)
+
         void WalkDocumentSymbols(json & jref, wxString & filename, Token * parentToken, size_t level); //(ph 2021/03/24)
 
         /** skip blocks {} */
@@ -528,9 +529,9 @@ class LSP_SymbolsParser
         // LSP legends for textDocument/semanticTokens
         std::vector<std::string> m_SemanticTokensTypes;
         std::vector<std::string> m_SemanticTokensModifiers;
-        std::vector<LSP_Tokenizer::LSP_SemanticToken_t> & m_SemanticTokensVec;
-        size_t m_SemanticTokensIdx;         //index of current LSP token being examined
-        size_t m_SemanticTokensVecSize;     // size of LSP token array
+        //-std::vector<LSP_Tokenizer::LSP_SemanticToken_t>& m_SemanticTokensVec;
+        //-size_t m_SemanticTokensIdx;         //index of current LSP token being examined
+        //-size_t m_SemanticTokensVecSize;     // size of LSP token array
         //
         //    // conversion of LSP character semantic tokens to size_t absolute line and col
         //    #define stLINENUM   0 //position of semantic token line number

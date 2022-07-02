@@ -816,6 +816,35 @@
 						</object>
 						<label>Notes</label>
 					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabGlobVars">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblWarnProjectNotSaved">
+										<label>!!!! WARNING: PROJECT NOT SAVED!!!!  Save project first to get an up to date list of variables used in this project</label>
+										<fg>#800000</fg>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT24">
+										<label>U ... Variable is used in project&#x0A;S ... Variable is stored in project file</label>
+									</object>
+									<flag>wxTOP|wxBOTTOM|wxLEFT</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxDataViewListCtrl" name="lstGlobalVars" />
+									<flag>wxALL|wxEXPAND</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Global variables</label>
+					</object>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>

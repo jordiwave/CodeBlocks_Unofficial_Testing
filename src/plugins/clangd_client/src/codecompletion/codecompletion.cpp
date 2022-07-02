@@ -2,6 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
++ * $Revision: 67 $
++ * $Id: codecompletion.cpp 67 2022-06-30 18:38:38Z pecanh $
++ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/codecompletion.cpp $
  */
 
 #include <sdk.h>
@@ -73,6 +76,7 @@
 #include <encodingdetector.h>       //(ph 2020/10/26)
 #include "infowindow.h"             //(ph 2020/11/22)
 #include "lspdiagresultslog.h"      //(ph 2020/10/25) LSP
+#include "ccmanager.h"              //(ph 2022/06/15)
 
 #if defined(_WIN32)
     #include "winprocess/asyncprocess/procutils.h" //(ph 2020/10/25) LSP
@@ -478,8 +482,8 @@ ClgdCompletion::ClgdCompletion() :
     m_CCDetectImplementation(false),
     m_CCDelay(300),
     m_CCEnableHeaders(false),
-    m_CCEnablePlatformCheck(true),
-    m_DocHelper(this)
+    m_CCEnablePlatformCheck(true)
+    //m_DocHelper(GetParseManager())
 {
     // We cannot run if the old CodeCompletion is enabled
     m_CC_initDeferred = true;
@@ -506,6 +510,7 @@ ClgdCompletion::ClgdCompletion() :
     // ParseManager / CodeRefactoring creation
     m_pParseManager.reset(new ParseManager(pNewLSPEventSinkHandler));
     m_pCodeRefactoring = new CodeRefactoring(m_pParseManager.get());
+    m_pDocHelper = new DocumentationHelper(m_pParseManager.get());
     // CCLogger are the log event bridges, those events were finally handled by its parent, here
     // it is the CodeCompletion plugin ifself.
     CCLogger::Get()->Init(this, g_idCCLogger, g_idCCDebugLogger, g_idCCDebugErrorLogger);
@@ -666,7 +671,7 @@ void ClgdCompletion::OnAttach()
     //m->RegisterEventSink(cbEVT_PLUGIN_RELEASED,        new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginReleased));
     // m->RegisterEventSink(cbEVT_PLUGIN_INSTALLED,       new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
     //m->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED,     new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
-    m_DocHelper.OnAttach();
+    m_pDocHelper->OnAttach();
 }
 // ----------------------------------------------------------------------------
 bool ClgdCompletion::CanDetach() const
@@ -746,7 +751,7 @@ void ClgdCompletion::OnRelease(bool appShutDown)
         m_SearchMenu->Delete(idMenuOpenIncludeFile);
     }
 
-    m_DocHelper.OnRelease();
+    m_pDocHelper->OnRelease();
 
     // ----------------------------------------------------------------
     // LSP OnRelease() processing
@@ -797,7 +802,7 @@ cbConfigurationPanel * ClgdCompletion::GetConfigurationPanel(wxWindow * parent)
         return nullptr;
     }
 
-    return new CCOptionsDlg(parent, GetParseManager(), this, &m_DocHelper);
+    return new CCOptionsDlg(parent, GetParseManager(), this, m_pDocHelper);
 }
 // ----------------------------------------------------------------------------
 cbConfigurationPanel * ClgdCompletion::GetProjectConfigurationPanel(wxWindow * parent, cbProject * project)
@@ -1284,7 +1289,8 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto
         for (size_t ii = 0; ii < m_CompletionTokens.size(); ++ii)
         {
             // **debugging** CCToken look = m_CompletionTokens[ii];
-            wxString tkn_displayName = m_CompletionTokens[ii].displayName;
+            CCToken cctoken = m_CompletionTokens[ii];
+            wxString tkn_displayName = cctoken.displayName;
 
             if (tkn_displayName.empty())
             {
@@ -1301,7 +1307,7 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto
 
             if (tkn_displayName.StartsWith(pattern))
             {
-                tokens.push_back(m_CompletionTokens[ii]);
+                tokens.push_back(cctoken);
             }
 
             // **debugging** info
@@ -1348,7 +1354,7 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto
                 return tokens;    //return empty tokens
             }
 
-            GetLSPclient(ed)->LSP_Completion(ed);
+            GetLSPclient(ed)->LSP_CompletionRequest(ed);
         }
         else
         {
@@ -1384,8 +1390,10 @@ static int CalcStcFontSize(cbStyledTextCtrl * stc)
     stc->GetTextExtent(wxT("A"), nullptr, &fontSize, nullptr, nullptr, &defaultFont);
     return fontSize;
 }
+// ----------------------------------------------------------------------------
 // unused for clangd at present (2021/10/14) but may be useful in the future
 void ClgdCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEditor * ed, std::vector<CCToken> & tokens)
+// ----------------------------------------------------------------------------
 {
     cbStyledTextCtrl * stc = ed->GetControl();
 
@@ -1482,8 +1490,26 @@ std::vector<ClgdCompletion::CCCallTip> ClgdCompletion::GetCallTips(int pos, int 
 wxString ClgdCompletion::GetDocumentation(const CCToken & token)
 // ----------------------------------------------------------------------------
 {
-    return m_DocHelper.GenerateHTML(token.id, GetParseManager()->GetParser().GetTokenTree());
+    //-oldCC- return m_DocHelper.GenerateHTML(token.id, GetParseManager()->GetParser().GetTokenTree());
+    // For clangd client we issue a hover request to get clangd data
+    // OnLSP_CompletionPopupHoverResponse will push the data int m_HoverTokens and
+    // reissue the GetDocumentation request
+    if (token.id == -1)
+    {
+        return wxString();
+    }
+
+    cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+    if (not pProject)
+    {
+        return wxString();
+    }
+
+    Parser * pParser = (Parser *)GetParseManager()->GetParserByProject(pProject);
+    return pParser->GetCompletionPopupDocumentation(token);
 }
+
 // ----------------------------------------------------------------------------
 std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetTokenAt(int pos, cbEditor * ed, bool & WXUNUSED(allowCallTip))
 // ----------------------------------------------------------------------------
@@ -1521,9 +1547,9 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetTokenAt(int pos, cbEdito
     if (m_HoverTokens.size())
     {
         tokens.clear();
-        wxString hoverMsg = wxString::Format("GetTokenAt() sees %d tokens.\n", int(m_HoverTokens.size()));
-        CCLogger::Get()->DebugLog(hoverMsg);
 
+        //wxString hoverMsg = wxString::Format("GetTokenAt() sees %d tokens.\n", int(m_HoverTokens.size()));
+        //CCLogger::Get()->DebugLog(hoverMsg);
         for (size_t ii = 0; ii < m_HoverTokens.size(); ++ii)
         {
             CCToken look = m_HoverTokens[ii]; //debugging
@@ -1552,7 +1578,7 @@ wxString ClgdCompletion::OnDocumentationLink(wxHtmlLinkEvent & event, bool & dis
 // ----------------------------------------------------------------------------
 {
     // user has clicked link in HTML documentation popup window
-    return m_DocHelper.OnDocumentationLink(event, dismissPopup);
+    return m_pDocHelper->OnDocumentationLink(event, dismissPopup);
 }
 // ----------------------------------------------------------------------------
 void ClgdCompletion::DoAutocomplete(const CCToken & token, cbEditor * ed)
@@ -1943,7 +1969,7 @@ void ClgdCompletion::RereadOptions()
         m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
     }
 
-    m_DocHelper.RereadOptions(cfg);
+    m_pDocHelper->RereadOptions(cfg);
 }
 // ----------------------------------------------------------------------------
 void ClgdCompletion::UpdateToolBar()
@@ -2124,7 +2150,7 @@ void ClgdCompletion::OnGotoFunction(cb_unused wxCommandEvent & event)
         for (size_t i = 0; i < tree->size(); i++)
         {
             Token * token = tree->at(i);
-            bool isImpl = FileTypeOf(edFilename) == ftSource;
+            bool isImpl = ParserCommon::FileType(edFilename) == ParserCommon::ftSource;         //(ph 2022/06/1)
 
             if ((not isImpl) && token && (token->GetFilename() != edFilename))
             {
@@ -2178,7 +2204,7 @@ void ClgdCompletion::OnGotoFunction(cb_unused wxCommandEvent & event)
                 {
                     TRACE(F(_T("OnGotoFunction() : Token '%s' found at line %u."), ft->name.wx_str(), ft->line));
 
-                    if (FileTypeOf(edFilename) == ftSource)                       //(ph 2021/05/22)
+                    if (ParserCommon::FileType(edFilename) == ParserCommon::ftSource)                       //(ph 2021/05/22)
                     {
                         ed->GotoTokenPosition(ft->implLine - 1, ft->name);
                     }
@@ -3014,7 +3040,7 @@ void ClgdCompletion::OnAppDoneStartup(CodeBlocksEvent & event)
             return;
         }
 
-        if (not(fnClangdName.GetFullName().Lower() == clangdexe))
+        if (not(fnClangdName.GetFullName().Lower().StartsWith(clangdexe)))
         {
             cbMessageBox(msg, _("ERROR: Clangd client"));
             return;
@@ -3855,6 +3881,14 @@ void ClgdCompletion::OnLSP_Event(wxCommandEvent & event)
                 json legend = pJson->at("result")["capabilities"]["semanticTokensProvider"]["legend"];
                 m_SemanticTokensTypes = legend["tokenTypes"].get<std::vector<std::string>>();
                 m_SemanticTokensModifiers = legend["tokenModifiers"].get<std::vector<std::string>>();
+                // **Debugging** //(ph 2022/06/11)
+                //    LogManager* pLogMgr = Manager::Get()->GetLogManager();
+                //    pLogMgr->DebugLog("--- SemanticTokensTypes ---");
+                //    for (size_t ii=0; ii<m_SemanticTokensTypes.size(); ++ii)
+                //        pLogMgr->DebugLog(m_SemanticTokensTypes[ii]);
+                //    pLogMgr->DebugLog("--- SemanticTokensModifiers ---");
+                //    for (size_t ii=0; ii<m_SemanticTokensModifiers.size(); ++ii)
+                //        pLogMgr->DebugLog(m_SemanticTokensModifiers[ii]);
             }//endif
         }
         catch (std::exception & e)
@@ -3959,74 +3993,69 @@ void ClgdCompletion::OnLSP_Event(wxCommandEvent & event)
                                 Parser * pParser = (Parser *)GetParseManager()->GetParserByProject(pProject);
                                 pParser->OnLSP_RenameResponse(event);
                             }
+                            else
+                                if (evtString.StartsWith("textDocument/semanticTokens"))
+                                {
+                                    Parser * pParser = (Parser *)GetParseManager()->GetParserByProject(pProject);
+                                    pParser->OnLSP_RequestedSemanticTokensResponse(event);
+                                    //-OnLSP_SemanticTokenResponse(event); // FIXME (ph#): This needs to move to Parser
+                                }
 }
-// ----------------------------------------------------------------------------
-void ClgdCompletion::OnLSP_SemanticTokenResponse(wxCommandEvent & event) //(ph 2021/03/16)
-// ----------------------------------------------------------------------------
-{
-    // This is a callback after requesting textDocument/semanticTokens/full
-    // It's not being used for now, but works and will be useful in the future
-    // ----------------------------------------------------------------------------
-    ///  GetClientData() contains ptr to json object
-    ///  DONT free it, The return to OnLSP_Event() will free it as a unique_ptr
-    // ----------------------------------------------------------------------------
-    json * pJson = (json *)event.GetClientData();
-    wxString idStr = event.GetString();
-    // event string looks like: "textDocument/semanticTokens/full\002file://f:/somefile.xxx\0002id:method"
-    // \00002 == utf-8 STX (start of text)
-    // the "\00002id:method"  may be missing
-    wxString URI = idStr.AfterFirst(STX);
-
-    if (URI.Contains(STX))
-    {
-        URI = URI.BeforeFirst(STX);    //filename
-    }
-
-    wxString uriFilename = fileUtils.FilePathFromURI(URI);
-    cbEditor * pEditor =  nullptr;
-    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
-    EditorBase * pEdBase = pEdMgr->IsOpen(uriFilename);
-    pEditor = pEdMgr->GetBuiltinEditor(pEdBase);
-
-    if (not pEditor)
-    {
-        return;
-    }
-
-    ProjectFile * pProjectFile = pEditor->GetProjectFile();
-    cbProject * pProject = nullptr;
-
-    if (pProjectFile)
-    {
-        pProject = pProjectFile->GetParentProject();
-    }
-
-    if ((not pProjectFile) or (not pProject))
-    {
-        return;
-    }
-
-    ParserBase * pParser = GetParseManager()->GetParserByProject(pProject);
-
-    if (not pParser)
-    {
-        return;
-    }
-
-    if (pParser->m_SemanticTokensTypes.size() == 0)             //(ph 2021/03/22)
-    {
-        pParser->m_SemanticTokensTypes = this->m_SemanticTokensTypes;
-        pParser->m_SemanticTokensModifiers = this->m_SemanticTokensModifiers;
-    }
-
-    //-testing- size_t cnt = pParser->m_SemanticTokensTypes.size();
-    // Issue event to anyone looking for semant tokens
-    wxCommandEvent symEvent(wxEVT_COMMAND_MENU_SELECTED, XRCID("textDocument/semanticTokens/full"));
-    symEvent.SetString(uriFilename);
-    symEvent.SetClientData(pJson);
-    Manager::Get()->GetAppFrame()->GetEventHandler()->ProcessEvent(symEvent);
-    return;
-}//end OnLSP_SemanticTokenResponse
+////// ----------------------------------------------------------------------------
+////void ClgdCompletion::OnLSP_SemanticTokenResponse(wxCommandEvent& event)  //(ph 2021/03/16)
+////// ----------------------------------------------------------------------------
+////{
+////    // This is a callback after requesting textDocument/semanticTokens/full
+////    // It's not being used for now, but works and will be useful in the future
+////    // ----------------------------------------------------------------------------
+////    ///  GetClientData() contains ptr to json object
+////    ///  DONT free it, The return to OnLSP_Event() will free it as a unique_ptr
+////    // ----------------------------------------------------------------------------
+////
+////    json* pJson = (json*)event.GetClientData();
+////    wxString idStr = event.GetString();
+////
+////    // event string looks like: "textDocument/semanticTokens/full\002file://f:/somefile.xxx\0002id:method"
+////    // \00002 == utf-8 STX (start of text)
+////    // the "\00002id:method"  may be missing
+////
+////    wxString URI = idStr.AfterFirst(STX);
+////    if (URI.Contains(STX))
+////        URI = URI.BeforeFirst(STX); //filename
+////    wxString uriFilename = fileUtils.FilePathFromURI(URI);
+////    cbEditor* pEditor =  nullptr;
+////    EditorManager* pEdMgr = Manager::Get()->GetEditorManager();
+////    EditorBase* pEdBase = pEdMgr->IsOpen(uriFilename);
+////    pEditor = pEdMgr->GetBuiltinEditor(pEdBase);
+////    //-if (not pEditor) return; might be background file
+////
+////    Parser* pParser = nullptr;`
+////    if (pEditor)
+////    {
+////        ProjectFile* pProjectFile = pEditor->GetProjectFile();
+////        cbProject* pProject = nullptr;
+////        if (pProjectFile) pProject = pProjectFile->GetParentProject();
+////        if ( (not pProjectFile) or (not pProject) ) return;
+////        pParser = GetParseManager()->GetParserByProject(pProject);
+////        if (not pParser) return;
+////    }
+////
+////    if (pParser->m_SemanticTokensTypes.size() == 0)             //(ph 2021/03/22)
+////    {
+////        pParser->m_SemanticTokensTypes = this->m_SemanticTokensTypes;
+////        pParser->m_SemanticTokensModifiers = this->m_SemanticTokensModifiers;
+////    }
+////    //-testing- size_t cnt = pParser->m_SemanticTokensTypes.size();
+////
+////    // Issue event to anyone looking for semantic tokens
+////    wxCommandEvent symEvent(wxEVT_COMMAND_MENU_SELECTED, XRCID("textDocument/semanticTokens/full"));
+////    symEvent.SetString(uriFilename);
+////    symEvent.SetClientData(pJson);
+////    //Manager::Get()->GetAppFrame()->GetEventHandler()->ProcessEvent(symEvent);
+////    ((Parser*)pParser)->OnLSP_ParseSemanticTokens(symEvent);
+////
+////    return;
+////}//end OnLSP_SemanticTokenResponse
 // ----------------------------------------------------------------------------
 void ClgdCompletion::ShutdownLSPclient(cbProject * pProject)
 // ----------------------------------------------------------------------------
@@ -4574,7 +4603,7 @@ void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
             m_OnEditorOpenEventOccured = false;
             // Here for Language Service Process to send didOpen().
             // The OnEditorOpen() event cannot be used because the editor does not yet have
-            // a ProjectFile pointer to determine the files project parent.
+            // a ProjectFile pointer to determine the file's project parent.
             // This OnEditorActivated() event is occuring prior to OnProjectActivated().
             // The LSP server may not be initialized when editors are opened during project load.
             // To compensate for any missed editor opens, LSP_Initialize() will scan the editors notebook
@@ -4614,7 +4643,7 @@ void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
                 {
                     if (wxFileExists(pEd->GetFilename()))
                     {
-                        // Add this non-project file to the proxyParser for this active project
+                        // Add this non-project file to the proxyParser
                         //-unused-ParserBase* pParser = GetParseManager()->GetParserByProject(pActiveProject);
                         pProjectFile = GetParseManager()->GetProxyProject()->AddFile(0, pEd->GetFilename(), true, false);
                         pEd->SetProjectFile(pProjectFile);
@@ -4687,7 +4716,7 @@ void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
                 pEd->SetProjectFile(pProjectFile);
             }
 
-            cbAssert(GetLSPclient(pEd)); //id no client we've done something wrong.
+            cbAssert(GetLSPclient(pEd)); //id no client, we've done something wrong.
             GetLSPclient(pEd)->LSP_DidOpen(pEd);
         }//endif parse non-ActiveProject editor
     }//endif not projectManager busy
@@ -4833,8 +4862,9 @@ int ClgdCompletion::DoClassMethodDeclImpl() //not yet used for clangd plugin
     }
 
     FileType ft = FileTypeOf(ed->GetShortName());
+    ParserCommon::EFileType eft = ParserCommon::FileType(ed->GetShortName());
 
-    if (ft != ftHeader && ft != ftSource && ft != ftTemplateSource)  // only parse source/header files
+    if ((eft != ParserCommon::ftHeader) && (eft != ParserCommon::ftSource) && (ft != ftTemplateSource))   // only parse source/header files
     {
         return -4;
     }
@@ -4923,9 +4953,10 @@ int ClgdCompletion::DoAllMethodsImpl()
         return -3;
     }
 
-    FileType ft = FileTypeOf(ed->GetShortName());
+    //FileType ft = FileTypeOf(ed->GetShortName()); //(ph 2022/06/1)-
+    ParserCommon::EFileType ft = ParserCommon::FileType(ed->GetShortName()); //(ph 2022/06/1)-
 
-    if (ft != ftHeader && ft != ftSource && ft != ftTemplateSource)  // only parse source/header files
+    if ((ft != ParserCommon::ftHeader) && (ft != ParserCommon::ftSource))  // only parse source/header files
     {
         return -4;
     }
@@ -5429,10 +5460,10 @@ void ClgdCompletion::ParseFunctionsAndFillToolbar()
 
     bool fileParseFinished = GetParseManager()->GetParser().IsFileParsed(filename);
     // FunctionsScopePerFile contains all the function and namespace information for
-    // a specified file, m_AllFunctionsScopes[filename] will implicitly insert an new element in
+    // a specified file, m_AllFunctionsScopes[filename] will implicitly insert a new element in
     // the map if no such key(filename) is found.
     FunctionsScopePerFile * funcdata = &(m_AllFunctionsScopes[filename]);
-#if CC_CODECOMPLETION_DEBUG_OUTPUT == 1 //(ph 2021/04/3)
+#if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
     wxString debugMsg = wxString::Format("ParseFunctionsAndFillToolbar() : m_ToolbarNeedReparse=%d, m_ToolbarNeedRefresh=%d, ",
                                          m_ToolbarNeedReparse ? 1 : 0, m_ToolbarNeedRefresh ? 1 : 0);
     debugMsg += wxString::Format("\n%s: funcdata->parsed[%d] ", __FUNCTION__, funcdata->parsed);
@@ -5538,7 +5569,7 @@ void ClgdCompletion::ParseFunctionsAndFillToolbar()
         // collect the namespace information in the current file, this is done by running a parserthread
         // on the editor's buffer
         //-GetParseManager()->GetParser().ParseBufferForNamespaces(ed->GetControl()->GetText(), nameSpaces);
-        //^^ namespaces already parsed by clangd and entered into the tree by OnLSP_RequestedSymbolsResponse() //(ph 2021/07/27)
+        ///^^ namespaces already parsed by clangd and entered into the tree by OnLSP_RequestedSymbolsResponse() //(ph 2021/07/27)
         std::sort(nameSpaces.begin(), nameSpaces.end(), CodeCompletionHelper::LessNameSpace);
         // copy the namespace information collected in ParseBufferForNamespaces() to
         // the functionsScopes, note that the element type FunctionScope has a constructor
@@ -5923,7 +5954,9 @@ void ClgdCompletion::UpdateEditorSyntax(cbEditor * ed)
         }
     }
 
+    // ---------------------------------------------------
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+    // ---------------------------------------------------
     EditorColourSet * colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
 
     if (!colour_set)
@@ -5991,7 +6024,7 @@ void ClgdCompletion::NotifyParserEditorActivated(wxCommandEvent & event)
     // the toolbar, because there must be another editor activated before the timer hits.
     // Note: only the builtin active editor is considered.
     // stop the timer; It gets re-started on each CodeCompletion::OnEditorActivated()
-    m_TimerEditorActivated.Stop(); //stop!  especially while I'm debugging //(ph 2022/02/14)
+    m_TimerEditorActivated.Stop(); //stop!  especially while I'm debugging
     EditorBase * editor  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
     if (!editor || editor != m_LastEditor)
@@ -6007,11 +6040,11 @@ void ClgdCompletion::NotifyParserEditorActivated(wxCommandEvent & event)
     // if the same file was activated, no need to update the toolbar
     if (!m_LastFile.IsEmpty() && m_LastFile == curFile)
     {
-        TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Same as the last activated file(%s)."), curFile.wx_str());
+        TRACE(_T("ClgdCompletion::NotifyParserEditorActivated(): Same as the last activated file(%s)."), curFile.wx_str());
         return;
     }
 
-    TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Need to notify ParseManager and Refresh toolbar."));
+    TRACE("ClgdCompletion::NotifyParserEditorActivated(): Need to notify ParseManager and Refresh toolbar.");
     GetParseManager()->OnEditorActivated(editor);
     // If the above started a parser, start a clangd_client also //(ph 2022/02/14)
     cbEditor * pcbEd = Manager::Get()->GetEditorManager()->GetBuiltinEditor(editor);
@@ -6036,6 +6069,15 @@ void ClgdCompletion::NotifyParserEditorActivated(wxCommandEvent & event)
     m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
     TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Current activated file is %s"), curFile.wx_str());
     UpdateEditorSyntax();
+    // If different editor activated and is modified, request LSP sematicTokens update for completions //(ph 2022/06/10)
+    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+    cbEditor * pActiveEditor = pEdMgr->GetBuiltinActiveEditor();
+    bool useDocumentationPopup = Manager::Get()->GetConfigManager("ccmanager")->ReadBool("/documentation_popup", false);
+
+    if (useDocumentationPopup and pActiveEditor and pProject and pActiveEditor->GetModified())
+    {
+        ((Parser *)(GetParseManager()->GetParserByProject(pProject)))->RequestSemanticTokens(pActiveEditor);
+    }
 }
 // ----------------------------------------------------------------------------
 wxBitmap ClgdCompletion::GetImage(ImageId::Id id, int fontSize) //unused

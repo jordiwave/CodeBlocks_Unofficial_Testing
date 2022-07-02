@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="help_plugin">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/help_plugin" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/help_plugin" prefix_auto="1" extension_auto="1" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/help_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -18,16 +18,16 @@
 				<ExtraCommands>
 					<!-- Create output directories -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
-					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/docs ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/docs ; fi" />
+					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/docs ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/docs ; fi" />
 					<Mode before="always" />
 
 					<!-- Create help_plugin.zip -->
-					<Add after="zip -jq9  $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/help_plugin.zip manifest.xml *.xrc" />
-					<Add after="zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/help_plugin.zip ./images" />
+					<Add after="zip -jq9  $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/help_plugin.zip manifest.xml *.xrc" />
+					<Add after="zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/help_plugin.zip ./images" />
 
 					<!-- Copy file to docs directory -->
-					<Add before="if [ ! -d $(#CB_BUILD)/../windows_installer ] ; then cp index.ini $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/docs ; fi" />
-					<Add before="if [ -d $(#CB_BUILD)/../windows_installer ] ; then cp $(#CB_BUILD)/../windows_installer/Documentation/*.* $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/docs ; fi" />
+					<Add before="if [ ! -d $(#CB_BUILD)/../windows_installer ] ; then cp index.ini $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/docs ; fi" />
+					<Add before="if [ -d $(#CB_BUILD)/../windows_installer ] ; then cp $(#CB_BUILD)/../windows_installer/Documentation/*.* $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/docs ; fi" />
 
 					<Mode after="always" />
 				</ExtraCommands>

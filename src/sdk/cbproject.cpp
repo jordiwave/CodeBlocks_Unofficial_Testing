@@ -402,6 +402,7 @@ void cbProject::ClearAllProperties()
     m_LinkerOptions.Clear();
     m_IncludeDirs.Clear();
     m_LibDirs.Clear();
+    m_GlobalVariables.clear();
 
     while (m_Targets.GetCount())
     {
@@ -2240,6 +2241,17 @@ void cbProject::SetGlobs(const std::vector<Glob> & globs)
 std::vector<cbProject::Glob> cbProject::GetGlobs() const
 {
     return m_Globs;
+}
+
+void cbProject::SetGlobalVariables(const std::vector<ProjectGlobalVariableEntry> variables)
+{
+    m_Modified = true;
+    m_GlobalVariables = variables;
+}
+
+std::vector<ProjectGlobalVariableEntry> cbProject::GetGlobalVariables() const
+{
+    return m_GlobalVariables;
 }
 
 wxString cbGetDynamicLinkerPathForTarget(cbProject * project, ProjectBuildTarget * target)

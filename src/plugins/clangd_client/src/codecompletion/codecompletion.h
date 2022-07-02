@@ -365,6 +365,11 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         //-old- void OnEditorActivatedTimer(wxTimerEvent& event);
         void NotifyParserEditorActivated(wxCommandEvent & event);
 
+        std::vector<CCToken> * GetCompletionTokens()
+        {
+            return &m_CompletionTokens;   //(ph 2022/06/11)
+        }
+
         /** Indicates CC's initialization is done */
         bool                    m_InitDone;
 
@@ -511,7 +516,7 @@ class ClgdCompletion : public cbCodeCompletionPlugin
          */
 
         /** Provider of documentation for the popup window */
-        DocumentationHelper     m_DocHelper;
+        DocumentationHelper   *  m_pDocHelper;
 
         // requires access to: m_ParseManager.GetParser().GetTokenTree()
         friend wxString DocumentationHelper::OnDocumentationLink(wxHtmlLinkEvent &, bool &);
@@ -570,7 +575,6 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         bool m_PluginNeedsAppRestart = false;
         int  m_HoverLastPosition = 0;
         bool m_HoverIsActive = false;
-
         cbProject * m_PrevProject = nullptr;
         cbProject * m_CurrProject = nullptr;
 
@@ -723,14 +727,13 @@ class ClgdCompletion : public cbCodeCompletionPlugin
             return false;
         }
         void OnLSP_Event(wxCommandEvent & event);
-        void OnLSP_ProcessTerminated(wxCommandEvent & event);    //(ph 2021/06/28)
+        void OnLSP_ProcessTerminated(wxCommandEvent & event);
         void OnIdle(wxIdleEvent & event);
-        void OnPluginAttached(CodeBlocksEvent & event);   //(ph 2021/12/22)
+        void OnPluginAttached(CodeBlocksEvent & event);
 
 
         // Handle responses from LSPserver
         void OnLSP_ProjectFileAdded(cbProject * pProject, wxString filename);
-        void OnLSP_SemanticTokenResponse(wxCommandEvent & event);                 //(ph 2021/03/16)
 
         wxString GetLineTextFromFile(const wxString & file, const int lineNum); //(ph 2020/10/26)
         bool DoLockClangd_CacheAccess(cbProject * pcbProject);

@@ -2,6 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
+ * $Revision: 67 $
+ * $Id: LSP_symbolsparser.cpp 67 2022-06-30 18:38:38Z pecanh $
+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parser/LSP_symbolsparser.cpp $
  */
 
 #include <sdk.h>
@@ -82,51 +85,21 @@
 //#endif
 
 #define IS_ALIVE true //(ph 2021/03/15) //(ph 2021/03/23)
+// ----------------------------------------------------------------------------
 namespace
+// ----------------------------------------------------------------------------
 {
 bool wxFound(int result)
 {
     return result != wxNOT_FOUND;
 };
 const char STX = '\u0002';
-// ----------------------------------------------------------------------------
-// Language Server symbol kind.
-// ----------------------------------------------------------------------------
-// defined in https://microsoft.github.io/language-server-protocol/specification
-enum LSP_DocumentSymbolKind
-{
-    File = 1,
-    Module = 2,
-    Namespace = 3,
-    Package = 4,
-    Class = 5,
-    Method = 6,
-    Property = 7,
-    Field = 8,
-    Constructor = 9,
-    Enum = 10,
-    Interface = 11,
-    Function = 12,
-    Variable = 13,
-    Constant = 14,
-    String = 15,
-    Number = 16,
-    Boolean = 17,
-    Array = 18,
-    Object = 19,
-    Key = 20,
-    Null = 21,
-    EnumMember = 22,
-    Struct = 23,
-    Event = 24,
-    Operator = 25,
-    TypeParameter = 26
-};
+} //end namespace
 
-}
 const wxString g_UnnamedSymbol = _T("__Unnamed");
-
+// ----------------------------------------------------------------------------
 namespace ParserConsts
+// ----------------------------------------------------------------------------
 {
 // length: 0
 const wxString empty(_T(""));
@@ -135,15 +108,15 @@ const wxChar   null(_T('\0'));
 const wxChar   eol_chr(_T('\n'));
 const wxString space(_T(" "));
 const wxChar   space_chr(_T(' '));
-const wxChar   tab_chr(_T('\t'));
+//unused const wxChar   tab_chr         (_T('\t'));
 const wxString equals(_T("="));
-const wxChar   equals_chr(_T('='));
+//unused const wxChar   equals_chr      (_T('='));
 const wxString hash(_T("#"));
-const wxChar   hash_chr(_T('#'));
+//unused const wxChar   hash_chr        (_T('#'));
 const wxString plus(_T("+"));
-const wxChar   plus_chr(_T('+'));
+//unused const wxChar   plus_chr        (_T('+'));
 const wxString dash(_T("-"));
-const wxChar   dash_chr(_T('-'));
+//unused const wxChar   dash_chr        (_T('-'));
 const wxString ptr(_T("*"));
 const wxChar   ptr_chr(_T('*'));
 const wxString ref(_T("&"));
@@ -151,11 +124,11 @@ const wxChar   ref_chr(_T('&'));
 const wxString comma(_T(","));
 const wxChar   comma_chr(_T(','));
 const wxString dot(_T("."));
-const wxChar   dot_chr(_T('.'));
+//unused const wxChar   dot_chr         (_T('.'));
 const wxString colon(_T(":"));
 const wxChar   colon_chr(_T(':'));
 const wxString semicolon(_T(";"));
-const wxChar   semicolon_chr(_T(';'));
+//unused const wxChar   semicolon_chr   (_T(';'));
 const wxChar   opbracket_chr(_T('('));
 const wxChar   clbracket_chr(_T(')'));
 const wxString opbracket(_T("("));
@@ -163,7 +136,7 @@ const wxString clbracket(_T(")"));
 const wxString opbrace(_T("{"));
 const wxChar   opbrace_chr(_T('{'));
 const wxString clbrace(_T("}"));
-const wxChar   clbrace_chr(_T('}'));
+//unused const wxChar   clbrace_chr     (_T('}'));
 const wxString oparray(_T("["));
 const wxChar   oparray_chr(_T('['));
 const wxString clarray(_T("]"));
@@ -174,7 +147,7 @@ const wxChar   lt_chr(_T('<'));
 const wxString gt(_T(">"));
 const wxChar   gt_chr(_T('>'));
 const wxChar   underscore_chr(_T('_'));
-const wxChar   question_chr(_T('?'));
+//unused const wxChar   question_chr    (_T('?'));
 // length: 2
 const wxString dcolon(_T("::"));
 const wxString opbracesemicolon(_T("{;"));
@@ -256,8 +229,7 @@ LSP_SymbolsParser::LSP_SymbolsParser(ParserBase     *     parent,
       m_ParsingTypedef(false),
       m_Buffer(bufferOrFilename),
       m_StructUnionUnnamedCount(0),
-      m_EnumUnnamedCount(0),
-      m_SemanticTokensVec(m_Tokenizer.m_SemanticTokensVec) //(ph 2021/03/22)
+      m_EnumUnnamedCount(0)
 {
     m_Tokenizer.SetTokenizerOption(LSP_SymbolsParserOptions.wantPreprocessor,
                                    LSP_SymbolsParserOptions.storeDocumentation);
@@ -677,11 +649,6 @@ bool LSP_SymbolsParser::InitTokenizer(json * pJson)
         return ret;
     }
 
-    // convenience variables
-    m_SemanticTokensVec = m_Tokenizer.GetSemanticTokensVec(); //a reference
-    m_SemanticTokensVecSize = m_SemanticTokensVec.size();
-    m_SemanticTokensIdx = 0;
-    //-testing-    size_t typeCnt = m_Tokenizer.m_SemanticTokensTypes.size();
     return ret and converted;
 }
 // ----------------------------------------------------------------------------
@@ -709,16 +676,21 @@ bool LSP_SymbolsParser::Parse(json * pJson, cbProject * pProject)
         return false;
     }
 
-    if (parseIDstr.Contains("/SemanticToken"))
-    {
-        if (m_SemanticTokensVecSize == 0)   //(ph 2021/03/22)
-        {
-            wxString msg = "%s() failed to find any LSP semantic tokens., __FUNCTION__";
-            cbMessageBox(msg, "Parse Failed");
-            return false;
-        }
-    }
-
+    // **Debugging**
+    //    LogManager* pLogMgr =  Manager::Get()->GetLogManager();
+    //    wxString msg = wxString::Format("LSP_symbolsparser processing %s for %s", parseIDstr, m_Filename);
+    //    pLogMgr->DebugLog(msg);
+    //
+    //    if (parseIDstr.Contains("/semanticToken"))
+    //    {
+    //            ParserBase* pParser = m_Parent;
+    //            if (pParser->m_SemanticTokensVec.size() == 0)
+    //            {
+    //                wxString msg = wxString::Format("%s missing LSP semantic tokens.", __PRETTY_FUNCTION__);
+    //                cbMessageBox(msg, "Parse Failed");
+    //                return false;
+    //            }
+    //    }
     TRACE(_T("Parse() : Parsing '%s'"), m_Filename.wx_str());
     bool result      = false;
     m_ParsingTypedef = false;
@@ -732,10 +704,13 @@ bool LSP_SymbolsParser::Parse(json * pJson, cbProject * pProject)
 
         if (not m_Options.useBuffer) // Parse a file
         {
-            // the second parameter of ReserveFileForParsing() is false, so set it to fpsBeingParsed
-            m_FileIdx = m_TokenTree->ReserveFileForParsing(m_Filename);
+            if (not(m_FileIdx = m_TokenTree->GetFileIndex(m_Filename)))
+                // the second parameter of ReserveFileForParsing() is false, so set it to fpsBeingParsed
+            {
+                m_FileIdx = m_TokenTree->ReserveFileForParsing(m_Filename);
+            }
 
-            if (!m_FileIdx)
+            if (not m_FileIdx)
             {
                 break;
             }
@@ -743,12 +718,15 @@ bool LSP_SymbolsParser::Parse(json * pJson, cbProject * pProject)
 
         if (parseIDstr.Contains("/documentSymbol"))
         {
-            DoParseDocumentSymbols(pJson, pProject);
+            result = DoParseDocumentSymbols(pJson, pProject);
         }
         else
         {
-            DoParseSemanticTokens();
+            result = DoParseSemanticTokens(pJson, pProject);
         }
+
+        // **Debugging**
+        //if (not result) asm("int3"); /*trap*/
 
         if (!m_Options.useBuffer) // Parsing a file
         {
@@ -756,181 +734,222 @@ bool LSP_SymbolsParser::Parse(json * pJson, cbProject * pProject)
         }
 
         result = true;
-    } while (false);
+    } while (0);
 
     return result;
 }
 // ----------------------------------------------------------------------------
-bool LSP_SymbolsParser::DoParseSemanticTokens()
+bool LSP_SymbolsParser::DoParseSemanticTokens(json * pJson, cbProject * pProject) //(ph 2021/03/15)
 // ----------------------------------------------------------------------------
 {
-    /// FIXME (ph#): This routine is not yet setting m_LastParent ala DoParseDocumentSymbols()
-    // need to reset tokenizer's behaviour
-    // don't forget to reset it if you add any early exit condition!
-    TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsNormal);
-    m_Str.Clear();
-    m_LastToken.Clear();
-    m_LastUnnamedTokenName.Clear();
+    /// Do Not free pJson, it will be freed in CodeCompletion::LSP_Event()
+    int startTime = 0;
+    RECORD_TIME(startTime) //(ph 2021/09/7)
+    bool debugging = false;
+    // fetch filename from json id
+    wxString URI;
 
-    // Notice: clears the queue "m_EncounteredTypeNamespaces"
-    while (!m_EncounteredTypeNamespaces.empty())
+    try
     {
-        m_EncounteredTypeNamespaces.pop();
+        URI = pJson->at("id").get<std::string>();
+    }
+    catch (std::exception & e)
+    {
+        cbMessageBox(wxString::Format("%s() %s", __FUNCTION__, e.what()));
+        return false;
     }
 
-    // Notice: clears the queue "m_EncounteredNamespaces"
-    while (!m_EncounteredNamespaces.empty())
+    URI = URI.AfterFirst(STX);
+    wxFileName fnFilename = fileUtils.FilePathFromURI(URI);
+    wxString filename = fnFilename.GetFullPath();
+
+    if (not wxFileExists(filename))
     {
-        m_EncounteredNamespaces.pop();
+        return false;
     }
 
-    while (m_Tokenizer.NotEOF() && IS_ALIVE)
+    // Validate that this file belongs to this projects parser
+
+    if (not pProject)
     {
-        wxString token = m_Tokenizer.GetToken();
+        return false;
+    }
 
-        if (token.IsEmpty())
-            //-continue;     //(ph 2021/03/22)
+    if (not pProject->GetFileByFilename(filename, false))
+    {
+        return false;
+    }
+
+    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+    cbEditor * pEditor = pEdMgr->GetBuiltinEditor(filename);
+    cbStyledTextCtrl * pEdCtrl =  nullptr;          //(ph 2021/04/12)
+
+    if (pEditor)
+    {
+        pEdCtrl = pEditor->GetControl();
+    }
+    else
+    {
+        pEdCtrl = m_Tokenizer.m_pControl;
+    }
+
+    // most ParserThreadOptions was copied from m_Options
+    LSP_SymbolsParserOptions opts;
+    opts.useBuffer             = false;
+    opts.bufferSkipBlocks      = false;
+    opts.bufferSkipOuterBlocks = false;
+    opts.followLocalIncludes   = m_Options.followLocalIncludes;
+    opts.followGlobalIncludes  = m_Options.followGlobalIncludes;
+    opts.wantPreprocessor      = m_Options.wantPreprocessor;
+    opts.parseComplexMacros    = m_Options.parseComplexMacros;
+    opts.platformCheck         = m_Options.platformCheck;
+    // whether to collect doxygen style documents.
+    opts.storeDocumentation    = m_Options.storeDocumentation;
+    opts.loader                = nullptr; // must be 0 at this point
+    bool isLocal = true;
+    wxUnusedVar(isLocal);
+    ParserBase * pParser = m_Parent;
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+
+    if (debugging)
+    {
+        pLogMgr->DebugLog(wxString::Format("---SemanticTokens for %s---", filename));
+    }
+
+    // Example of textDocument/SemanticTokens response data
+    // {"id":"textDocument/semanticTokens/full\u0002file:///F:/usr/Proj/HelloWxWorld/HelloWxWorldMain.h","jsonrpc":"2.0",
+    //      "result":{"data":[10,8,18,19,2048,1,8,18,19,2049,28,8,8,19,2049,4,8,5,19,2049,1,6,17,8,2049,..snip..],"resultId":"1"}}
+    // See documentation at bottom of this function.
+
+    try
+    {
+        json result = pJson->at("result");
+        size_t resultCount = result.size();
+        size_t dataCount = resultCount ? pJson->at("result").at("data").size() : 0 ;
+        json data;
+
+        if (dataCount)
         {
-            break;    //LSP    //(ph 2021/03/22)
+            data = result.at("data");
         }
 
-        // info                                     //(ph 2021/03/22)
-        //m_Tokenizer.m_SemanticTokenIndex      == m_SemanticTokensIdx;
-        //m_Tokenizer.m_SemanticTokenLineNumber == lineNum;
-        //m_Tokenizer.m_SemanticTokenColumn     == colNum;
-        //m_Tokenizer.m_SemanticTokenLength     == txtLen;
-        //m_Tokenizer.m_SemanticTokenType       == type;
-        //m_Tokenizer.m_SemanticTokenModifier   == modifier;
-        TokenKind ccTokenKind = tkUndefined;
-        wxString  args = wxString();
-        /// FIXME (ph#): the following ccTokenKind(s) may not be correct //(ph 2021/03/22)
-        size_t lspTokenTypeIdx = m_Tokenizer.m_SemanticTokenType;
-        wxString lspTokenType = m_Tokenizer.m_SemanticTokensTypes[lspTokenTypeIdx];
+        int lineNumber = 0;
+        int columnNumber  = 0;
 
-        if (lspTokenType == "type")
+        for (size_t symidx = 0; symidx < dataCount; ++symidx)
         {
-            ccTokenKind = tkTypedef;
-        }
-        else
-            if (lspTokenType == "class")
+            CHECK_TIME(startTime, 2000) //(ph 2021/09/7)
+            // [   { deltaLine: 2, deltaStartChar: 5, length: 3, tokenType: 0, tokenModifiers: 3 },  // first token
+            //     { deltaLine: 0, deltaStartChar: 5, length: 4, tokenType: 1, tokenModifiers: 0 },  // second token
+            //     { deltaLine: 3, deltaStartChar: 2, length: 7, tokenType: 2, tokenModifiers: 0 }   // third token
+            // ]
+            int lineDelta      = data.at(symidx).get<int>();
+            int startColDelta  = data.at(++symidx).get<int>();
+            int textLength     = data.at(++symidx).get<int>();
+            int symbolType     = data.at(++symidx).get<int>();
+            int symbolModifier = data.at(++symidx).get<int>();
+            lineNumber += lineDelta;
+            //if (lineDelta) columnNumber = startColDelta; //new line, new column
+            //else columnNumber += startColDelta; //bumping down previous line
+            columnNumber = lineDelta ? startColDelta : columnNumber + startColDelta;
+            wxString lineText = pEdCtrl->GetLine(lineNumber);
+            lineText.Trim(true);  //remove crlf
+            wxString symbolName = lineText.Mid(columnNumber, textLength);
+            symbolName.Trim(true).Trim(false);
+            // Create a SemanticTokenTuple  of store away.
+            //    typedef std::tuple<bool,int,bool,bool> LSP_EditorStatusTuple; //fileOpenInServer, editorPosn, editor is ready, editor is modified
+            //    #define stLINENUM   0 //position of semantic token line number
+            //    #define stCOLNUM    1 //position of semantic token col number
+            //    #define stLENGTH    2 //position of semantic token token length
+            //    #define stTYPE      3 //position of semantic token token type
+            //    #define stMODIFIER  4 //position of semantic token type modifier
+            //    #define stTOKENNAME 5 // std::string token name
+            //    typedef std::tuple<size_t, size_t, size_t, size_t, size_t, std::string> LSP_SemanticToken;
+            ParserBase::LSP_SemanticToken tokenTuple(
+                lineNumber, columnNumber, textLength, symbolType, symbolModifier, symbolName);
+            pParser->AddSemanticToken(tokenTuple);
+
+            if (debugging)  // **debugging** Show each SemanticToken entry
             {
-                ccTokenKind = tkClass;
+                wxString msg = wxString::Format("lineText[%s]", lineText);
+                msg << wxString::Format("\n\tname[%s] Type(%d) modifier[%x]",
+                                        symbolName, symbolType, symbolModifier);
+                pLogMgr->DebugLog(msg);
             }
-            else
-                if (lspTokenType == "enum")
-                {
-                    ccTokenKind = tkEnum;
-                }
-                else
-                    if (lspTokenType == "interface")
-                    {
-                        ccTokenKind = tkMacroDef;
-                    }
-                    else
-                        if (lspTokenType == "struct")
-                        {
-                            ccTokenKind = tkMacroDef;
-                        }
-                        else
-                            if (lspTokenType == "typeParameter")
-                            {
-                                ccTokenKind = tkTypedef;
-                            }
-                            else
-                                if (lspTokenType == "parameter")
-                                {
-                                    ccTokenKind = tkVariable;
-                                }
-                                else
-                                    if (lspTokenType == "variable")
-                                    {
-                                        ccTokenKind = tkVariable;
-                                    }
-                                    else
-                                        if (lspTokenType == "property")
-                                        {
-                                            ccTokenKind = tkVariable;
-                                        }
-                                        else
-                                            if (lspTokenType == "event")
-                                            {
-                                                ccTokenKind = tkUndefined;
-                                            }
-                                            else
-                                                if (lspTokenType == "function")
-                                                {
-                                                    ccTokenKind = tkFunction;
-                                                    args = DoHandleSemanticTokenFunction();
-                                                }
-                                                else
-                                                    if (lspTokenType == "method")
-                                                    {
-                                                        ccTokenKind = tkFunction;
-                                                    }
-                                                    else
-                                                        if (lspTokenType == "macro")
-                                                        {
-                                                            ccTokenKind = tkMacroDef;
-                                                        }
-                                                        else
-                                                            if (lspTokenType == "keyword")
-                                                            {
-                                                                ccTokenKind = tkUndefined;
-                                                            }
-                                                            else
-                                                                if (lspTokenType == "modifier")
-                                                                {
-                                                                    ccTokenKind = tkTypedef;
-                                                                }
-                                                                else
-                                                                    if (lspTokenType == "comment")
-                                                                    {
-                                                                        ccTokenKind = tkUndefined;
-                                                                    }
-                                                                    else
-                                                                        if (lspTokenType == "string")
-                                                                        {
-                                                                            ccTokenKind = tkVariable;
-                                                                        }
-                                                                        else
-                                                                            if (lspTokenType == "number")
-                                                                            {
-                                                                                ccTokenKind = tkVariable;
-                                                                            }
-                                                                            else
-                                                                                if (lspTokenType == "regexp")
-                                                                                {
-                                                                                    ccTokenKind = tkMacroDef;
-                                                                                }
-                                                                                else
-                                                                                    if (lspTokenType == "operator")
-                                                                                    {
-                                                                                        ccTokenKind = tkUndefined;
-                                                                                    }
+        }//endfor symidx
 
-        //Token* DoAddToken(TokenKind       kind,
-        //                  const wxString& name,
-        //                  int             line,
-        //                  int             implLineStart = 0,
-        //                  int             implLineEnd = 0,
-        //                  const wxString& args = wxEmptyString,
-        //                  bool            isOperator = false,
-        //                  bool            isImpl = false);
-        Token * newToken = DoAddToken(ccTokenKind, token,
-                                      m_Tokenizer.m_SemanticTokenLineNumber,
-                                      0, 0, // FIXME (ph#):For semanticToken, any access to Impl start/end line?
-                                      args,
-                                      (lspTokenType == "operator"),          //isOperator
-                                      ((ccTokenKind & tkAnyFunction) != 0)   //isImpl
-                                     );
-        wxUnusedVar(newToken);
-    }//end while
+        //    // **Debugging**
+        //    size_t kntSemanticTokens = pParser->m_SemanticTokensVec.size();
+        //    pLogMgr->DebugLog(wxString::Format("---SemanticTokens count[%d)---", int(kntSemanticTokens)));
+    }
+    catch (std::exception & e)
+    {
+        wxString msg = wxString::Format("%s() Error:%s", __FUNCTION__, e.what());
+        cbMessageBox(msg, "json Exception");
+        return false;
+    }
 
-    // reset tokenizer behaviour
-    m_Tokenizer.SetState(oldState);
     return true;
 }
+// ----------------------------------------------------------------------------
+// Example to explain response data from textdocument/semanticTokens
+// --------------------------------------------------------------------------
+/*
+[ { deltaLine: 2, deltaStartChar: 5, length: 3, tokenType: 0, tokenModifiers: 3 },  // first token
+  { deltaLine: 0, deltaStartChar: 5, length: 4, tokenType: 1, tokenModifiers: 0 },  // second token
+  { deltaLine: 3, deltaStartChar: 2, length: 7, tokenType: 2, tokenModifiers: 0 }   // third token
+]
+
+It's perhaps easiest to explain by looking at example.
+This example is adapted from https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#textDocument_semanticTokens.
+
+Suppose your file had the contents \n\n     foo  bars\n\n  bazzled\n, i.e. rendered with whitespace it would look like this:
+
+
+
+     foo  bars
+
+  bazzled
+This has three tokens at the following positions (using 0-indexing):
+
+foo, at line 2, char 5
+bars, at line 2, char 10
+bazzled, at line 5, char 2
+Here's one possible valid data that the server could respond with:
+
+// 1st token,  2nd token,  3rd token
+[  2,5,3,0,3,  0,5,4,1,0,  3,2,7,2,0 ]
+This is just a compressed form of the following info:
+
+[ { deltaLine: 2, deltaStartChar: 5, length: 3, tokenType: 0, tokenModifiers: 3 },  // first token
+  { deltaLine: 0, deltaStartChar: 5, length: 4, tokenType: 1, tokenModifiers: 0 },  // second token
+  { deltaLine: 3, deltaStartChar: 2, length: 7, tokenType: 2, tokenModifiers: 0 }   // third token
+]
+
+That is, each group of 5 contiguous elements corresponds to one token.
+These 5 elements have the following meaning, in order:
+
+deltaLine:      the line difference between this token and the previous
+deltaStartChar: either the start character difference between this token and the previous
+                (if the previous is on the same line), or just the start character of this token
+                (if the previous is on a different line)
+length:         the length of this token
+tokenType:      index into the token type legend
+tokenModifiers: bit flags for token modifiers
+
+So, for example, the second token has deltaLine = 0, meaning it is on the same line as the first token,
+and deltaStartChar = 5 means that it starts 5 characters after the first token starts.
+The first token doesn't have a token before it, so its position is instead taken to be absolute.
+
+The tokenType is an index into the token types legend, which is established during the initialization
+ handshake of the protocol. The legend for the token modifiers is also established during the
+ initialization handshake.
+
+Although the tokenModifiers value above is just an integer, it will be interpreted as a bit vector,
+where each bit indicates whether the corresponding modifier is on or off.
+For example, the above assigns the first token (foo) the modifiers 0b11, indicating that both the
+0th and the 1st token modifier are active, and all other modifiers do not apply to this token.
+*/
 // ----------------------------------------------------------------------------
 bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProject) //(ph 2021/03/15)
 // ----------------------------------------------------------------------------
@@ -1006,7 +1025,7 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
 
     if (debugging)
     {
-        pLogMgr->DebugLog("-----------------symbols----------------");
+        pLogMgr->DebugLog("--------Document-symbols--------");
     }
 
     try
@@ -1160,8 +1179,10 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
                     //                  const wxString& args = wxEmptyString,
                     //                  bool            isOperator = false,
                     //                  bool            isImpl = false);
-                    bool isImpl = FileTypeOf(filename) == ftSource;
+                    bool isImpl = (ParserCommon::FileType(filename) == ParserCommon::ftSource);
                     TokenKind ccTokenKind = ConvertDocSymbolKindToCCTokenKind(kind);
+
+                    //-if (kind == 13) asm("int3"); /*trap*/ //proves that local variables never occur
 
                     // Handle tokens that arn't class declarations
                     if ((not newToken) and (kind != LSP_DocumentSymbolKind::Class))
@@ -1305,7 +1326,7 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json & jref, wxString & filename, To
             //                  const wxString& args = wxEmptyString,
             //                  bool            isOperator = false,
             //                  bool            isImpl = false);
-            bool isImpl = FileTypeOf(filename) == ftSource;
+            bool isImpl = ParserCommon::FileType(filename) == ParserCommon::ftSource;
             TokenKind ccTokenKind = ConvertDocSymbolKindToCCTokenKind(kind);
             m_LastParent = pParentToken;
             Token * newToken = TokenExists(name, 0, ccTokenKind);
@@ -1512,8 +1533,9 @@ wxString LSP_SymbolsParser::DoGetDocumentSymbolFunctionArgs(wxString & lineTxt, 
 
     return args;
 }
-
+// ----------------------------------------------------------------------------
 Token * LSP_SymbolsParser::TokenExists(const wxString & name, const Token * parent, short int kindMask)
+// ----------------------------------------------------------------------------
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
@@ -1529,8 +1551,9 @@ Token * LSP_SymbolsParser::TokenExists(const wxString & name, const Token * pare
     foundIdx = m_TokenTree->TokenExists(name, m_UsedNamespacesIds, kindMask);
     return m_TokenTree->at(foundIdx);
 }
-
+// ----------------------------------------------------------------------------
 Token * LSP_SymbolsParser::TokenExists(const wxString & name, const wxString & baseArgs, const Token * parent, TokenKind kind)
+// ----------------------------------------------------------------------------
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
@@ -1546,8 +1569,9 @@ Token * LSP_SymbolsParser::TokenExists(const wxString & name, const wxString & b
     foundIdx = m_TokenTree->TokenExists(name, baseArgs, m_UsedNamespacesIds, kind);
     return m_TokenTree->at(foundIdx);
 }
-
+// ----------------------------------------------------------------------------
 wxString LSP_SymbolsParser::GetTokenBaseType()
+// ----------------------------------------------------------------------------
 {
     TRACE(_T("GetTokenBaseType() : Searching within m_Str='%s'"), m_Str.wx_str());
     // Compensate for spaces between namespaces (e.g. NAMESPACE :: SomeType)
@@ -1630,9 +1654,10 @@ wxString LSP_SymbolsParser::GetTokenBaseType()
     TRACE(_T("GetTokenBaseType() : Returning '%s'"), m_Str.wx_str());
     return m_Str; // token ends at start of phrase
 }
-
+// ----------------------------------------------------------------------------
 Token * LSP_SymbolsParser::FindTokenFromQueue(std::queue<wxString> & q, Token * parent, bool createIfNotExist,
                                               Token * parentIfCreated)
+// ----------------------------------------------------------------------------
 {
     if (q.empty())
     {
@@ -1911,8 +1936,9 @@ Token * LSP_SymbolsParser::DoAddToken(TokenKind       kind,
 
     return newToken;
 }
-
+// ----------------------------------------------------------------------------
 void LSP_SymbolsParser::HandleIncludes()
+// ----------------------------------------------------------------------------
 {
 #if defined(cbDEBUG)
     cbAssertNonFatal(0 && "LSP_SymbolsParser::HandleIncludes() shouldnt be here!");
@@ -2640,7 +2666,9 @@ Token * LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int last
     m_Tokenizer.SetState(oldState);
     return newToken;    //(ph 2021/05/30)
 }
+// ----------------------------------------------------------------------------
 void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing HandleTypedefs
+// ----------------------------------------------------------------------------
 {
     // need to force the tokenizer _not_ skip anything
     // as we 're manually parsing class decls
@@ -3079,8 +3107,9 @@ void LSP_SymbolsParser::HandleClass(EClassType ct) //not used until implementing
     // restore tokenizer's functionality
     m_Tokenizer.SetState(oldState);
 }
-
+// ----------------------------------------------------------------------------
 void LSP_SymbolsParser::HandleFunction(wxString & name, bool isOperator, bool isPointer)
+// ----------------------------------------------------------------------------
 {
     TRACE(_T("HandleFunction() : Adding function '") + name + _T("': m_Str='") + m_Str + _T("'"));
     int lineNr = m_Tokenizer.GetLineNumber();
@@ -4919,8 +4948,9 @@ void LSP_SymbolsParser::RefineAnonymousTypeToken(short int typeMask, wxString al
         m_TokenTree->RenameToken(unnamedAncestor, m_Str);
     }
 }
-
+// ----------------------------------------------------------------------------
 wxString LSP_SymbolsParser::ReadAngleBrackets()
+// ----------------------------------------------------------------------------
 {
     wxString str = m_Tokenizer.GetToken();
 

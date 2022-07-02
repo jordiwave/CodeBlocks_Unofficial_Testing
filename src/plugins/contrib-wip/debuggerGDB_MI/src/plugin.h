@@ -14,7 +14,7 @@
     // For compilers that support precompilation, includes <wx/wx.h>
     #include <wx/wx.h>
 #endif
-#include <tr1/memory>
+#include <memory>
 
 // CB includes
 #include <cbplugin.h> // for "class cbPlugin"

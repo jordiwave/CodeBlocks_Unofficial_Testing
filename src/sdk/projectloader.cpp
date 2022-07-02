@@ -210,6 +210,7 @@ bool ProjectLoader::Open(const wxString & filename, TiXmlElement ** ppExtensions
     DoExtraCommandsClean(proj);
     DoExtraCommandsInstall(proj);
     DoUnits(proj);
+    DoGlobalVariables(proj);
 
     // if targets still use the "build with all" flag,
     // it's time for conversion
@@ -373,7 +374,7 @@ bool ProjectLoader::Open(const wxString & filename, TiXmlElement ** ppExtensions
         }
     }
 
-    pMsg->DebugLog("Done loading project in " + wxString::Format(_("%d"), (int) sw.Time()) + "ms");
+    pMsg->DebugLog(wxString(_("Done loading project in %d ms"), (int) sw.Time()));
     return true;
 }
 
@@ -1189,11 +1190,11 @@ void ProjectLoader::DoLibsOptions(TiXmlElement * parentNode, ProjectBuildTarget 
 
 void ProjectLoader::DoExtraCommands(TiXmlElement * parentNode, ProjectBuildTarget * target)
 {
-    CompileOptionsBase * base = target ? target : (CompileOptionsBase *)m_pProject;
     TiXmlElement * node = parentNode->FirstChildElement("ExtraCommands");
 
     while (node)
     {
+        CompileOptionsBase * base = target ? target : (CompileOptionsBase *)m_pProject;
         TiXmlElement * child = node->FirstChildElement("Mode");
 
         while (child)
@@ -1457,6 +1458,32 @@ std::vector<wxString> filesInDir(const wxString & directory, const wxString & wi
     return filterOnWildcards(filesUnfiltered, wildCard);
 }
 } // namespace
+
+void ProjectLoader::DoGlobalVariables(const TiXmlElement * parentNode)
+{
+    const std::string GlobalVariablesLabel("GlobalVariables");
+    const TiXmlElement * globalVariablesNode = parentNode->FirstChildElement(GlobalVariablesLabel.c_str());
+    std::vector<ProjectGlobalVariableEntry> variables;
+
+    while (globalVariablesNode)
+    {
+        const std::string VariableLabel("Variable");
+        const TiXmlElement * variable = globalVariablesNode->FirstChildElement(VariableLabel.c_str());
+
+        while (variable)
+        {
+            const wxString name  = cbC2U(variable->Attribute("name"));
+            const wxString descr = cbC2U(variable->Attribute("description"));
+            const wxString def = cbC2U(variable->Attribute("default"));
+            variables.push_back(ProjectGlobalVariableEntry(name, descr, def));
+            variable = variable->NextSiblingElement(VariableLabel.c_str());
+        }
+
+        globalVariablesNode = globalVariablesNode->NextSiblingElement(GlobalVariablesLabel.c_str());
+    }
+
+    m_pProject->SetGlobalVariables(variables);
+}
 
 void ProjectLoader::DoUnits(const TiXmlElement * parentNode)
 {
@@ -2353,6 +2380,20 @@ bool ProjectLoader::ExportTargetAsProject(const wxString & filename, const wxStr
         if ((int)f->buildTargets.GetCount() == 0)
         {
             AddElement(unitnode, "Option", "target", _T("<{~None~}>"));
+        }
+    }
+
+    const std::vector<ProjectGlobalVariableEntry> varList = m_pProject->GetGlobalVariables();
+
+    if (varList.size() > 0)
+    {
+        TiXmlElement * mainNode = AddElement(prjnode, "GlobalVariables");
+
+        for (const ProjectGlobalVariableEntry & var : m_pProject->GetGlobalVariables())
+        {
+            TiXmlElement * varNode = AddElement(mainNode, "Variable", "name", var.name);
+            varNode->SetAttribute("description", cbU2C(var.description));
+            varNode->SetAttribute("default", cbU2C(var.defaultValue));
         }
     }
 

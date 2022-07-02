@@ -4,7 +4,7 @@ Windows Clangd-Client Plugin install process:
     Windows-LLVM-ClangD-Install-Readme.txt
 2) Disable the Code completion plugin as follows:
     a) Open the Plugin manager via the Code::Blocks "MainMenu=>Plugins=>Manage plugins..." menu
-    b) In the Manage Plugin dialogue do the following:
+    b) In the Manage Plugin dialog do the following:
        i) Find and select the "Code completion" plugin via it's title 
        ii) Press the "Disable" button on the right near the top
        iii) If you get any errors please try again.
@@ -36,7 +36,7 @@ Remove Clangd-Client Plugin via the Plugin Manager
 --------------------------------------------------
 1) Close any opened project or workspaces otherwise you may encounter a crash.
 2) Open the Plugin manager via the Code::Blocks "MainMenu=>Plugins=>Manage plugins..." menu
-3) In the Manage Plugin dialogue do the following:
+3) In the Manage Plugin dialog do the following:
     a) In the plugin list select the "Clangd_Client" row
     b) Press the "Uninstall" button on the right
     c) If Code::Blocks is installed in one of the "Program Files" directory you will need to run Code::Blocks as administrator 

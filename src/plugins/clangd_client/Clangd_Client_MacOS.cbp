@@ -7,8 +7,8 @@
 		<Option compiler="clang" />
 		<Build>
 			<Target title="Clangd_Client">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/clangd_client" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance --no-splash-screen --verbose -p debug --no-ipc " />
 				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -22,7 +22,7 @@
 					<Add after="if [ -e clangd_client.zip ]; then rm clangd_client.zip; fi;" />
 					<Add after="zip -jq9 clangd_client.zip src/resources/manifest.xml src/resources/*.xrc" />
 					<Add after="cd src/resources &amp;&amp; zip -rq9 ../../clangd_client.zip images &amp;&amp; cd ../.." />
-					<Add after="cp clangd_client.zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks" />
+					<Add after="cp clangd_client.zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks" />
 
 					<!-- Cleanup intermediate zip file  -->
 					<Add after="if [ -e clangd_client.zip ]; then rm clangd_client.zip; fi;" />
@@ -31,7 +31,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Clangd_Client_cbplugin">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/clangd_client" />
 				<Option type="3" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose  /p cbDebug315" />
@@ -46,7 +46,7 @@
 					<Add after="if [ -e clangd_client.zip ]; then rm clangd_client.zip; fi;" />
 					<Add after="zip -jq9 clangd_client.zip src/resources/manifest.xml src/resources/*.xrc" />
 					<Add after="cd src/resources &amp;&amp; zip -rq9 ../../clangd_client.zip images &amp;&amp; cd ../.." />
-					<Add after="cp clangd_client.zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks" />
+					<Add after="cp clangd_client.zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks" />
 
 					<!-- the following lines are specific to build the cbplugin -->
 					<Add after="if [ -e clangd_client.cbplugin ]; then rm clangd_client.cbplugin; fi;" />

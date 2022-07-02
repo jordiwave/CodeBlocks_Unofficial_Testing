@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="debbugger GDB MI" />
+		<Option title="Debbugger GDB MI" />
 		<Option default_target="debbugger_gdb_mi_cbplugin" />
 		<Option compiler="gcc" />
 		<Build>
@@ -91,7 +91,7 @@
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-m$(#CB_BUILD.OSBITS)" />

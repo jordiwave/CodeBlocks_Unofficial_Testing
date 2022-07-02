@@ -584,8 +584,10 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
 {
     WatchesProperty * last_prop = static_cast<WatchesProperty *>(m_grid->GetLastItem(wxPG_ITERATE_DEFAULT));
     WatchItem item;
-    wxString symbol, value;
+    wxString symbol, value, type;
     watch->GetSymbol(symbol);
+    watch->GetValue(value);
+    watch->GetType(type);
 
     if (last_prop && last_prop->GetLabel() == wxEmptyString)
     {
@@ -600,10 +602,11 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
 
         m_grid->SetPropertyLabel(item.property, symbol);
         m_grid->SetPropertyName(item.property, symbol);
+        m_grid->SetPropertyValue(item.property, value);
+        m_grid->SetPropertyAttribute(item.property, "Units", type);
         WatchesProperty * watches_prop = static_cast<WatchesProperty *>(last_prop);
         watches_prop->SetWatch(watch);
-        m_grid->Append(new WatchesProperty(wxEmptyString, wxEmptyString, cb::shared_ptr<cbWatch>(),
-                                           false));
+        m_grid->Append(new WatchesProperty(wxEmptyString, wxEmptyString, cb::shared_ptr<cbWatch>(), false));
     }
     else
     {

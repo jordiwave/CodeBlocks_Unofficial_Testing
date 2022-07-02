@@ -2,6 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
+ * $Revision: 67 $
+ * $Id: parsemanager_base.cpp 67 2022-06-30 18:38:38Z pecanh $
+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parsemanager_base.cpp $
  */
 
 #include <sdk.h>
@@ -1349,7 +1352,7 @@ void ParseManagerBase::AddConstructors(TokenTree * tree, const TokenIdxSet & sou
 ////}
 
 // No critical section needed in this recursive function!
-// All functions that call this recursive function, should already entered a critical section.
+// All functions that call this recursive function, should already have entered a critical section.
 //
 // Here are sample algorithm, if we have code snippet
 //
@@ -1514,7 +1517,7 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree   *   tree,
 }
 
 // No critical section needed in this recursive function!
-// All functions that call this recursive function, should already entered a critical section.
+// All functions that call this recursive function, should already have entered a critical section.
 /** detailed description
  * we have special handling of the c++ stl container with some template related code:
  * example:

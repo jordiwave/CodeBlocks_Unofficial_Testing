@@ -117,6 +117,25 @@ enum PCHMode
     pchSourceFile     /// In a file alongside the source header (with .gch appended).
 };
 
+struct ProjectGlobalVariableEntry
+{
+    ProjectGlobalVariableEntry(const wxString & name, const wxString & description, const wxString defaultValue)
+    {
+        this->name = name;
+        this->description = description;
+        this->defaultValue = defaultValue;
+    }
+
+    bool operator<(const ProjectGlobalVariableEntry & r)
+    {
+        return name < r.name;
+    }
+
+    wxString name;
+    wxString description;
+    wxString defaultValue;
+};
+
 /** @brief Represents a Code::Blocks project.
   *
   * A project is a collection of build targets and files.
@@ -512,6 +531,20 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         std::vector<Glob> GetGlobs() const;
 
+        /** Set GlobalVariables array stored in this project
+          * @return variables Variables to replace the current ones
+          */
+        void SetGlobalVariables(const std::vector<ProjectGlobalVariableEntry> variables);
+
+        /** Retrieve the current global variables stored in this project
+         * Global variables can be stored in the project with description and default value
+         * if on load time a variable is not defined in the environment the user is provided
+         * with the information stored in this global variables vector.
+         *
+         * @return Global variables stored in this project.
+         */
+        std::vector<ProjectGlobalVariableEntry> GetGlobalVariables() const;
+
         /** Convenience function for remembering the project's tree state when refreshing it.
           * @return An array of strings containing the tree-path names of expanded nodes.
           */
@@ -832,6 +865,8 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxArrayString     m_SelectedNodes;
         bool              m_Loaded;
         wxTreeItemId      m_ProjectNode;
+
+        std::vector<ProjectGlobalVariableEntry> m_GlobalVariables;
 
         wxArrayString m_VirtualFolders; // not saved, just used throughout cbProject's lifetime
 

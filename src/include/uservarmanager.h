@@ -14,6 +14,9 @@
     #include "globals.h"
 #endif
 
+#include <wx/regex.h>
+#include <set>
+
 class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 {
         friend class Manager;
@@ -24,8 +27,12 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
         wxString        m_ActiveSet;
         wxArrayString   m_Preempted;
 
+        wxRegEx         m_RE_Var;
+
     public:
         UserVariableManager();
+
+        void CollectVariableNames(wxString searchIn, std::set<wxString> & out) const;
 
         wxString Replace(const wxString & variable);
 

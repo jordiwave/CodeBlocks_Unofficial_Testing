@@ -23,6 +23,8 @@ class IProcess;
 #include <wx/arrstr.h>
 #include <wx/string.h>
 
+#include "logmanager.h"
+
 #ifdef __WXMSW__
     static bool shell_is_cmd = true;
     #include "winprocess_impl.h"
@@ -57,7 +59,10 @@ class __AsyncCallback : public wxEvtHandler
             //            m_output.reserve(new_len);
             //            m_output << event.GetOutput();
             //        }
-            asm("int3"); /*trap*/
+            //asm("int3"); /*trap*/
+            LogManager * pLogMgr = Manager::Get()->GetLogManager();
+            wxString msg = wxString::Format("%s entered. Should be unused.", __PRETTY_FUNCTION__);
+            pLogMgr->DebugLogError(msg);
         }
 
         // --------------------------------------------------------------
@@ -71,7 +76,10 @@ class __AsyncCallback : public wxEvtHandler
             //        m_cb(m_output);
             //        delete event.GetProcess();
             //        delete this; // we are no longer needed...
-            asm("int3"); /*trap*/
+            //asm("int3"); /*trap*/
+            LogManager * pLogMgr = Manager::Get()->GetLogManager();
+            wxString msg = wxString::Format("%s entered. Should be unused.", __PRETTY_FUNCTION__);
+            pLogMgr->DebugLogError(msg);
         }
 };
 

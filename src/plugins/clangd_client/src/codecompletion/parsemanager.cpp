@@ -2,6 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
+ * $Revision: 66 $
+ * $Id: parsemanager.cpp 66 2022-06-18 16:45:19Z pecanh $
+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parsemanager.cpp $
  */
 
 #include <sdk.h>
@@ -699,7 +702,7 @@ wxString ParseManager::GetHeaderForSourceFile(cbProject * pProject, wxString & f
     //-ProjectFile* pProjectFile = pProject->GetFileByFilename(filename, false);
     wxFileName fnFilename(filename);
 
-    if (FileTypeOf(filename) == ftHeader)
+    if (ParserCommon::FileType(filename) == ParserCommon::ftHeader)
     {
         return wxString();    //already a header
     }
@@ -708,7 +711,7 @@ wxString ParseManager::GetHeaderForSourceFile(cbProject * pProject, wxString & f
     {
         ProjectFile * pf = *flist_it;
 
-        if ((FileTypeOf(pf->relativeFilename) == ftSource)
+        if ((ParserCommon::FileType(pf->relativeFilename) == ParserCommon::ftSource)  //look for hdrs only
                 or (FileTypeOf(pf->relativeFilename) == ftTemplateSource))
         {
             continue;
@@ -716,7 +719,7 @@ wxString ParseManager::GetHeaderForSourceFile(cbProject * pProject, wxString & f
 
         if (pf and (pf->file.GetName() == fnFilename.GetName()))
         {
-            if (FileTypeOf(pf->relativeFilename) == ftHeader)
+            if (ParserCommon::FileType(pf->relativeFilename) == ParserCommon::ftHeader)
             {
                 return pf->file.GetFullPath();
             }
@@ -733,16 +736,17 @@ wxString ParseManager::GetSourceForHeaderFile(cbProject * pProject, wxString & f
     //-ProjectFile* pProjectFile = pProject->GetFileByFilename(filename, false);
     wxFileName fnFilename(filename);
 
-    if (FileTypeOf(filename) == ftSource)
+    //-if (FileTypeOf(filename) == ftSource) return wxString(); //already a source file //(ph 2022/06/01)-
+    if (ParserCommon::FileType(filename) == ParserCommon::ftSource)
     {
-        return wxString();    //already a source file
+        return wxString();    //already a source file //(ph 2022/06/1)-
     }
 
     for (FilesList::const_iterator flist_it = pProject->GetFilesList().begin(); flist_it != pProject->GetFilesList().end(); ++flist_it)
     {
         ProjectFile * pf = *flist_it;
 
-        if (FileTypeOf(pf->relativeFilename) != ftSource)
+        if (ParserCommon::FileType(pf->relativeFilename) != ParserCommon::ftSource)
         {
             continue;
         }
@@ -759,12 +763,12 @@ wxString ParseManager::GetSourceForHeaderFile(cbProject * pProject, wxString & f
 wxString ParseManager::GetSourceOrHeaderForFile(cbProject * pProject, wxString & filename)  //(ph 2021/05/19)
 // ----------------------------------------------------------------------------
 {
-    if (FileTypeOf(filename) == ftHeader)
+    if (ParserCommon::FileType(filename) == ParserCommon::ftHeader)
     {
         return GetSourceForHeaderFile(pProject, filename);
     }
 
-    if (FileTypeOf(filename) == ftSource)
+    if (ParserCommon::FileType(filename) == ParserCommon::ftSource)
     {
         return GetHeaderForSourceFile(pProject, filename);
     }
@@ -867,16 +871,16 @@ bool ParseManager::DeleteParser(cbProject * project)
         CCLogger::Get()->DebugLog(log);
         // The logic here is : firstly delete the parser instance, then see whether we need an
         // active parser switch (call SetParser())
+        m_ParserList.erase(parserList_it); //remove deleted parser from parser list
         delete parserList_it->second;
 
         // if the active parser is deleted, set the active parser to nullptr
         if (parserList_it->second == m_Parser)
         {
             m_Parser = nullptr;
-            SetParser(m_TempParser); // Also updates class browser
+            SetParser(m_TempParser); // Also updates class browser; do not use SetParser(m_TempParser) //(ph 2022/06/6)-
         }
 
-        m_ParserList.erase(parserList_it);
         return true;
     }
 
@@ -1481,9 +1485,10 @@ void ParseManager::GetPriorityFilesForParsing(StringList & localSourcesList, cbP
                         break;    //file doesnt belong to this project
                     }
 
-                    FileType ft = FileTypeOf(pEditor->GetShortName());                  //(ph 2021/09/14)
+                    ParserCommon::EFileType ft = ParserCommon::FileType(pEditor->GetShortName()); //(ph 2022/06/01)
 
-                    if (ft != ftHeader && ft != ftSource && ft != ftTemplateSource)  // only parse source/header files
+                    //-if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
+                    if (ft == ParserCommon::ftOther)
                     {
                         break;
                     }
@@ -1539,9 +1544,11 @@ void ParseManager::GetPriorityFilesForParsing(StringList & localSourcesList, cbP
                     continue;
                 }
 
-                FileType ft = FileTypeOf(pEditor->GetShortName());              //(ph 2021/09/14)
+                // only parse source/header files
+                ParserCommon::EFileType ft = ParserCommon::FileType(pEditor->GetShortName());             //(ph 2022/06/01)
 
-                if (ft != ftHeader && ft != ftSource && ft != ftTemplateSource)  // only parse source/header files
+                if ((ft != ParserCommon::ftHeader) && (ft != ParserCommon::ftSource)                      //(ph 2022/06/01)
+                        && (FileTypeOf(pEditor->GetShortName()) != ftTemplateSource))
                 {
                     continue;
                 }
@@ -1727,7 +1734,7 @@ bool ParseManager::SwitchParser(cbProject * project, ParserBase * parser)
     TRACE(_T("ParseManager::SwitchParser()"));
     SetParser(parser); // Also updates class browser
     wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
-    wxString log(wxString::Format(_("Switch parser to project '%s'"), prj.wx_str()));
+    wxString log(wxString::Format(_("Switching parser to project '%s'"), prj.wx_str()));
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
     return true;
@@ -1741,6 +1748,21 @@ void ParseManager::SetParser(ParserBase * parser)
     {
         return;
     }
+
+#if defined(cbDEBUG)
+
+    if (not Manager::IsAppShuttingDown())
+    {
+        wxString fromProject = "*NONE*";
+        wxString toProject = "*NONE*";
+        // The parser and project pointers can be null; Esp., for the TempParser
+        fromProject = (m_Parser and ((Parser *)m_Parser)->GetParsersProject()) ? ((Parser *)m_Parser)->GetParsersProject()->GetTitle() : "*NONE*";
+        toProject   = (parser and ((Parser *)  parser)->GetParsersProject()) ? ((Parser *)  parser)->GetParsersProject()->GetTitle() : "*NONE*";
+        wxString msg = wxString::Format("Switching parser/project from %s to %s", fromProject, toProject); //(ph 2022/06/4)
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+    }
+
+#endif
 
     // a new parser is active, so remove the old parser's local variable tokens.
     // if m_Parser == nullptr, this means the active parser is already deleted.
@@ -3315,7 +3337,7 @@ void ParseManager::OnEditorActivated(EditorBase * editor)
         }
         else
         {
-            parser = m_TempParser;    // do *not* instead by SetParser(m_TempParser)
+            parser = m_TempParser;    // do *not* use SetParser(m_TempParser)
         }
     }
     else
@@ -3606,7 +3628,12 @@ void ParseManager::SetProxyProject(cbProject * pActiveProject)
     // Set the proxy project into the list of parser->projects
     //This is what happens: m_ParserList.push_back(std::make_pair(m_pProxyProject, pProxyParser));
     ParserBase * pProxyParser = CreateParser(m_pProxyProject, false);
-    wxUnusedVar(pProxyParser);
+
+    if (pProxyParser)
+    {
+        m_pProxyParser = pProxyParser;
+    }
+
     m_pProxyProject->SetCheckForExternallyModifiedFiles(false);
 
     // Remove the 'default' ProxyProject target if we have an active project clone from.

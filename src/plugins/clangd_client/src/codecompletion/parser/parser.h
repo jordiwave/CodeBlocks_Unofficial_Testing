@@ -20,6 +20,7 @@
 #include <sdk_events.h>
 #include <cbplugin.h>
 #include "searchresultslog.h"
+#include "../doxygen_parser.h"             //(ph 2022/06/15)
 
 #include "LSP_symbolsparser.h"          //(ph 2021/07/27)
 #include "parser_base.h"
@@ -167,7 +168,7 @@ class Parser : public ParserBase
          * @param json containing LSP symbols
          */
         void LSP_ParseDocumentSymbols(wxCommandEvent & event);
-        void OnLSP_ParseSemanticTokens(wxCommandEvent & event);               //(ph 2021/03/17)
+        void LSP_ParseSemanticTokens(wxCommandEvent & event);                 //(ph 2021/03/17)
         void LSP_OnClientInitialized(cbProject * pProject);                   //(ph 2021/11/11)
         bool IsOkToUpdateClassBrowserView();
 
@@ -227,10 +228,13 @@ class Parser : public ParserBase
             return GetParseManager()->GetIdleCallbackHandler();
         }
 
+        void RequestSemanticTokens(cbEditor * pEditor);
+
         //(ph 2021/10/23)
         void OnLSP_ReferencesResponse(wxCommandEvent & event);
         void OnLSP_DeclDefResponse(wxCommandEvent & event);
         void OnLSP_RequestedSymbolsResponse(wxCommandEvent & event);              //(ph 2021/03/12)
+        void OnLSP_RequestedSemanticTokensResponse(wxCommandEvent & event); //(ph 2022/06/8)
         void OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<cbCodeCompletionPlugin::CCToken> & v_completionTokens);                   //(ph 2021/10/31)
         void OnLSP_DiagnosticsResponse(wxCommandEvent & event);
         void OnLSP_HoverResponse(wxCommandEvent & event, std::vector<cbCodeCompletionPlugin::CCToken> & v_HoverTokens, int n_hoverLastPosition);
@@ -239,6 +243,10 @@ class Parser : public ParserBase
         void OnLSP_GoToPrevFunctionResponse(wxCommandEvent & event);
         void OnLSP_GoToNextFunctionResponse(wxCommandEvent & event);
         void OnLSP_GoToFunctionResponse(wxCommandEvent & event); //unused
+        void OnLSP_CompletionPopupHoverResponse(wxCommandEvent & event); //(ph 2022/06/15)
+
+        wxString GetCompletionPopupDocumentation(const cbCodeCompletionPlugin::CCToken & token);
+        int      FindSemanticTokenEntryFromCompletion(cbCodeCompletionPlugin::CCToken & cctoken, int completionTokenKind);
 
         FileUtils fileUtils;
 
@@ -266,8 +274,10 @@ class Parser : public ParserBase
         /** when initialized, this variable will be an instance of a ParseManager */
         ParseManager * m_pParseManager;
 
-        /** referring to the C::B cbp project currently parsing in one parser per workspace mode */
-        cbProject        *        m_Project;
+        /** referring to the C::B cbp project currently parsing in non-project owned files */
+        cbProject        *        m_ProxyProject;
+        /** referring to the C::B cbp project currently parsing owned project files */
+        cbProject        *        m_ParsersProject;
 
     private:
 
@@ -330,6 +340,12 @@ class Parser : public ParserBase
         // map of reasons to pause parsing <reason, count>
         typedef std::map<wxString, int> PauseReasonType;
         PauseReasonType m_PauseParsingMap; //map of pauseReason and count
+        //std::vector<cbCodeCompletionPlugin::CCToken> m_vHoverTokens;
+        wxString m_HoverCompletionString;
+        cbCodeCompletionPlugin::CCToken m_HoverCCTokenPending = {-1, "", "", -1, -1};
+        /** Provider of documentation for the popup window */
+        DocumentationHelper m_DocHelper;
+
     public:
         // ----------------------------------------------------------------------------
         int PauseParsingCount()
@@ -384,7 +400,8 @@ class Parser : public ParserBase
         bool PauseParsingForReason(wxString reason, bool increment)
         // ----------------------------------------------------------------------------
         {
-            wxString the_project = m_Project->GetTitle();
+            //wxString the_project = m_Project->GetTitle();
+            wxString the_project = GetParsersProject()->GetTitle();
             wxString the_reason = reason.MakeLower();
 
             if (PauseParsingExists(the_reason) and increment)
@@ -462,6 +479,14 @@ class Parser : public ParserBase
             return pCntl->GetCurrentPos();
         }
 
+        cbProject * GetProxyProject()
+        {
+            return m_ProxyProject;
+        }
+        cbProject * GetParsersProject()
+        {
+            return m_ParsersProject;
+        }
 };
 
 #endif // PARSER_H

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="2" minor="17" release="0" />
+    <Plugin name="debugger_dap">
+        <Value version="0.0.1" />
+        <Value title="Debugger DAP Plugin" />
+        <Value description="Debugger Adapter Protocol debugger" />
+        <Value author="Andrew Cottrell" />
+        <Value authorEmail="" />
+        <Value authorWebsite="" />
+        <Value thanksTo="" />
+        <Value license="" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

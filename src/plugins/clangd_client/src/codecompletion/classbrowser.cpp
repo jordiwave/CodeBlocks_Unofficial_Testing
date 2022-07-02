@@ -418,7 +418,8 @@ void ClassBrowser::ShowMenu(wxTreeCtrl * tree, wxTreeItemId id, cb_unused const 
             menu->AppendSeparator();
         }
 
-        menu->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
+        // FIXME (ph#): Show inherited is causing loop when no inherited class //(ph 2022/05/31)
+        //?menu->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
         menu->AppendCheckItem(idCBExpandNS,        _("Auto-expand namespaces"));
         menu->Append(idMenuRefreshTree,   _("&Refresh tree"));
 
@@ -435,7 +436,8 @@ void ClassBrowser::ShowMenu(wxTreeCtrl * tree, wxTreeItemId id, cb_unused const 
             menu->Check(idMenuDebugSmartSense, s_DebugSmartSense);
         }
 
-        menu->Check(idCBViewInheritance, m_Parser ? options.showInheritance : false);
+        // FIXME (ph#): Show Inheritance is causing a loop //(ph 2022/05/31)
+        // restore this: menu->Check(idCBViewInheritance, m_Parser ? options.showInheritance : false);
         menu->Check(idCBExpandNS,        m_Parser ? options.expandNS        : false);
     }
 

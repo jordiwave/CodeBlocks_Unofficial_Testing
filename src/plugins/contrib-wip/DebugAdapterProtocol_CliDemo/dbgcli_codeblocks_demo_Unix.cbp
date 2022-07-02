@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Debugger WXDAP CLI Demo" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debugger WXDAP CLI Demo">
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/CLI_WXDAP_Demo" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/CLI_WXDAP_Demo" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-std=$(#CB_BUILD.C_STD)" />
+			<Add option="-m$(#CB_BUILD.OSBITS)" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="-pipe" />
+			<Add option="-fexceptions" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`pkg-config --cflags codeblocks`" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="." />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="../DebugAdapterProtocol" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-lwxscintilla_cb" />
+			<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GLIB) $(#CB_BUILD.PKG_CONFIG_GDK) --libs codeblocks`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,propgrid`" />
+			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add library="debugger_WXDAP" />
+		</Linker>
+		<Unit filename="../README.md" />
+		<Unit filename="ConsoleApp.cpp" />
+		<Unit filename="ConsoleApp.hpp" />
+		<Unit filename="MainFrame.cpp" />
+		<Unit filename="MainFrame.hpp" />
+		<Unit filename="UI.cpp" />
+		<Unit filename="UI.hpp" />
+		<Unit filename="UI.wxcp" />
+		<Unit filename="UI_dbgcli_bitmaps.cpp" />
+		<Unit filename="resources.rc">
+			<Option compilerVar="WINDRES" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

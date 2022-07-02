@@ -21,7 +21,7 @@
 				</Linker>
 			</Target>
 			<Target title="wxSmith">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/wxsmith" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/wxsmith" prefix_auto="1" extension_auto="1" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -36,8 +36,8 @@
 					<Add library="wxsmithlib" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ; fi" />
-					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/wxsmith.zip manifest.xml" />
+					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ; fi" />
+					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip manifest.xml" />
 					<Mode before="always" />
 					<Mode after="always" />
 				</ExtraCommands>
@@ -64,8 +64,8 @@
 			<Add directory="$(#CB_BUILD.INCLUDE)/scripting/include" />
 		</Compiler>
 		<ExtraCommands>
-			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/wxsmith ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/wxsmith ; fi" />
-			<Add after="cp ./wxwidgets/icons/*.png $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/wxsmith/ > /dev/null 2> /dev/null" />
+			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith ; fi" />
+			<Add after="cp ./wxwidgets/icons/*.png $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith/ > /dev/null 2> /dev/null" />
 			<Mode before="always" />
 			<Mode after="always" />
 		</ExtraCommands>

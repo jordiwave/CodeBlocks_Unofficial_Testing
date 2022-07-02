@@ -170,6 +170,15 @@ void UserVariableManager::Configure()
     m_ActiveSet = Manager::Get()->GetConfigManager(_T("gcv"))->Read(_T("/active"));
 }
 
+void UserVariableManager::CollectVariableNames(wxString in, std::set<wxString> & out) const
+{
+    while (m_RE_Var.Matches(in))
+    {
+        const wxString var = m_RE_Var.GetMatch(in, 3).Upper();
+        out.insert(var);
+        in.Replace(m_RE_Var.GetMatch(in, 0), "", true);
+    }
+}
 
 wxString UserVariableManager::Replace(const wxString & variable)
 {
@@ -259,8 +268,18 @@ bool UserVariableManager::Exists(const wxString & variable) const
         return false;
     }
 
-    wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
-    return m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base"));
+    const wxString package = variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower();
+    const wxString member  = variable.AfterFirst(wxT('.')).MakeLower();
+    const wxString path = cSets + m_ActiveSet + _T('/') + package;
+    const bool packageExists = m_CfgMan->Exists(path + _T("/base"));
+    bool memberExists =  member.IsEmpty() || member.IsSameAs(cBase) || member.IsSameAs(cInclude) || member.IsSameAs(cLib) || member.IsSameAs(cObj) || member.IsSameAs(cBin);
+
+    if (!memberExists)
+    {
+        memberExists = !m_CfgMan->Read(path + member).IsEmpty();
+    }
+
+    return memberExists && packageExists;
 }
 
 bool UserVariableManager::SetActiveVariableSet(const wxString & varset)
@@ -325,6 +344,7 @@ UserVariableManager::UserVariableManager()
 {
     m_CfgMan = Manager::Get()->GetConfigManager(_T("gcv"));
     Migrate();
+    m_RE_Var.Compile("([^$]|^)(\\$[({]?(#[A-Za-z_0-9.]+)[\\)} /\\\\]?)", wxRE_EXTENDED | wxRE_NEWLINE);
 }
 
 void UserVariableManager::Migrate()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="CodeBlocks Workspace Windows">
-		<Project filename="CodeBlocks_Windows.cbp" active="1" />
+		<Project filename="CodeBlocks_Windows.cbp" />
 		<Project filename="tools/Addr2LineUI/Addr2LineUI_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
@@ -152,14 +152,9 @@
 		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE SVN EXTERN PLUGINS <=<=<=<=<=<=<=<=<=<= -->
 		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
-		</Project>    
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		</Project>
 		<Project filename="plugins/contrib-wip/cbDiff/cbDiff_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
@@ -190,9 +185,12 @@
 		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-
+		<Project filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
+		<Project filename="plugins/contrib-wip/DebugAdapterProtocol_CliDemo/dbgcli_codeblocks_demo_Windows.cbp">
+			<Depends filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/Debugger_DAP/Debugger_DAP_Windows.cbp">
+			<Depends filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
+		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

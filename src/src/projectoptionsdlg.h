@@ -9,10 +9,33 @@
 #include "settings.h"
 #include "scrollingdialog.h"
 
+#include "cbproject.h"
+
 class wxTreeEvent;
 class wxSpinEvent;
+class wxDataViewEvent;
 class cbProject;
 class cbCompilerPlugin;
+
+
+struct ProjectVarView
+{
+
+    ProjectVarView(const wxString & name) : m_inProject(false), m_used(true), m_name(name)
+    {
+    };
+
+    ProjectVarView(const ProjectGlobalVariableEntry & entry, bool used) : m_inProject(true), m_used(used), m_name(entry.name),
+        m_desc(entry.description), m_def(entry.defaultValue)
+    {
+    }
+
+    bool m_inProject; // Stored in project file
+    bool m_used;      // Used in the project
+    wxString m_name;
+    wxString m_desc;
+    wxString m_def;
+};
 
 /*
  * No description
@@ -63,6 +86,11 @@ class ProjectOptionsDlg : public wxScrollingDialog
         void OnScriptMoveDown(wxSpinEvent & event);
     private:
         void BuildScriptsTree();
+
+        void BuildGlobalVariablesView();
+        void OnHandleGlobarVariablesEditDone(wxDataViewEvent & evt);
+        void OnHandleGlobarVariablesEditStarted(wxDataViewEvent & evt);
+
         void AddPluginPanels();
         void FillScripts();
         void FillBuildTargets();
@@ -72,6 +100,8 @@ class ProjectOptionsDlg : public wxScrollingDialog
         bool IsScriptValid(ProjectBuildTarget * target, const wxString & script, wxString & errorMsg);
         bool ValidateTargetName(const wxString & name);
         void UpdateTargetControls();
+
+        std::vector<ProjectVarView> m_VarList;
         cbProject * m_Project;
         int m_Current_Sel; // current target selection (when selection changes it is the old selection - handy, eh?)
         cbCompilerPlugin * m_pCompiler;

@@ -262,6 +262,14 @@ class LanguageClient : public JsonTransport
             return SendRequest("textDocument/hover", std::move(params));
         }
 
+        RequestID HoverByID(DocumentUri uri, Position position, std::string reqID)
+        {
+            TextDocumentPositionParams params;
+            params.textDocument.uri = std::move(uri);
+            params.position = position;
+            return SendRequestByID("textDocument/hover", reqID, std::move(params));
+        }
+
         RequestID DocumentSymbol(DocumentUri uri)
         {
             DocumentSymbolParams params;
@@ -888,16 +896,17 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         void LSP_DidClose(cbEditor * pcbEd);
         void LSP_DidClose(wxString filename, cbProject * pProject);
         void LSP_DidSave(cbEditor * pcbEd);
-        void LSP_GoToDefinition(cbEditor * pcbEd, int edCaretPosition, size_t id = 0);
-        void LSP_GoToDeclaration(cbEditor * pcbEd, int edCaretPosition, size_t id = 0);
+        void LSP_GoToDefinition(cbEditor * pcbEd, int edCaretPosition, size_t rrid = 0);
+        void LSP_GoToDeclaration(cbEditor * pcbEd, int edCaretPosition, size_t rrid = 0);
         void LSP_FindReferences(cbEditor * pEd, int caretPosn);
         void LSP_RequestRename(cbEditor * pEd, int argCaretPosition, wxString newName);       //(ph 2021/10/12)
-        void LSP_RequestSymbols(cbEditor * pEd, size_t id = 0);
-        void LSP_RequestSymbols(wxString filename, cbProject * pProject, size_t id = 0);
-        void LSP_RequestSemanticTokens(cbEditor * pEd, size_t id = 0); //(ph 2021/03/16)
+        void LSP_RequestSymbols(cbEditor * pEd, size_t rrid = 0);
+        void LSP_RequestSymbols(wxString filename, cbProject * pProject, size_t rrid = 0);
+        void LSP_RequestSemanticTokens(cbEditor * pEd, size_t rrid = 0); //(ph 2021/03/16)
+        void LSP_RequestSemanticTokens(wxString filename, cbProject * pProject, size_t rrid = 0); //(ph 2022/06/8)
         void LSP_DidChange(cbEditor * pEd);
-        void LSP_Completion(cbEditor * pEd);
-        void LSP_Hover(cbEditor * pEd, int posn);
+        void LSP_CompletionRequest(cbEditor * pEd, int rrid = 0);
+        void LSP_Hover(cbEditor * pEd, int posn, int rrid = 0); //(ph 2022/06/15)
         void LSP_SignatureHelp(cbEditor * pEd, int posn);
 
         void writeClientLog(wxString logmsg);

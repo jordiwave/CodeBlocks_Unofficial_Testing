@@ -100,7 +100,7 @@ class ParseManagerBase
 
         //    /**@brief Artificial Intelligence Matching
         //    *
-        //    * All functions that call this recursive function, should already entered a critical section or
+        //    * All functions that call this recursive function, should already have entered a critical section or
         //    * a mutex to protect the TokenTree.
         //    *
         //    * match (consume) the ParserComponent queue from left to right,
@@ -355,7 +355,7 @@ class ParseManagerBase
 
         /** Generate the matching results under the Parent Token index set
          *
-         * All functions that call this recursive function, should already entered a critical section.
+         * All functions that call this recursive function, should already have entered a critical section.
          *
          * @param tree TokenTree pointer
          * @param target Scope (defined in TokenIdxSet)
@@ -372,10 +372,10 @@ class ParseManagerBase
                                  bool            isPrefix = false,
                                  short int       kindMask = 0xFFFF);
 
-        /** This function is just like the one above, especially that it use a single parent Token id,
+        /** This function is just like the one above, except that it uses a single parent Token id,
          *  not the parent id set in previous one.
          *
-         * All functions that call this recursive function, should already entered a critical section.
+         * All functions that call this recursive function, should already have entered a critical section.
          *
          */
         size_t GenerateResultSet(TokenTree     *    tree,

@@ -207,7 +207,43 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString & filename, bool f
     return ParserCommon::ftOther;
 }
 #endif //CC_PARSER_TEST
-
+////// ----------------------------------------------------------------------------
+////namespace Now defined in namespze LSP_DocumentSymbolKind
+////// ----------------------------------------------------------------------------
+////{
+////    // ----------------------------------------------------------------------------
+////    // Language Server symbol kind.
+////    // ----------------------------------------------------------------------------
+////    // defined in https://microsoft.github.io/language-server-protocol/specification
+////    enum LSP_DocumentSymbolKind {
+////        File = 1,
+////        Module = 2,
+////        Namespace = 3,
+////        Package = 4,
+////        Class = 5,
+////        Method = 6,
+////        Property = 7,
+////        Field = 8,
+////        Constructor = 9,
+////        Enum = 10,
+////        Interface = 11,
+////        Function = 12,
+////        Variable = 13,
+////        Constant = 14,
+////        String = 15,
+////        Number = 16,
+////        Boolean = 17,
+////        Array = 18,
+////        Object = 19,
+////        Key = 20,
+////        Null = 21,
+////        EnumMember = 22,
+////        Struct = 23,
+////        Event = 24,
+////        Operator = 25,
+////        TypeParameter = 26
+////    };
+////}
 // ----------------------------------------------------------------------------
 ParserBase::ParserBase()
 // ----------------------------------------------------------------------------
@@ -540,7 +576,7 @@ Token * ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayN
                 continue;    //(ph 2021/10/27)
             }
 
-            //-bool isImpl = FileTypeOf(edFilename) == ftSource;
+            //-bool isImpl = ParserCommon::FileType(edFilename) == ParserCommon::ftSource;
             wxString tokenFilename = pToken->GetFilename();
 
             //?if ( pToken && (pToken->GetFilename() != edFilename) ) continue;      //(ph 2021/05/22)
@@ -577,4 +613,326 @@ Token * ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayN
     }//end else
 
     return pFoundToken;
+}
+// ----------------------------------------------------------------------------
+TokenKind ParserBase::ConvertLSPSymbolKindToCCTokenKind(int docSymKind)
+// ----------------------------------------------------------------------------
+{
+    /// FIXME (ph#): the following ccTokenKind(s) may not be correct //(ph 2021/03/22)
+    TokenKind ccTokenKind = tkUndefined;
+
+    switch (docSymKind)
+    {
+        case LSP_DocumentSymbolKind::File:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_DocumentSymbolKind::Module:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_DocumentSymbolKind::Namespace:
+            ccTokenKind = tkNamespace;
+            break;
+
+        case LSP_DocumentSymbolKind::Package:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_DocumentSymbolKind::Class:
+            ccTokenKind = tkClass;
+            break;
+
+        case LSP_DocumentSymbolKind::Method:
+            ccTokenKind = tkFunction;
+            break;
+
+        case LSP_DocumentSymbolKind::Property:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_DocumentSymbolKind::Field:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_DocumentSymbolKind::Constructor:
+            ccTokenKind = tkConstructor;
+            break;
+
+        case LSP_DocumentSymbolKind::Enum:
+            ccTokenKind = tkEnum;
+            break;
+
+        case LSP_DocumentSymbolKind::Interface:
+            ccTokenKind = tkClass;
+            break;
+
+        case LSP_DocumentSymbolKind::Function:
+            ccTokenKind = tkFunction;
+            break;
+
+        case LSP_DocumentSymbolKind::Variable:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_DocumentSymbolKind::Constant:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_DocumentSymbolKind::String:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Number:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Boolean:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Array:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Object:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Key:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::Null :
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_DocumentSymbolKind::EnumMember:
+            ccTokenKind = tkEnumerator;
+            break;
+
+        case LSP_DocumentSymbolKind::Struct:
+            ccTokenKind = tkClass;
+            break;
+
+        case LSP_DocumentSymbolKind::Event:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_DocumentSymbolKind::Operator:
+            ccTokenKind = tkUndefined;
+            break;
+    }//endswitch
+
+    return ccTokenKind;
+}
+// ----------------------------------------------------------------------------
+int ParserBase::ConvertLSPCompletionSymbolKindToSemanticTokenType(int lspSymKind)   //(ph 2022/06/12)
+// ----------------------------------------------------------------------------
+{
+    int semTknType = LSP_SemanticTokenType::Unknown;
+
+    switch (lspSymKind)
+    {
+        case LSP_CompletionSymbolKind::Text:
+            semTknType = LSP_SemanticTokenType::Comment;
+            break;
+
+        case LSP_CompletionSymbolKind::Method:
+            semTknType = LSP_SemanticTokenType::Method;
+            break;
+
+        case LSP_CompletionSymbolKind::Function:
+            semTknType = LSP_SemanticTokenType::Function;
+            break;
+
+        case LSP_CompletionSymbolKind::Constructor:
+            semTknType = LSP_SemanticTokenType::Function;
+            break;
+
+        case LSP_CompletionSymbolKind::Field:
+            semTknType = LSP_SemanticTokenType::Variable;
+            break;
+
+        case LSP_CompletionSymbolKind::Variable:
+            semTknType = LSP_SemanticTokenType::Variable + 1;
+            break;
+
+        case LSP_CompletionSymbolKind::Class:
+            semTknType = LSP_SemanticTokenType::Class;
+            break;
+
+        case LSP_CompletionSymbolKind::Interface:
+            semTknType = LSP_SemanticTokenType::Interface;
+            break;
+
+        case LSP_CompletionSymbolKind::Module:
+            semTknType = LSP_SemanticTokenType::Namespace;
+            break; //not right
+
+        case LSP_CompletionSymbolKind::Property:
+            semTknType = LSP_SemanticTokenType::Property;
+            break;
+
+        case LSP_CompletionSymbolKind::Unit:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break;
+
+        case LSP_CompletionSymbolKind::Value:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::Enum:
+            semTknType = LSP_SemanticTokenType::Enum;
+            break;
+
+        case LSP_CompletionSymbolKind::Keyword:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as SemanticType
+
+        case LSP_CompletionSymbolKind::Snippet:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::Color:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::File:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::Reference:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::Folder:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::EnumMember:
+            semTknType = LSP_SemanticTokenType::EnumMember;
+            break;
+
+        case LSP_CompletionSymbolKind::Constant:
+            semTknType = LSP_SemanticTokenType::Variable;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::Struct:
+            semTknType = LSP_SemanticTokenType::Class;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::Event:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::Operator:
+            semTknType = LSP_SemanticTokenType::Unknown;
+            break; //not defined as Semantic type
+
+        case LSP_CompletionSymbolKind::TypeParameter:
+            semTknType = LSP_SemanticTokenType::TypeParameter;
+            break;
+
+        default:
+            semTknType = LSP_SemanticTokenType::Unknown;;
+    }//endswitch
+
+    return semTknType;
+}
+// ----------------------------------------------------------------------------
+TokenKind ParserBase::ConvertLSPSemanticTypeToCCTokenKind(int semTokenType)
+// ----------------------------------------------------------------------------
+{
+    /// FIXME (ph#): the following ccTokenKind(s) may not be correct //(ph 2021/03/22)
+    TokenKind ccTokenKind = tkUndefined;
+
+    switch (semTokenType)
+    {
+        case LSP_SemanticTokenType::Variable:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_SemanticTokenType::Variable_2:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_SemanticTokenType::Parameter:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_SemanticTokenType::Function:
+            ccTokenKind = tkFunction;
+            break;
+
+        case LSP_SemanticTokenType::Method:
+            ccTokenKind = tkFunction;
+            break;
+
+        case LSP_SemanticTokenType::Function_2:
+            ccTokenKind = tkFunction;
+            break;
+
+        case LSP_SemanticTokenType::Property:
+            ccTokenKind = tkUndefined;
+            break; //public,private/protecte ?
+
+        case LSP_SemanticTokenType::Variable_3:
+            ccTokenKind = tkVariable;
+            break;
+
+        case LSP_SemanticTokenType::Class:
+            ccTokenKind = tkClass;
+            break;
+
+        case LSP_SemanticTokenType::Interface:
+            ccTokenKind = tkClass;
+            break;
+
+        case LSP_SemanticTokenType::Enum:
+            ccTokenKind = tkEnum;
+            break;
+
+        case LSP_SemanticTokenType::EnumMember:
+            ccTokenKind = tkEnum;
+            break;
+
+        case LSP_SemanticTokenType::Type:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_SemanticTokenType::Type_2:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_SemanticTokenType::Unknown:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_SemanticTokenType::Namespace:
+            ccTokenKind = tkNamespace;
+            break;
+
+        case LSP_SemanticTokenType::TypeParameter:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_SemanticTokenType::Concept:
+            ccTokenKind = tkUndefined;
+            break;
+
+        case LSP_SemanticTokenType::Type_3:
+            ccTokenKind = tkTypedef;
+            break;
+
+        case LSP_SemanticTokenType::Macro :
+            ccTokenKind = tkMacroDef;
+            break;
+
+        case LSP_SemanticTokenType::Comment:
+            ccTokenKind = tkUndefined;
+            break;
+    }//endswitch
+
+    return ccTokenKind;
 }

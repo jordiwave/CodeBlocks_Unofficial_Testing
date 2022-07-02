@@ -2,6 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
+ * $Revision: 66 $
+ * $Id: tokentree.cpp 66 2022-06-18 16:45:19Z pecanh $
+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parser/tokentree.cpp $
  */
 
 #include "tokentree.h"
@@ -1073,8 +1076,9 @@ void TokenTree::MarkFileTokensAsLocal(size_t fileIdx, bool local, void * userDat
         }
     }
 }
-
+// ----------------------------------------------------------------------------
 size_t TokenTree::ReserveFileForParsing(const wxString & filename, bool preliminary)
+// ----------------------------------------------------------------------------
 {
     const size_t fileIdx = InsertFileOrGetIndex(filename);
 

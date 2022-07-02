@@ -5,7 +5,11 @@ echo MacOS - build CODE::BLOCKS and WxWidgets if needed
 
 DEBUG_SCRIPT="Yes"
 
-WX_TAG="v3.1.5"
+WX_VERSION="3.1.7"
+WX_GITHUB_TAG="3.1.7"
+#WX_VERSION="3.2.0"
+#WX_GITHUB_TAG="3.2.0-rc1"
+
 InitialDir=$PWD
 failureDetected="no"
 
@@ -51,7 +55,7 @@ function setup_variables()
     
     cd "${BUILD_ROOT_DIR}"
     if [ -d ./wxwidgets-code ]; then
-        WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code"
+        WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code_${WX_VERSION}"
     fi
 
     OUT_WX="${BUILD_ROOT_DIR}/bin/wxwidgets"
@@ -170,10 +174,10 @@ function wxwidgets_build()
     cd "${BUILD_ROOT_DIR}"
     if [ ! -d ./wxwidgets-code ]; then
         echo "+------------------------------------------------------------+"
-        echo "| Clone https://github.com/wxWidgets/wxWidgets.git "${WX_TAG}" |"
+        echo "| Clone https://github.com/wxWidgets/wxWidgets.git "v${WX_GITHUB_TAG}" |"
         echo "+------------------------------------------------------------+"
-        git clone https://github.com/wxWidgets/wxWidgets.git --branch "${WX_TAG}" --single-branch --recurse-submodules wxwidgets-code
-        WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code"
+        git clone https://github.com/wxWidgets/wxWidgets.git --branch "v${WX_GITHUB_TAG}" --single-branch --recurse-submodules wxwidgets-code_${WX_VERSION}
+        WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code_${WX_VERSION}"
         buildWxWidgets=Yes
     else
         if [ "${GITHUB_ACTIONS}" == "true" ] ; then
@@ -188,7 +192,7 @@ function wxwidgets_build()
 
     if [ "${buildWxWidgets}" == "Yes" ]; then
 
-        WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code"
+        WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code_${WX_VERSION}"
 
         # https://wiki.wxwidgets.org/Possible_Configure_Flags_under_OS_X
         if [ -d "${OUT_WX}" ]; then
@@ -233,7 +237,7 @@ function wxwidgets_build()
         fi
     fi
 
-    if [ -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib" ]; then
+    if [ -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib" ]; then
         echo "+--------------------------------------------------+"
         echo "|               install wxWidgets                  |"
         echo "+--------------------------------------------------+"
@@ -392,13 +396,13 @@ fi
 # setup variables based on directories found. Variables used in building wxWidgets and Code::Blocks
 setup_variables
 
-if [ "${WX_ROOT_DIR}" = "" ] || [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib" ]; then
+if [ "${WX_ROOT_DIR}" = "" ] || [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib" ]; then
     if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
         if [ "${WX_ROOT_DIR}" = "" ]; then
             echo "WX_ROOT_DIR is empty: ${WX_ROOT_DIR}"
         fi
-        if [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib" ]; then
-            echo "Cannot find: ${OUT_WX}/lib/libwx_osx_cocoau_richtext-3.1.5.0.0.dylib"
+        if [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib" ]; then
+            echo "Cannot find: ${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib"
         fi
     fi
     wxwidgets_build
