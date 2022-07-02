@@ -173,9 +173,9 @@
 		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXPERIMENTAL WIP PLUGINS <=<=<=<=<=<=<=<=<=<= -->
 
 		<Project filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_MacOS.cbp" />
-		<Project filename="plugins/contrib-wip/DebugAdapterProtocol_CliDemo/dbgcli_codeblocks_demo_MacOS.cbp" >
+		<!-- Project filename="plugins/contrib-wip/DebugAdapterProtocol_CliDemo/dbgcli_codeblocks_demo_MacOS.cbp" >
 			<Depends filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_MacOS.cbp" />
-		</Project>
+		</Project -->
 
 		<Project filename="plugins/contrib-wip/Debugger_DAP/Debugger_DAP_MacOS.cbp" >
 			<Depends filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_MacOS.cbp" />

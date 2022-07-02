@@ -574,11 +574,56 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
     return 0;
 }
 
+wxString Debugger_DAP::GetShellString()
+{
+    wxString shell = wxEmptyString;
+    //    if (platform::windows)
+    //    {
+    //        return wxEmptyString;
+    //    }
+    //    else
+    {
+        shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
+        // We need to remove all parameters and do some trimming just in case.
+        shell.Trim(false);
+        wxString::size_type pos = shell.find(wxT(' '));
+
+        if (pos != wxString::npos)
+        {
+            shell.erase(pos);
+        }
+
+        shell.Trim();
+    }
+    return shell;
+}
+
+void Debugger_DAP::LaunchDAPDebugger(const wxString & dap_debugger, const wxString & dap_port_number)
+{
+    wxString dapStartCmd = wxEmptyString;
+    wxString shell = GetShellString();
+
+    if (platform::windows)
+    {
+        dapStartCmd = wxString::Format("%s /k %s -port %s", shell, dap_debugger, dap_port_number);
+    }
+    else
+    {
+        dapStartCmd = wxString::Format("%s -port %s", dap_debugger, dap_port_number);
+    }
+
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("shell: %s"), shell), dbg_DAP::LogPaneLogger::LineType::Debug);
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dap_debugger: %s"), dap_debugger), dbg_DAP::LogPaneLogger::LineType::Debug);
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dapStartCmd: %s"), dapStartCmd), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    // start the dap_debugger process
+    m_dapPid = wxExecute(dapStartCmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER);
+}
+
 int Debugger_DAP::LaunchDebugger(cbProject * project,
-                                 wxString const & dap_debugger,
-                                 wxString const & debuggee,
-                                 wxString const & dap_port_number,
-                                 wxString const & working_dir,
+                                 const wxString & dap_debugger,
+                                 const wxString & debuggee,
+                                 const wxString & dap_port_number,
+                                 const wxString & working_dir,
                                  int pid,
                                  bool console,
                                  StartType start_type)
@@ -588,13 +633,17 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     if (dap_debugger.IsEmpty())
     {
         m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, _("Cannot debug as no debugger executable found (full path)!"), dbg_DAP::LogPaneLogger::LineType::Error);
-        return 5;
+        return 1;
     }
 
-    wxBusyCursor cursor;
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dap_debugger: %s"), dap_debugger), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 
-    if (!dap_port_number.IsEmpty())
+    if (dap_port_number.IsEmpty())
+    {
+        m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dap_debugger is empty!!!!"), dap_port_number), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        return 2;
+    }
+    else
     {
         m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dap_port_number: %s"), dap_port_number), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     }
@@ -604,26 +653,8 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
         m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("DEBUGGEE: %s"), debuggee), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     }
 
-    const wxString shell(Manager::Get()->GetConfigManager("app")->Read("/console_shell", DEFAULT_CONSOLE_SHELL));
-    wxString dapStartCmd;
-
-    if (platform::windows)
-    {
-        dapStartCmd.Format("%s /k \'%s\'", shell, dap_debugger);
-    }
-    else
-    {
-        dapStartCmd.Format("%s \'%s\'", shell, dap_debugger);
-    }
-
-    if (!dap_port_number.IsEmpty())
-    {
-        dapStartCmd << " -port " << dap_port_number;
-    }
-
-    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dapStartCmd: %s"), dapStartCmd), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    // start the dap_debugger process
-    m_dapPid = wxExecute(dapStartCmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER);
+    wxBusyCursor cursor;
+    LaunchDAPDebugger(dap_debugger, dap_port_number);
     // Reset the client
     m_dapClient.Reset();
     // For this demo, we use socket transport. But you may choose
@@ -633,8 +664,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     dap::SocketTransport * transport = new dap::SocketTransport();
     wxString connection = wxString::Format("tcp://127.0.0.1:%s", dap_port_number);
 
-    if (!transport->Connect(connection, 10))
-        //if(!transport->Connect("tcp://127.0.0.1:12345", 10))
+    if (!transport->Connect(connection, 30))
     {
         if (m_dapPid >= 0)
         {
@@ -1406,7 +1436,7 @@ cb::shared_ptr<cbBreakpoint> Debugger_DAP::GetBreakpointByID(int id)
 //        return false;
 //    }
 //}
-void Debugger_DAP::UpdateWatches(int updateType)
+void Debugger_DAP::UpdateDAPWatches(int updateType)
 {
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, _("updating watches"), dbg_DAP::LogPaneLogger::LineType::Debug);
     //Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->OnDebuggerUpdated();
@@ -1440,7 +1470,7 @@ cb::shared_ptr<cbWatch> Debugger_DAP::AddWatch(const wxString & symbol, cb_unuse
     }
 
     m_watches.push_back(watch);
-    UpdateWatches(int(cbDebuggerPlugin::DebugWindows::Watches));
+    UpdateDAPWatches(int(cbDebuggerPlugin::DebugWindows::Watches));
     return watch;
 }
 
@@ -2646,7 +2676,7 @@ void Debugger_DAP::OnVariables(DAPEvent & event)
             }
         }
 
-        UpdateWatches(int(cbDebuggerPlugin::DebugWindows::Watches));
+        UpdateDAPWatches(int(cbDebuggerPlugin::DebugWindows::Watches));
     }
 }
 
@@ -2852,4 +2882,4 @@ void Debugger_DAP::OnRunInTerminalRequest(DAPEvent & event)
 
 // Windows: C:\msys64\mingw64\bin\lldb-vscode.exe -port 12345
 // Linux: /usr/bin/lldb-vscode-14 -port 12345
-// MACOS:: /usr/local/Cellar/llvm/14.0.6/bin/lldb-vscode -port 12345 -port 12345
+// MACOS:: /usr/local/Cellar/llvm/14.0.6/bin/lldb-vscode -port 12345
