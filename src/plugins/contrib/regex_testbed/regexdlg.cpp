@@ -218,9 +218,9 @@ wxArrayString RegExDlg::GetBuiltinMatches(const wxString & text)
                 std::wsmatch wsm;
 
                 if (std::regex_match(text.ToStdWstring(), wsm, stdre))
-                    for (const std::wstring & v : wsm)
+                    for (std::wsmatch::const_iterator it = wsm.begin(); it != wsm.end(); ++it)
                     {
-                        ret.Add(v);
+                        ret.Add(it->str());
                     }
             }
         }

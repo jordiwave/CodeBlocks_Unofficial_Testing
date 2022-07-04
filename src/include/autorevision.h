@@ -1,4 +1,4 @@
-/*12841*/
+/*12844*/
 //don't include this header, only configmanager-revision.cpp should do this.
 #ifndef AUTOREVISION_H
 #define AUTOREVISION_H
@@ -8,9 +8,9 @@
 
 namespace autorevision
 {
-const unsigned int svn_revision = 12841;
-const wxString svnRevision(_T("12841"));
-const wxString svnDate(_T("2022-06-30 00:00:00"));
+const unsigned int svn_revision = 12844;
+const wxString svnRevision(_T("12844"));
+const wxString svnDate(_T("2022-07-04 00:00:00"));
 }
 
 

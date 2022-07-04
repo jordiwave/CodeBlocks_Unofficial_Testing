@@ -125,12 +125,11 @@ class DLLIMPORT cbAuiNotebook : public wxAuiNotebook
         bool AddPage(wxWindow * page,
                      const wxString & caption,
                      bool select = false,
-#if wxCHECK_VERSION(3,1,6)   // Parameter changed in 3.1.6 , https://github.com/wxWidgets/wxWidgets/commit/391080e77d7f78d5d136f30fc5ac02ee89e6ec2e
-                     const wxBitmapBundle & bitmap = wxBitmapBundle()
+#if wxCHECK_VERSION(3, 1, 6)
+                     const wxBitmapBundle & bitmap = wxBitmapBundle());
 #else
-                     const wxBitmap & bitmap = wxNullBitmap
+                     const wxBitmap & bitmap = wxNullBitmap);
 #endif
-                    );
         /** \brief Insert Page
          *
          * Calls the base-class function and after that
@@ -139,19 +138,18 @@ class DLLIMPORT cbAuiNotebook : public wxAuiNotebook
          * \param page The page to add
          * \param caption The caption of the page
          * \param select If true the page gets selected
-         * \param bitmap The bitmap of the tab
+         * \param bitmap The bitmap (or bitmap bundle since wx3.1.6) of the tab
          * \return true if successful
          */
         bool InsertPage(size_t page_idx,
                         wxWindow * page,
                         const wxString & caption,
                         bool select = false,
-#if wxCHECK_VERSION(3,1,6)   // Parameter changed in 3.1.6 , https://github.com/wxWidgets/wxWidgets/commit/391080e77d7f78d5d136f30fc5ac02ee89e6ec2e
-                        const wxBitmapBundle & bitmap = wxBitmapBundle()
+#if wxCHECK_VERSION(3, 1, 6)
+                        const wxBitmapBundle & bitmap = wxBitmapBundle());
 #else
-                        const wxBitmap & bitmap = wxNullBitmap
+                        const wxBitmap & bitmap = wxNullBitmap);
 #endif
-                       );
         /** \brief Set zoom factor for builtin editors
          *
          * Sets the zoom factor for all visible builtin
