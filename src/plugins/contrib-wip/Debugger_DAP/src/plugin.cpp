@@ -2884,3 +2884,4 @@ void Debugger_DAP::OnRunInTerminalRequest(DAPEvent & event)
 // Windows: C:\msys64\mingw64\bin\lldb-vscode.exe -port 12345
 // Linux: /usr/bin/lldb-vscode-14 -port 12345
 // MACOS:: /usr/local/Cellar/llvm/14.0.6/bin/lldb-vscode -port 12345
+// --personality=debuging --multiple-instance
