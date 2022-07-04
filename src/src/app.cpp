@@ -732,6 +732,7 @@ bool CodeBlocksApp::OnInit()
     m_HasWorkSpace         = false;
     m_SafeMode             = false;
     m_BatchWindowAutoClose = true;
+    m_DDE                  = true;
     m_pSingleInstance      = nullptr;
     m_GlobalVariableSetParameterOrBackup = wxEmptyString;
     m_MasterPathParameterOrBackup  = wxEmptyString;
@@ -805,7 +806,13 @@ bool CodeBlocksApp::OnInit()
         InitLocale();
         ConfigManager * appCfg = Manager::Get()->GetConfigManager("app");
 
-        if (m_DDE && !m_Batch && appCfg->ReadBool("/environment/use_ipc", true))
+        if (
+            m_DDE &&
+            !m_Batch &&
+            appCfg->ReadBool("/environment/use_ipc", true) &&
+            appCfg->ReadBool("/environment/single_instance", true) &&
+            !parser.Found("multiple-instance")
+        )
         {
             // Create a new client
             DDEClient * client = new DDEClient;

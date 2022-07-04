@@ -5,7 +5,7 @@
         <Program name="C"         value="clang.exe"/>
         <Program name="CPP"       value="clang++.exe"/>
         <Program name="LD"        value="clang++.exe"/>
-        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="DBGconfig" value="debugger_dap:dap_lldb-vscode"/>
         <Program name="LIB"       value="llvm-ar.exe"/>
         <if exec="llvm-ar.exe -version">
             <!-- found, do nothing -->
@@ -23,7 +23,7 @@
         <Program name="C"         value="clang"/>
         <Program name="CPP"       value="clang++"/>
         <Program name="LD"        value="clang++"/>
-        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="DBGconfig" value="debugger_dap:dap_lldb-vscode"/>
         <Program name="LIB"       value="llvm-ar"/>
         <if exec="llvm-ar -version">
             <!-- found, do nothing -->
@@ -246,22 +246,35 @@
     <Common name="re"/>
     <Common name="sort"/>
 
+    <!-- Debugger Options start  Debugger Options start  Debugger Options start -->
+    <!-- NOTE: the plugin name must match the DBGconfig name above for the following to work 100%. Failure looks like the debugger name is default in the debugger config dlg -->
 
-    <!-- LLDB Debugger Options -->
-    <Debugger name="executable_path"    value="lldb.exe"/>      <!-- Options: -->
-                                                                <!--  a) FileName of the debugger program, which uses the master path bin directory to find the file -->
-                                                                <!--  b) Fully qualified FileName including directory. If it is not in this directory then the master path is used to try and find the file -->
-    <Debugger name="user_arguments"         value=""/>          <!-- Executable arguments -->
-    <Debugger name="init_commands"          value=""/>          <!-- Debugger initalization commands -->
-    <Debugger name="disable_init"           value="false"/>     <!-- Disables autoloading of startup scripts (.gdbinit) -->
-    <Debugger name="watch_locals_and_args"  value="true"/>      <!-- Automatic watches are added for the current function's arguments and local variables of the current function -->
-    <Debugger name="catch_exceptions"       value="true"/>      <!-- Catch C++ exceptions  -->
-    <Debugger name="eval_tooltip"           value="true"/>      <!-- While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip -->
-    <Debugger name="add_other_search_dirs"  value="false"/>     <!-- If enabled, the other open projects' paths will be added in the debugger's search list -->
-    <Debugger name="do_not_run"             value="false"/>     <!-- If enabled, the debugger will not a send a run/continue command -->
-    <Debugger name="check_pretty_printers"  value="false"/>     <!-- If enabled, LLDB will add support for pretty printing -->
-    <Debugger name="persist_debug_elements" value="false"/>     <!-- If enabled, LLDB will save breakpoints, watches across restarts -->
-    <Debugger name="disassembly_flavor"     value="0"/>         <!-- Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"-->
-    <Debugger name="instruction_set"        value=""/>          <!-- Disassembly custom instructionset -->
+	<if platform="windows">
+		<!-- executable_path Options: -->
+					<!--  a) FileName of the debugger program, which uses the master path bin directory to find the file -->
+					<!--  b) Fully qualified FileName including directory. If it is not in this directory then the master path is used to try and find the file -->
+		<Debugger name="executable_path"    	value="lldb-vscode.exe"/> <!-- Windows: C:\msys64\mingw64\bin\lldb-vscode.exe -port 12345 -->
+    </if>
+    <else>
+		<if platform="macosx">
+			<Debugger name="executable_path"   	value="lldb-vscode"/> 	<!-- MACOS:: /usr/local/Cellar/llvm/14.0.6/bin/lldb-vscode -port 12345  -->
+		</if>
+		<else>
+			<Debugger name="executable_path"   	value="lldb-vscode"/>	<!-- Linux: /usr/bin/lldb-vscode-14 -port 12345  -->
+		</else>
+    </else>
+    <Debugger name="port_number"  				value="12345"/>       	<!-- DAP debugger ethernet port to use -->
+    <Debugger name="init_commands"  			value=""/>             	<!-- Debugger initialisation commands -->
+    <Debugger name="disable_init"  				value="false"/>        	<!-- Disables auto loading of startup scripts (.gdbinit) -->
+    <Debugger name="watch_locals_and_args"  	value="true"/>         	<!-- Automatic watches are added for the current function's arguments and locals -->
+    <Debugger name="catch_exceptions"  			value="true"/>         	<!-- Catch C++ exceptions  -->
+    <Debugger name="eval_tooltip" 				value="true"/> 			<!-- While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip -->
+    <Debugger name="add_other_search_dirs"  	value="false"/>     	<!-- If enabled, the other open projects' paths will be added in the debugger's search list -->
+    <Debugger name="do_not_run"  				value="false"/>       	<!-- If enabled, the debugger will not a send a run/continue command -->
+    <Debugger name="persist_debug_elements"  	value="true"/>       	<!-- If enabled, the debugger will persist the breakpoints, watches and memory watches -->
+    <Debugger name="disassembly_flavor"  		value="0"/>            	<!-- Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"-->
+    <Debugger name="instruction_set"  			value=""/>              <!-- Disassembly custom instruction set -->
+
+    <!-- Debugger Options end  Debugger Options end  Debugger Options end -->
     
 </CodeBlocks_compiler_options>

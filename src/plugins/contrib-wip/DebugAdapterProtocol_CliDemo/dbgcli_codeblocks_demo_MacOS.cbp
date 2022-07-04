@@ -12,6 +12,9 @@
 				<Option type="1" />
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Debugger WXDAP CLI Demo;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-D__WXMAC__" />

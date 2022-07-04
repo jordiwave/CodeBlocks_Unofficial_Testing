@@ -116,8 +116,10 @@ Compiler::Compiler(const wxString & name, const wxString & ID, const wxString & 
     m_DebuggerInitialConfiguation.evalExpressionAsTooltip    = false;
     m_DebuggerInitialConfiguation.addOtherSearchDirs         = false;
     m_DebuggerInitialConfiguation.doNoRunDebuggee            = false;
+    m_DebuggerInitialConfiguation.persistDebugElements       = true;
     m_DebuggerInitialConfiguation.disassemblyFlavor          = "System default";
     m_DebuggerInitialConfiguation.instructionSet             = "";
+    m_DebuggerInitialConfiguation.portNumber                 = "12345";
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
 }
 
@@ -173,8 +175,10 @@ Compiler::Compiler(const Compiler & other) :
     m_DebuggerInitialConfiguation.evalExpressionAsTooltip    = false;
     m_DebuggerInitialConfiguation.addOtherSearchDirs         = false;
     m_DebuggerInitialConfiguation.doNoRunDebuggee            = false;
+    m_DebuggerInitialConfiguation.persistDebugElements       = true;
     m_DebuggerInitialConfiguation.disassemblyFlavor          = "System default";
     m_DebuggerInitialConfiguation.instructionSet             = "";
+    m_DebuggerInitialConfiguation.portNumber                 = "12345";
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
 }
 
@@ -202,10 +206,11 @@ void Compiler::PostRegisterCompilerSetup()
             // masterpath detected, so save masterpath just in case!!!!
             m_DebuggerInitialConfiguation.compilerMasterPath = m_MasterPath;
 
-            // Only proceed if the debuger has not been setup.
+            // Only proceed if the debuger has not been setup or GDB or DAP debugger
             if (
-                (m_Programs.DBGconfig.StartsWith(_("gdb_debugger:"), NULL)) ||
-                (m_Programs.DBGconfig.StartsWith(_("NoPlugin:"), NULL))
+                (m_Programs.DBGconfig.StartsWith("gdb_debugger:")) ||
+                (m_Programs.DBGconfig.StartsWith("debugger_dap:")) ||
+                (m_Programs.DBGconfig.StartsWith("NoPlugin:"))
             )
             {
                 // Save update config file
@@ -1360,6 +1365,16 @@ void Compiler::LoadDefaultOptions(const wxString & name, int recursion)
                                                                                             {
                                                                                                 m_DebuggerInitialConfiguation.instructionSet = value;
                                                                                             }
+                                                                                            else
+                                                                                                if (debugName == "persist_debug_elements")
+                                                                                                {
+                                                                                                    m_DebuggerInitialConfiguation.persistDebugElements = (value == "true");
+                                                                                                }
+                                                                                                else
+                                                                                                    if (debugName == "port_number")
+                                                                                                    {
+                                                                                                        m_DebuggerInitialConfiguation.portNumber = value;
+                                                                                                    }
                                         }
 
         while (!node->GetNext() && depth > 0)

@@ -11,6 +11,10 @@
                     for="C"/>
             <Search path="C:\LLVM"
                     for="C"/>
+            <Search path="C:\msys64\mingw64"
+                for="C"/>
+            <Search path="C:\msys64\mingw32"
+                for="C"/>
             <Search path="C:\msys64\clang64"
                 for="C"/>
             <Search path="C:\msys64\clang32"

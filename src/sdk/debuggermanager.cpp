@@ -1685,8 +1685,10 @@ void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoCon
     Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 evalExpressionAsTooltip %s"), cdoConfiguation.evalExpressionAsTooltip ? "true" : "false"));
     Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 addOtherSearchDirs %s"), cdoConfiguation.addOtherSearchDirs ? "true" : "false"));
     Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 doNoRunDebuggee %s"), cdoConfiguation.doNoRunDebuggee ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 persistDebugElements %s"), cdoConfiguation.persistDebugElements ? "true" : "false"));
     Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 disassemblyFlavor %s"), cdoConfiguation.disassemblyFlavor));
     Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 instructionSet %s"), cdoConfiguation.instructionSet));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 portNumber %s"), cdoConfiguation.portNumber));
     ConfigManager * config = Manager::Get()->GetConfigManager("debugger_common");
     int offset = cdoConfiguation.debuggerConfigurationName.Find(':');
     wxString pluginName = "NoPlugin";
@@ -1707,56 +1709,97 @@ void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoCon
         debugConfigName = cdoConfiguation.debuggerConfigurationName.Mid(offset + 1);
     }
 
-    wxString setPath = wxString::Format(_("/sets/%s"), pluginName);
+    wxString setPath = wxString::Format("/sets/%s", pluginName);
     wxArrayString configs = config->EnumerateSubPaths(setPath);
     configs.Sort();
     bool foundConfigName = false;
 
     for (size_t jj = 0; jj < configs.Count(); ++jj)
     {
-        wxString name = config->Read(wxString::Format(_("%s/%s/name"), setPath, configs[jj]));;
+        wxString name = config->Read(wxString::Format("%s/%s/name", setPath, configs[jj]));;
 
-        if (name.IsSameAs(cdoConfiguation.compilerIDName) || name.IsSameAs(debugConfigName))
+        if (
+            name.IsSameAs(cdoConfiguation.compilerIDName) ||
+            name.IsSameAs(debugConfigName)
+        )
         {
-            foundConfigName = true;
+            if (
+                name.IsSameAs(cdoConfiguation.compilerIDName) &&
+                !name.IsSameAs(debugConfigName)
+            )
+            {
+                Compiler * compiler = CompilerFactory::GetCompiler(cdoConfiguation.compilerIDName);
+                const CompilerPrograms & cpProgs = compiler->GetPrograms();
+
+                if (cpProgs.DBGconfig.IsSameAs(cdoConfiguation.debuggerConfigurationName))
+                {
+                    foundConfigName = true;
+                }
+                else
+                {
+                    const DebuggerManager::RegisteredPlugins & plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
+
+                    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
+                    {
+                        const DebuggerManager::PluginData & data = it->second;
+
+                        for (DebuggerManager::ConfigurationVector::const_iterator itConf = data.GetConfigurations().begin();
+                                itConf != data.GetConfigurations().end();
+                                ++itConf)
+                        {
+                            const wxString & def = it->first->GetSettingsName() + wxT(":") + (*itConf)->GetName();
+
+                            if (def == cpProgs.DBGconfig)
+                            {
+                                foundConfigName = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foundConfigName = true;
+            }
         }
     }
 
     if (foundConfigName == false)
     {
-        wxString pathDebuggerEntry = wxString::Format(_("/sets/%s/conf%lu"), pluginName, (long)configs.Count() + 1);
-        config->Write(pathDebuggerEntry + "/name", cdoConfiguation.compilerIDName);
-        wxString tryTmpPath = wxString::Format(_("%s"),  cdoConfiguation.executablePath);
+        wxString pathDebuggerEntry = wxString::Format("/sets/%s/conf%lu", pluginName, (long)configs.Count() + 1);
+        config->Write(wxString::Format("%s/name", pathDebuggerEntry), cdoConfiguation.compilerIDName);
+        wxString tryTmpPath = wxString::Format("%s",  cdoConfiguation.executablePath);
         tryTmpPath = UnixFilename(tryTmpPath, wxPATH_NATIVE);
 
         if (cdoConfiguation.compilerMasterPath.IsEmpty() || wxFileExists(tryTmpPath))
         {
-            config->Write(wxString::Format(_("%s/values/executable_path"), pathDebuggerEntry), tryTmpPath);
+            config->Write(wxString::Format("%s/values/executable_path", pathDebuggerEntry), tryTmpPath);
         }
         else
         {
-            tryTmpPath = wxString::Format(_("%s/bin/%s"),  cdoConfiguation.compilerMasterPath, cdoConfiguation.executablePath);
+            tryTmpPath = wxString::Format("%s/bin/%s",  cdoConfiguation.compilerMasterPath, cdoConfiguation.executablePath);
             tryTmpPath = UnixFilename(tryTmpPath, wxPATH_NATIVE);
             MacrosManager * macros = Manager::Get()->GetMacrosManager();
             macros->ReplaceMacros(tryTmpPath);
 
             if (wxFileExists(tryTmpPath))
             {
-                config->Write(wxString::Format(_("%s/values/executable_path"), pathDebuggerEntry), tryTmpPath);
+                config->Write(wxString::Format("%s/values/executable_path", pathDebuggerEntry), tryTmpPath);
             }
             else
             {
-                tryTmpPath = wxString::Format(_("%s/%s"),  cdoConfiguation.compilerMasterPath, cdoConfiguation.executablePath);
+                tryTmpPath = wxString::Format("%s/%s",  cdoConfiguation.compilerMasterPath, cdoConfiguation.executablePath);
                 tryTmpPath = UnixFilename(tryTmpPath, wxPATH_NATIVE);
                 macros->ReplaceMacros(tryTmpPath);
 
                 if (wxFileExists(tryTmpPath))
                 {
-                    config->Write(wxString::Format(_("%s/values/executable_path"), pathDebuggerEntry), tryTmpPath);
+                    config->Write(wxString::Format("%s/values/executable_path", pathDebuggerEntry), tryTmpPath);
                 }
                 else
                 {
-                    config->Write(wxString::Format(_("%s/values/executable_path"), pathDebuggerEntry), cdoConfiguation.executablePath);
+                    config->Write(wxString::Format("%s/values/executable_path", pathDebuggerEntry), cdoConfiguation.executablePath);
                 }
             }
         }
@@ -1771,8 +1814,10 @@ void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoCon
         config->Write(pathDebuggerEntry + "/values/eval_tooltip",           cdoConfiguation.evalExpressionAsTooltip ? "true" : "false");
         config->Write(pathDebuggerEntry + "/values/add_other_search_dirs",  cdoConfiguation.addOtherSearchDirs ? "true" : "false");
         config->Write(pathDebuggerEntry + "/values/do_not_run",             cdoConfiguation.doNoRunDebuggee ? "true" : "false");
+        config->Write(pathDebuggerEntry + "/values/persist_debug_elements", cdoConfiguation.persistDebugElements ? "true" : "false");
         config->Write(pathDebuggerEntry + "/values/disassembly_flavor",     cdoConfiguation.disassemblyFlavor);
         config->Write(pathDebuggerEntry + "/values/instruction_set",        cdoConfiguation.instructionSet);
+        config->Write(pathDebuggerEntry + "/values/portNumber",             cdoConfiguation.portNumber);
         config->Flush();
     }
 }

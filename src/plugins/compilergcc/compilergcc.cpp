@@ -488,6 +488,8 @@ void CompilerGCC::OnAttach()
             ScriptBindings::gBuildLogId = -1;
         }
     }
+    // Complete any compiler set-up that requires access to virtual functions
+    CompilerFactory::PostRegisterCompilerSetup();
     // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,         new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN,             new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectLoaded));

@@ -119,14 +119,14 @@ wxPanel * DebuggerConfiguration::MakePanel(wxWindow * parent)
 
 bool DebuggerConfiguration::SaveChanges(wxPanel * panel)
 {
-    m_config.Write("dap_executable",        XRCCTRL(*panel, "txtDAPExecutable",        wxTextCtrl)->GetValue());
+    m_config.Write("executable_path",       XRCCTRL(*panel, "txtDAPExecutable",        wxTextCtrl)->GetValue());
     m_config.Write("port_number",           XRCCTRL(*panel, "txtPortNumber",           wxTextCtrl)->GetValue());
     m_config.Write("init_commands",         XRCCTRL(*panel, "txtInit",                 wxTextCtrl)->GetValue());
     m_config.Write("watch_locals_and_args", XRCCTRL(*panel, "chkWatchLocalsandArgs",   wxCheckBox)->GetValue());
     m_config.Write("catch_exceptions",      XRCCTRL(*panel, "chkCatchExceptions",      wxCheckBox)->GetValue());
     m_config.Write("eval_tooltip",          XRCCTRL(*panel, "chkTooltipEval",          wxCheckBox)->GetValue());
     m_config.Write("add_other_search_dirs", XRCCTRL(*panel, "chkAddForeignDirs",       wxCheckBox)->GetValue());
-    m_config.Write("do_not_run",            XRCCTRL(*panel, "chkDoNotRun",             wxCheckBox)->GetValue());
+    m_config.Write("do_not_run_debuggee",   XRCCTRL(*panel, "chkDoNotRun",             wxCheckBox)->GetValue());
     m_config.Write("persist_debug_elements", XRCCTRL(*panel, "chkPersistDebugElements", wxCheckBox)->GetValue());
     m_config.Write("disassembly_flavor",    XRCCTRL(*panel, "choDisassemblyFlavor",    wxChoice)->GetSelection());
     m_config.Write("instruction_set",       XRCCTRL(*panel, "txtInstructionSet",       wxTextCtrl)->GetValue());
@@ -150,7 +150,7 @@ bool DebuggerConfiguration::GetFlag(Flags flag)
             return m_config.ReadBool("add_other_search_dirs", false);
 
         case DoNotRun:
-            return m_config.ReadBool("do_not_run", false);
+            return m_config.ReadBool("do_not_run_debuggee", false);
 
         case PersistDebugElements:
             return m_config.ReadBool("persist_debug_elements", false);
@@ -193,7 +193,7 @@ void DebuggerConfiguration::SetFlag(Flags flag, bool value)
 
 wxString DebuggerConfiguration::GetDAPExecutable(bool expandMacro)
 {
-    wxString result = m_config.Read("dap_executable", wxEmptyString);
+    wxString result = m_config.Read("executable_path", wxEmptyString);
 
     if (expandMacro)
     {

@@ -417,8 +417,12 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
             bool evalExpressionAsTooltip;// While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip
             bool addOtherSearchDirs;     // If enabled, the other open projects' paths will be added in the debugger's search list
             bool doNoRunDebuggee;        // If enabled, the debugger will not a send a run or continue command
+            bool persistDebugElements;   // If enabled, the debugger will persist the breakpoints, watches and memory watches -->
             wxString disassemblyFlavor;  // Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"
             wxString instructionSet;     // Disassembly custom instruction set
+
+            // DAP Debugger additions
+            wxString portNumber;      	 // DDAP debugger Ethernet port to use
         };
 
         void SaveDebuggerConfigOptions(CompilerDebuggerOptions & configuation);

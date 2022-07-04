@@ -3,17 +3,15 @@
 ## Description
 
 This GitHub repo contains the source code for a Code::Blocks DAP debugger plugin. 
-The debugger is NOT able to debug itself and is a NOT viable replacement for the existing GDB plugin at this point in time.
+The debugger is a work in progress and the source code may be ahead of this readme.md doc. 
+You can use it now to do simple debugging and testing on a **MacOS** & Windows & Linux.
 
 
 ## Updates / Testing Results / Dev Work
 
 If you need help with using the plugin then wait for it to be production ready.
-
 Please use the discussion for any test results that pass and are shown as working in the table.
-
 Please create a new issue (if it does not already exist) for any test in the table below that fail and are shown as working in the table.
-
 If you fix any outstanding issue please fork this repo and create a pull request.
 
 
@@ -21,46 +19,19 @@ If you fix any outstanding issue please fork this repo and create a pull request
 
 ### High Priority
 
-1) Migrate/test on Linux
-2) Migrate/test on MacOS
-3) Use in anger to fix C::B issue(s) on MacOS. In other words use it in the real world.
-4) Add features required to make step 8) debugging better.
-5) Update ticket 1114 to add support for the CLANG compiler to detect debugger and add it as a debugger automatically. 
+1. Update ticket 1114 to add support for the CLANG compiler to detect debugger and add it as a debugger automatically. 
+2. Use in anger to fix C::B issue(s) on MacOS. In other words use it in the real world.
+3. Add missing features in the table below to make debugging better in the real world environment.
 
 ### Medium Priority
 
-1. Create patch for C::B source and submit - zip directory or include a link to github repo.
-2. When time permits re-test all items!!!! 
+1. Add missing features in the table below.
+3. When time permits re-test all items!!!! 
 
 ### Low Priority / Future Work
 
-  * Persist debug data between sessions:
-     Outstanding:
-        - watch data                            - save/load working
-        - watch data edited                     - not done
-        - memory dump (single memory dialog)    - not done
-        - memory view (multiple memory dialog)  - not done
-        - data break point                      - not done
-
-     Save/load working:
-        - line break points                 - save/load working
-        - count line break point            - save/load working
-        - conditional line break point      - save/load working
-  * Expand function argument and local variables in the watch window.
-  * Add ability delete data watch point https://ftp.gnu.org/old-gnu/Manuals/gdb/html_node/gdb_31.html
-  * Remote debugging 
-       - use Project->Properties->"Debugger GDB/MI" tab data.
-  * Create Linux project file
-  * Create MacOS project file
-  * Update Linux makefile build process
-  * Update MSYS2 makefile build process
-  * Update MacOS makefile build process
-  * CPU registry dialog modify to fix value column to say 50 characters.
-  * More (easy) integration of pretty printing
-  * Add function break point support. See "#warning" messages.
-  * Checkpoints (only available on linux )
-  * Display the return value of a function after "step out"
-  * Skipping functions - see https://sourceware.org/gdb/onlinedocs/gdb/Skipping-Over-Functions-and-Files.html
+1. Update table below for outstanding issues/items
+3. Create a C::B SF ticket that has a link github repo with source in it for someone else to look at and merge.
 
 ## Testing/Coding/Feature Check List
 
@@ -224,9 +195,9 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Builds on Linux via makefile                            |           |            |
 |   * Builds on MacOS via workspace                           |           |            |
 |   * Builds on MacOS via makefile                            |           |            |
-|   * Create and test DAP cbplugin for Windows             |           |            |
-|   * Create and test DAP cbplugin for Linux               |           |            |
-|   * Create and test DAP cbplugin for MacOS               |           |            |
+|   * Create and test DAP cbplugin for Windows                |           |            |
+|   * Create and test DAP cbplugin for Linux                  |           |            |
+|   * Create and test DAP cbplugin for MacOS                  |           |            |
 |                                                             |           |            |
 
 The table above was last updated on 26-Jun-2022.
