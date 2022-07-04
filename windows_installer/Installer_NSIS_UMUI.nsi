@@ -347,8 +347,11 @@ ${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND    "${CB_BASE}${CB_PLUGINS}\CBTorto
 ${!defineifexist} CBINNO_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbInno.dll"
 ${!defineifexist} CBNSIS_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbNSIS.dll"
 ${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   "${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll"
+${!defineifexist} DEBUGGER_DAP_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\debugger_dap.dll"
+
 ${!defineifexist} PRETTYPRINTERS_FOUND          "${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py"
 ${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      "${CB_BASE}\libcodeblocks.dll"
+${!defineifexist} DEBUGGER_WXDAP_DLL_FOUND      "${CB_BASE}\debugger_WXDAP.dll"
 
 # Reserved Files
 ${!defineifexist} RESERVE_UNICODE_FOUND         "${NSISDIR}\Plugins\unicode\AdvSplash.dll"
@@ -474,6 +477,12 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             # ClangD for use with ClangD_Client core plugin
             File ${CB_BASE}\clangd.exe
 !endif
+!ifdef DEBUGGER_WXDAP_DLL_FOUND        
+            # wxWidget Debugger Adapter Protocol generic DLL
+            File ${CB_BASE}\debugger_WXDAP.dll
+!endif
+
+
             # ----------------------- NEW OUTPUT PATH -----------------------
 !ifdef PRETTYPRINTERS_FOUND
             SetOutPath $INSTDIR${CB_GDB_PRETTYPRINTERS}
@@ -1323,6 +1332,18 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             SetOutPath $INSTDIR${CB_PLUGINS}
             File ${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll
             WriteRegStr HKCU "${REGKEY}\Components" "debugger_gdbmi plugin" 1
+        SectionEnd
+!endif
+
+!ifdef DEBUGGER_DAP_PLUGIN_FOUND
+        Section "debugger_dap plugin" SEC_DEBUGGER_DAP_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\debugger_dap.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\debugger_dap.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "debugger_dap plugin" 1
         SectionEnd
 !endif
 
@@ -2574,6 +2595,14 @@ Section "-un.debugger_gdbmi plugin" UNSEC_DEBUGGER_GDBMI_PLUGIN
 SectionEnd
 !endif
 
+!ifdef DEBUGGER_DAP_PLUGIN_FOUND
+Section "-un.debugger_dap plugin" UNSEC_DEBUGGER_DAP_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\debugger_dap.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\debugger_dap.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "debugger_dap plugin"
+SectionEnd
+!endif
+
 Section "-un.headerguard plugin" UNSEC_HEADERGUARD_PLUGIN
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\headerguard.dll
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\headerguard.zip
@@ -3137,6 +3166,10 @@ Section "-un.Core Files (required)" UNSEC_CORE
     # ClangD for use with ClangD_Cleint core plugin
     Delete /REBOOTOK $INSTDIR\clangd.exe
 !endif
+!ifdef DEBUGGER_WXDAP_DLL_FOUND        
+    # wxWidget Debugger Adapter Protocol generic DLL
+    Delete /REBOOTOK $INSTDIR\debugger_WXDAP.dll
+!endif
 
     # WGET
     Delete /REBOOTOK $INSTDIR\wget.exe
@@ -3537,6 +3570,9 @@ CheckUserTypeDone:
 !ifdef DEBUGGER_GDBMI_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "debugger_gdbmi plugin"               ${UNSEC_DEBUGGER_GDBMI_PLUGIN}
 !endif
+!ifdef DEBUGGER_DAP_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "debugger_dap plugin"               ${UNSEC_DEBUGGER_DAP_PLUGIN}
+!endif
     !insertmacro SELECT_UNSECTION "headerguard plugin"                  ${UNSEC_HEADERGUARD_PLUGIN}
     !insertmacro SELECT_UNSECTION "loghacker plugin"                    ${UNSEC_LOGHACKER_PLUGIN}
     !insertmacro SELECT_UNSECTION "ModPoller plugin"                    ${UNSEC_MODPOLLER_PLUGIN}
@@ -3658,6 +3694,9 @@ FunctionEnd
 !endif
 !ifdef DEBUGGER_GDBMI_PLUGIN_FOUND
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER_GDBMI_PLUGIN}  "debugger_gdbmi plugin"
+!endif
+!ifdef DEBUGGER_DAP_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER_DAP_PLUGIN}  "debugger_dap plugin"
 !endif
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HEADERGUARD_PLUGIN}  "headerguard plugin"
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LOGHACKER_PLUGIN}    "loghacker plugin"
