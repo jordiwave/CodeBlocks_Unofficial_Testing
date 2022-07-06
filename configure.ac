@@ -623,7 +623,25 @@ AC_CONFIG_FILES([Makefile
     codeblocks.pc
     codeblocks.spec.fedora
     codeblocks.spec
+    src/plugins/contrib-wip/Makefile
+    src/plugins/contrib-wip/cbDiff/Makefile
+    src/plugins/contrib-wip/DebugAdapterProtocol/Makefile
+    src/plugins/contrib-wip/Debugger_DAP/Makefile
+    src/plugins/contrib-wip/Debugger_DAP/resources/Makefile
 ])
+
+# no Makefile.am    src/plugins/contrib-wip/cbInno/Makefile
+# no Makefile.am    src/plugins/contrib-wip/cbMarkdown/Makefile
+# no Makefile.am    src/plugins/contrib-wip/cbMemoryView/Makefile
+# no Makefile.am    src/plugins/contrib-wip/cbNSIS/Makefile
+# no Makefile.am    src/plugins/contrib-wip/cbSystemView/Makefile
+# no Makefile.am    src/plugins/contrib-wip/cbtortoisesvn/Makefile
+# no Makefile.am    src/plugins/contrib-wip/PythonPlugins/Makefile
+# no Makefile.am    src/plugins/contrib-wip/cbBuildTools/Makefile
+# no Makefile.am    src/plugins/contrib-wip/debuggerGDB_MI/Makefile
+# no Makefile.am    src/plugins/contrib-wip/GitBlocks/Makefile
+# no Makefile.am    src/plugins/contrib-wip/cbDiff/Makefile
+
 
 AC_OUTPUT
 

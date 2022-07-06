@@ -1,5 +1,6 @@
 pkgdata_DATA = \
 			clangd_client.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 
@@ -475,4 +476,4 @@ EXTRA_DIST = \
 			$(resources_forZIP)
 
 clangd_client.zip: $(resources_forZIP)
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/clangd_client.zip $(resources_forZIP) > /dev/null
+			PWD=`pwd` cd $(srcdir) && zip $(PWD)/clangd_client.zip $(resources_forZIP) > /dev/null

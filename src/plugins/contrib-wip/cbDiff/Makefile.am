@@ -1,5 +1,5 @@
 .rc.lo:
-	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+			$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
 
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
@@ -20,6 +20,14 @@ libcbDiff_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
 			-no-undefined \
 			-avoid-version
+
+if CODEBLOCKS_NT
+libcbDiff_la_LDFLAGS += \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
 
 libcbDiff_la_LIBADD = \
 			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)

@@ -5,13 +5,13 @@ CLEANFILES = \
 
 resources_forZIP = \
 			classbrowser.xrc \
-	codecompletion_toolbar.xrc \
-	insert_class_method.xrc \
-	manifest.xml \
-	project_settings.xrc \
-	selectincludefile.xrc \
-	settings.xrc \
-	\
+			codecompletion_toolbar.xrc \
+			insert_class_method.xrc \
+			manifest.xml \
+			project_settings.xrc \
+			selectincludefile.xrc \
+			settings.xrc \
+			\
 			images/16x16/class_folder.png \
 			images/16x16/class.png \
 			images/16x16/class_private.png \

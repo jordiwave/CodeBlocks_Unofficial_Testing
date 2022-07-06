@@ -1,7 +1,7 @@
 SUBDIRS = src/resources
 
 .rc.lo:
-	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+			$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
 
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
@@ -179,29 +179,3 @@ noinst_HEADERS += \
 			src/unixprocess/StringUtils.h \
 			src/unixprocess/wxStringHash.h
 endif
-
-resources_forZIP = \
-			src/resources/manifest.xml \
-			src/resources/*.xrc \
-			src/resources/images/16x16/*.png \
-			src/resources/images/20x20/*.png \
-			src/resources/images/24x24/*.png \
-			src/resources/images/28x28/*.png \
-			src/resources/images/32x32/*.png \
-			src/resources/images/40x40/*.png \
-			src/resources/images/48x48/*.png \
-			src/resources/images/56x56/*.png \
-			src/resources/images/64x64/*.png
-
-EXTRA_DIST = \
-			*.cbp \
-			$(resources_forZIP)
-
-pkgdata_DATA = \
-			clangd_client.zip
-
-CLEANFILES = \
-			$(pkgdata_DATA)
-
-clangd_client.zip: $(resources_forZIP)
-			PWD=`pwd` cd $(srcdir) && zip $(PWD)/clangd_client.zip $(resources_forZIP) > /dev/null

@@ -27,7 +27,7 @@ MAYBE_COMPILER=compilergcc
 endif
 
 if BUILD_DEBUGGER
-MAYBE_DEBUGGER=debuggergdb
+MAYBE_DEBUGGER_GDB=debuggergdb
 endif
 
 if BUILD_MIMEHANDLER
@@ -77,7 +77,7 @@ SUBDIRS = \
 			$(MAYBE_CLASSWIZARD) \
 			$(MAYBE_CODECOMPLETION) \
 			$(MAYBE_COMPILER) \
-			$(MAYBE_DEBUGGER) \
+			$(MAYBE_DEBUGGER_GDB) \
 			$(MAYBE_DISPLAYEVENTS) \
 			$(MAYBE_MANIFEST) \
 			$(MAYBE_MIMEHANDLER) \
@@ -90,9 +90,10 @@ SUBDIRS = \
 			$(MAYBE_LOGHACKER) \
 			$(MAYBE_MODPOLLER) \
 			$(MAYBE_TIDYCMT) \
-			contrib
-# the 'contrib' subdir contains its own filtering
+			contrib \
+			contrib-wip
 
+# Both the 'contrib' and 'contrib-wip' subdirs contains its own filtering
 DIST_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = \

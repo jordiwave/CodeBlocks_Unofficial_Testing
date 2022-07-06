@@ -78,11 +78,14 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Edit line break point                                   |           |            |
 |     * ignore count before break                             |           |            |
 |     * break when expression is true                         |           |            |
-|   * Break points still there after GDB exit                 |           |            |
+|   * Break points still there after exit                     |           |            |
 |   * Break points data saved on project close                |  27-Jun   |    Pass    |
 |   * Break points removed after closing the project          |           |            |
 |   * Break points removed after changing debugger            |           |            |
 |   * Break points created on project open                    |  27-Jun   |    Pass    |
+|                                                             |           |            |
+| **Exception Handling**                                      |           |            |
+|   * Debugger catches exceptions and shows call stack        | FAIL due to DAP Library missing functionality |
 |                                                             |           |            |
 | **Data Breakpoints**                                        |           |            |
 |   * Display data breakpoints in break point dialog          |           |            |
@@ -102,7 +105,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Show CPU register dialog                                |           |            |
 |   * Close CPU register dialog                               |           |            |
 |   * Update on step                                          |           |            |
-|   * CPU register dialog cleared on GDB exit                 |           |            |
+|   * CPU register dialog cleared on exit                     |           |            |
 |                                                             |           |            |
 | **Debug show Call Stack**                                   |           |            |
 |   * Show call stack dialog                                  |           |            |
@@ -118,13 +121,13 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Ability to swap between assembly and mixed modes        |           |            |
 |   * Adjust button feature                                   |           |            |
 |   * Save disassembly to a file                              |           |            |
-|   * Disassembly dialog cleared on GDB exit                  |           |            |
+|   * Disassembly dialog cleared on exit                      |           |            |
 |                                                             |           |            |
 | **Debug -> Memory Dump Dialog**                             |           |            |
 |   * Show memory dump dialog                                 |           |            |
 |   * Close memory dump dialog                                |           |            |
 |   * Show variable memory from watch dialog                  |           |            |
-|   * Memory dump dialog not cleared on GDB exit              |           |            |
+|   * Memory dump dialog not cleared on exit                  |           |            |
 |   * Memory dump dialog cleared on last project close        |           |            |
 |   * Memory dump watches data saved on project close         |           |            |
 |   * Memory dump watches removed after changing debugger     |           |            |
@@ -149,9 +152,9 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Show debuggeroptionsprjdlg dialog                       |           |            |
 |   * Close debuggeroptionsprjdlg dialog                      |           |            |
 |   * Data saved /loaded                                      |           |            |
-|   * Data used by GDB/MI                                     |           |            |
+|   * Data used by Plugin                                     |           |            |
 |                                                             |           |            |
-| **GDB/MI Debugger configuration dialog**                    |           |            |
+| **DAP Debugger configuration dialog**                       |           |            |
 |   * Show debugger options dialog                            |           |            |
 |   * Close debugger options dialog                           |           |            |
 |   * Executable path save/loaded/used                        |           |            |
@@ -165,20 +168,8 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Evaluate expression under cursor cbox save/loaded/used  |           |            |
 |   * Add other projects paths... checkbox save/loaded/used   |           |            |
 |   * Do not run the debugee checkbox save/loaded/used        |           |            |
-|   * Use python pretty printer checkbox save/loaded/used     |           |            |
 |   * Disassembly flavor drop down list save/loaded/used      |           |            |
 |   * Persists checkbox save/load breakpoint/watch etc        |           |            |
-|                                                             |           |            |
-| **Checkpoints on Linux**                                    |           |            |
-|   * Add checkpoint                                          |           |            |
-|   * Delete checkpoint                                       |           |            |
-|   * Project checkpoint data saved on project close          |           |            |
-|   * Project checkpoint removed after closing the project    |           |            |
-|   * Project checkpoint removed after changing debugger      |           |            |
-|                                                             |           |            |
-| **Pretty Printing**                                         |           |            |
-|   * Ensure pretty printing works                            |           |            |
-|   * Document how pretty printing works/is configured        |           |            |
 |                                                             |           |            |
 | **Remote Debugging**                                        |           |            |
 |   * Use data from debuggeroptionsprjdlg dialog              |           |            |
@@ -187,20 +178,20 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |                                                             |           |            |
 | **Operaiting System**                                       |           |            |
 |   * Works on Windows                                        |  26-Jun   |   Pass     |
-|   * Works on Linux                                          |           |            |
+|   * Works on Linux                                          |   6-Jul   |   Pass     |
 |   * Works on MacOS                                          |           |            |
 |   * Builds on Windows via workspace                         |  26-Jun   |   Pass     |
 |   * Builds on Windows via MSYS2 makefile                    |           |            |
-|   * Builds on Linux via workspace                           |           |            |
-|   * Builds on Linux via makefile                            |           |            |
+|   * Builds on Linux via workspace                           |   6-Jul   |   Pass     |
+|   * Builds on Linux via makefile                            |   6-Jul   |   Pass     |
 |   * Builds on MacOS via workspace                           |           |            |
 |   * Builds on MacOS via makefile                            |           |            |
-|   * Create and test DAP cbplugin for Windows                |           |            |
-|   * Create and test DAP cbplugin for Linux                  |           |            |
+|   * Create and test DAP cbplugin for Windows                |   6-Jul   |   Pass     |
+|   * Create and test DAP cbplugin for Linux                  |   6-Jul   |   Pass     |
 |   * Create and test DAP cbplugin for MacOS                  |           |            |
 |                                                             |           |            |
 
-The table above was last updated on 26-Jun-2022.
+The table above was updated on 05-Jun-2022.
 
 NOTES:
  "PASS"     - initial testing showed the item worked as expected, but changes since may have broken it... Please raise an issue if you find it broken.

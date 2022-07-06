@@ -293,6 +293,8 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libprojectsimporter.so
 %{plugindir}/libscriptedwizard.so
 %{plugindir}/libtodo.so
+%{plugindir}/libcbDiff.so
+%{plugindir}/libdebugger_dap.so
 %{_datadir}/metainfo/codeblocks.appdata.xml
 %{_datadir}/applications/codeblocks.desktop
 %{_datadir}/icons/hicolor/48x48/mimetypes/*
@@ -327,6 +329,9 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/start_here.zip
 %{pkgdatadir}/todo.zip
 %{pkgdatadir}/tips.txt
+%{pkgdatadir}/clangd_client.zip
+%{pkgdatadir}/cbDiff.zip
+%{pkgdatadir}/debugger_dap.zip
 
 %files libs
 %defattr(-,root,root)
