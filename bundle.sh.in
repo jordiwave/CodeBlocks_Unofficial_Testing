@@ -78,7 +78,11 @@ cp -v ${PREFIX_DIR}/lib/libcodeblocks.dylib "$APPDIR/Contents/MacOS/"
 copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.dylib"
 install_name_tool -id "@executable_path/libcodeblocks.dylib" "$APPDIR/Contents/MacOS/libcodeblocks.dylib"
 echo "--------------------------------------------------------------------------------"
-
+echo "Copying Debugger WXDAP dylib"
+cp -v ${PREFIX_DIR}/lib/libdebugger_WXDAP.dylib "$APPDIR/Contents/MacOS/"
+copy_deps "${APPDIR}/Contents/MacOS/libdebugger_WXDAP.dylib"
+install_name_tool -id "@executable_path/libdebugger_WXDAP.dylib" "$APPDIR/Contents/MacOS/libdebugger_WXDAP.dylib"
+echo "--------------------------------------------------------------------------------"
 
 echo "Copying binaries"
 EXECUTABLES=`echo ${PREFIX_DIR}/bin/* `
