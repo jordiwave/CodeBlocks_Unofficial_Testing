@@ -5,6 +5,7 @@ CLEANFILES = \
 			$(pkgdata_DATA)
 
 resources_forZIP = \
+			CC_ProxyProject.cbp \
 			clclassbrowser.xrc \
 			clcodecompletion_toolbar.xrc \
 			clinsert_class_method.xrc \

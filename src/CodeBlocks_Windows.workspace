@@ -17,9 +17,6 @@
 		<Project filename="plugins/displayevents/cbDisplayEvents_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/codecompletion/cctest_Windows.cbp">
-			<Depends filename="CodeBlocks_Windows.cbp" />
-		</Project>
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>

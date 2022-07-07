@@ -421,38 +421,6 @@
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="Code-completion">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/codecompletion" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/codecompletion" />
-				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.a" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
-				<Option host_application="./codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-				</Compiler>
-				<Linker>
-					<Add option="-Wl,--enable-auto-image-base" />
-					<Add option="-Wl,--add-stdcall-alias" />
-					<Add option="-Wl,--enable-auto-import" />
-					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
-					<Add library="codeblocks" />
-					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-				</Linker>
-				<ExtraCommands>
-					<!-- Create output directory if it does not exist -->
-					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codecompletion.zip plugins\codecompletion\resources\manifest.xml plugins\codecompletion\resources\*.xrc" />
-					<Add after="cmd /c &quot;cd plugins/codecompletion/resources &amp;&amp; zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codecompletion.zip images&quot;" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
 			<Target title="Clangd_Client">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
@@ -752,8 +720,8 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;tinyXML2;AutoRevision;ConsoleRunner;Squirrel;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Clangd_Client;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Clangd_Client;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
+			<Add alias="All" targets="tinyXML;tinyXML2;AutoRevision;ConsoleRunner;Squirrel;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Clangd_Client;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Clangd_Client;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
 			<Add alias="Third-party libs" targets="tinyXML;tinyXML2;AutoRevision;ConsoleRunner;Squirrel;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
@@ -1581,190 +1549,6 @@
 		</Unit>
 		<Unit filename="plugins/classwizard/resources/new_class.xrc">
 			<Option target="Class wizard" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/ccoptionsdlg.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/ccoptionsdlg.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/ccoptionsprjdlg.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/ccoptionsprjdlg.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/cctreectrl.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/cctreectrl.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/classbrowser.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/classbrowser.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/classbrowserbuilderthread.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/classbrowserbuilderthread.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/codecompletion.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/codecompletion.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/coderefactoring.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/coderefactoring.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/doxygen_parser.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/doxygen_parser.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/gotofunctiondlg.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/gotofunctiondlg.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/insertclassmethoddlg.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/insertclassmethoddlg.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/nativeparser.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/nativeparser.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/nativeparser_base.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/nativeparser_base.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/ccdebuginfo.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/ccdebuginfo.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/cclogger.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/cclogger.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/expression.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/expression.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/parser.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/parser.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/parser_base.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/parser_base.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/parserthread.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/parserthread.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/parserthreadedtask.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/parserthreadedtask.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/profiletimer.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/profiletimer.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/searchtree.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/searchtree.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/token.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/token.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/tokenizer.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/tokenizer.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/tokentree.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/parser/tokentree.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/classbrowser.xrc">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/codecompletion_toolbar.xrc">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/insert_class_method.xrc">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/manifest.xml">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/manifest.rc" >
-			<Option compilerVar="WINDRES" />
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/project_settings.xrc">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/selectincludefile.xrc">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/settings.xrc">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/selectincludefile.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/selectincludefile.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/systemheadersthread.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/systemheadersthread.h">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/wxsmith/goto_function.wxs">
-			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/advancedcompileroptionsdlg.cpp">
 			<Option target="Compiler" />
@@ -4853,7 +4637,6 @@
 				<resources>
 					<wxScrollingDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="src/virtualbuildtargetsdlg.cpp" hdr="src/virtualbuildtargetsdlg.h" xrc="src/resources/virtualbuildtargetsdlg.xrc" fwddecl="0" i18n="1" name="VirtualBuildTargetsDlg" language="CPP" />
 					<wxScrollingDialog wxs="wxsmith/databreakpointdlg.wxs" src="plugins/debuggergdb/databreakpointdlg.cpp" hdr="plugins/debuggergdb/databreakpointdlg.h" fwddecl="0" i18n="1" name="DataBreakpointDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/CCDebugInfo.wxs" src="plugins/codecompletion/parser/ccdebuginfo.cpp" hdr="plugins/codecompletion/parser/ccdebuginfo.h" fwddecl="0" i18n="1" name="CCDebugInfo" language="CPP" />
 					<wxPanel wxs="wxsmith/ScriptConsole.wxs" src="src/scriptconsole.cpp" hdr="src/scriptconsole.h" fwddecl="0" i18n="1" name="ScriptConsole" language="CPP" />
 					<wxPanel wxs="wxsmith/BuildTargetPanel.wxs" src="plugins/scriptedwizard/buildtargetpanel.cpp" hdr="plugins/scriptedwizard/buildtargetpanel.h" fwddecl="0" i18n="1" name="BuildTargetPanel" language="CPP" />
 					<wxPanel wxs="wxsmith/CompilerPanel.wxs" src="plugins/scriptedwizard/compilerpanel.cpp" hdr="plugins/scriptedwizard/compilerpanel.h" fwddecl="0" i18n="1" name="CompilerPanel" language="CPP" />
@@ -4867,7 +4650,6 @@
 					<wxPanel wxs="wxsmith/debuggersettingspanel.wxs" src="src/debuggersettingspanel.cpp" hdr="src/debuggersettingspanel.h" fwddecl="0" i18n="1" name="DebuggerSettingsPanel" language="CPP" />
 					<wxPanel wxs="wxsmith/debuggersettingscommonpanel.wxs" src="src/debuggersettingscommonpanel.cpp" hdr="src/debuggersettingscommonpanel.h" fwddecl="0" i18n="1" name="DebuggerSettingsCommonPanel" language="CPP" />
 					<wxDialog wxs="wxsmith/goto_file.wxs" src="src/goto_file.cpp" hdr="src/goto_file.h" fwddecl="1" i18n="1" name="GotoFile" language="CPP" />
-					<wxDialog wxs="plugins/codecompletion/wxsmith/goto_function.wxs" src="plugins/codecompletion/gotofunctiondlg.cpp" hdr="plugins/codecompletion/gotofunctiondlg.h" fwddecl="1" i18n="1" name="GotoFunctionDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

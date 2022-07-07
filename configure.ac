@@ -413,8 +413,6 @@ AC_CONFIG_FILES([Makefile
     src/plugins/clangd_client/src/resources/Makefile
     src/plugins/classwizard/Makefile
     src/plugins/classwizard/resources/Makefile
-    src/plugins/codecompletion/Makefile
-    src/plugins/codecompletion/resources/Makefile
     src/plugins/compilergcc/depslib/Makefile
     src/plugins/compilergcc/depslib/src/Makefile
     src/plugins/compilergcc/Makefile

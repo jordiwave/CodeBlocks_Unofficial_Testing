@@ -11,9 +11,6 @@
 		<Project filename="plugins/displayevents/cbDisplayEvents_MacOS.cbp" >
 			<Depends filename="CodeBlocks_MacOS.cbp" />
 		</Project>
-		<Project filename="plugins/codecompletion/cctest_MacOS.cbp" >
-			<Depends filename="CodeBlocks_MacOS.cbp" />
-		</Project>
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_MacOS.cbp" >
 			<Depends filename="CodeBlocks_MacOS.cbp" />
 		</Project>

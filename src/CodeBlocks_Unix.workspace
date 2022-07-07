@@ -13,9 +13,6 @@
 		<Project filename="plugins/displayevents/CBDisplayEvents_Unix.cbp" >
 			<Depends filename="CodeBlocks_Unix.cbp" />
 		</Project>
-		<Project filename="plugins/codecompletion/CCtest_Unix.cbp" >
-			<Depends filename="CodeBlocks_Unix.cbp" />
-		</Project>
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_Unix.cbp" >
 			<Depends filename="CodeBlocks_Unix.cbp" />
 		</Project>

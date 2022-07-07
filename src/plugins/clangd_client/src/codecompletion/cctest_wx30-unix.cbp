@@ -7,7 +7,7 @@
 		<Build>
 			<Target title="cctest">
 				<Option output="../../devel30/cctest" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../.objs30/plugins/codecompletion/cctest" />
+				<Option object_output="../../.objs30/plugins/clangd_client/cctest" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />

@@ -21,7 +21,7 @@ fi
 # ----------------------------------------------------------------------------
 # Set build variables
 # ----------------------------------------------------------------------------
-CurrentDir=${PWD}
+InitialDir=${PWD}
 
 # -------------------------------------------------------------------------------------------------
 
@@ -52,40 +52,51 @@ case "$(uname)" in
     ;;
   AIX*)
     echo "AIX is not supported"
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 0
     ;;
   bsd*)
     echo "BSD is not supported"
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 0
     ;;
   bsd*)
     echo "BSD is not supported"
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 0
     ;;
   FreeBSD*)
     echo "FreeBSD is not supported"
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 0
     ;;
   solaris*)
     echo "SOLARIS is not supported"
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 0
     ;;
   SunOS*)
     echo "SunOS is not supported"
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 0
     ;;
   *)
     echo "Unknown: ${OSTYPE} is not supported"
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 0
     ;;
 esac
+
+# -----------------------------------------------------------------------------
+
+reset
+echo
+echo "+-------------------------------------------------------------------------------------------------+"
+echo "|                                                                                                 |"
+echo "|                           Updating C::B directory build files.                                  |"
+echo "|                                                                                                 |"
+echo "|    Detected OS:                        ${OSDetected}                                            |"
+
 
 # ----------------------------------------------------------------------------
 # Check where we are running from and go to the C::B source root directory 
@@ -99,7 +110,7 @@ if [ ! -f "bootstrap" ]; then
             cd ../..
         else
             echo Could not find bootstrap or ../bootstrap or ../../bootstrap
-            cd $CurrentDir
+            cd ${InitialDir}
             exit 3
         fi
     fi
@@ -128,7 +139,7 @@ if [ "${BUILD_BITS}" == "" ] ; then
     echo "+-------------------------------------------------------------------------------------------------+"
     echo
     echo BUILD_BITS:${BUILD_BITS}
-    cd ${CurrentDir}
+    cd ${InitialDir}
     exit 4
 fi
 # -----------------------------------------------------------------------------
@@ -172,7 +183,7 @@ if { !  {
     echo "|                                                                                                 |"
     echo "+-------------------------------------------------------------------------------------------------+"
     echo
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 5
 fi
 
@@ -186,7 +197,7 @@ if [ ! -d "${GCC_ROOT}" ]; then
     echo "|                                    |     Error: NO GCC found     |                              |"
     echo "|                                    +-----------------------------+                              |"
     echo "|                                                                                                 |"
-    cd $CurrentDir
+    cd ${InitialDir}
     exit 6
 fi
 echo "|    GCC_ROOT root detected at:          ${GCC_ROOT}                                             |"
@@ -208,7 +219,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
         echo "|                                                                                                 |"
         echo "+-------------------------------------------------------------------------------------------------+"
         echo
-        cd $CurrentDir
+        cd ${InitialDir}
         exit 7
     fi
     echo "|    WX_CB_BUILD_DIR set to:             $WX_CB_BUILD_DIR    |"
@@ -271,7 +282,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
         echo "|                                                                                                 |"
         echo "+-------------------------------------------------------------------------------------------------+"
         echo
-        cd $CurrentDir
+        cd ${InitialDir}
         exit 8
     fi
 
@@ -349,7 +360,7 @@ else
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/Astyle.zip           ${CB_ROOT}/src/plugins/astyle/resources/manifest.xml                        ${CB_ROOT}/src/plugins/astyle/resources/*.xrc               > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/autosave.zip         ${CB_ROOT}/src/plugins/autosave/manifest.xml                                ${CB_ROOT}/src/plugins/autosave/*.xrc                       > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/classwizard.zip      ${CB_ROOT}/src/plugins/classwizard/resources/manifest.xml                   ${CB_ROOT}/src/plugins/classwizard/resources/*.xrc          > /dev/null
-    ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/codecompletion.zip   ${CB_ROOT}/src/plugins/codecompletion/resources/manifest.xml                ${CB_ROOT}/src/plugins/codecompletion/resources/*.xrc       > /dev/null
+    ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/clangd_client.zip    ${CB_ROOT}/src/plugins/clangd_client/src/resources/manifest.xml             ${CB_ROOT}/src/plugins/clangd_client/src/resources/*.xrc   > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/compiler.zip         ${CB_ROOT}/src/plugins/compilergcc/resources/manifest.xml                   ${CB_ROOT}/src/plugins/compilergcc/resources/*.xrc          > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/debugger.zip                 ${CB_ROOT}/src/plugins/debuggergdb/resources/manifest.xml           ${CB_ROOT}/src/plugins/debuggergdb/resources/*.xrc          > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/defaultmimehandler.zip       ${CB_ROOT}/src/plugins/defaultmimehandler/resources/manifest.xml    ${CB_ROOT}/src/plugins/defaultmimehandler/resources/*.xrc   > /dev/null
@@ -421,8 +432,8 @@ else
         images/56x56/*.png \
         images/64x64/*.png \
         > /dev/null
-    cd ${CB_ROOT}/src/plugins/codecompletion/resources
-    ${ZIPCMD} -0 -qu ${CB_DEVEL_RESDIR}/codecompletion.zip \
+    cd ${CB_ROOT}/src/plugins/clangd_client/src/resources
+    ${ZIPCMD} -0 -qu ${CB_DEVEL_RESDIR}/clangd_client.zip \
         images/16x16/*.png \
         images/20x20/*.png \
         images/24x24/*.png \
@@ -489,4 +500,4 @@ if [ "${REPLY}" == 'y' ] || [ "${REPLY}" == 'Y' ]; then
     sh -c "${CB_SRC}/devel31_${BUILD_BITS}/codeblocks${EXEEXT} -v --prefix ${CB_SRC}/devel31_${BUILD_BITS}"
 fi
 
-cd $CurrentDir
+cd ${InitialDir}

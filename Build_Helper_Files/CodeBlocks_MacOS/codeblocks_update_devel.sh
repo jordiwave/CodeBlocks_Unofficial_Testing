@@ -1,11 +1,39 @@
 #!/bin/bash
 
-InitialDir=$PWD
+# --------------------------------------------------------------------------------------#
+#                                                                                       #
+# This file is part of the Code::Blocks IDE and licensed under the                      #
+#  GNU General Public License, version 3. http://www.gnu.org/licenses/gpl-3.0.html      #
+#                                                                                       #
+# --------------------------------------------------------------------------------------#
+#                                                                                       #
+#     This bash script builds CodeBlocks on either :                                    #
+#           - Windows using MSYS2 Mingw64                                               #
+#           - Linux                                                                     #
+#                                                                                       #
+# --------------------------------------------------------------------------------------#
 
 if [ "$(id -u)" == "0" ]; then
     echo "You are root. Please run again as a normal user!!!"
     exit 1
 fi
+
+# ----------------------------------------------------------------------------
+# Set build variables
+# ----------------------------------------------------------------------------
+InitialDir=${PWD}
+
+# -------------------------------------------------------------------------------------------------
+
+if [ "${GITHUB_ACTIONS}" != "true" ] ; then
+    reset
+    # The following is to enable sending the output of this script to the terminal and to the 
+    # file specified:
+    exec > >(tee -i codeBlocks_Update_Dev.log) 2>&1
+    # NOTE: if you want to append to the file change the -i to -ia in the line above.
+fi
+
+# -------------------------------------------------------------------------------------------------
 
 case "$(uname)" in
   Darwin*)
@@ -24,30 +52,37 @@ case "$(uname)" in
     ;;
   AIX*)
     echo "AIX is not supported"
+    cd ${InitialDir}
     exit 0
     ;;
   bsd*)
     echo "BSD is not supported"
+    cd ${InitialDir}
     exit 0
     ;;
   bsd*)
     echo "BSD is not supported"
+    cd ${InitialDir}
     exit 0
     ;;
   FreeBSD*)
     echo "FreeBSD is not supported"
+    cd ${InitialDir}
     exit 0
     ;;
   solaris*)
     echo "SOLARIS is not supported"
+    cd ${InitialDir}
     exit 0
     ;;
   SunOS*)
     echo "SunOS is not supported"
+    cd ${InitialDir}
     exit 0
     ;;
   *)
     echo "Unknown: ${OSTYPE} is not supported"
+    cd ${InitialDir}
     exit 0
     ;;
 esac
@@ -68,13 +103,21 @@ echo "|    Detected OS:                        ${OSDetected}                    
 # ----------------------------------------------------------------------------
 
 if [ ! -f "bootstrap" ]; then
-    if [ ! -f "../../bootstrap" ]; then
-        echo Could not find ../../bootstrap
-        cd $InitialDir
-        exit 3
+    if [ -f "../bootstrap" ]; then
+        cd ..
+    else
+        if [ -f "../../bootstrap" ]; then
+            cd ../..
+        else
+            echo Could not find bootstrap or ../bootstrap or ../../bootstrap
+            cd ${InitialDir}
+            exit 3
+        fi
     fi
-    cd ../..
 fi
+
+echo "|    CurrentDir C::B root is:            ${PWD}                                                  |"
+
 CB_ROOT=$PWD
 CB_SRC=${CB_ROOT}/src
 
@@ -95,21 +138,36 @@ if ! { [ "${BUILD_BITS}" == "32" ] || [ "${BUILD_BITS}" == "64" ]; }; then
     echo "+-------------------------------------------------------------------------------------------------+"
     echo
     echo BUILD_BITS:${BUILD_BITS}
-    cd $InitialDir
+    cd ${InitialDir}
     exit 4
 fi
-echo "|    Development directory is:           ${CB_SRC}/devel31_${BUILD_BITS}                     |"
-echo "|    Detected that you are building for: ${BUILD_BITS} bits                                                  |"
+# -----------------------------------------------------------------------------
+
+echo
+echo "+-------------------------------------------------------------------------------------------------+"
+echo "|                                                                                                 |"
+echo "|                           Updating C::B directory build files.                                  |"
+echo "|                                                                                                 |"
+echo "| Detected OS:   ${OSDetected}                                                               |"
+echo "| Devel dir:     ${CB_SRC}/devel31_${BUILD_BITS}                                        |"
+echo "| CB_ROOT:       ${CB_ROOT}                                                        |"
+echo "| CB_SRC:        ${CB_SRC}                                                         |"
+echo "| BUILD_BITS:    ${BUILD_BITS}                                                                      |"
+echo "| PWD:           ${PWD} |"
+echo "+-------------------------------------------------------------------------------------------------+"
 
 # ----------------------------------------------------------------------------
 # Check if build succeeded
 # ----------------------------------------------------------------------------
 #case "$(OSDetected)" in
 #  Windows*)
-if { !  {  
-        [ -f "${CB_SRC}/devel31_${BUILD_BITS}/codeblocks${EXEEXT}" ]         &&
-        [ -f "${CB_SRC}/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}" ]     &&
-        [ -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}" ]
+if { !  {
+            [ -f "${CB_SRC}/devel31_${BUILD_BITS}/codeblocks${EXEEXT}" ]                        &&
+            [ -f "${CB_SRC}/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}" ]                    &&
+            {
+                [ -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}" ] ||
+                [ -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/libtodo.${LIBEXT}" ]
+            }
         }
    } then
     echo "|                                                                                                 |"
@@ -119,11 +177,12 @@ if { !  {
     [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/codeblocks${EXEEXT}" ]                     && echo "|             |        Missing src/devel31_${BUILD_BITS}/codeblocks${EXEEXT}!                          |              |"
     [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}" ]                 && echo "|             |        Missing src/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}!                 |              |"
     [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}" ] && echo "|             |        Missing src/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}! |              |"
+    [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/libtodo.${LIBEXT}" ] && echo "|             |        Missing src/devel31_${BUILD_BITS}/share/codeblocks/plugins/libtodo.${LIBEXT}! |              |"
     echo "|             +--------------------------------------------------------------------+              |"
     echo "|                                                                                                 |"
     echo "+-------------------------------------------------------------------------------------------------+"
     echo
-    cd $InitialDir
+    cd ${InitialDir}
     exit 5
 fi
 
@@ -137,10 +196,10 @@ if [ ! -d "${GCC_ROOT}" ]; then
     echo "|                                    |     Error: NO GCC found     |                              |"
     echo "|                                    +-----------------------------+                              |"
     echo "|                                                                                                 |"
-    cd $InitialDir
+    cd ${InitialDir}
     exit 6
 fi
-echo "|    GCC_ROOT root detected at:          ${GCC_ROOT}                                                 |"
+echo "|    GCC_ROOT root detected at:          ${GCC_ROOT}                                             |"
 
 
 # ----------------------------------------------------------------------------
@@ -159,7 +218,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
         echo "|                                                                                                 |"
         echo "+-------------------------------------------------------------------------------------------------+"
         echo
-        cd $InitialDir
+        cd ${InitialDir}
         exit 7
     fi
     echo "|    WX_CB_BUILD_DIR set to:             $WX_CB_BUILD_DIR    |"
@@ -190,7 +249,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     [ -f  "${GCC_ROOT}/libstdc++-6.dll" ]             && cp -f "${GCC_ROOT}/libstdc++-6.dll"            ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
     [ -f  "${GCC_ROOT}/libbz2-1.dll" ]                && cp -f "${GCC_ROOT}/libbz2-1.dll"               ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
     [ -f  "${GCC_ROOT}/zlib1.dll" ]                   && cp -f "${GCC_ROOT}/zlib1.dll"                  ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
-    [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/exchndl.dll" ]  && cp -f -r "${CB_SRC}/exchndl/win${BUILD_BITS}/bin/."  ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
+    [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/exchndl.dll" ]  && cp -f -r "${CB_SRC}/exchndl/Win_10/win${BUILD_BITS}/bin/."  ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
 
     count=$(ls ${GCC_ROOT}/libhunspell-*.dll 2>/dev/null | wc -l)
     if [ $count != 0 ] ; then
@@ -222,7 +281,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
         echo "|                                                                                                 |"
         echo "+-------------------------------------------------------------------------------------------------+"
         echo
-        cd $InitialDir
+        cd ${InitialDir}
         exit 8
     fi
 
@@ -300,7 +359,7 @@ else
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/Astyle.zip           ${CB_ROOT}/src/plugins/astyle/resources/manifest.xml                        ${CB_ROOT}/src/plugins/astyle/resources/*.xrc               > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/autosave.zip         ${CB_ROOT}/src/plugins/autosave/manifest.xml                                ${CB_ROOT}/src/plugins/autosave/*.xrc                       > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/classwizard.zip      ${CB_ROOT}/src/plugins/classwizard/resources/manifest.xml                   ${CB_ROOT}/src/plugins/classwizard/resources/*.xrc          > /dev/null
-    ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/codecompletion.zip   ${CB_ROOT}/src/plugins/codecompletion/resources/manifest.xml                ${CB_ROOT}/src/plugins/codecompletion/resources/*.xrc       > /dev/null
+    ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/clangd_client.zip    ${CB_ROOT}/src/plugins/clangd_client/src/resources/manifest.xml             ${CB_ROOT}/src/plugins/clangd_client/src/resources/*.xrc   > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/compiler.zip         ${CB_ROOT}/src/plugins/compilergcc/resources/manifest.xml                   ${CB_ROOT}/src/plugins/compilergcc/resources/*.xrc          > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/debugger.zip                 ${CB_ROOT}/src/plugins/debuggergdb/resources/manifest.xml           ${CB_ROOT}/src/plugins/debuggergdb/resources/*.xrc          > /dev/null
     ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/defaultmimehandler.zip       ${CB_ROOT}/src/plugins/defaultmimehandler/resources/manifest.xml    ${CB_ROOT}/src/plugins/defaultmimehandler/resources/*.xrc   > /dev/null
@@ -372,8 +431,8 @@ else
         images/56x56/*.png \
         images/64x64/*.png \
         > /dev/null
-    cd ${CB_ROOT}/src/plugins/codecompletion/resources
-    ${ZIPCMD} -0 -qu ${CB_DEVEL_RESDIR}/codecompletion.zip \
+    cd ${CB_ROOT}/src/plugins/clangd_client/src/resources
+    ${ZIPCMD} -0 -qu ${CB_DEVEL_RESDIR}/clangd_client.zip \
         images/16x16/*.png \
         images/20x20/*.png \
         images/24x24/*.png \
@@ -440,4 +499,4 @@ if [ "${REPLY}" == 'y' ] || [ "${REPLY}" == 'Y' ]; then
     sh -c "${CB_SRC}/devel31_${BUILD_BITS}/codeblocks${EXEEXT} -v --prefix ${CB_SRC}/devel31_${BUILD_BITS}"
 fi
 
-cd $InitialDir
+cd ${InitialDir}

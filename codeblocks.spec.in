@@ -107,16 +107,19 @@ extensibility.
 Most of its functionality is already provided by plugins.
 
  Plugins included in the base package are:
-  * Compiler frontend to many free compilers
-  * Debugger frontend for GDB (and CDB for windows platforms)
-  * Source formatter (based on AStyle)
-  * Wizard to create new C++ classes
-  * Code-completion / symbols-browser (work in progress)
-  * Default MIME handler
-  * Wizard to create new Code::Blocks plugins
-  * To-do list
-  * Extensible wizard based on scripts
-  * Autosave (saves your work in the unfortunate case of a crash)
+    * Compiler front end to many free compilers
+    * Debugger front end for GDB (and CDB for windows platforms)
+    * Debugger front end for DAP (LLDB client and other DAP clients)
+    * Source formatter (based on AStyle)
+    * Wizard to create new C++ classes
+    * Clangd_Client / symbols-browser
+    * Default MIME handler
+    * Wizard to create new Code::Blocks plugins
+    * To-do list
+    * Extensible wizard based on scripts
+    * Auto save (saves your work in the unfortunate case of a crash)
+    * Occurrences highlighter
+    * Open files list
 
 %package libs
 Summary:                    Libraries needed to run Code::Blocks

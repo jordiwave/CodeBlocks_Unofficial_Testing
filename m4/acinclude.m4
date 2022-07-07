@@ -178,17 +178,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-AC_MSG_CHECKING(whether to build the code completion plugin)
-cc_default="yes"
-AC_ARG_ENABLE(code-completion, [AC_HELP_STRING([--enable-code-completion], [build the code completion plugin (default YES)])],,
-                       enable_cc=$cc_default)
-AM_CONDITIONAL([BUILD_CODECOMPLETION], [test "x$enable_cc" = "xyes"])
-if test "x$enable_cc" = "xyes"; then
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-
 AC_MSG_CHECKING(whether to build the compiler plugin)
 gcc_default="yes"
 AC_ARG_ENABLE(compiler, [AC_HELP_STRING([--enable-compiler], [build the compiler plugin (default YES)])],,
