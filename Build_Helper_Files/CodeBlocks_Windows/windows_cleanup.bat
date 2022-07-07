@@ -92,17 +92,9 @@ for /f "usebackq delims=^=^" %%a in (`"dir *.o /b/s" 2^>nul`)                   
 ) 
 
 @rem output directories
-for /f "usebackq delims=^=^" %%a in (`"dir .objs31_32  /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
-for /f "usebackq delims=^=^" %%a in (`"dir .objs31_64  /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
-for /f "usebackq delims=^=^" %%a in (`"dir .objs31     /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
- 
-for /f "usebackq delims=^=^" %%a in (`"dir devel31_32  /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
-for /f "usebackq delims=^=^" %%a in (`"dir devel31_64  /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
-for /f "usebackq delims=^=^" %%a in (`"dir devel31     /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
-
-for /f "usebackq delims=^=^" %%a in (`"dir output31_32 /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
-for /f "usebackq delims=^=^" %%a in (`"dir output31_64 /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
-for /f "usebackq delims=^=^" %%a in (`"dir output31    /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
+for /f "usebackq delims=^=^" %%a in (`"dir .objs3*  /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
+for /f "usebackq delims=^=^" %%a in (`"dir devel3*  /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
+for /f "usebackq delims=^=^" %%a in (`"dir output3* /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
  
 :Finish
 @echo Done

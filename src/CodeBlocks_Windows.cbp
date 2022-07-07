@@ -254,7 +254,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -289,7 +288,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -320,7 +318,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -343,7 +340,6 @@
 				</Compiler>
 				<Linker>
 					<Add option="-r" />
-					<Add option="-mthreads" />
 				</Linker>
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
@@ -371,7 +367,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 					<Add library="depslib" />
@@ -408,7 +403,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -447,7 +441,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -482,7 +475,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -513,7 +505,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -545,7 +536,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -576,7 +566,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -607,7 +596,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -639,7 +627,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -675,7 +662,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -706,7 +692,6 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 				</Linker>
@@ -730,7 +715,6 @@
 			<Add option="-m$(#CB_BUILD.OSBITS)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-pipe" />
-			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />

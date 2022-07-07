@@ -63,17 +63,31 @@ Unicode True
 #########################################################
 # The following line defined if the build is for 32 or 64 bits
 !ifdef BUILD_TYPE
+  !undef BUILD_TYPE
   !if ${BUILD_TYPE} == 32
-    !undef BUILD_TYPE
     !define BUILD_TYPE 32
   !else
-    !undef BUILD_TYPE
     !define BUILD_TYPE 64
   !endif
-!else
+!endif
+
+!ifndef BUILD_TYPE
     !define BUILD_TYPE 64
 !endif
 
+!ifdef WX_DIR_VERSION
+  !undef WX_DIR_VERSION
+  !if ${WX_DIR_VERSION} == 31
+    !define WX_DIR_VERSION 31
+  !endif
+  !if ${WX_DIR_VERSION} == 32
+    !define WX_DIR_VERSION 32
+  !endif
+!endif
+
+!ifndef WX_DIR_VERSION
+    !define WX_DIR_VERSION 32
+!endif
 
 # The following line defined if the build is a nightly build and it's the SVN number
 # if not defined the version will default to YY.MM (year:month)
@@ -115,8 +129,8 @@ Unicode True
 ###########################
 # CB BUILD Folder DEFINES #
 ###########################
-!define CB_BASE          .\..\src\output31_${BUILD_TYPE}
-!define WX_BASE          .\..\src\output31_${BUILD_TYPE}
+!define CB_BASE          .\..\src\output${WX_DIR_VERSION}_${BUILD_TYPE}
+!define WX_BASE          .\..\src\output${WX_DIR_VERSION}_${BUILD_TYPE}
 #!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
 
 !define CB_SHARE         \share
@@ -176,7 +190,7 @@ BrandingText "Code::Blocks"
 
 # Installer attributes (usually these do not change)
 # Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
-OutFile             CodeBlocks-${VERSION}-${BUILD_TYPE}bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
+OutFile           CodeBlocks-${VERSION}-${BUILD_TYPE}bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
 Caption           "Code::Blocks ${VERSION} ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0 Installation"
 CRCCheck          on
 XPStyle           on

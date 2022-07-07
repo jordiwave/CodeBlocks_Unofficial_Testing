@@ -2,9 +2,10 @@
 
 @REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
 setlocal
-SET CurrentDir="%CD%"
-set WXWIDGET_VERSION=3.1.7
-set WXWIDGET_DLL_FILEVERSION=317u
+SET CurrentDir=%CD%
+set WXWIDGET_VERSION=3.2.0
+set WX_DIR_VERSION=32
+set WXWIDGET_DLL_FILEVERSION=320u
 
 @rem change to the CB source root directory
 cd ..\..\src
@@ -12,15 +13,21 @@ cd ..\..\src
 set BUILD_BITS=%1
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay
 if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-if exist "..\..\src\devel31_32" set BUILD_BITS=32
-if exist "..\..\src\devel31_64" set BUILD_BITS=64
-if exist "src\devel31_32" set BUILD_BITS=32
-if exist "src\devel31_64" set BUILD_BITS=64
+if exist "..\..\src\devel3*_32" set BUILD_BITS=32
+if exist "..\..\src\devel3*_64" set BUILD_BITS=64
+if exist "..\src\devel3*_32" set BUILD_BITS=32
+if exist "..\src\devel3*_64" set BUILD_BITS=64
+if exist "src\devel3*_32" set BUILD_BITS=32
+if exist "src\devel3*_64" set BUILD_BITS=64
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay
 if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-goto BuildBitError
+set BUILD_BITS=64
+
 
 :BuildBits_Okay
+set BUILD_DEV_OUTPUT_DIR=devel%WX_DIR_VERSION%_%BUILD_BITS%
+set BUILD_OBJ_OUTPUT_DIR=objs%WX_DIR_VERSION%_%BUILD_BITS%
+set BUILD_REL_OUTPUT_DIR=output%WX_DIR_VERSION%_%BUILD_BITS%
 
 @rem ----------------------------------------------------------------------------
 @rem Hopefully these variables are the only changes you need to configure for your 
@@ -85,9 +92,9 @@ if not exist %CB_ROOT%\codeblocks.exe goto ErrNoCBExe
 @rem Ask the user if they want to run the Windows_Ouput_Create.bat after the build
 @rem ----------------------------------------------------------------
 :QuestionsStart
-if exist ".objs31_%BUILD_BITS%"   goto QuestionCleanupStart
-if exist "devel31_%BUILD_BITS%"   goto QuestionCleanupStart
-if exist "output31_%BUILD_BITS%"  goto QuestionCleanupStart
+if exist "%BUILD_OBJ_OUTPUT_DIR%"   goto QuestionCleanupStart
+if exist "%BUILD_DEV_OUTPUT_DIR%"   goto QuestionCleanupStart
+if exist "%BUILD_REL_OUTPUT_DIR%"   goto QuestionCleanupStart
 goto QuestionCleanupFinish
 
 :QuestionCleanupStart
@@ -95,12 +102,12 @@ set /p CleanUp=Do you want to delete the previous build directories [Y/N]?
 if /I "%CleanUp%" NEQ "Y" @echo Leaving previous build directories as they are.
 if /I "%CleanUp%" NEQ "Y" goto QuestionCleanupFinish
 @echo Removing previous build directories.
-if exist ".objs31_%BUILD_BITS%"   del /q ".objs31_%BUILD_BITS%" > nul
-if exist ".objs31_%BUILD_BITS%"   rmdir /S /q ".objs31_%BUILD_BITS%" > nul
-if exist "devel31_%BUILD_BITS%"   del  /q "devel31_%BUILD_BITS%" > nul
-if exist "devel31_%BUILD_BITS%"   rmdir /S /q "devel31_%BUILD_BITS%" > nul
-if exist "output31_%BUILD_BITS%"  rmdir /S /q "output31_%BUILD_BITS%" > nul
-if exist "output31_%BUILD_BITS%"  del /q "output31_%BUILD_BITS%" > nul
+if exist "%BUILD_OBJ_OUTPUT_DIR%"  del      /q "%BUILD_OBJ_OUTPUT_DIR%" > nul
+if exist "%BUILD_OBJ_OUTPUT_DIR%"  rmdir /S /q "%BUILD_OBJ_OUTPUT_DIR%" > nul
+if exist "%BUILD_DEV_OUTPUT_DIR%"  del      /q "%BUILD_DEV_OUTPUT_DIR%" > nul
+if exist "%BUILD_DEV_OUTPUT_DIR%"  rmdir /S /q "%BUILD_DEV_OUTPUT_DIR%" > nul
+if exist "%BUILD_REL_OUTPUT_DIR%"  rmdir /S /q "%BUILD_REL_OUTPUT_DIR%" > nul
+if exist "%BUILD_REL_OUTPUT_DIR%"  del      /q "%BUILD_REL_OUTPUT_DIR%" > nul
 :QuestionCleanupFinish
 
 :QuestionUpdateStart
@@ -156,6 +163,7 @@ set CB_RUN_COMMAND_LINE=%CB_EXE% %CB_PARAMS% %CB_TARGET%
 IF %ERRORLEVEL% NEQ 0 (
     set RETURN_ERROR_LEVEL=%ERRORLEVEL%
 )
+
 set end_date=%date% %time%
 @echo.
 @echo  - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,35 +174,29 @@ powershell -command "&{$start_date1 = [datetime]::parse('%start_date%'); $end_da
 @rem IF NOT "%RETURN_ERROR_LEVEL%" == "0" goto CompileError
 
 :BuildFinished
-if not exist "devel31_%BUILD_BITS%\codeblocks.exe"                          goto CompileError
-if not exist "devel31_%BUILD_BITS%\codeblocks.exe"                          goto CompileError
-if not exist "devel31_%BUILD_BITS%\Addr2LineUI.exe"                         goto CompileError
-if not exist "devel31_%BUILD_BITS%\share\codeblocks\plugins\ToolsPlus.dll"  goto CompileError
+if not exist "%BUILD_DEV_OUTPUT_DIR%\CodeBlocks.exe"                          goto CompileError
+if not exist "%BUILD_DEV_OUTPUT_DIR%\Addr2LineUI.exe"                         goto CompileError
+if not exist "%BUILD_DEV_OUTPUT_DIR%\share\CodeBlocks\plugins\ToolsPlus.dll"  goto CompileError
 
-@rem ----------------------------------------------------------------------------
-@rem Copy the compiler DLL and wxWidget DLL's into the devel31_%BUILD_BITS% directory
-@rem ----------------------------------------------------------------------------
-:CopyFilesStart
-@echo Copying compiler and wxWidget DLL's into the devel31_%BUILD_BITS% directory.
-if "%BUILD_BITS%" == "32" if exist "%GCC_ROOT%\bin\libgcc_s_dw2-1.dll"        copy "%GCC_ROOT%\bin\libgcc_s_dw2-1.dll"        devel31_%BUILD_BITS% > nul
-if "%BUILD_BITS%" == "64" if exist "%GCC_ROOT%\bin\libgcc_s_seh-1.dll"        copy "%GCC_ROOT%\bin\libgcc_s_seh-1.dll"        devel31_%BUILD_BITS% > nul
-@rem if exist "%GCC_ROOT%\bin\libgcc_s_seh_64-1.dll"     copy "%GCC_ROOT%\bin\libgcc_s_seh_64-1.dll"     devel31_%BUILD_BITS% > nul
-if exist "%GCC_ROOT%\bin\libwinpthread-1.dll"       copy "%GCC_ROOT%\bin\libwinpthread-1.dll"       devel31_%BUILD_BITS% > nul
-if exist "%GCC_ROOT%\bin\libstdc++-6.dll"           copy "%GCC_ROOT%\bin\libstdc++-6.dll"           devel31_%BUILD_BITS% > nul
-
-if exist "%WXWIN%\lib\gcc_dll\wxmsw%WXWIDGET_DLL_FILEVERSION%_gcc_cb.dll"    copy "%WXWIN%\lib\gcc_dll\wxmsw%WXWIDGET_DLL_FILEVERSION%_gcc_cb.dll"    devel31_%BUILD_BITS% > nul
-if exist "%WXWIN%\lib\gcc_dll\wxmsw%WXWIDGET_DLL_FILEVERSION%_gl_gcc_cb.dll" copy "%WXWIN%\lib\gcc_dll\wxmsw%WXWIDGET_DLL_FILEVERSION%_gl_gcc_cb.dll" devel31_%BUILD_BITS% > nul
-
-:CopyFilesFinish
+@rem -----------------------------------------------------------------------------------
+@rem Copy the compiler DLL and wxWidget DLL's into the %BUILD_DEV_OUTPUT_DIR% directory
+@rem -----------------------------------------------------------------------------------
+@echo Running 'call %CurrentDir%\Windows_update_devel.bat %BUILD_BITS%'
+call %CurrentDir%\Windows_update_devel.bat %BUILD_BITS% > nul
+IF %ERRORLEVEL% NEQ 0 (
+    goto UpdateDevelFailure
+)
 
 @rem -------------------------------------------------------------------------------
 @rem Run the Windows_Ouput_Create.bat if the user wanted it to run and we did not spawn the build 
 @rem -------------------------------------------------------------------------------
 :UpdateStart
+echo on 
 if "%SpawnBuild%" == "True" goto UpdateFinish
 if /I "%UserInput%" NEQ "Y" goto UpdateFinish
 @echo.
 @echo Running "call Windows_Ouput_Create.bat %BUILD_BITS% %GCC_ROOT%"
+dir Windows_Ouput_Create.bat
 call Windows_Ouput_Create.bat %BUILD_BITS% %GCC_ROOT% > nul
 @echo.
 @echo.
@@ -271,6 +273,18 @@ goto Finish
 @set RETURN_ERROR_LEVEL=6
 goto Finish
 
+:UpdateDevelFailure
+@echo.
+@echo.
+@echo ^+-----------------------------------------------------------------------------------^+
+@echo ^| Error: Could not update the devel via the batch file Windows_update_devel.bat!    ^|
+@echo ^|              Please fix the error and try again.                                  ^|
+@echo ^+-----------------------------------------------------------------------------------^+
+@echo.
+@echo.
+@set RETURN_ERROR_LEVEL=7
+goto Finish
+
 :BuildBitError
 @echo.
 @echo ^+------------------------------------------------------^+
@@ -279,7 +293,8 @@ goto Finish
 @echo ^+------------------------------------------------------^+
 @echo.
 @echo.
-@goto Finish
+@set RETURN_ERROR_LEVEL=8
+goto Finish
 
 :NORMALIZEPATH
     SET RETVAL=%~f1

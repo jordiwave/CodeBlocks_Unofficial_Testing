@@ -1,6 +1,5 @@
-@echo on
+@echo offf
 
-@set DEBUG=On
 @rem @set DEBUG=On
 
 @REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
@@ -26,22 +25,30 @@
 
 @REM =============================================
 
-@set BUILD_BITS=%1
-@if exist "src\devel31_%BUILD_BITS%" goto BuildBits_Okay
-@if "%BUILD_BITS%" == "32" goto BuildBits_Okay
-@if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-@if exist "src\devel31_32" set BUILD_BITS=32
-@if exist "src\devel31_64" set BUILD_BITS=64
-@if "%BUILD_BITS%" == "32" goto BuildBits_Okay
-@if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-@goto BuildBitError
+set BUILD_BITS=%1
+if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+if exist "..\..\src\devel3*_32" set BUILD_BITS=32
+if exist "..\..\src\devel3*_64" set BUILD_BITS=64
+if exist "..\src\devel3*_32" set BUILD_BITS=32
+if exist "..\src\devel3*_64" set BUILD_BITS=64
+if exist "src\devel3*_32" set BUILD_BITS=32
+if exist "src\devel3*_64" set BUILD_BITS=64
+if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+set BUILD_BITS=64
 
 :BuildBits_Okay
 
-@echo Coniguring for: %BUILD_BITS% bits
+@echo Configured for: %BUILD_BITS% bits
 
+if not "%WX_DIR_VERSION%" == "" goto WX_DIR_VERSION_Okay
+if exist "src\devel31*" set WX_DIR_VERSION=31
+if exist "src\devel32*" set WX_DIR_VERSION=32
+set WX_DIR_VERSION=32
+
+:WX_DIR_VERSION_Okay
 @REM =============================================
-
 
 @rem WATCH this as you need to  have the set outside the second if for it to work!!!!
 
@@ -61,35 +68,33 @@
     @goto Finish
 )
 
+
 @REM =============================================
 @set CB_ROOT=%CD%
-@set CB_DEVEL_DIR=%CB_ROOT%\src\devel31_%BUILD_BITS%
-@set CB_OUTPUT_DIR=%CB_ROOT%\src\output31_%BUILD_BITS%
-@set CB_DEVEL_RESDIR=%CB_DEVEL_DIR%\share\CodeBlocks
-@set CB_OUTPUT_RESDIR=%CB_OUTPUT_DIR%\share\CodeBlocks
+@set BUILD_DEV_OUTPUT_DIR=%CB_ROOT%\src\devel%WX_DIR_VERSION%_%BUILD_BITS%
+@set BUILD_REL_OUTPUT_DIR=%CB_ROOT%\src\output%WX_DIR_VERSION%_%BUILD_BITS%
+@set BUILD_DEV_CB_DIR=%BUILD_DEV_OUTPUT_DIR%\share\CodeBlocks
+@set BUILD_REL_CB_DIR=%BUILD_REL_OUTPUT_DIR%\share\CodeBlocks
 
 @REM =============================================
 
-@if not exist %CB_DEVEL_DIR% (
-    @echo "ERROR: The developemnt directory does not exist: %CB_DEVEL_DIR% . Please fix and try again."
-    @goto Finish
-)
+@if not exist %BUILD_DEV_OUTPUT_DIR% goto BUILD_DEV_OUTPUT_DIR_ERROR
 
-@if exist %CB_OUTPUT_DIR% (
-    @echo "The output %CB_OUTPUT_DIR% exists, dleteing it."
-    rmdir /s /q %CB_OUTPUT_DIR%
+@if exist %BUILD_REL_OUTPUT_DIR% (
+    @echo "The output %BUILD_REL_OUTPUT_DIR% exists, deleteing it."
+    rmdir /s /q %BUILD_REL_OUTPUT_DIR%
 )
 
 @REM =============================================
 
 @if "%DEBUG%" == "On" echo "Creating output directory and copying the dev tree to the output"
-@call :mkdirSilent "%CB_OUTPUT_DIR%"
-@xcopy /S /D /y "%CB_DEVEL_DIR%\*" "%CB_OUTPUT_DIR%\"  > nul     
+@call :mkdirSilent "%BUILD_REL_OUTPUT_DIR%"
+@xcopy /S /D /y "%BUILD_DEV_OUTPUT_DIR%\*" "%BUILD_REL_OUTPUT_DIR%\"  > nul     
 
 @REM =============================================
 @if "%DEBUG%" == "On" echo "Striping EXE and DLL files in the output directory tree"
-@rem @for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.exe" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
-@rem @for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.dll" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
+@rem @for /f "usebackq delims=^=^" %%a in (`"dir "%BUILD_REL_OUTPUT_DIR%\*.exe" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
+@rem @for /f "usebackq delims=^=^" %%a in (`"dir "%BUILD_REL_OUTPUT_DIR%\*.dll" /b/s" 2^>nul`) do @%STRIP_EXE% %%a  > nul
 
 @REM =============================================
 
@@ -104,18 +109,30 @@
 
 @REM Copy these files after stripping symbols otherwise CB will not start as the files will be corrupted
 @set CB_HANDLER_DIR=%CB_ROOT%\src\exchndl\%CB_HANDLER_WIN_DIR%\win%BUILD_BITS%\bin
-@if exist "%CB_HANDLER_DIR%" xcopy /y "%CB_HANDLER_DIR%\*.dll" "%CB_OUTPUT_DIR%\" > nul
+@if exist "%CB_HANDLER_DIR%" xcopy /y "%CB_HANDLER_DIR%\*.dll" "%BUILD_REL_OUTPUT_DIR%\" > nul
 
 @REM =============================================
 
 @goto Finish
 
-:BuildBitError
+:BUILD_DEV_OUTPUT_DIR_ERROR
 @echo.
 @echo ^+-------------------------------------------------------^+
-@echo ^| Error: Could not detect either of the followinf dirs: ^|
-@echo ^|          - src\devel31_32                             ^|
-@echo ^|          - src\devel31_64                             ^|
+@echo ^| Error: Could not detect either of the following dirs: ^|
+@echo ^|          - src\devel3*_32                             ^|
+@echo ^|          - src\devel3*_64                             ^|
+@echo ^|                                                       ^|
+@echo ^|        Please fix and try again                       ^|
+@echo ^+-------------------------------------------------------^+
+@echo.
+@goto Finish
+
+:BUILD_DEV_OUTPUT_DIR_ERROR
+@echo.
+@echo ^+-------------------------------------------------------^+
+@echo ^| Error: The following directory does not exist:       ^|
+@echo ^|         %BUILD_DEV_OUTPUT_DIR% ^|
+@echo ^|                                                       ^|
 @echo ^|        Please fix and try again                       ^|
 @echo ^+-------------------------------------------------------^+
 @echo.
