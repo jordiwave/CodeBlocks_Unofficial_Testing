@@ -21,12 +21,15 @@ class MainFrame : public MainFrameBase
     dap::Source m_current_source;
     std::vector<wxStyledTextCtrl*> m_ctrls;
     dap::Process* m_process = nullptr;
+    int m_frame_id = wxNOT_FOUND;
 
 public:
     MainFrame(wxWindow* parent, wxString executableFileName);
     virtual ~MainFrame();
 
 protected:
+    void OnEval(wxCommandEvent& event) override;
+    void OnEvalUI(wxUpdateUIEvent& event) override;
     void InitializeClient();
     void AddLog(const wxString& log);
     void LoadFile(const dap::Source& sourceId, int line_number);
@@ -65,5 +68,6 @@ protected:
     void OnLaunchResponse(DAPEvent& event);
     void OnRunInTerminalRequest(DAPEvent& event);
     void OnDapLog(DAPEvent& event);
+    void OnDapModuleEvent(DAPEvent& event);
 };
 #endif // MAINFRAME_HPP

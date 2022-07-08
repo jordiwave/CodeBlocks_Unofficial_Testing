@@ -32,7 +32,7 @@ class Compiler;
 
 namespace dbg_DAP
 {
-class DebuggerConfiguration;
+    class DebuggerConfiguration;
 
 } // namespace dbg_DAP
 
@@ -54,7 +54,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         virtual bool SupportsFeature(cbDebuggerFeature::Flags flag);
         virtual cbDebuggerConfiguration * LoadConfig(const ConfigManagerWrapper & config);
         dbg_DAP::DebuggerConfiguration & GetActiveConfigEx();
-        cbConfigurationPanel * GetProjectConfigurationPanel(wxWindow * parent, cbProject * project);
+        cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
         virtual bool Debug(bool breakOnEntry);
         virtual void Continue();
         virtual bool RunToCursor(const wxString & filename, int line, const wxString & line_text);
@@ -84,11 +84,8 @@ class Debugger_DAP : public cbDebuggerPlugin
         // breakpoints calls
         virtual cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString & filename, int line);
         cb::shared_ptr<cbBreakpoint> UpdateOrAddBreakpoint(const wxString & filename, const int line, const int id);
-        //        cb::shared_ptr<cbBreakpoint> AddBreakpoint(cb::shared_ptr<dbg_DAP::GDBBreakpoint> bp);
-        virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString & dataExpression)
-        {
-            return 0;
-        };
+//        cb::shared_ptr<cbBreakpoint> AddBreakpoint(cb::shared_ptr<dbg_DAP::GDBBreakpoint> bp);
+        virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString & dataExpression)  {return 0;};
         virtual int GetBreakpointsCount() const;
         virtual cb::shared_ptr<cbBreakpoint> GetBreakpoint(int index);
         virtual cb::shared_ptr<const cbBreakpoint> GetBreakpoint(int index) const;
@@ -100,31 +97,19 @@ class Debugger_DAP : public cbDebuggerPlugin
         virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable) {};
 
         // threads
-        virtual int GetThreadsCount() const
-        {
-            return 0;
-        };
-        virtual cb::shared_ptr<const cbThread> GetThread(int index) const
-        {
-            return nullptr;
-        };
-        virtual bool SwitchToThread(int thread_number)
-        {
-            return false;
-        };
+        virtual int GetThreadsCount() const {return 0;};
+        virtual cb::shared_ptr<const cbThread> GetThread(int index) const  {return nullptr;};
+        virtual bool SwitchToThread(int thread_number) { return false;};
 
         // watches
         void UpdateDAPWatches(int updateType);
         virtual cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol, bool update);
         virtual cb::shared_ptr<cbWatch> AddWatch(dbg_DAP::GDBWatch * watch, cb_unused bool update);
-        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update)
-        {
-            return 0;
-        };
-        //        void AddTooltipWatch(const wxString & symbol, wxRect const & rect);
+        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString &symbol, bool update)  {return 0;};
+//        void AddTooltipWatch(const wxString & symbol, wxRect const & rect);
         virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch);
         virtual bool HasWatch(cb::shared_ptr<cbWatch> watch);
-        bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch);
+        bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> &watch);
         virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch);
         virtual bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString & value);
         virtual void ExpandWatch(cb::shared_ptr<cbWatch> watch);
@@ -135,25 +120,22 @@ class Debugger_DAP : public cbDebuggerPlugin
         virtual void SendCommand(const wxString & cmd, bool debugLog) {};
         virtual void AttachToProcess(const wxString & pid) {};
         virtual void DetachFromProcess() {};
-        virtual bool IsAttachedToProcess() const
-        {
-            return 0;
-        };
+        virtual bool IsAttachedToProcess() const {return 0;};
         virtual void GetCurrentPosition(wxString & filename, int & line) {};
 
         virtual void RequestUpdate(DebugWindows window);
-        //        virtual void OnValueTooltip(const wxString & token, const wxRect & evalRect);
-        //        virtual bool ShowValueTooltip(int style);
+//        virtual void OnValueTooltip(const wxString & token, const wxRect & evalRect);
+//        virtual bool ShowValueTooltip(int style);
 
-        void StripQuotes(wxString & str);
-        void ConvertToGDBFriendly(wxString & str);
-        void ConvertToGDBDirectory(wxString & str, wxString base = "", bool relative = true);
-        wxArrayString ParseSearchDirs(cbProject * project);
-        //        TiXmlElement* GetElementForSaving(cbProject &project, const char *elementsToClear);
-        //        void SetSearchDirs(cbProject &project, const wxArrayString &dirs);
+        void StripQuotes(wxString& str);
+        void ConvertToGDBFriendly(wxString& str);
+        void ConvertToGDBDirectory(wxString& str, wxString base = "", bool relative = true);
+        wxArrayString ParseSearchDirs(cbProject *project);
+//        TiXmlElement* GetElementForSaving(cbProject &project, const char *elementsToClear);
+//        void SetSearchDirs(cbProject &project, const wxArrayString &dirs);
 
-        //        dbg_DAP::RemoteDebuggingMap ParseRemoteDebuggingMap(cbProject &project);
-        //        void SetRemoteDebuggingMap(cbProject &project, const dbg_DAP::RemoteDebuggingMap &map);
+//        dbg_DAP::RemoteDebuggingMap ParseRemoteDebuggingMap(cbProject &project);
+//        void SetRemoteDebuggingMap(cbProject &project, const dbg_DAP::RemoteDebuggingMap &map);
 
     protected:
         /** Any descendent plugin should override this virtual method and
@@ -189,22 +171,22 @@ class Debugger_DAP : public cbDebuggerPlugin
         {
             m_pProject = NULL;
         }
-        void OnProjectOpened(CodeBlocksEvent & event);
+        void OnProjectOpened(CodeBlocksEvent& event);
         virtual void CleanupWhenProjectClosed(cbProject * project);
         virtual bool CompilerFinished(bool compilerFailed, StartType startType);
 
     public:
         void UpdateWhenStopped();
         void UpdateOnFrameChanged(bool wait);
-        //        dbg_DAP::GDBCurrentFrame & GetGDBCurrentFrame()
-        //        {
-        //            return m_current_frame;
-        //        }
-        //
-        //        dbg_DAP::GDBExecutor & GetGDBExecutor()
-        //        {
-        //            return m_executor;
-        //        }
+//        dbg_DAP::GDBCurrentFrame & GetGDBCurrentFrame()
+//        {
+//            return m_current_frame;
+//        }
+//
+//        dbg_DAP::GDBExecutor & GetGDBExecutor()
+//        {
+//            return m_executor;
+//        }
 
         dbg_DAP::LogPaneLogger * GetGDBLogger()
         {
@@ -230,25 +212,25 @@ class Debugger_DAP : public cbDebuggerPlugin
         int StartDebugger(cbProject * project, StartType startType);
         void CreateStartBreakpoints(bool force);
         void CreateStartWatches();
-        bool SaveStateToFile(cbProject * prj);
-        bool LoadStateFromFile(cbProject * prj);
+        bool SaveStateToFile(cbProject* prj);
+        bool LoadStateFromFile(cbProject* prj);
         void DoWatches();
 
     private:
         wxTimer m_timer_poll_debugger;
         cbProject * m_pProject;
 
-        //        dbg_DAP::GDBExecutor m_executor;
-        //        dbg_DAP::ActionsMap  m_actions;
+//        dbg_DAP::GDBExecutor m_executor;
+//        dbg_DAP::ActionsMap  m_actions;
         dbg_DAP::LogPaneLogger * m_pLogger;
-        //        dbg_DAP::GDBThreadsContainer m_threads;
-        //
-        //
-        //        dbg_DAP::GDBMemoryRangeWatchesContainer m_memoryRanges;
-        //        dbg_DAP::GDBTextInfoWindow * m_command_stream_dialog;
+//        dbg_DAP::GDBThreadsContainer m_threads;
+//
+//
+//        dbg_DAP::GDBMemoryRangeWatchesContainer m_memoryRanges;
+//        dbg_DAP::GDBTextInfoWindow * m_command_stream_dialog;
         int m_exit_code;
-        //        int m_console_pid;
-        //        int m_pid_attached;
+//        int m_console_pid;
+//        int m_pid_attached;
         bool m_hasStartUpError;
 
 
@@ -257,7 +239,8 @@ class Debugger_DAP : public cbDebuggerPlugin
         long m_dapPid;
         wxString m_dap_debuggee;
         wxString m_dap_debuggeepath;
-        dap::Process * m_process = nullptr;
+        dap::Process* m_process = nullptr;
+        int m_frame_id = wxNOT_FOUND;
 
         enum DAPState
         {
@@ -285,24 +268,25 @@ class Debugger_DAP : public cbDebuggerPlugin
 
         // misc
         void KillDAPDebugger();
-        void OnProcessBreakpointData(const wxString & brkDescription);
+        void OnProcessBreakpointData(const wxString& brkDescription);
 
         /// Dap events
-        void OnStopped(DAPEvent & event);
-        void OnStackTrace(DAPEvent & event);
-        void OnScopes(DAPEvent & event);
-        void OnVariables(DAPEvent & event);
-        void OnInitializedEvent(DAPEvent & event);
-        void OnInitializeResponse(DAPEvent & event);
-        void OnExited(DAPEvent & event);
-        void OnTerminated(DAPEvent & event);
-        void OnOutput(DAPEvent & event);
-        void OnBreakpointLocations(DAPEvent & event);
-        void OnConnectionError(DAPEvent & event);
-        void OnBreakpointSet(DAPEvent & event);
-        void OnLaunchResponse(DAPEvent & event);
-        void OnRunInTerminalRequest(DAPEvent & event);
-        void OnDapLog(DAPEvent & event);
+        void OnStopped(DAPEvent& event);
+        void OnStackTrace(DAPEvent& event);
+        void OnScopes(DAPEvent& event);
+        void OnVariables(DAPEvent& event);
+        void OnInitializedEvent(DAPEvent& event);
+        void OnInitializeResponse(DAPEvent& event);
+        void OnExited(DAPEvent& event);
+        void OnTerminated(DAPEvent& event);
+        void OnOutput(DAPEvent& event);
+        void OnBreakpointLocations(DAPEvent& event);
+        void OnConnectionError(DAPEvent& event);
+        void OnBreakpointSet(DAPEvent& event);
+        void OnLaunchResponse(DAPEvent& event);
+        void OnRunInTerminalRequest(DAPEvent& event);
+        void OnDapLog(DAPEvent& event);
+        void OnDapModuleEvent(DAPEvent& event);
 };
 
 #endif // _DEBUGGER_DAP_PLUGIN_H_

@@ -81,6 +81,25 @@ enum class EnvFormat {
     NONE, // the adapter does not accept env
 };
 
+enum class SteppingGranularity {
+    LINE,
+    STATEMENT,
+    INSTRUCTION,
+};
+
+enum class ValueDisplayFormat {
+    NATIVE,
+    HEX,
+};
+
+enum class EvaluateContext {
+    VARIABLES,
+    WATCH,
+    REPL,
+    HOVER,
+    CLIPBOARD,
+};
+
 struct WXDLLIMPEXP_DAP Environment {
     EnvFormat format = EnvFormat::DICTIONARY;
     std::unordered_map<wxString, wxString> vars;
@@ -157,8 +176,6 @@ protected:
     ProtocolMessage::Ptr_t New(const wxString& name, const std::unordered_map<wxString, onNewObject>& pool);
 
 public:
-    //ObjGenerator() {};
-
     static ObjGenerator& Get();
     /**
      * @brief create new ProtocolMessage.
@@ -391,6 +408,68 @@ struct WXDLLIMPEXP_DAP Breakpoint : public Any {
     JSON_SERIALIZE();
 };
 
+/// A Module object represents a row in the modules view
+struct WXDLLIMPEXP_DAP Module : public Any {
+    /**
+     * Unique identifier for the module.
+     */
+    wxString id;
+    /**
+     * A name of the module.
+     */
+    wxString name;
+    /**
+     * optional but recommended attributes.
+     * always try to use these first before introducing additional attributes.
+     *
+     * Logical full path to the module. The exact definition is implementation
+     * defined, but usually this would be a full path to the on-disk file for the
+     * module.
+     */
+    wxString path;
+    /**
+     * True if the module is optimized.
+     */
+    bool isOptimized = false;
+    /**
+     * True if the module is considered 'user code' by a debugger that supports
+     * 'Just My Code'.
+     */
+    bool isUserCode = false;
+    /**
+     * Version of Module.
+     */
+    wxString version;
+    /**
+     * User understandable description of if symbols were found for the module
+     * (ex: 'Symbols Loaded', 'Symbols not found', etc.
+     */
+    wxString symbolStatus;
+    /**
+     * Logical full path to the symbol file. The exact definition is
+     * implementation defined.
+     */
+    wxString symbolFilePath;
+    /**
+     * Module created or modified.
+     */
+    wxString dateTimeStamp;
+    /**
+     * Address range covered by this module.
+     */
+    wxString addressRange;
+    ANY_CLASS(Module);
+    JSON_SERIALIZE();
+};
+
+/// The event indicates that some information about a module has changed
+struct WXDLLIMPEXP_DAP ModuleEvent : public Event {
+    wxString reason;
+    Module module;
+    EVENT_CLASS(ModuleEvent, "module");
+    JSON_SERIALIZE();
+};
+
 /// The event indicates that some information about a breakpoint has changed.
 // <-
 struct WXDLLIMPEXP_DAP BreakpointEvent : public Event {
@@ -596,7 +675,7 @@ struct WXDLLIMPEXP_DAP StepArguments : public Any {
     /**
      * If this optional flag is true, all other suspended threads are not resumed.
      */
-    bool singleThread = false;
+    bool singleThread = true;
 
     /**
      * Optional granularity to step. If no granularity is specified, a granularity
@@ -718,6 +797,10 @@ struct WXDLLIMPEXP_DAP SetBreakpointsRequest : public Request {
 ///(or the deprecated 'lines') array in the arguments
 struct WXDLLIMPEXP_DAP SetBreakpointsResponse : public Response {
     std::vector<Breakpoint> breakpoints;
+
+    /// protocol extension: keep the originating source
+    wxString originSource;
+
     RESPONSE_CLASS(SetBreakpointsResponse, "setBreakpoints");
     JSON_SERIALIZE();
 };
@@ -743,6 +826,12 @@ struct WXDLLIMPEXP_DAP ContinueArguments : public Any {
      * should set the 'allThreadsContinued' attribute in the response to true.
      */
     int threadId = -1;
+    /**
+     * If this optional flag is true, execution is resumed only for the thread
+     * with given 'threadId'.
+     */
+    bool singleThread = false;
+
     ANY_CLASS(ContinueArguments);
     JSON_SERIALIZE();
 };
@@ -754,6 +843,8 @@ struct WXDLLIMPEXP_DAP NextArguments : public Any {
      */
     int threadId = -1;
     wxString granularity = "line";
+    bool singleThread = true;
+
     ANY_CLASS(NextArguments);
     JSON_SERIALIZE();
 };
@@ -1029,6 +1120,10 @@ struct WXDLLIMPEXP_DAP VariablesResponse : public Response {
     std::vector<Variable> variables;
     // extension to the protocol: holds the parent of these variables
     int refId = wxNOT_FOUND;
+
+    // extension to the protocol: the context for this variable
+    EvaluateContext context = EvaluateContext::VARIABLES;
+
     RESPONSE_CLASS(VariablesResponse, "variables");
     JSON_SERIALIZE();
 };
@@ -1117,6 +1212,75 @@ struct WXDLLIMPEXP_DAP SourceResponse : public Response {
     JSON_SERIALIZE();
 };
 
+struct WXDLLIMPEXP_DAP EvaluateArguments : public Any {
+    /**
+     * The expression to evaluate.
+     */
+    wxString expression;
+
+    /**
+     * Evaluate the expression in the scope of this stack frame. If not specified,
+     * the expression is evaluated in the global scope.
+     */
+    int frameId = wxNOT_FOUND;
+
+    /**
+     * The context in which the evaluate request is used.
+     * Values:
+     * 'variables': evaluate is called from a variables view context.
+     * 'watch': evaluate is called from a watch view context.
+     * 'repl': evaluate is called from a REPL context.
+     * 'hover': evaluate is called to generate the debug hover contents.
+     * This value should only be used if the capability
+     * 'supportsEvaluateForHovers' is true.
+     * 'clipboard': evaluate is called to generate clipboard contents.
+     * This value should only be used if the capability 'supportsClipboardContext'
+     * is true.
+     * etc.
+     */
+    wxString context = "hover";
+
+    /**
+     * Specifies details on how to format the result.
+     * The attribute is only honored by a debug adapter if the capability
+     * 'supportsValueFormattingOptions' is true.
+     */
+    ValueFormat format;
+    ANY_CLASS(EvaluateArguments);
+    JSON_SERIALIZE();
+};
+
+struct WXDLLIMPEXP_DAP EvaluateRequest : public Request {
+    EvaluateArguments arguments;
+    REQUEST_CLASS(EvaluateRequest, "evaluate");
+    JSON_SERIALIZE();
+};
+
+struct WXDLLIMPEXP_DAP EvaluateResponse : public Response {
+    /**
+     * The result of the evaluate request.
+     */
+    wxString result;
+
+    /**
+     * The optional type of the evaluate result.
+     * This attribute should only be returned by a debug adapter if the client
+     * has passed the value true for the 'supportsVariableType' capability of
+     * the 'initialize' request.
+     */
+    wxString type;
+
+    /**
+     * The number of named child variables.
+     * The client can use this optional information to present the variables in
+     * a paged UI and fetch them in chunks.
+     * The value should be less than or equal to 2147483647 (2^31-1).
+     */
+    int variablesReference = 0;
+
+    RESPONSE_CLASS(EvaluateResponse, "evaluate");
+    JSON_SERIALIZE();
+};
 }; // namespace dap
 
 namespace std

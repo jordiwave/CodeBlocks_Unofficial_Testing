@@ -122,6 +122,7 @@ Debugger_DAP::Debugger_DAP() :
     m_dapClient.Bind(wxEVT_DAP_LAUNCH_RESPONSE,                 &Debugger_DAP::OnLaunchResponse,       this);
     m_dapClient.Bind(wxEVT_DAP_RUN_IN_TERMINAL_REQUEST,         &Debugger_DAP::OnRunInTerminalRequest, this);
     m_dapClient.Bind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,               this);
+    m_dapClient.Bind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,       this);
 
 }
 
@@ -672,6 +673,8 @@ int Debugger_DAP::LaunchDebugger(   cbProject * project,
     m_dap_debuggee = debuggee;
     wxFileName fndebugee(debuggee);
     m_dap_debuggeepath = fndebugee.GetPath();
+
+    m_frame_id = wxNOT_FOUND;
 
     // The protocol starts by us sending an initialize request
     dap::InitializeRequestArguments args;
@@ -2644,6 +2647,8 @@ void Debugger_DAP::OnStackTrace(DAPEvent& event)
         m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received stack trace event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
         if (!stack_trace_data->stackFrames.empty())
         {
+            m_frame_id = stack_trace_data->stackFrames[0].id;
+
             wxString fileName = stack_trace_data->stackFrames[0].source.path;
             if (!fileName.IsEmpty())
             {
@@ -2651,6 +2656,7 @@ void Debugger_DAP::OnStackTrace(DAPEvent& event)
                 m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("SyncEditor: %s %d"), fileName, lineNumber), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
                 SyncEditor(fileName, lineNumber, true);
             }
+
 
             // request the scopes for the first stack
             m_dapClient.GetScopes(stack_trace_data->stackFrames[0].id);
@@ -2699,6 +2705,7 @@ void Debugger_DAP::OnTerminated(DAPEvent& event)
     wxUnusedVar(event);
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, _("Session terminated!"));
     m_dapClient.Reset();
+    m_frame_id = wxNOT_FOUND;
 
     ClearActiveMarkFromAllEditors();
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("debugger terminated!")), dbg_DAP::LogPaneLogger::LineType::Warning);
@@ -2767,6 +2774,8 @@ void Debugger_DAP::OnBreakpointSet(DAPEvent& event)
     dap::SetBreakpointsResponse* resp = event.GetDapResponse()->As<dap::SetBreakpointsResponse>();
     if (resp)
     {
+        m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Got reply for setBreakpoint command for file: "), resp->originSource), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+
         for(const auto& bp : resp->breakpoints)
         {
             wxString message;
@@ -2786,6 +2795,21 @@ void Debugger_DAP::OnBreakpointSet(DAPEvent& event)
 void Debugger_DAP::OnDapLog(DAPEvent& event)
 {
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, event.GetString());
+}
+
+void Debugger_DAP::OnDapModuleEvent(DAPEvent& event)
+{
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got MODULE event!"));
+    auto event_data = event.GetDapEvent()->As<dap::ModuleEvent>();
+    if(!event_data)
+    {
+        return;
+    }
+
+    wxString log_entry;
+    log_entry << event_data->module.id << ": " << event_data->module.name << " " << event_data->module.symbolStatus
+              << event_data->module.version << " " << event_data->module.path;
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, log_entry, dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
 
 void Debugger_DAP::OnRunInTerminalRequest(DAPEvent& event)

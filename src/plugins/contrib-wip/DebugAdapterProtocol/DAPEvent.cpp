@@ -26,52 +26,41 @@ wxDEFINE_EVENT(wxEVT_DAP_INITIALIZED_EVENT, DAPEvent);
 wxDEFINE_EVENT(wxEVT_DAP_OUTPUT_EVENT, DAPEvent);
 wxDEFINE_EVENT(wxEVT_DAP_BREAKPOINT_EVENT, DAPEvent);
 wxDEFINE_EVENT(wxEVT_DAP_CONTINUED_EVENT, DAPEvent);
+wxDEFINE_EVENT(wxEVT_DAP_MODULE_EVENT, DAPEvent);
 
 DAPEvent::DAPEvent(wxEventType commandType, int winid)
     : wxCommandEvent(commandType, winid)
 {
 }
 DAPEvent::~DAPEvent() {}
-DAPEvent::DAPEvent(const DAPEvent & event)
-{
-    *this = event;
-}
-DAPEvent & DAPEvent::operator=(const DAPEvent & src)
+DAPEvent::DAPEvent(const DAPEvent& event) { *this = event; }
+DAPEvent& DAPEvent::operator=(const DAPEvent& src)
 {
     m_object = src.m_object;
     return *this;
 }
 
-wxEvent * DAPEvent::Clone() const
+wxEvent* DAPEvent::Clone() const { return new DAPEvent(*this); }
+dap::Event* DAPEvent::GetDapEvent() const
 {
-    return new DAPEvent(*this);
-}
-dap::Event * DAPEvent::GetDapEvent() const
-{
-    if (!m_object)
-    {
+    if(!m_object) {
         return nullptr;
     }
-
     return m_object->As<dap::Event>();
 }
 
-dap::Response * DAPEvent::GetDapResponse() const
+dap::Response* DAPEvent::GetDapResponse() const
 {
-    if (!m_object)
-    {
+    if(!m_object) {
         return nullptr;
     }
-
     return m_object->As<dap::Response>();
 }
 
-dap::Request * DAPEvent::GetDapRequest() const
+dap::Request* DAPEvent::GetDapRequest() const
 {
-    if (!m_object)
-    {
+    if(!m_object) {
         return nullptr;
     }
-
     return m_object->As<dap::Request>();
 }
