@@ -22,7 +22,10 @@ fi
 # Set build variables
 # ----------------------------------------------------------------------------
 CurrentDir=${PWD}
-WXWIDGET_VERSION="3.1.7"
+WXWIDGET_VERSION="3.2.0"
+WXWIDGET_DIR=32
+#WXWIDGET_VERSION="3.1.7"
+#WXWIDGET_DIR=31
 BUILD_BITS=64
 failureDetected="no"
 
@@ -143,7 +146,7 @@ case "${OSDetected}" in
     unset WX_CONFIG_NAME
     unset WX_CB_BUILD_DIR
     unset BOOST_ROOT
-    prefixDir=${PWD}/src/devel31
+    prefixDir=${PWD}/src/devel${WXWIDGET_DIR}
     configOptions="--prefix=${prefixDir} --with-contrib-plugins=all"
     ;;
 
@@ -245,7 +248,7 @@ case "${OSDetected}" in
     fi
     export WX_CONFIG_NAME=${PWD}/wx-config-cb-win${BUILD_BITS}
     export BOOST_ROOT=/mingw${BUILD_BITS}
-    prefixDir=${PWD}/src/devel31_${BUILD_BITS}
+    prefixDir=${PWD}/src/devel${WXWIDGET_DIR}_${BUILD_BITS}
     configOptions="--prefix=${prefixDir} --enable-windows-installer-build --with-contrib-plugins=all --with-boost-libdir=${BOOST_ROOT}/lib AR_FLAGS=cr"
     ;;
 
@@ -378,7 +381,7 @@ if [ $status == 0 ] ; then
                             fi
 							echo "===================================================================================================="
                         else
-                            echo ${ECHO_E} "${CR}${CROSS_MARK}You will need to manually update the src/devel31_64 directory as the codeblocks_update_devel.sh file could not be found!!!!"
+                            echo ${ECHO_E} "${CR}${CROSS_MARK}You will need to manually update the src/devel${WXWIDGET_DIR}_64 directory as the codeblocks_update_devel.sh file could not be found!!!!"
 							failureDetected="yes"
                         fi
 					else
