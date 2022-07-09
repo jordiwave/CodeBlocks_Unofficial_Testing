@@ -114,7 +114,8 @@ To build Code::Blocks:
     9) If you run the ./codeblocks_build.sh of configured C::B with the "--prefix=$PWD/src/devel31" option then run the following to 
         test the C::B you built:
             cd $PWD/src/devel31/bin
-            codeblocks
+            export LD_LIBRARY_PATH=$PWD/src/devel31/bin
+            ./codeblocks
 
 Additional Notes/Info:
 - - - - - - - - - - - -

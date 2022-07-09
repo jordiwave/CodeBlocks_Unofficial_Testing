@@ -19,7 +19,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 
 ### High Priority
 
-1. Update ticket 1114 to add support for the CLANG compiler to detect debugger and add it as a debugger automatically. 
+1. Resolve intermittent debugger and compiler plugin loading issues
 2. Use in anger to fix C::B issue(s) on MacOS. In other words use it in the real world.
 3. Add missing features in the table below to make debugging better in the real world environment.
 
@@ -85,7 +85,10 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Break points created on project open                    |  27-Jun   |    Pass    |
 |                                                             |           |            |
 | **Exception Handling**                                      |           |            |
-|   * Debugger catches exceptions and shows call stack        | FAIL due to DAP Library missing functionality |
+|   * Linux Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
+|   * MacOS Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
+|   * Windows Clang64 catches exceptions and shows call stack |   6-Jul   |   Pass     |
+|   * Windows MinGW64 catches exceptions and shows call stack |   8-Jul   | Fail-LibGCC|
 |                                                             |           |            |
 | **Data Breakpoints**                                        |           |            |
 |   * Display data breakpoints in break point dialog          |           |            |
@@ -179,19 +182,19 @@ If you fix any outstanding issue please fork this repo and create a pull request
 | **Operaiting System**                                       |           |            |
 |   * Works on Windows                                        |  26-Jun   |   Pass     |
 |   * Works on Linux                                          |   6-Jul   |   Pass     |
-|   * Works on MacOS                                          |           |            |
+|   * Works on MacOS                                          |   8-Jul   |   Pass     |
 |   * Builds on Windows via workspace                         |  26-Jun   |   Pass     |
 |   * Builds on Windows via MSYS2 makefile                    |           |            |
 |   * Builds on Linux via workspace                           |   6-Jul   |   Pass     |
 |   * Builds on Linux via makefile                            |   6-Jul   |   Pass     |
-|   * Builds on MacOS via workspace                           |           |            |
-|   * Builds on MacOS via makefile                            |           |            |
+|   * Builds on MacOS via workspace                           |   8-Jul   |   Pass     |
+|   * Builds on MacOS via makefile                            |   8-Jul   |   Pass     |
 |   * Create and test DAP cbplugin for Windows                |   6-Jul   |   Pass     |
 |   * Create and test DAP cbplugin for Linux                  |   6-Jul   |   Pass     |
-|   * Create and test DAP cbplugin for MacOS                  |           |            |
+|   * Create and test DAP cbplugin for MacOS                  |   8-Jul   |   Pass     |
 |                                                             |           |            |
 
-The table above was updated on 05-Jun-2022.
+The table above was updated on 08-Jul-2022.
 
 NOTES:
  "PASS"     - initial testing showed the item worked as expected, but changes since may have broken it... Please raise an issue if you find it broken.

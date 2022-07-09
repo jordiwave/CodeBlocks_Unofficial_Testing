@@ -54,7 +54,7 @@ endif
 
 libdebugger_dap_la_LIBADD = \
 			$(top_srcdir)/src/sdk/libcodeblocks.la \
-			$(top_srcdir)/src/plugins/contrib-wip/DebugAdapterProtocol/libdebugger_WXDAP.la \
+			$(top_srcdir)/src/plugins/contrib-wip/DebugAdapterProtocol/libdebugger_wxdap.la \
 			$(WX_LIBS) \
 			$(WX_GTK_LIBS)
 

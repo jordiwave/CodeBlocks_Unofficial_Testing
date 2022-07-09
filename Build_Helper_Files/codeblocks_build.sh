@@ -90,12 +90,13 @@ case "$(uname)" in
 esac
 
 # -------------------------------------------------------------------------------------------------
-
-export
+# uncomment the following line for debugging:
+# export
+# -------------------------------------------------------------------------------------------------
 
 echo
 echo "+-------------------------------------------------------------------------+"
-echo "|  Code::Blocks build script running on " $(uname) "           |"
+echo "|  Code::Blocks build script running on " $(uname) "                           |"
 if [ "${GITHUB_ACTIONS}" == "true" ] ; then
     echo "|      You are running under GITHUB ACTIONS.                              |"
     if [ "${OSDetected}" == "Windows" ] ; then
@@ -112,8 +113,13 @@ if [ "${GITHUB_ACTIONS}" == "true" ] ; then
         BUILD_MAKE_CONCURENCY=-j2
     fi
 else
-    BUILD_MAKE_CONCURENCY=-j
-    echo "|       Non GITHUB ACTIONS build, so setting BUILD_MAKE_CONCURENCY=-j     |"
+    if [ "${OSDetected}" == "Windows" ] ; then
+        BUILD_MAKE_CONCURENCY=-j
+        echo "|       Windows build, so setting BUILD_MAKE_CONCURENCY=-j                |"
+    else
+        echo "|       Setting BUILD_MAKE_CONCURENCY=-j4                                 |"
+        BUILD_MAKE_CONCURENCY=-j4
+    fi
 fi
 if [ "${OSDetected}" == "Windows" ] ; then
     echo "|       Windows $(expr substr $(uname -s) 12 4)                                                      |"
@@ -259,14 +265,20 @@ case "${OSDetected}" in
     ;;
 esac
 
-export WX_CB_BUILD_DIR=$(realpath ${WX_CB_BUILD_DIR})
-echo "| WX_CB_BUILD_DIR: ${WX_CB_BUILD_DIR}     |"
-echo "| BUILD_BITS:      ${BUILD_BITS}                                            |"
-echo "| WX_CONFIG_NAME:  ${WX_CONFIG_NAME}                      |"
-echo "| BOOST_ROOT:      ${BOOST_ROOT}                                 |"
+if [ ! "${WX_CB_BUILD_DIR}" == "" ]; then
+    export WX_CB_BUILD_DIR=$(realpath ${WX_CB_BUILD_DIR})
+    echo "| WX_CB_BUILD_DIR: ${WX_CB_BUILD_DIR}     |"
+fi  
+echo "| BUILD_BITS:      ${BUILD_BITS}                                                     |"
+if [ ! "${WX_CONFIG_NAME}" == "" ]; then
+    echo "| WX_CONFIG_NAME:  ${WX_CONFIG_NAME}                      |"
+fi  
+if [ ! "${BOOST_ROOT}" == "" ]; then
+    echo "| BOOST_ROOT:      ${BOOST_ROOT}                                 |"
+fi  
 echo "| prefixDir:       ${prefixDir}                           |"
 echo "| PWD:             ${PWD} |"
-echo "+----------------------------------------------------------------+"
+echo "+-------------------------------------------------------------------------+"
 echo
 
 # -------------------------------------------------------------------------------------------------
@@ -336,6 +348,7 @@ if [ $status == 0 ] ; then
         echo ${ECHO_N} "running ./configure " ${configOptions}
         beforeStepStartTime=$(date +%s)
         ./configure ${configOptions}
+        # example ./configure --prefix=${PWD}/src/devel32 --with-contrib-plugins=all
         status=$?
         if [ $status == 0 ] ; then
             durationTotalTime=$(($(date +%s)-start_datetime))

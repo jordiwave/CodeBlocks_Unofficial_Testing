@@ -167,7 +167,7 @@ BrandingText "Code::Blocks"
 #       DATE Defines      #
 ###########################
 # Get Current Date into CURRENT_DATESTAMP variable
-!define /date CURRENT_DATESTAMP "%d%b%Y"
+!define /date FILE_CURRENT_DATESTAMP "%d%b%Y-%H%M%S"
 !define /date CURRENT_DATE_YEAR "%Y"
 !define /date CURRENT_DATE_YEAR_NO_CENTURY "%y"
 !define /date CURRENT_DATE_MONTH "%m"
@@ -190,7 +190,7 @@ BrandingText "Code::Blocks"
 
 # Installer attributes (usually these do not change)
 # Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
-OutFile           CodeBlocks-${VERSION}-${BUILD_TYPE}bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
+OutFile           CodeBlocks-${VERSION}-${BUILD_TYPE}bit-wx${WX_DIR_VERSION}-setup-${FILE_CURRENT_DATESTAMP}-NSIS.exe
 Caption           "Code::Blocks ${VERSION} ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0 Installation"
 CRCCheck          on
 XPStyle           on
