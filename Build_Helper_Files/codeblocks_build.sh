@@ -18,29 +18,7 @@ if [ "$(id -u)" == "0" ]; then
     exit 1
 fi
 
-# ----------------------------------------------------------------------------
-# Set build variables
-# ----------------------------------------------------------------------------
-CurrentDir=${PWD}
-WXWIDGET_VERSION="3.2.0"
-WXWIDGET_DIR=32
-#WXWIDGET_VERSION="3.1.7"
-#WXWIDGET_DIR=31
-BUILD_BITS=64
-failureDetected="no"
-
-# -------------------------------------------------------------------------------------------------
-
-if [ "${GITHUB_ACTIONS}" != "true" ] ; then
-    reset
-    # The following is to enable sending the output of this script to the terminal and to the 
-    # file specified:
-    exec > >(tee -i codeBlocks_Build.log) 2>&1
-    # NOTE: if you want to append to the file change the -i to -ia in the line above.
-fi
-
-# -------------------------------------------------------------------------------------------------
-
+# --------------------------------------------------------------------------------------
 case "$(uname)" in
   Darwin*)
     OSDetected="OSX"
@@ -88,6 +66,69 @@ case "$(uname)" in
     exit 3
     ;;
 esac
+
+# ----------------------------------------------------------------------------
+# Set build variables
+# ----------------------------------------------------------------------------
+CurrentDir=${PWD}
+# MUST configure soft link for wx-config
+WXWIDGET_VERSION=3.2.0
+WXWIDGET_DIR=32
+#WXWIDGET_VERSION=3.1.7
+#WXWIDGET_DIR=31
+#WXWIDGET_VERSION=3.0.5
+#WXWIDGET_DIR=30
+# MUST configure soft link for wx-config
+BUILD_BITS=64
+failureDetected="no"
+
+
+# -------------------------------------------------------------------------------------------------
+
+if [ "${GITHUB_ACTIONS}" != "true" ] ; then
+    reset
+    # The following is to enable sending the output of this script to the terminal and 
+    # to the file specified:
+    exec > >(tee -i CodeBlocks_${WXWIDGET_VERSION}_$(uname)_build.log) 2>&1
+    # NOTE: if you want to append to the file change the -i to -ia in the line above.
+fi
+
+# -------------------------------------------------------------------------------------------------
+# find / -name wx-config 2>/dev/null
+#
+# check which wx-config is default run "wx-config --list"
+#
+if [ "${OSDetected}" == "Linux" ] ; then
+    # ========================
+    #  Linux Mint and XUbuntu:
+    echo "running:  sudo rm /usr/local/bin/wx-config"
+    sudo rm /usr/local/bin/wx-config 
+    sudo rm /usr/local/bin/wx-config 
+    if [ "${WXWIDGET_DIR}" == 30 ] ; then
+        echo "running:     sudo ln -s /usr/lib/x86_64-linux-gnu/wx/config/gtk3-unicode-3.0   /usr/local/bin/wx-config"
+        sudo ln -s /usr/lib/x86_64-linux-gnu/wx/config/gtk3-unicode-3.0   /usr/local/bin/wx-config
+    fi
+    if [ "${WXWIDGET_DIR}" == 31 ] ; then
+        echo "running: sudo ln -s /usr/local/lib/wx/config/gtk3-unicode-3.1              /usr/local/bin/wx-config"
+        sudo ln -s /usr/local/lib/wx/config/gtk3-unicode-3.1              /usr/local/bin/wx-config
+    fi
+    if [ "${WXWIDGET_DIR}" == 32 ] ; then
+        echo "running:  sudo ln -s /usr/local/lib/wx/config/gtk3-unicode-3.2              /usr/local/bin/wx-config"
+        sudo ln -s /usr/local/lib/wx/config/gtk3-unicode-3.2              /usr/local/bin/wx-config
+    fi
+else
+    if [ "${OSDetected}" == "Windows" ] ; then
+        # ========================
+        # Windows testing
+        echo "Testing for OS ${OSTYPE}"
+    else
+        # ========================
+        # Mac OSX 
+        echo "OS ${OSTYPE} is not supported yet!!!"
+        cd ${CurrentDir}
+        exit 3
+    fi
+fi
 
 # -------------------------------------------------------------------------------------------------
 # uncomment the following line for debugging:
@@ -252,10 +293,18 @@ case "${OSDetected}" in
         cd ${CurrentDir}
         exit 4
     fi
-    export WX_CONFIG_NAME=${PWD}/wx-config-cb-win${BUILD_BITS}
+
+    export WX_CONFIG_NAME=${PWD}/wx-config-cb-win${BUILD_BITS}_${WXWIDGET_DIR} --version=${WXWIDGET_DIR}
     export BOOST_ROOT=/mingw${BUILD_BITS}
     prefixDir=${PWD}/src/devel${WXWIDGET_DIR}_${BUILD_BITS}
     configOptions="--prefix=${prefixDir} --enable-windows-installer-build --with-contrib-plugins=all --with-boost-libdir=${BOOST_ROOT}/lib AR_FLAGS=cr"
+
+    echo "Setup the following external environment variables:"
+    echo "    export WX_CONFIG_NAME=${PWD}/wx-config-cb-win${BUILD_BITS}_${WXWIDGET_DIR} --version=${WXWIDGET_DIR}"
+    echo "    export BOOST_ROOT=/mingw${BUILD_BITS}"
+    echo "Setup the following internal variables:"
+    echo "    prefixDir=${PWD}/src/devel${WXWIDGET_DIR}_${BUILD_BITS}"
+    echo "    configOptions=--prefix=${prefixDir} --enable-windows-installer-build --with-contrib-plugins=all --with-boost-libdir=${BOOST_ROOT}/lib AR_FLAGS=cr"
     ;;
 
   *)
@@ -379,10 +428,9 @@ if [ $status == 0 ] ; then
 					echo "===================================================================================================="
 
                     if [ "${OSDetected}" == "Windows" ] ; then
-                        if [ -f Build_Helper_Files/codeblocks_update_devel.sh ] ; then
+                        if [ -f ./Build_Helper_Files/codeblocks_update_devel.sh ] ; then
                             echo "Running ./Build_Helper_Files/codeblocks_update_devel.sh"
-                            cd Build_Helper_Files
-                            ./codeblocks_update_devel.sh
+                            ./Build_Helper_Files/codeblocks_update_devel.sh
 							status=$?
 							if [ $status == 0 ] ; then
                                 durationTotalTime=$(($(date +%s)-start_datetime))

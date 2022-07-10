@@ -2,19 +2,27 @@
 
 @rem ------------------------------------------------------------------------------------------------------------
 @rem GIT NOTES:
+@rem
 @rem @IF NOT EXIST wxWidget_github git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets wxWidget_github
+@rem
+@rem YOU NOW dO not NEED TO EDIT the following files to change the "#define wxUSE_GRAPHICS_DIRECT2D 0" from 0 to 1:
+@rem        include\wx\msw\setup.h
+@rem        include\wx\mswu\setup.h
+@rem
 @rem ------------------------------------------------------------------------------------------------------------
 
 @rem ------------------------------------------------------------------------------------------------------------
 @rem Hopefully these variables are the only changed when you need to configure for your Code::Blocks source build
 @rem ------------------------------------------------------------------------------------------------------------
 
-set BUILD_BITS=32
-@rem set BUILD_BITS=64
-@rem set BUILD_TYPE=debug
-set BUILD_TYPE=release
+set WXWIDGET_VERSION=3.2.0
+@rem set BUILD_BITS=32
+set BUILD_BITS=64
+set BUILD_TYPE=debug
+@rem set BUILD_TYPE=release
 
 set BUILD_FLAGS=SHARED=1 MONOLITHIC=1 BUILD=%BUILD_TYPE% UNICODE=1 VENDOR=cb CFLAGS="-m%BUILD_BITS%" CXXFLAGS="-std=gnu++17 -m%BUILD_BITS%" CPPFLAGS="-m%BUILD_BITS%" LDFLAGS="-m%BUILD_BITS%"
+
 @rem https://forums.wxwidgets.org/viewtopic.php?t=42817
 @rem mingw32-make     -f makefile.gcc BUILD=release CPP="gcc -E -D_M_IX86 -m32" CFLAGS="-m32" CXXFLAGS="-m32 -std=gnu++11" CPPFLAGS="-m32" LDFLAGS="-m32" WINDRES="windres --use-temp-file -F pe-i386" setup_h
 @rem mingw32-make -j4 -f makefile.gcc BUILD=release CPP="gcc -E -D_M_IX86 -m32" CFLAGS="-m32" CXXFLAGS="-m32 -std=gnu++11" CPPFLAGS="-m32" LDFLAGS="-m32" WINDRES="windres --use-temp-file -F pe-i386"
@@ -24,22 +32,20 @@ set BUILD_FLAGS=SHARED=1 MONOLITHIC=1 BUILD=%BUILD_TYPE% UNICODE=1 VENDOR=cb CFL
 set GCC_ROOT=C:\msys64\mingw%BUILD_BITS%
 @rem set GCC_ROOT=C:\TDM-GCC-%BUILD_BITS%
 @rem set GCC_ROOT=C:\mingw%BUILD_BITS%
+set SED_EXE=C:\msys64\usr\bin\sed.exe
 
 @rem ==========================================================================================================
 @rem Hopefully you will not have to modify anything below
 @rem ==========================================================================================================
 
-if exist wxWidgets-3.1.5_win%BUILD_BITS% set WXWIN=%CD%\wxWidgets-3.1.5_win%BUILD_BITS%
-if exist %WXWIN% goto wxWidgetCompleted
-goto ErrNowxWidget
-
-:wxWidgetCompleted
+CALL :NORMALIZEPATH "..\..\..\..\Libraries\wxWidgets-%WXWIDGET_VERSION%_win%BUILD_BITS%"
+SET WXWIN=%RETVAL%
+if not exist %WXWIN% goto ErrNowxWidget
 
 @rem ------------------------------------------------------------------------------------------------------------
 @rem save for later
 @rem ------------------------------------------------------------------------------------------------------------
 SET CurrentDir="%CD%"
-
 
 @rem ------------------------------------------------------------------------------------------------------------
 @rem Backup path if not all ready backed up so it can be reverted at the end 
@@ -55,7 +61,7 @@ set PATH=%GCC_ROOT%;%GCC_ROOT%\bin;%PATH%
 @cls
 @echo.
 @echo +==============================================================+
-@echo ^| %GCC_ROOT%   WxWidgets 3.1.5   win%BUILD_BITS%  build script    ^|
+@echo ^| %GCC_ROOT%   WxWidgets %WXWIDGET_VERSION%   win%BUILD_BITS%  build script    ^|
 @echo +==============================================================+
 @echo ^|                                                              ^|
 @echo ^| GCC_ROOT: %GCC_ROOT%                                  ^|
@@ -72,25 +78,50 @@ cd /d %WXWIN%\build\MSW
 @set start_date=%date% %time%
 
 @rem ==========================================================================================================
+@rem Update the following files to change the "#define wxUSE_GRAPHICS_DIRECT2D 0" from 0 to 1:
+@rem        include\wx\msw\setup.h
+@rem        lib\gcc_dll\mswu\wx\setup.h
+
+if exist "%WXWIN%\\include\\wx\\msw\\setup.h" (
+    cd %WXWIN%\include\wx\msw
+    echo "sed update File: %CD%\\setup.h #define wxUSE_GRAPHICS_DIRECT2D from 0 to 1"
+    %SED_EXE% -i 's\\#define wxUSE_GRAPHICS_DIRECT2D 0\\#define wxUSE_GRAPHICS_DIRECT2D 1\\g' setup.h
+)
+
+if exist "%WXWIN%\\lib\\gcc_dll\\mswu\\wx\\setup.h" (
+    cd %WXWIN%\lib\gcc_dll\mswu\wx
+    echo "sed update File: %CD%\\setup.h #define wxUSE_GRAPHICS_DIRECT2D from 0 to 1"
+    %SED_EXE% -i 's\\#define wxUSE_GRAPHICS_DIRECT2D 0\\#define wxUSE_GRAPHICS_DIRECT2D 1\\g' setup.h
+)
+
+@rem if exist "%WXWIN%\\build\\msw\\makefile.gcc" (
+@rem     cd %WXWIN%\build\msw
+@rem     echo "sed update File: %CD%\\makefile.gcc $(SETUPHDIR)\\wx\\setup.h: to $(SETUPHDIR)\\wx\\setup.h: $(SETUPHDIR)\\wx"
+@rem     echo %SED_EXE% -i "s^\$\(SETUPHDIR\)\\wx\\setup.h:^\$\(SETUPHDIR\)\\wx\\setup.h:\ \$\(SETUPHDIR\)\\wx^g" makefile.gcc
+@rem )
+
+cd /d %WXWIN%\build\MSW
+
+@rem ==========================================================================================================
 
 :start-build
 @echo.
 @echo ^+----------------------------------------^+
-@echo ^|       WxWidget win%BUILD_BITS% %BUILD_TYPE% clean       ^|
+@echo ^|      WxWidget win%BUILD_BITS% %BUILD_TYPE% clean       ^|
 @echo ^+----------------------------------------^+
 @echo mingw32-make -j -f makefile.gcc %BUILD_FLAGS% SHELL=cmd.exe clean
 @mingw32-make -j -f makefile.gcc %BUILD_FLAGS% SHELL=cmd.exe clean  > %CurrentDir%\wxwidget_%BUILD_TYPE%_build.log
 @IF %ERRORLEVEL% NEQ 0 goto FAIL
 @echo.
 @echo ^+----------------------------------------^+
-@echo ^|    WxWidget win%BUILD_BITS% %BUILD_TYPE% build setup.h  ^|
+@echo ^|   WxWidget win%BUILD_BITS% %BUILD_TYPE% build setup.h  ^|
 @echo ^+----------------------------------------^+
-@echo mingw32-make -j -f makefile.gcc %BUILD_FLAGS% SHELL=cmd.exe setup_h
-@mingw32-make -j -f makefile.gcc %BUILD_FLAGS% SHELL=cmd.exe setup_h >> %CurrentDir%\wxwidget_%BUILD_TYPE%_build.log
+@echo mingw32-make -j1 -f makefile.gcc %BUILD_FLAGS% SHELL=cmd.exe setup_h
+@mingw32-make -j1 -f makefile.gcc %BUILD_FLAGS% SHELL=cmd.exe setup_h >> %CurrentDir%\wxwidget_%BUILD_TYPE%_build.log
 @IF %ERRORLEVEL% NEQ 0 goto FAIL
 @echo.
 @echo ^+----------------------------------------^+
-@echo ^|   WxWidget win%BUILD_BITS% %BUILD_TYPE% build library   ^|
+@echo ^|  WxWidget win%BUILD_BITS% %BUILD_TYPE% build library   ^|
 @echo ^+----------------------------------------^+
 @echo mingw32-make -j -f makefile.gcc %BUILD_FLAGS% SHELL=cmd.exe
 @mingw32-make -j -f makefile.gcc %BUILD_FLAGS% SHELL=cmd.exe >> %CurrentDir%\wxwidget_%BUILD_TYPE%_build.log
@@ -103,10 +134,12 @@ goto FAIL
 @rem ==========================================================================================================
 
 :ErrNowxWidget
+@echo on
+echo Could not find %WXWIN%
 @echo.
 @echo.
 @echo ^+------------------------------------------------------^+
-@echo ^|     Error: NO "wxWidgets-3.1.5" sub directory found  ^|
+@echo ^|     Error: NO "wxWidgets-%WXWIDGET_VERSION%" sub directory found  ^|
 @echo ^+------------------------------------------------------^+
 @echo. 
 @echo.
@@ -143,6 +176,10 @@ powershell -command "&{$start_date1 = [datetime]::parse('%start_date%'); $end_da
 @echo.  >> "%CurrentDir%\ZZ_WXWIDGET_BUILD.txt"
 
 goto FINISHED
+
+:NORMALIZEPATH
+    SET RETVAL=%~f1
+    EXIT /B
 
 @rem ==========================================================================================================
 

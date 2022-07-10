@@ -429,7 +429,7 @@ this_widgetset=""
 this_chartype="unicode"
 this_debugtype="release"
 this_flavour=""
-this_version="3.2"
+this_version="3.1"
 this_linkage=`[ "x1" = "x1" ] || echo 'static'`
 
 
@@ -958,9 +958,9 @@ bindir="${exec_prefix}/bin"
 # Trivial queries we can answer now.
 [ -z "$output_option_prefix"        ] || echo $prefix
 [ -z "$output_option_exec_prefix"   ] || echo $exec_prefix
-[ -z "$output_option_release"       ] || echo "3.2"
-[ -z "$output_option_version"       ] || echo "3.2.0"
-[ -z "$output_option_version_full"  ] || echo "3.2.0.0"
+[ -z "$output_option_release"       ] || echo "3.1"
+[ -z "$output_option_version"       ] || echo "3.1.7"
+[ -z "$output_option_version_full"  ] || echo "3.1.7.0"
 [ -z "$output_option_basename"      ] || echo "wx_mswu"
 [ -z "$output_option_cc"            ] || echo "gcc"
 [ -z "$output_option_cxx"           ] || echo "g++ -std=gnu++14"
@@ -1013,8 +1013,8 @@ if [ -n "$input_option_utility" ]; then
     IFS=':'
     _user_prefix=${input_option_exec_prefix:-$input_option_prefix}
 
-    for _util in "${input_option_utility}-3.2" \
-                 "${input_option_utility}-3.2"             \
+    for _util in "${input_option_utility}-3.1" \
+                 "${input_option_utility}-3.1"             \
                  "${input_option_utility}"
     do
         for p in ${_user_prefix:+$_user_prefix/bin} $bindir $PATH; do
@@ -1039,7 +1039,7 @@ fi
 # Additional configuration for individual library components.
 ldflags_gl=""
 
-ldlibs_base="-lwxregexu-3.2 -lwxscintilla-3.2  -lz  -lexpat -lpng -lz  -ljpeg -L/mingw64/lib -ltiff   -ljbig -lz -lrpcrt4 -loleaut32 -lole32 -luuid -luxtheme -lwinspool -lwinmm -lshell32 -lshlwapi -lcomctl32 -lcomdlg32 -ladvapi32 -lversion -lws2_32 -lgdi32 -loleacc -lwinhttp"
+ldlibs_base="-lwxregexu-3.1 -lwxscintilla-3.1  -lz  -lexpat -lpng -lz  -ljpeg -L/mingw64/lib -ltiff   -ljbig -lz -lrpcrt4 -loleaut32 -lole32 -luuid -luxtheme -lwinspool -lwinmm -lshell32 -lshlwapi -lcomctl32 -lcomdlg32 -ladvapi32 -lversion -lws2_32 -lgdi32 -loleacc -lwinhttp"
 ldlibs_core="-lpng -lz -ljpeg -L/mingw64/lib -ltiff -ljbig "
 ldlibs_gl="-lopengl32 -lglu32"
 ldlibs_html=""
@@ -1126,7 +1126,7 @@ lib_flags_for()
             _libname="wx_mswu"
         fi
         [ $lib = base ] || _libname="${_libname}_$lib"
-        _libname="${_libname}-3.2$_target"
+        _libname="${_libname}-3.1$_target"
 
         if is_static; then
             _wxlibs="$_wxlibs ${libdir}/lib${_libname}.a"
@@ -1185,7 +1185,7 @@ link_deps_for()
             _libname="wx_mswu"
         fi
         [ $lib = base ] || _libname="${_libname}_$lib"
-        _libname="${_libname}-3.2$_target"
+        _libname="${_libname}-3.1$_target"
 
         _wxlibs="$_wxlibs ${libdir}/lib${_libname}.a"
     done
@@ -1229,12 +1229,12 @@ if is_monolithic; then
 
         # We still need the core lib deps for a static build though
         if is_static; then
-            link_deps="${libdir}/libwx_mswu-3.2.a"
+            link_deps="${libdir}/libwx_mswu-3.1.a"
             wx_libs="$wx_libs $link_deps $ldlibs_html $ldlibs_media $ldlibs_stc $ldlibs_webview $ldlibs_core $ldlibs_xml $ldlibs_base"
         else
-            # wx_libs="$wx_libs -lwx_mswu-3.2"
+            # wx_libs="$wx_libs -lwx_mswu-3.1"
             # For CB monolithic build
-            wx_libs="$wx_libs -lwxmsw32u"
+            wx_libs="$wx_libs -lwxmsw31u"
         fi
     fi
 else    # MONOLITHIC = 0
@@ -1266,7 +1266,7 @@ else    # MONOLITHIC = 0
         using_gui=no
         for i in $wx_libs ; do
             if match_field "$i" xrc html qa adv core; then
-                _guildflags=" -pipe -Wl,--subsystem,windows -mwindows"
+                _guildflags="-pipe -Wl,--subsystem,windows -mwindows"
                 using_gui=yes
                 break
             fi
@@ -1302,7 +1302,7 @@ fi
 [ "$using_gui" = "yes" ] || _gui_cppflags="-DwxUSE_GUI=0"
 
 #if is_installed; then
-#    _include_cppflags="-I${includedir}/wx-3.2"
+#    _include_cppflags="-I${includedir}/wx-3.1"
 #else
 #    _include_cppflags="-I${includedir}"
 #fi
@@ -1386,7 +1386,7 @@ if [ -n "$output_option_rescomp" ]; then
         # as it is more universally accepted.
         if is_installed; then
             echo "windres --include-dir" \
-                           "${includedir}/wx-3.2" \
+                           "${includedir}/wx-3.1" \
                            "--define __WIN32__ --define __GNUWIN32__ --define WX_CPU_AMD64"
         else
             echo "windres --include-dir ${includedir}" \

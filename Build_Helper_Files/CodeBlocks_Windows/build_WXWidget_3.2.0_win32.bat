@@ -5,7 +5,7 @@
 @rem
 @rem @IF NOT EXIST wxWidget_github git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets wxWidget_github
 @rem
-@rem YOU NEED TO EDIT the following files to change the "#define wxUSE_GRAPHICS_DIRECT2D 0" from 0 to 1:
+@rem YOU NOW dO not NEED TO EDIT the following files to change the "#define wxUSE_GRAPHICS_DIRECT2D 0" from 0 to 1:
 @rem        include\wx\msw\setup.h
 @rem        include\wx\mswu\setup.h
 @rem
@@ -15,9 +15,9 @@
 @rem Hopefully these variables are the only changed when you need to configure for your Code::Blocks source build
 @rem ------------------------------------------------------------------------------------------------------------
 
-set WXWIDGET_VERSION=3.1.6
-@rem set BUILD_BITS=32
-set BUILD_BITS=64
+set WXWIDGET_VERSION=3.2.0
+set BUILD_BITS=32
+@rem set BUILD_BITS=64
 @rem set BUILD_TYPE=debug
 set BUILD_TYPE=release
 

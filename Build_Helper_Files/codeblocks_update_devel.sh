@@ -125,8 +125,11 @@ CB_SRC=${CB_ROOT}/src
 # Check BUILD_BITS for validity
 # ----------------------------------------------------------------------------
 
-if [ -d "${CB_SRC}\devel31_32" ] ; then  export BUILD_BITS=32 ; fi
-if [ -d "${CB_SRC}\devel31_64" ] ; then  export BUILD_BITS=64 ; fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel3*_32 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  BUILD_BITS=32 ; fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel3*_64 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  BUILD_BITS=64 ; fi
+unset DEVEL_DIR_COUNT
 if [ "${BUILD_BITS}" == "" ] ; then
     echo "+-------------------------------------------------------------------------------------------------+"
     echo "|                                                                                                 |"
@@ -142,6 +145,31 @@ if [ "${BUILD_BITS}" == "" ] ; then
     cd ${InitialDir}
     exit 4
 fi
+
+# -----------------------------------------------------------------------------
+
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel30_* 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel30_${BUILD_BITS} ; fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel31_* 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel31_${BUILD_BITS} ; fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel32_* 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel32_${BUILD_BITS} ; fi
+
+if [ "${CB_DEVEL_DIR}" == "" ] ; then
+    echo "+-------------------------------------------------------------------------------------------------+"
+    echo "|                                                                                                 |"
+    echo "|        +-------------------------------------------------------------+                          |"
+    echo "|        | Error: Cannot find src\devel3x* directory, where x in 0,1,2 |                          |"
+    echo "|        |        Please fix and try again                             |                          |"
+    echo "|        +-------------------------------------------------------------+                          |"
+    echo "|                                                                                                 |"
+    echo "+-------------------------------------------------------------------------------------------------+"
+    echo
+    echo BUILD_BITS:${BUILD_BITS}
+    cd ${InitialDir}
+    exit 4
+fi
+
 # -----------------------------------------------------------------------------
 
 echo
@@ -149,12 +177,12 @@ echo "+-------------------------------------------------------------------------
 echo "|                                                                                                 |"
 echo "|                           Updating C::B directory build files.                                  |"
 echo "|                                                                                                 |"
-echo "| Detected OS:   ${OSDetected}                                                               |"
-echo "| Devel dir:     ${CB_SRC}/devel31_${BUILD_BITS}                                        |"
-echo "| CB_ROOT:       ${CB_ROOT}                                                        |"
-echo "| CB_SRC:        ${CB_SRC}                                                         |"
-echo "| BUILD_BITS:    ${BUILD_BITS}                                                                      |"
-echo "| PWD:           ${PWD} |"
+echo "| Detected OS:   ${OSDetected}                                                                          |"
+echo "| Devel dir:     ${CB_DEVEL_DIR} |"
+echo "| CB_ROOT:       ${CB_ROOT}        |"
+echo "| CB_SRC:        ${CB_SRC}    |"
+echo "| BUILD_BITS:    ${BUILD_BITS}                                                                               |"
+echo "| PWD:           ${PWD}        |"
 echo "+-------------------------------------------------------------------------------------------------+"
 
 # ----------------------------------------------------------------------------
@@ -163,11 +191,11 @@ echo "+-------------------------------------------------------------------------
 #case "$(OSDetected)" in
 #  Windows*)
 if { !  {
-            [ -f "${CB_SRC}/devel31_${BUILD_BITS}/codeblocks${EXEEXT}" ]                        &&
-            [ -f "${CB_SRC}/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}" ]                    &&
+            [ -f "${CB_DEVEL_DIR}/codeblocks${EXEEXT}" ]                        &&
+            [ -f "${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}" ]                    &&
             {
-                [ -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}" ] ||
-                [ -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/libtodo.${LIBEXT}" ]
+                [ -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}" ] ||
+                [ -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}" ]
             }
         }
    } then
@@ -175,10 +203,10 @@ if { !  {
     echo "|             +--------------------------------------------------------------------+              |"
     echo "|             | Error: Code::Blocks make error was detected.                       |              |"
     echo "|             |        Please fix the error and try again.                         |              |"
-    [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/codeblocks${EXEEXT}" ]                     && echo "|             |        Missing src/devel31_${BUILD_BITS}/codeblocks${EXEEXT}!                          |              |"
-    [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}" ]                 && echo "|             |        Missing src/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}!                 |              |"
-#    [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}" ] && echo "|             |        Missing src/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}! |              |"
-    [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/libtodo.${LIBEXT}" ] && echo "|             |        Missing src/devel31_${BUILD_BITS}/share/codeblocks/plugins/libtodo.${LIBEXT}! |              |"
+    [ ! -f "${CB_DEVEL_DIR}/codeblocks${EXEEXT}" ]                     && echo "|             |        Missing src/devel31_${BUILD_BITS}/codeblocks${EXEEXT}!                          |              |"
+    [ ! -f "${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}" ]                 && echo "|             |        Missing src/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}!                 |              |"
+#    [ ! -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}" ] && echo "|             |        Missing src/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}! |              |"
+    [ ! -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}" ] && echo "|             |        Missing src/devel31_${BUILD_BITS}/share/codeblocks/plugins/libtodo.${LIBEXT}! |              |"
     echo "|             +--------------------------------------------------------------------+              |"
     echo "|                                                                                                 |"
     echo "+-------------------------------------------------------------------------------------------------+"
@@ -224,6 +252,10 @@ if [ "${OSDetected}" = "Windows" ] ; then
     fi
     echo "|    WX_CB_BUILD_DIR set to:             $WX_CB_BUILD_DIR    |"
 fi
+
+echo "+-------------------------------------------------------------------------------------------------+"
+
+
 # -------------------------------------------------------------------------------------------
 # Copy the compiler DLL and wxWidget DLL's into the src/devel31_${BUILD_BITS} (32 or 64) directory
 # -------------------------------------------------------------------------------------------
@@ -233,30 +265,30 @@ if [ "${OSDetected}" = "Windows" ] ; then
 
     if [ "${BUILD_BITS}" == "32" ]; then
         if [ -f  "${GCC_ROOT}/libgcc_s_dw2-1.dll" ]; then
-            cp -f "${GCC_ROOT}/libgcc_s_dw2-1.dll"        ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
+            cp -f "${GCC_ROOT}/libgcc_s_dw2-1.dll"        ${CB_DEVEL_DIR} > /dev/null
         fi
     fi    
     if [ "${BUILD_BITS}" == "64" ]; then
         if [ -f "${GCC_ROOT}/libgcc_s_seh-1.dll" ]; then
-            cp -f "${GCC_ROOT}/libgcc_s_seh-1.dll"        ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
+            cp -f "${GCC_ROOT}/libgcc_s_seh-1.dll"        ${CB_DEVEL_DIR} > /dev/null
         fi
         # The next DLL is required for some GCC compilers, but not for others. Either way copy it is if [ -f s.
         if [ -f  "${GCC_ROOT}/libgcc_s_seh_64-1.dll" ]; then
-            cp -f "${GCC_ROOT}/libgcc_s_seh_64-1.dll"     ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
+            cp -f "${GCC_ROOT}/libgcc_s_seh_64-1.dll"     ${CB_DEVEL_DIR} > /dev/null
         fi
     fi    
 
-    [ -f  "${GCC_ROOT}/libwinpthread-1.dll" ]         && cp -f "${GCC_ROOT}/libwinpthread-1.dll"        ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
-    [ -f  "${GCC_ROOT}/libstdc++-6.dll" ]             && cp -f "${GCC_ROOT}/libstdc++-6.dll"            ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
-    [ -f  "${GCC_ROOT}/libbz2-1.dll" ]                && cp -f "${GCC_ROOT}/libbz2-1.dll"               ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
-    [ -f  "${GCC_ROOT}/zlib1.dll" ]                   && cp -f "${GCC_ROOT}/zlib1.dll"                  ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
-    [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/exchndl.dll" ]  && cp -f -r "${CB_SRC}/exchndl/Win_10/win${BUILD_BITS}/bin/."  ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
+    [ -f  "${GCC_ROOT}/libwinpthread-1.dll" ]         && cp -f "${GCC_ROOT}/libwinpthread-1.dll"        ${CB_DEVEL_DIR} > /dev/null
+    [ -f  "${GCC_ROOT}/libstdc++-6.dll" ]             && cp -f "${GCC_ROOT}/libstdc++-6.dll"            ${CB_DEVEL_DIR} > /dev/null
+    [ -f  "${GCC_ROOT}/libbz2-1.dll" ]                && cp -f "${GCC_ROOT}/libbz2-1.dll"               ${CB_DEVEL_DIR} > /dev/null
+    [ -f  "${GCC_ROOT}/zlib1.dll" ]                   && cp -f "${GCC_ROOT}/zlib1.dll"                  ${CB_DEVEL_DIR} > /dev/null
+    [ ! -f "${CB_DEVEL_DIR}/exchndl.dll" ]  && cp -f -r "${CB_SRC}/exchndl/Win_10/win${BUILD_BITS}/bin/."  ${CB_DEVEL_DIR} > /dev/null
 
     count=$(ls ${GCC_ROOT}/libhunspell-*.dll 2>/dev/null | wc -l)
     if [ $count != 0 ] ; then
         for libHunspellDLLFile in ${GCC_ROOT}/libhunspell-*.dll
         do 
-            cp -f $libHunspellDLLFile ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
+            cp -f $libHunspellDLLFile ${CB_DEVEL_DIR} > /dev/null
         done
     fi
 
@@ -264,14 +296,14 @@ if [ "${OSDetected}" = "Windows" ] ; then
     if [ $count != 0 ] ; then
         for wxFileDLL in $WX_CB_BUILD_DIR/lib/gcc_dll/*.dll
         do 
-            cp $wxFileDLL  ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
+            cp $wxFileDLL  ${CB_DEVEL_DIR} > /dev/null
         done
     fi
 
     # ------------------------------------------------------------------------------------------
     # Rename DLL files if built with MSYS 2 using bootstrap/configure/make/make install process
     # ------------------------------------------------------------------------------------------
-    count=$(ls -1 ${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/*.dll 2>/dev/null | wc -l)
+    count=$(ls -1 ${CB_DEVEL_DIR}/share/codeblocks/plugins/*.dll 2>/dev/null | wc -l)
     if [ $count == 0 ] ; then
         echo "|                                                                                                 |"
         echo "|             +-----------------------------------------------------------+                       |"
@@ -286,10 +318,10 @@ if [ "${OSDetected}" = "Windows" ] ; then
         exit 8
     fi
 
-    count=$(ls -1 ${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/lib*.dll 2>/dev/null | wc -l)
+    count=$(ls -1 ${CB_DEVEL_DIR}/share/codeblocks/plugins/lib*.dll 2>/dev/null | wc -l)
     if [ $count != 0 ] ; then
         PrevDirectory=$PWD
-        cd "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins"
+        cd "${CB_DEVEL_DIR}/share/codeblocks/plugins"
         for pluginLibFile in lib*.dll
         do 
             newPluginLibFile=$(echo $pluginLibFile |sed 's/^.\{3\}//g')
@@ -302,10 +334,10 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # -------------------------------------------------------------------------------------------------------
     # Delete DLL l*.la redundant files built with MSYS 2 using bootstrap/configure/make/make install process
     # -------------------------------------------------------------------------------------------------------
-    count=$(ls -1 ${CB_SRC}/devel31_${BUILD_BITS}/*.la 2>/dev/null | wc -l)
+    count=$(ls -1 ${CB_DEVEL_DIR}/*.la 2>/dev/null | wc -l)
     if [ $count != 0 ] ; then
         PrevDirectory=$PWD
-        cd "${CB_SRC}/devel31_${BUILD_BITS}"
+        cd "${CB_DEVEL_DIR}"
         find . -type f -name "*.la" | xargs rm -f
         cd $PrevDirectory
     fi
@@ -313,10 +345,10 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # -------------------------------------------------------------------------------------------------------
     # Delete Plugin DLL *.a redundant files built with MSYS 2 using bootstrap/configure/make/make install process
     # -------------------------------------------------------------------------------------------------------
-    count=$(ls -1 ${CB_SRC}/devel31_${BUILD_BITS}/share/CodeBlocks/plugins/*.a 2>/dev/null | wc -l)
+    count=$(ls -1 ${CB_DEVEL_DIR}/share/CodeBlocks/plugins/*.a 2>/dev/null | wc -l)
     if [ $count != 0 ] ; then
         PrevDirectory=$PWD
-        cd "${CB_SRC}/devel31_${BUILD_BITS}/share/CodeBlocks/plugins"
+        cd "${CB_DEVEL_DIR}/share/CodeBlocks/plugins"
         find . -type f -name "*.a" | xargs rm -f
         cd $PrevDirectory
     fi
@@ -497,7 +529,7 @@ echo
 
 read -r -p 'Would you like to run Code::Blocks? ( type "y" for yes or "n" for no ): '
 if [ "${REPLY}" == 'y' ] || [ "${REPLY}" == 'Y' ]; then
-    sh -c "${CB_SRC}/devel31_${BUILD_BITS}/codeblocks${EXEEXT} -v --prefix ${CB_SRC}/devel31_${BUILD_BITS}"
+    sh -c "${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}"
 fi
 
 cd ${InitialDir}

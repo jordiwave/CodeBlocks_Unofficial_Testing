@@ -7,6 +7,11 @@ AM_CPPFLAGS = \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I./dtl
 
+if CODEBLOCKS_NT
+AM_CPPFLAGS += \
+            -DEXPORT_FUNC
+endif
+
 if CODEBLOCKS_NT_BUILD_INSTALLER
 pluginlibdir = $(pkgdatadir)/plugins
 else

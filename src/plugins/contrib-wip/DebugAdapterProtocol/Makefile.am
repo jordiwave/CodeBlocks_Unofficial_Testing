@@ -22,7 +22,8 @@ libdebugger_wxdap_la_LDFLAGS += \
 			-enable-auto-image-base \
 			-add-stdcall-alias \
 			-enable-auto-import \
-			-no-undefined
+			-no-undefined \
+            -lws2_32
 endif
 
 libdebugger_wxdap_la_LIBADD = \
@@ -57,7 +58,7 @@ libdebugger_wxdap_la_SOURCES = \
 
 if CODEBLOCKS_NT
 libdebugger_wxdap_la_SOURCES += \
-			resources/manifest.rc
+			manifest.rc
 endif
 
 noinst_HEADERS = \

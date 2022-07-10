@@ -134,13 +134,21 @@ find . -type f -name "*.Po" -not -path "./src/plugins/contrib/SpellChecker/hunsp
 [ -d "devel31_64"  ] && rm -rf devel31_64
 [ -d "output31_64" ] && rm -rf output31_64
 
-[ -d ".objs31_32"  ] && rm -rf .objs31_32
-[ -d "devel31_32"  ] && rm -rf devel31_32
-[ -d "output31_32" ] && rm -rf output31_32
+[ -d ".objs3232"  ] && rm -rf .objs32_32
+[ -d "devel32_32"  ] && rm -rf devel32_32
+[ -d "output32_32" ] && rm -rf output32_32
 
-[ -d ".objs31"     ] && rm -rf .objs31
-[ -d "devel31"     ] && rm -rf devel31
-[ -d "output31"    ] && rm -rf output31
+[ -d ".objs32_64"  ] && rm -rf .objs32_64
+[ -d "devel32_64"  ] && rm -rf devel32_64
+[ -d "output32_64" ] && rm -rf output32_64
+
+[ -d ".objs32_32"  ] && rm -rf .objs32_32
+[ -d "devel32_32"  ] && rm -rf devel32_32
+[ -d "output32_32" ] && rm -rf output32_32
+
+[ -d ".objs30"     ] && rm -rf .objs30
+[ -d "devel30"     ] && rm -rf devel30
+[ -d "output30"    ] && rm -rf output30
 
 [ -f "src/include/config.h"    ] && rm -rf "src/include/config.h"
 [ -f "src/include/config.h.in" ] && rm -rf "src/include/config.h.in"
