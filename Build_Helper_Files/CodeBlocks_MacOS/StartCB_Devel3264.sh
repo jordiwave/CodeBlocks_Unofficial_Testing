@@ -22,7 +22,8 @@ else
         echo CB exe: "${PWD}/${CB_EXE_BUILD_ROOT_DIR}/CodeBlocks"
     
         cd ${CB_EXE_BUILD_ROOT_DIR}
-        ./CodeBlocks -v --prefix ${PWD}
+        echo "Running: ./CodeBlocks --verbose --debug-log --multiple-instance --personality=debuging --prefix=${PWD}"
+        ./CodeBlocks --verbose --debug-log --multiple-instance --personality=debuging --prefix=${PWD}
     else
         echo ERROR: Cannot find CB root dir: "${PWD}/${CB_EXE_BUILD_ROOT_DIR}"
     fi

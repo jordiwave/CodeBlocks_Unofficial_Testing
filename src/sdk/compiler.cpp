@@ -1929,7 +1929,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode * node)
                 // Unknown test
                 val = false;
                 LogManager * log = Manager::Get()->GetLogManager();
-                log ->DebugLog(wxString::Format(_("EvalXMLCondition: Unknown compiler test \"%s\""), name));
+                log->DebugLog(wxString::Format(_("EvalXMLCondition: Unknown compiler test \"%s\""), name));
             }
         }
 

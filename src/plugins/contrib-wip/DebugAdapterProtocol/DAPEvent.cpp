@@ -33,34 +33,46 @@ DAPEvent::DAPEvent(wxEventType commandType, int winid)
 {
 }
 DAPEvent::~DAPEvent() {}
-DAPEvent::DAPEvent(const DAPEvent& event) { *this = event; }
-DAPEvent& DAPEvent::operator=(const DAPEvent& src)
+DAPEvent::DAPEvent(const DAPEvent & event)
+{
+    *this = event;
+}
+DAPEvent & DAPEvent::operator=(const DAPEvent & src)
 {
     m_object = src.m_object;
     return *this;
 }
 
-wxEvent* DAPEvent::Clone() const { return new DAPEvent(*this); }
-dap::Event* DAPEvent::GetDapEvent() const
+wxEvent * DAPEvent::Clone() const
 {
-    if(!m_object) {
+    return new DAPEvent(*this);
+}
+dap::Event * DAPEvent::GetDapEvent() const
+{
+    if (!m_object)
+    {
         return nullptr;
     }
+
     return m_object->As<dap::Event>();
 }
 
-dap::Response* DAPEvent::GetDapResponse() const
+dap::Response * DAPEvent::GetDapResponse() const
 {
-    if(!m_object) {
+    if (!m_object)
+    {
         return nullptr;
     }
+
     return m_object->As<dap::Response>();
 }
 
-dap::Request* DAPEvent::GetDapRequest() const
+dap::Request * DAPEvent::GetDapRequest() const
 {
-    if(!m_object) {
+    if (!m_object)
+    {
         return nullptr;
     }
+
     return m_object->As<dap::Request>();
 }

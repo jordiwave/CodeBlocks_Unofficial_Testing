@@ -11,13 +11,13 @@
                     for="C"/>
             <Search path="C:\LLVM"
                     for="C"/>
-            <Search path="C:\msys64\mingw64"
-                for="C"/>
-            <Search path="C:\msys64\mingw32"
-                for="C"/>
             <Search path="C:\msys64\clang64"
                 for="C"/>
             <Search path="C:\msys64\clang32"
+                for="C"/>
+            <Search path="C:\msys64\mingw64"
+                for="C"/>
+            <Search path="C:\msys64\mingw32"
                 for="C"/>
             <Search path="C:\MinGW64"
                 for="C"/>
@@ -30,11 +30,15 @@
             <Fallback path="C:\MinGW"/>
         </if>
         <else>
-            <Search path="~/llvm"
-                    for="C"/>
-            <Search path="~/llvm/build"
-                    for="C"/>
-            <Fallback path="/usr"/>
+			<if platform="macosx">
+				<Search path="/usr/local/opt/llvm"
+						for="C"/>
+			</if>
+			<Search path="~/llvm"
+					for="C"/>
+			<Search path="~/llvm/build"
+					for="C"/>
+			<Fallback path="/usr"/>
         </else>
     </Path>
 </CodeBlocks_compiler>

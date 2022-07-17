@@ -18,6 +18,21 @@ if [ "$(id -u)" == "0" ]; then
     exit 1
 fi
 
+# ----------------------------------------------------------------------------
+# Set build variables
+# ----------------------------------------------------------------------------
+CurrentDir=${PWD}
+# MUST configure soft link for wx-config
+WXWIDGET_VERSION=3.2.0
+WXWIDGET_DIR=32
+#WXWIDGET_VERSION=3.1.7
+#WXWIDGET_DIR=31
+#WXWIDGET_VERSION=3.0.5
+#WXWIDGET_DIR=30
+# MUST configure soft link for wx-config
+BUILD_BITS=64
+failureDetected="no"
+
 # --------------------------------------------------------------------------------------
 case "$(uname)" in
   Darwin*)
@@ -66,21 +81,6 @@ case "$(uname)" in
     exit 3
     ;;
 esac
-
-# ----------------------------------------------------------------------------
-# Set build variables
-# ----------------------------------------------------------------------------
-CurrentDir=${PWD}
-# MUST configure soft link for wx-config
-WXWIDGET_VERSION=3.2.0
-WXWIDGET_DIR=32
-#WXWIDGET_VERSION=3.1.7
-#WXWIDGET_DIR=31
-#WXWIDGET_VERSION=3.0.5
-#WXWIDGET_DIR=30
-# MUST configure soft link for wx-config
-BUILD_BITS=64
-failureDetected="no"
 
 
 # -------------------------------------------------------------------------------------------------
@@ -427,27 +427,6 @@ if [ $status == 0 ] ; then
                     echo ${ECHO_E} "${CR}${CHECK_MARK}Make install finish at                 : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
 					echo "===================================================================================================="
 
-                    if [ "${OSDetected}" == "Windows" ] ; then
-                        if [ -f ./Build_Helper_Files/codeblocks_update_devel.sh ] ; then
-                            echo "Running ./Build_Helper_Files/codeblocks_update_devel.sh"
-                            ./Build_Helper_Files/codeblocks_update_devel.sh
-							status=$?
-							if [ $status == 0 ] ; then
-                                durationTotalTime=$(($(date +%s)-start_datetime))
-                                stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
-                                echo ${ECHO_E} "${CR}${CHECK_MARK}codeblocks_update_devel.sh finished at : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
-                            else
-                                echo ${ECHO_E} "${CR}${CROSS_MARK}./codeblocks_update_devel.sh failed"
-                                failureDetected="yes"
-                            fi
-							echo "===================================================================================================="
-                        else
-                            echo ${ECHO_E} "${CR}${CROSS_MARK}You will need to manually update the src/devel${WXWIDGET_DIR}_64 directory as the codeblocks_update_devel.sh file could not be found!!!!"
-							failureDetected="yes"
-                        fi
-					else
-                        echo "You are not running on Windows"
-                    fi
                 else
                     echo ${ECHO_E} "${CR}${CROSS_MARK}make install failed"
                     failureDetected="yes"
@@ -515,8 +494,29 @@ else
     echo ${ECHO_E} "${CR}${GREEN_START}|                                                                                      |"
     echo ${ECHO_E} "${CR}${GREEN_START}+--------------------------------------------------------------------------------------+"
     echo ${ECHO_E} "${CR}${COLOR_REVERT}"
-    exit 0
 fi
+
+if [ "${OSDetected}" == "Windows" ] ; then
+    if [ -f ./Build_Helper_Files/codeblocks_update_devel.sh ] ; then
+        echo "Running ./Build_Helper_Files/codeblocks_update_devel.sh"
+        ./Build_Helper_Files/codeblocks_update_devel.sh
+        status=$?
+        if [ $status == 0 ] ; then
+            durationTotalTime=$(($(date +%s)-start_datetime))
+            stepDeltaTime=$(($(date +%s)-beforeStepStartTime))
+            echo ${ECHO_E} "${CR}${CHECK_MARK}codeblocks_update_devel.sh finished at : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
+        else
+            echo ${ECHO_E} "${CR}${CROSS_MARK}./codeblocks_update_devel.sh failed"
+            failureDetected="yes"
+        fi
+        echo "===================================================================================================="
+    else
+        echo ${ECHO_E} "${CR}${CROSS_MARK}You will need to manually update the src/devel${WXWIDGET_DIR}_64 directory as the codeblocks_update_devel.sh file could not be found!!!!"
+        failureDetected="yes"
+    fi
+fi
+
+exit 0
 
 # -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------

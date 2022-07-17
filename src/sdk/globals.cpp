@@ -59,7 +59,14 @@ const wxString DEFAULT_ARRAY_SEP     = _T(";");
 #else
     const wxString DEFAULT_CONSOLE_TERM  = _T("osascript -e 'tell app \"Terminal\"' -e 'activate' -e 'do script quoted form of \"$SCRIPT\"' -e 'end tell'");
 #endif
-const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
+
+#if defined __WXMSW__
+    const wxString DEFAULT_CONSOLE_SHELL = _T("cmd");
+#elif defined __WXMAC__
+    const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/bash -c");
+#else
+    const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
+#endif
 
 #if defined __WXMSW__
     const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("explorer.exe /select,");

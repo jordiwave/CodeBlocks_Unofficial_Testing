@@ -76,7 +76,7 @@
 			<WX_CFG>""</WX_CFG>
 			<WX_VERSION>31</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
-			<WX_CONFIG_UNIX>wx-config --version=3.0</WX_CONFIG_UNIX>
+			<WX_CONFIG_UNIX>wx-config --version=3.1</WX_CONFIG_UNIX>
 		</wxwidgets>
 	</cb_unix>
 <!-- ====================================================================================== -->

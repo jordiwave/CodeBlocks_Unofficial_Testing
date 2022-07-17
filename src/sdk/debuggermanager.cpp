@@ -9,13 +9,15 @@
     #include <wx/artprov.h>
     #include <wx/bmpbuttn.h>
     #include <wx/combobox.h>
+    #include <wx/dir.h>
     #include <wx/filedlg.h>
     #include <wx/frame.h>
     #include <wx/menu.h>
+    #include <wx/regex.h>
     #include <wx/settings.h>
     #include <wx/sizer.h>
     #include <wx/stattext.h>
-    #include <wx/regex.h>
+    #include <wx/toolbar.h>
 
     #include "cbeditor.h"
     #include "cbexception.h"
@@ -31,11 +33,16 @@
 
 #include <algorithm>
 #include <sstream>
-#include <wx/toolbar.h>
+
+#include <wx/textfile.h>
+#include <wx/xml/xml.h>
+#ifdef __WXMSW__ // for wxRegKey
+    #include <wx/msw/registry.h>
+#endif // __WXMSW__
 
 #include "debuggermanager.h"
-
 #include "annoyingdialog.h"
+#include "compiler.h"
 #include "cbdebugger_interfaces.h"
 #include "loggers.h"
 #include "manager.h"
@@ -495,8 +502,219 @@ void cbDebuggerCommonConfig::SetPerspective(int perspective)
     c->Write(wxT("/common/perspective"), perspective);
 }
 
-wxString cbDetectDebuggerExecutable(const wxString & exeNameParam)
+static bool EvalXMLPlatform(const wxXmlNode * node)
 {
+    bool val = false;
+    wxString test;
+
+    if (node->GetAttribute("platform", &test))
+    {
+        if (test == "windows")
+        {
+            val = platform::windows;
+        }
+        else
+            if (test == "macosx")
+            {
+                val = platform::macosx;
+            }
+            else
+                if (test == "linux")
+                {
+                    val = platform::Linux;
+                }
+                else
+                    if (test == "freebsd")
+                    {
+                        val = platform::freebsd;
+                    }
+                    else
+                        if (test == "netbsd")
+                        {
+                            val = platform::netbsd;
+                        }
+                        else
+                            if (test == "openbsd")
+                            {
+                                val = platform::openbsd;
+                            }
+                            else
+                                if (test == "darwin")
+                                {
+                                    val = platform::darwin;
+                                }
+                                else
+                                    if (test == "solaris")
+                                    {
+                                        val = platform::solaris;
+                                    }
+                                    else
+                                        if (test == "unix")
+                                        {
+                                            val = platform::Unix;
+                                        }
+    }
+
+    return val;
+}
+
+static wxString SearchForDebuggerExecutable(wxString pathParam, const wxString & exeNameParam)
+{
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    wxFileName fnDetectDebuggerExecutable;
+    fnDetectDebuggerExecutable.SetFullName(exeNameParam);
+    pathParam = pathParam.Trim().Trim(false);
+    fnDetectDebuggerExecutable.SetPath(pathParam);
+
+    if (fnDetectDebuggerExecutable.FileExists())
+    {
+        pLogMgr->DebugLog(wxString::Format(_("SearchForDebuggerExecutable detected %s"), fnDetectDebuggerExecutable.GetFullPath()));
+        return fnDetectDebuggerExecutable.GetFullPath();
+    }
+    else
+    {
+        fnDetectDebuggerExecutable.SetPath(pathParam + wxFILE_SEP_PATH + "bin");
+
+        if (fnDetectDebuggerExecutable.FileExists())
+        {
+            pLogMgr->DebugLog(wxString::Format(_("SearchForDebuggerExecutable detected %s"), fnDetectDebuggerExecutable.GetFullPath()));
+            return fnDetectDebuggerExecutable.GetFullPath();
+        }
+    }
+
+    return wxEmptyString;
+}
+
+static wxString SearchCompilerXMLFiles(const wxString & compilerIDLookup)
+{
+    // register pure XML compilers
+    // user paths first
+    wxDir dir;
+    wxString filename;
+    wxArrayString compilers;
+    wxString path = ConfigManager::GetFolder(sdDataUser) + "/compilers/";
+
+    if (wxDirExists(path) && dir.Open(path))
+    {
+        bool ok = dir.GetFirst(&filename, "compiler_*.xml", wxDIR_FILES);
+
+        while (ok)
+        {
+            compilers.Add(path + filename);
+            ok = dir.GetNext(&filename);
+        }
+    }
+
+    // global paths next
+    path = ConfigManager::GetFolder(sdDataGlobal) + "/compilers/";
+
+    if (wxDirExists(path) && dir.Open(path))
+    {
+        bool ok = dir.GetFirst(&filename, "compiler_*.xml", wxDIR_FILES);
+
+        while (ok)
+        {
+            for (size_t i = 0; i < compilers.GetCount(); ++i)
+            {
+                if (compilers[i].EndsWith(filename))
+                {
+                    ok = false;
+                    break;
+                }
+            }
+
+            if (ok) // user compilers of the same name take precedence
+            {
+                compilers.Add(path + filename);
+            }
+
+            ok = dir.GetNext(&filename);
+        }
+    }
+
+    bool nonPlatComp = Manager::Get()->GetConfigManager("compiler")->ReadBool("/non_plat_comp", false);
+
+    for (size_t i = 0; i < compilers.GetCount(); ++i)
+    {
+        wxXmlDocument compiler;
+
+        if (!compiler.Load(compilers[i]) || compiler.GetRoot()->GetName() != "CodeBlocks_compiler")
+        {
+            Manager::Get()->GetLogManager()->LogError(wxString::Format(_("Error: Invalid Code::Blocks compiler definition '%s'."), compilers[i]));
+        }
+        else
+        {
+            bool val = true;
+            wxString test;
+
+            if (!nonPlatComp && compiler.GetRoot()->GetAttribute("platform", &test))
+            {
+                if (test == "windows")
+                {
+                    val = platform::windows;
+                }
+                else
+                    if (test == "macosx")
+                    {
+                        val = platform::macosx;
+                    }
+                    else
+                        if (test == "linux")
+                        {
+                            val = platform::Linux;
+                        }
+                        else
+                            if (test == "freebsd")
+                            {
+                                val = platform::freebsd;
+                            }
+                            else
+                                if (test == "netbsd")
+                                {
+                                    val = platform::netbsd;
+                                }
+                                else
+                                    if (test == "openbsd")
+                                    {
+                                        val = platform::openbsd;
+                                    }
+                                    else
+                                        if (test == "darwin")
+                                        {
+                                            val = platform::darwin;
+                                        }
+                                        else
+                                            if (test == "solaris")
+                                            {
+                                                val = platform::solaris;
+                                            }
+                                            else
+                                                if (test == "unix")
+                                                {
+                                                    val = platform::Unix;
+                                                }
+            }
+
+            if (val)
+            {
+                wxString xmlCompilerName = compiler.GetRoot()->GetAttribute("name", wxEmptyString);
+                wxString xmlCompilerID = compiler.GetRoot()->GetAttribute("id", wxEmptyString);
+
+                if (xmlCompilerID.IsSameAs(compilerIDLookup))
+                {
+                    return compilers[i];
+                }
+            }
+        }
+    }
+
+    return wxEmptyString;
+}
+
+wxString cbDetectDebuggerExecutable(const wxString & compilerID, const wxString & exeNameParam)
+{
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    wxString masterPath = wxEmptyString;
     wxFileName exeName(exeNameParam);
 
     if (platform::windows)
@@ -512,7 +730,7 @@ wxString cbDetectDebuggerExecutable(const wxString & exeNameParam)
 
     if (pProject)
     {
-        // First check project global compiler is valid
+        // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable pProject found.(Line %d)", __LINE__));
         int compilerIdx = CompilerFactory::GetCompilerIndex(pProject->GetCompilerID());
 
         if (compilerIdx != -1)
@@ -521,77 +739,308 @@ wxString cbDetectDebuggerExecutable(const wxString & exeNameParam)
 
             if (prjCompiler)
             {
-                wxString mPath = prjCompiler->GetMasterPath();
+                masterPath = prjCompiler->GetMasterPath();
 
-                if (!mPath.empty() && wxDirExists(mPath + wxFILE_SEP_PATH + "bin"))
+                if (!masterPath.IsEmpty())
                 {
-                    wxFileName exeNameSearch(mPath + wxFILE_SEP_PATH + "bin", exeName.GetFullName());
+                    wxString debuggerSearchResult = SearchForDebuggerExecutable(masterPath, exeName.GetFullName());
 
-                    if (exeNameSearch.Exists())
+                    if (!debuggerSearchResult.IsEmpty())
                     {
-                        return exeNameSearch.GetFullPath();
+                        // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                        return debuggerSearchResult;
                     }
                 }
             }
         }
     }
 
+    // else
+    // {
+    //    pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable no project found (Line %d)",  __LINE__));
+    // }
     // Check default compiler path to see if file in it
     Compiler * defaultCompiler = CompilerFactory::GetDefaultCompiler();
 
     if (defaultCompiler)
     {
-        wxString mPath = defaultCompiler->GetMasterPath();
+        masterPath = defaultCompiler->GetMasterPath();
 
-        if (!mPath.empty() && wxDirExists(mPath + wxFILE_SEP_PATH + "bin"))
+        // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable defaultCompiler found. masterPath %s  (Line %d)", masterPath, __LINE__));
+        if (!masterPath.IsEmpty() && wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
         {
-            wxFileName exeNameSearch(mPath + wxFILE_SEP_PATH + "bin", exeName.GetFullName());
+            wxString debuggerSearchResult = SearchForDebuggerExecutable(masterPath, exeName.GetFullName());
 
-            if (exeNameSearch.Exists())
+            if (!debuggerSearchResult.IsEmpty())
             {
-                return exeNameSearch.GetFullPath();
+                // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                return debuggerSearchResult;
             }
         }
     }
 
+    // else
+    // {
+    //     pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable no defaultCompiler found (Line %d)",  __LINE__));
+    // }
     wxString exePath = cbFindFileInPATH(exeName.GetFullName());
 
-    if (exePath.empty())
+    if (exePath.IsEmpty())
     {
-        if (platform::windows)
+        // Search now based on the compiler.xml file. Code taken from CompilerXML::AutoDetectInstallationDir() in compilerXML.cpp
+        if (!compilerID.IsEmpty())
         {
-            const wxString & cbInstallFolder = ConfigManager::GetExecutableFolder();
-            exePath = cbInstallFolder + wxFILE_SEP_PATH + "MINGW" + wxFILE_SEP_PATH + "bin";
+            wxString XMLFileName = SearchCompilerXMLFiles(compilerID);
 
-            if (!wxFileExists(exePath + wxFILE_SEP_PATH + exeName.GetFullName()))
+            if (!XMLFileName.IsEmpty())
             {
-                exePath = "C:\\MinGW\\bin";
-
-                if (!wxDirExists(exePath))
+                // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : checking XML file %s (Line %d)", XMLFileName, __LINE__));
+                enum SearchMode
                 {
-                    exePath = "C:\\MinGW32\\bin";
+                    SM_Master,
+                    SM_Other
+                };
+                wxXmlDocument compiler;
+
+                if (compiler.Load(XMLFileName))
+                {
+                    wxXmlNode * node = compiler.GetRoot()->GetChildren();
+                    int depth = 0;
+                    SearchMode sm = SM_Other;
+
+                    while (node)
+                    {
+                        if (
+                            node->GetName() == "if" &&
+                            node->GetChildren()
+                        )
+                        {
+                            if (EvalXMLPlatform(node))
+                            {
+                                node = node->GetChildren();
+                                ++depth;
+                                continue;
+                            }
+                            else
+                                if (node->GetNext() &&
+                                        node->GetNext()->GetName() == "else" &&
+                                        node->GetNext()->GetChildren()
+                                   )
+                                {
+                                    node = node->GetNext()->GetChildren();
+                                    ++depth;
+                                    continue;
+                                }
+                        }
+                        else
+                            if (node->GetName() == "Path" &&
+                                    node->GetChildren()
+                               )
+                            {
+                                wxString value = node->GetAttribute("type", wxEmptyString);
+
+                                if (value == "master")
+                                {
+                                    sm = SM_Master;
+                                }
+                                else
+                                {
+                                    sm = SM_Other;
+                                }
+                            }
+                            else
+                                if (node->GetName() == "Search" &&
+                                        sm == SM_Master
+                                   )
+                                {
+                                    wxString value;
+
+                                    if (node->GetAttribute("envVar", &value))
+                                    {
+                                        wxString pathValues;
+                                        wxGetEnv(value, &pathValues);
+
+                                        if (!pathValues.IsEmpty())
+                                        {
+                                            wxArrayString pathArray = GetArrayFromString(pathValues, wxPATH_SEP);
+
+                                            for (size_t i = 0; i < pathArray.GetCount(); ++i)
+                                            {
+                                                wxString debuggerSearchResult = SearchForDebuggerExecutable(pathArray[i], exeNameParam);
+
+                                                if (!debuggerSearchResult.IsEmpty())
+                                                {
+                                                    // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                                                    return debuggerSearchResult;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                        if (node->GetAttribute("path", &value))
+                                        {
+                                            if (wxIsWild(value))
+                                            {
+                                                wxString path = wxFindFirstFile(value, wxDIR);
+
+                                                if (!path.IsEmpty())
+                                                {
+                                                    wxString debuggerSearchResult = SearchForDebuggerExecutable(path, exeNameParam);
+
+                                                    if (!debuggerSearchResult.IsEmpty())
+                                                    {
+                                                        // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                                                        return debuggerSearchResult;
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                wxString debuggerSearchResult = SearchForDebuggerExecutable(value, exeNameParam);
+
+                                                if (!debuggerSearchResult.IsEmpty())
+                                                {
+                                                    // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                                                    return debuggerSearchResult;
+                                                }
+                                            }
+                                        }
+                                        else
+                                            if (node->GetAttribute("file", &value))
+                                            {
+                                                wxString regexp = node->GetAttribute("regex", wxEmptyString);
+                                                int idx = wxAtoi(node->GetAttribute("index", "0"));
+                                                wxRegEx re;
+
+                                                if (wxFileExists(value) && re.Compile(regexp))
+                                                {
+                                                    wxTextFile file(value);
+
+                                                    for (size_t i = 0; i < file.GetLineCount(); ++i)
+                                                    {
+                                                        if (re.Matches(file.GetLine(i)))
+                                                        {
+                                                            wxString debuggerSearchResult = SearchForDebuggerExecutable(re.GetMatch(file.GetLine(i), idx), exeNameParam);
+
+                                                            if (!debuggerSearchResult.IsEmpty())
+                                                            {
+                                                                // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                                                                return debuggerSearchResult;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+#ifdef __WXMSW__ // for wxRegKey
+                                            else
+                                                if (node->GetAttribute("registry", &value))
+                                                {
+                                                    wxRegKey key;
+                                                    wxString dir;
+                                                    key.SetName(value);
+
+                                                    if (key.Exists() && key.Open(wxRegKey::Read))
+                                                    {
+                                                        key.QueryValue(node->GetAttribute("value", wxEmptyString), dir);
+
+                                                        if (!dir.IsEmpty() && wxDirExists(dir))
+                                                        {
+                                                            wxString debuggerSearchResult = SearchForDebuggerExecutable(dir, exeNameParam);
+
+                                                            if (!debuggerSearchResult.IsEmpty())
+                                                            {
+                                                                // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                                                                return debuggerSearchResult;
+                                                            }
+                                                        }
+
+                                                        key.Close();
+                                                    }
+                                                }
+
+#endif // __WXMSW__
+                                }
+                                else
+                                    if (node->GetName() == "Add")
+                                    {
+                                        wxString value;
+
+                                        if (sm == SM_Master)
+                                        {
+                                            wxString path;
+                                            wxXmlNode * child = node->GetChildren();
+
+                                            while (child)
+                                            {
+                                                if (child->GetType() == wxXML_TEXT_NODE || child->GetType() == wxXML_CDATA_SECTION_NODE)
+                                                {
+                                                    path << child->GetContent();
+                                                }
+                                                else
+                                                    if (child->GetName() == "master")
+                                                    {
+                                                        if (!masterPath.IsEmpty())
+                                                        {
+                                                            path << masterPath;
+                                                        }
+                                                    }
+                                                    else
+                                                        if (child->GetName() == "separator")
+                                                        {
+                                                            path << wxFILE_SEP_PATH;
+                                                        }
+                                                        else
+                                                            if (child->GetName() == "envVar")
+                                                            {
+                                                                value = child->GetAttribute("default", wxEmptyString);
+                                                                wxGetEnv(child->GetAttribute("value", wxEmptyString), &value);
+                                                                path << value;
+                                                            }
+
+                                                child = child->GetNext();
+                                            }
+
+                                            wxString debuggerSearchResult = SearchForDebuggerExecutable(path, exeNameParam);
+
+                                            if (!debuggerSearchResult.IsEmpty())
+                                            {
+                                                // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                                                return debuggerSearchResult;
+                                            }
+                                        }
+                                    }
+                                    else
+                                        if ((node->GetName() == "Fallback") && (sm == SM_Master))
+                                        {
+                                            wxString value = node->GetAttribute("path", wxEmptyString);
+                                            // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", value, __LINE__));
+                                            return value;
+                                        }
+
+                        while ((!node->GetNext() || sm == SM_Master) && depth > 0)
+                        {
+                            node = node->GetParent();
+
+                            if (node->GetName() == "Path")
+                            {
+                                sm = SM_Other;
+                            }
+
+                            --depth;
+                        }
+
+                        node = node->GetNext();
+                    }
                 }
-
-                if (!wxDirExists(exePath))
+                else
                 {
-                    exePath = "C:\\MinGW64\\bin";
-                }
-
-                if (!wxDirExists(exePath))
-                {
-                    exePath = "C:\\mingw-w32\\bin";
-                }
-
-                if (!wxDirExists(exePath))
-                {
-                    exePath = "C:\\mingw-w64\\bin";
+                    pLogMgr->DebugLogError(wxString::Format("cbDetectDebuggerExecutable : Error loading XML file %s (%s line %d)", XMLFileName, __FILE__, __LINE__));
                 }
             }
         }
-        else
-        {
-            exePath = "/usr/bin/" + exeName.GetFullName();
-        }
+
+        exePath = wxEmptyString;
     }
 
     if (!wxDirExists(exePath))
@@ -842,7 +1291,7 @@ template<> bool  Mgr<DebuggerManager>::isShutdown = false;
 inline void ReadActiveDebuggerConfig(wxString & name, int & configIndex)
 {
     ConfigManager & config = *Manager::Get()->GetConfigManager(_T("debugger_common"));
-    name = config.Read(wxT("active_debugger"), wxEmptyString);
+    name = config.Read("active_debugger", wxEmptyString);
 
     if (name.empty())
     {
@@ -850,15 +1299,15 @@ inline void ReadActiveDebuggerConfig(wxString & name, int & configIndex)
     }
     else
     {
-        configIndex = std::max(0, config.ReadInt(wxT("active_debugger_config"), 0));
+        configIndex = std::max(0, config.ReadInt("active_debugger_config", 0));
     }
 }
 
 inline void WriteActiveDebuggerConfig(const wxString & name, int configIndex)
 {
     ConfigManager & configMgr = *Manager::Get()->GetConfigManager(_T("debugger_common"));
-    configMgr.Write(wxT("active_debugger"), name);
-    configMgr.Write(wxT("active_debugger_config"), configIndex);
+    configMgr.Write("active_debugger", name);
+    configMgr.Write("active_debugger_config", configIndex);
 }
 
 cbDebuggerConfiguration * DebuggerManager::PluginData::GetConfiguration(int index)
@@ -910,8 +1359,8 @@ DebuggerManager::DebuggerManager() :
         m_useTargetsDefault = true;
     }
 
-    ConfigManager * c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
-    m_isDisassemblyMixedMode = c->ReadBool(wxT("/common/disassembly/mixed_mode"), false);
+    ConfigManager * c = Manager::Get()->GetConfigManager("debugger_common");
+    m_isDisassemblyMixedMode = c->ReadBool("/common/disassembly/mixed_mode", false);
 }
 
 DebuggerManager::~DebuggerManager()
@@ -936,7 +1385,7 @@ bool DebuggerManager::RegisterDebugger(cbDebuggerPlugin * plugin)
 
     const wxString & guiName = plugin->GetGUIName();
     const wxString & settingsName = plugin->GetSettingsName();
-    wxRegEx regExSettingsName(wxT("^[a-z_][a-z0-9_]+$"));
+    wxRegEx regExSettingsName("^[a-z_][a-z0-9_]+$");
 
     if (!regExSettingsName.Matches(settingsName))
     {
@@ -1027,14 +1476,14 @@ void DebuggerManager::ProcessSettings(RegisteredPlugins::iterator it)
 {
     cbDebuggerPlugin * plugin = it->first;
     PluginData & data = it->second;
-    ConfigManager * config = Manager::Get()->GetConfigManager(wxT("debugger_common"));
-    wxString path = wxT("/sets/") + plugin->GetSettingsName();
+    ConfigManager * config = Manager::Get()->GetConfigManager("debugger_common");
+    wxString path = "/sets/" + plugin->GetSettingsName();
     wxArrayString configs = config->EnumerateSubPaths(path);
     configs.Sort();
 
     if (configs.empty())
     {
-        config->Write(path + wxT("/conf1/name"), wxString(wxT("Default")));
+        config->Write(path + "/conf1/name", wxString("Default"));
         configs = config->EnumerateSubPaths(path);
         configs.Sort();
     }
@@ -1044,10 +1493,10 @@ void DebuggerManager::ProcessSettings(RegisteredPlugins::iterator it)
 
     for (size_t jj = 0; jj < configs.Count(); ++jj)
     {
-        wxString configPath = path + wxT("/") + configs[jj];
-        wxString name = config->Read(configPath + wxT("/name"));
+        wxString configPath = path + "/" + configs[jj];
+        wxString name = config->Read(configPath + "/name");
         cbDebuggerConfiguration * pluginConfig;
-        pluginConfig = plugin->LoadConfig(ConfigManagerWrapper(wxT("debugger_common"), configPath + wxT("/values")));
+        pluginConfig = plugin->LoadConfig(ConfigManagerWrapper("debugger_common", configPath + "/values"));
 
         if (pluginConfig)
         {
@@ -1066,11 +1515,11 @@ ConfigManagerWrapper DebuggerManager::NewConfig(cbDebuggerPlugin * plugin, cb_un
         return ConfigManagerWrapper();
     }
 
-    wxString path = wxT("/sets/") + it->first->GetSettingsName();
+    wxString path = "/sets/" + it->first->GetSettingsName();
 
     if (it->second.m_lastConfigID == -1)
     {
-        ConfigManager * config = Manager::Get()->GetConfigManager(wxT("debugger_common"));
+        ConfigManager * config = Manager::Get()->GetConfigManager("debugger_common");
         wxArrayString configs = config->EnumerateSubPaths(path);
 
         for (size_t ii = 0; ii < configs.GetCount(); ++ii)
@@ -1084,8 +1533,8 @@ ConfigManagerWrapper DebuggerManager::NewConfig(cbDebuggerPlugin * plugin, cb_un
         }
     }
 
-    path << wxT("/conf") << ++it->second.m_lastConfigID;
-    return ConfigManagerWrapper(wxT("debugger_common"), path +  wxT("/values"));
+    path << "/conf" << ++it->second.m_lastConfigID;
+    return ConfigManagerWrapper("debugger_common", path +  "/values");
 }
 
 void DebuggerManager::RebuildAllConfigs()
@@ -1556,7 +2005,7 @@ void DebuggerManager::FindTargetsDebugger()
     }
 
     wxString dbgString = compiler->GetPrograms().DBGconfig;
-    wxString::size_type pos = dbgString.find(wxT(':'));
+    wxString::size_type pos = dbgString.find(':');
     wxString name, config;
 
     if (pos != wxString::npos)
@@ -1567,7 +2016,7 @@ void DebuggerManager::FindTargetsDebugger()
 
     if (name.empty() || config.empty())
     {
-        if (compiler->GetID() != wxT("null"))
+        if (compiler->GetID() != "null")
         {
             log->LogError(wxString::Format(_("Current compiler '%s' doesn't have correctly defined debugger!"),
                                            compiler->GetName().c_str()));
@@ -1602,10 +2051,15 @@ void DebuggerManager::FindTargetsDebugger()
         }
     }
 
-    wxString targetTitle(target ? target->GetTitle() : wxT("<nullptr>"));
-    log->LogError(wxString::Format(_("Can't find the debugger config: '%s:%s' for the current target '%s'!"),
-                                   name.c_str(), config.c_str(),
-                                   targetTitle.c_str()));
+    if (target)
+    {
+        log->LogError(wxString::Format(_("Can't find the debugger config: '%s' for the current target '%s'!"), dbgString, target->GetTitle()));
+    }
+    else
+    {
+        log->LogError(wxString::Format(_("Can't find the debugger config: '%s' for the compiler '%s'!"), dbgString, compiler->GetName()));
+    }
+
     m_menuHandler->MarkActiveTargetAsValid(false);
 }
 
@@ -1617,8 +2071,8 @@ bool DebuggerManager::IsDisassemblyMixedMode()
 void DebuggerManager::SetDisassemblyMixedMode(bool mixed)
 {
     m_isDisassemblyMixedMode = mixed;
-    ConfigManager * c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
-    c->Write(wxT("/common/disassembly/mixed_mode"), m_isDisassemblyMixedMode);
+    ConfigManager * c = Manager::Get()->GetConfigManager("debugger_common");
+    c->Write("/common/disassembly/mixed_mode", m_isDisassemblyMixedMode);
 }
 
 void DebuggerManager::OnProjectActivated(cb_unused CodeBlocksEvent & event)
@@ -1671,24 +2125,6 @@ void DebuggerManager::OnPluginLoadingComplete(cb_unused CodeBlocksEvent & event)
 
 void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoConfiguation)
 {
-    Manager::Get()->GetLogManager()->Log("CompilerDebuggerOptions:");
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 debuggerConfigurationName %s"), cdoConfiguation.debuggerConfigurationName));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 compilerIDName %s"), cdoConfiguation.compilerIDName));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 executablePath %s"), cdoConfiguation.executablePath));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 userArguments %s"), cdoConfiguation.userArguments));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 type %s"), cdoConfiguation.type));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 initCommands %s"), cdoConfiguation.initCommands));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 disableInit %s"), cdoConfiguation.disableInit ? "true" : "false"));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 watchArgs %s"), cdoConfiguation.watchArgs ? "true" : "false"));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 watchLocals %s"), cdoConfiguation.watchLocals ? "true" : "false"));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 catchExceptions %s"), cdoConfiguation.catchExceptions ? "true" : "false"));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 evalExpressionAsTooltip %s"), cdoConfiguation.evalExpressionAsTooltip ? "true" : "false"));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 addOtherSearchDirs %s"), cdoConfiguation.addOtherSearchDirs ? "true" : "false"));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 doNoRunDebuggee %s"), cdoConfiguation.doNoRunDebuggee ? "true" : "false"));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 persistDebugElements %s"), cdoConfiguation.persistDebugElements ? "true" : "false"));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 disassemblyFlavor %s"), cdoConfiguation.disassemblyFlavor));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 instructionSet %s"), cdoConfiguation.instructionSet));
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 portNumber %s"), cdoConfiguation.portNumber));
     ConfigManager * config = Manager::Get()->GetConfigManager("debugger_common");
     int offset = cdoConfiguation.debuggerConfigurationName.Find(':');
     wxString pluginName = "NoPlugin";
@@ -1729,44 +2165,46 @@ void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoCon
 
     if (foundConfigName == false)
     {
+        // LogManager *pLogMgr = Manager::Get()->GetLogManager();
         wxString pathDebuggerEntry = wxString::Format("/sets/%s/conf%lu", pluginName, (long)configs.Count() + 1);
-        config->Write(wxString::Format("%s/name", pathDebuggerEntry), cdoConfiguation.compilerIDName);
-        wxString tryTmpPath = wxString::Format("%s",  cdoConfiguation.executablePath);
-        tryTmpPath = UnixFilename(tryTmpPath, wxPATH_NATIVE);
+        config->Write(wxString::Format("%s/name", pathDebuggerEntry), debugConfigName);
+        // pLogMgr->DebugLog(wxString::Format("DebuggerManager::SaveDebuggerConfigOptions compilerIDName: %s (Line %d)", cdoConfiguation.compilerIDName, __LINE__));
+        wxString tryTmpPath = UnixFilename(cdoConfiguation.executablePath, wxPATH_NATIVE);
 
         if (cdoConfiguation.compilerMasterPath.IsEmpty() || wxFileExists(tryTmpPath))
         {
-            config->Write(wxString::Format("%s/values/executable_path", pathDebuggerEntry), tryTmpPath);
+            cdoConfiguation.executablePath = tryTmpPath;
+            // pLogMgr->DebugLog(wxString::Format("DebuggerManager::SaveDebuggerConfigOptions found debugger: %s (Line %d)", cdoConfiguation.executablePath, __LINE__));
         }
         else
         {
-            tryTmpPath = wxString::Format("%s/bin/%s",  cdoConfiguation.compilerMasterPath, cdoConfiguation.executablePath);
-            tryTmpPath = UnixFilename(tryTmpPath, wxPATH_NATIVE);
-            MacrosManager * macros = Manager::Get()->GetMacrosManager();
-            macros->ReplaceMacros(tryTmpPath);
+            // pLogMgr->DebugLog(wxString::Format("Line %d", __LINE__));
+            tryTmpPath = SearchForDebuggerExecutable(cdoConfiguation.compilerMasterPath, cdoConfiguation.executablePath);
 
-            if (wxFileExists(tryTmpPath))
+            if (!tryTmpPath.IsEmpty())
             {
-                config->Write(wxString::Format("%s/values/executable_path", pathDebuggerEntry), tryTmpPath);
+                cdoConfiguation.executablePath = tryTmpPath;
+                // pLogMgr->DebugLog(wxString::Format("DebuggerManager::SaveDebuggerConfigOptions found debugger: %s (Line %d)", cdoConfiguation.executablePath, __LINE__));
             }
             else
             {
-                tryTmpPath = wxString::Format("%s/%s",  cdoConfiguation.compilerMasterPath, cdoConfiguation.executablePath);
-                tryTmpPath = UnixFilename(tryTmpPath, wxPATH_NATIVE);
-                macros->ReplaceMacros(tryTmpPath);
+                tryTmpPath = cbDetectDebuggerExecutable(cdoConfiguation.compilerIDName, cdoConfiguation.executablePath);
 
-                if (wxFileExists(tryTmpPath))
+                if (!tryTmpPath.IsEmpty())
                 {
-                    config->Write(wxString::Format("%s/values/executable_path", pathDebuggerEntry), tryTmpPath);
+                    cdoConfiguation.executablePath = tryTmpPath;
+                    // pLogMgr->DebugLog(wxString::Format("DebuggerManager::SaveDebuggerConfigOptions found debugger: %s (Line %d)", cdoConfiguation.executablePath, __LINE__));
                 }
-                else
-                {
-                    config->Write(wxString::Format("%s/values/executable_path", pathDebuggerEntry), cdoConfiguation.executablePath);
-                }
+
+                // else
+                // {
+                //     pLogMgr->DebugLog(wxString::Format("DebuggerManager::SaveDebuggerConfigOptions using debugger: %s (Line %d)", cdoConfiguation.executablePath, __LINE__));
+                // }
             }
         }
 
-        config->Write(pathDebuggerEntry + "/values/user_arguments",         cdoConfiguation.userArguments);;
+        config->Write(pathDebuggerEntry + "/values/executable_path",        cdoConfiguation.executablePath);
+        config->Write(pathDebuggerEntry + "/values/user_arguments",         cdoConfiguation.userArguments);
         config->Write(pathDebuggerEntry + "/values/type",                   cdoConfiguation.type);
         config->Write(pathDebuggerEntry + "/values/init_commands",          cdoConfiguation.initCommands);
         config->Write(pathDebuggerEntry + "/values/disable_init",           cdoConfiguation.disableInit ? "true" : "false");
@@ -1782,4 +2220,23 @@ void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoCon
         config->Write(pathDebuggerEntry + "/values/portNumber",             cdoConfiguation.portNumber);
         config->Flush();
     }
+
+    Manager::Get()->GetLogManager()->Log("CompilerDebuggerOptions:");
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 debuggerConfigurationName %s"), cdoConfiguation.debuggerConfigurationName));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 compilerIDName %s"), cdoConfiguation.compilerIDName));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 executablePath %s"), cdoConfiguation.executablePath));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 userArguments %s"), cdoConfiguation.userArguments));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 type %s"), cdoConfiguation.type));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 initCommands %s"), cdoConfiguation.initCommands));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 disableInit %s"), cdoConfiguation.disableInit ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 watchArgs %s"), cdoConfiguation.watchArgs ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 watchLocals %s"), cdoConfiguation.watchLocals ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 catchExceptions %s"), cdoConfiguation.catchExceptions ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 evalExpressionAsTooltip %s"), cdoConfiguation.evalExpressionAsTooltip ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 addOtherSearchDirs %s"), cdoConfiguation.addOtherSearchDirs ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 doNoRunDebuggee %s"), cdoConfiguation.doNoRunDebuggee ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 persistDebugElements %s"), cdoConfiguation.persistDebugElements ? "true" : "false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 disassemblyFlavor %s"), cdoConfiguation.disassemblyFlavor));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 instructionSet %s"), cdoConfiguation.instructionSet));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("                 portNumber %s"), cdoConfiguation.portNumber));
 }

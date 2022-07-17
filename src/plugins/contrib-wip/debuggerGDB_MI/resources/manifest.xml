@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_plugin_manifest_file>
-    <SdkVersion major="2" minor="17"  release="0" />
+    <SdkVersion major="2" minor="17" release="0" />
     <Plugin name="debugger_gdbmi">
         <Value version="0.4.0" />
         <Value title="Debugger GDB/MI" />

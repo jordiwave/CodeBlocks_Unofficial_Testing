@@ -5,16 +5,31 @@ echo MacOS - build CODE::BLOCKS and WxWidgets if needed
 
 DEBUG_SCRIPT="Yes"
 
-WX_VERSION="3.1.7"
-WX_GITHUB_TAG="3.1.7"
-#WX_VERSION="3.2.0"
-#WX_GITHUB_TAG="3.2.0-rc1"
+#WX_VERSION=3.1.7
+#WX_GITHUB_TAG=3.1.7
+#WX_DIR_VERSION=31
+#WX_OSX_LIB_DIR_VERSION=3.1
 
-InitialDir=$PWD
+WX_VERSION=3.2.0
+WX_GITHUB_TAG=3.2.0
+WX_DIR_VERSION=32
+WX_OSX_LIB_DIR_VERSION=3.2
+
+InitialDir=${PWD}
 failureDetected="no"
 
 export CXX=clang++
 export CC=clang
+
+# -------------------------------------------------------------------------------------------------
+
+if [ "${GITHUB_ACTIONS}" != "true" ] ; then
+    reset
+    # The following is to enable sending the output of this script to the terminal and 
+    # to the file specified:
+    exec > >(tee -i CodeBlocks_MAC_${WX_VERSION}_build.log) 2>&1
+    # NOTE: if you want to append to the file change the -i to -ia in the line above.
+fi
 
 # -----------------------------------------------------------------------------
 
@@ -32,23 +47,23 @@ function setup_variables()
 {
     cd "${InitialDir}"
     if [ -f bootstrap ]; then
-        CB_ROOT_DIR=$PWD
+        CB_ROOT_DIR=${PWD}
         cd ..
-        BUILD_ROOT_DIR=$PWD
+        BUILD_ROOT_DIR=${PWD}
     else
         if [ -f ../bootstrap ]; then
             cd ..
-            CB_ROOT_DIR=$PWD
+            CB_ROOT_DIR=${PWD}
             cd ..
-            BUILD_ROOT_DIR=$PWD
+            BUILD_ROOT_DIR=${PWD}
         else
             if [ -f ../../bootstrap ]; then
                 cd ../..
-                CB_ROOT_DIR=$PWD
+                CB_ROOT_DIR=${PWD}
                 cd ..
-                BUILD_ROOT_DIR=$PWD
+                BUILD_ROOT_DIR=${PWD}
             else
-                BUILD_ROOT_DIR=$PWD
+                BUILD_ROOT_DIR=${PWD}
             fi
         fi
     fi
@@ -302,7 +317,7 @@ function codeblocks_build()
         chmod +x configure *.sh
         
         if [ -f ./configure ]; then
-            ./configure --prefix=${CB_ROOT_DIR}/src/devel31 --with-contrib-plugins=all,-FileManager
+            ./configure --prefix=${CB_ROOT_DIR}/src/devel${WX_DIR_VERSION} --with-contrib-plugins=all,-FileManager
             status=$?
             if [ $status != 0 ] ; then
                 echo "+----------------------------------------+"
@@ -383,6 +398,34 @@ function codeblocks_build()
     return 0
 }
 
+function check_wxwidgets_build()
+{
+    if [ ! -d "/usr/local/lib/wx/include/osx_cocoa-unicode-${WX_OSX_LIB_DIR_VERSION}" ]; then
+        if  [ "${WX_ROOT_DIR}" = "" ] || [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib" ]; then
+            if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
+                if [ "${WX_ROOT_DIR}" = "" ]; then
+                    echo "WX_ROOT_DIR is empty: ${WX_ROOT_DIR}"
+                fi
+                if [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib" ]; then
+                    echo "Cannot find: ${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib"
+                fi
+            fi
+            wxwidgets_build
+            status=$?
+            if [ $status != 0 ] ; then
+                failureDetected="yes"
+                if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
+                    echo "wxwidgets_build failure detected."
+                fi
+            fi
+        else
+            echo "You already have already built wxWidgets ${WX_VERSION}"
+        fi
+    else
+        echo "You already have wxWidgets ${WX_OSX_LIB_DIR_VERSION} installed"
+    fi
+}
+
 cd "${InitialDir}"
 
 # Un-comment the following to install build dependencies:
@@ -396,27 +439,8 @@ fi
 # setup variables based on directories found. Variables used in building wxWidgets and Code::Blocks
 setup_variables
 
-if [ "${WX_ROOT_DIR}" = "" ] || [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib" ]; then
-    if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
-        if [ "${WX_ROOT_DIR}" = "" ]; then
-            echo "WX_ROOT_DIR is empty: ${WX_ROOT_DIR}"
-        fi
-        if [ ! -f "${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib" ]; then
-            echo "Cannot find: ${OUT_WX}/lib/libwx_osx_cocoau_richtext-${WX_VERSION}.0.0.dylib"
-        fi
-    fi
-    wxwidgets_build
-    status=$?
-    if [ $status != 0 ] ; then
-        failureDetected="yes"
-        if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
-            echo "wxwidgets_build failure detected."
-        fi
-    fi
-else
-    echo "Allready built wxWidgets"
-fi
-
+#build wxwidgets if it is not allready installed
+check_wxwidgets_build
 
 if test "x${failureDetected}" = "xno"; then :
     cd "${BUILD_ROOT_DIR}"

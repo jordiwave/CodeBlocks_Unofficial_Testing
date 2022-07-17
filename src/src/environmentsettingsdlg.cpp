@@ -123,10 +123,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow * parent, wxAuiDockArt *
     XRCCTRL(*this, "chkEditorLayout",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/enable_editor_layout"),   false));
     wxTextCtrl * txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     txt->SetValue(cfg->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL));
-#ifdef __WXMSW__
-    // under win32, this option is not needed, so disable it
-    txt->Enable(false);
-#endif
     wxComboBox * combo = XRCCTRL(*this, "cbConsoleTerm", wxComboBox);
     combo->Append(DEFAULT_CONSOLE_TERM);
 

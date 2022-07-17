@@ -141,6 +141,7 @@ class CodeBlocksApp : public wxApp
         wxLocale m_locale; // locale we'll be using
         wxArrayString m_DelayedFilesToOpen;
     private:
+        void LogPaths();
         wxString GetAppPath() const;
         void SetupPersonality(const wxString & personality);
         bool SetActiveVariableSet(wxString & varset);

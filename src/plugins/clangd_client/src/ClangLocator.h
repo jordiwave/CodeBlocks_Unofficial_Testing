@@ -16,7 +16,6 @@ class ClangLocator
         wxString Locate_ClangdDir();
         wxString Locate_ResourceDir(wxFileName fnClangd);
 
-        wxString MSWLocate();
         wxArrayString GetEnvPaths() const;
         std::size_t ScanForFiles(wxString path, wxArrayString & foundFiles, wxString mask);
         bool ReadMSWInstallLocation(const wxString & regkey, wxString & installPath, wxString & llvmVersion);

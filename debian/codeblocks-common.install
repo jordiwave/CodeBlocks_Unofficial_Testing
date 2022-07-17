@@ -20,7 +20,7 @@ usr/share/codeblocks/abbreviations.zip
 usr/share/codeblocks/Astyle.zip
 usr/share/codeblocks/autosave.zip
 usr/share/codeblocks/classwizard.zip
-usr/share/codeblocks/codecompletion.zip
+usr/share/codeblocks/clangd_client.zip
 usr/share/codeblocks/compiler.zip
 usr/share/codeblocks/debugger.zip
 usr/share/codeblocks/defaultmimehandler.zip

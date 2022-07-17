@@ -89,7 +89,7 @@ BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_BUTTON(XRCID("btnDocTextColor"),    CCOptionsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnDocLinkColor"),    CCOptionsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAutoDetect"),      CCOptionsDlg::OnClangd_AutoDetect) //(ph 2021/11/8)
-    EVT_BUTTON(XRCID("btnMasterPath"),      CCOptionsDlg::OnFindDirClangd_Dlg)
+    EVT_BUTTON(XRCID("btnMasterPath"),      CCOptionsDlg::OnFindDirClangd_Dlg)  // [...] button
 
 END_EVENT_TABLE()
 
@@ -582,56 +582,46 @@ void CCOptionsDlg::OnFindDirClangd_Dlg(wxCommandEvent & event)
         return;    // called from invalid caller
     }
 
-    // common part follows
-    wxString file_selection = _("All files (*)|*");
-
-    if (platform::windows)
-    {
-        file_selection = _("Executable files (*.exe)|*.exe");
-    }
-
     wxFileDialog dlg(this,
                      _("Select clangd executable file"),
-#if defined(__WXMAC__)
-                     "/", "", "*",
-#if wxCHECK_VERSION(3,1,3)   // wxFD_SHOW_HIDDEN added in 3.1.3
-                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_SHOW_HIDDEN | compatibility::wxHideReadonly);
+#if defined(__WXMAC__) || defined(__WXGTK__)
+                     "/",                                // const wxString &  	defaultDir = wxEmptyString,
+                     clangdexe,                          // const wxString &  	defaultFile = wxEmptyString,
+                     _("All files (*)|*"),               // const wxString &  	wildcard = wxFileSelectorDefaultWildcardStr,
 #else
-                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
-#endif //wx 3.1.3 or greater
-#endif //WXMAC
-#if defined(__WXGTK__)
-    "/", "", "*",
-    wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
-#endif //WXGTK
-#if defined(__WXMSW__)
-    "", "", "*.*",
-    wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
-#endif //WXMSW
+                     "",                                 // const wxString &  	defaultDir = wxEmptyString,
+                     clangdexe,                          // const wxString &  	defaultFile = wxEmptyString,
+                     _("Executable files (*.exe)|*.exe"),// const wxString &  	wildcard = wxFileSelectorDefaultWildcardStr,
+#endif
+                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly
+#if defined(__WXMAC__) && wxCHECK_VERSION(3,1,3)   // wxFD_SHOW_HIDDEN added in 3.1.3
+                     | wxFD_SHOW_HIDDEN         // Needed to be able to go into /usr or other system directries!!!
+#endif // defined(__WXMAC__) && wxCHECK_VERSION(3,1,3)
+                    );
     dlg.SetFilterIndex(0);
     PlaceWindow(&dlg);
 
     if (dlg.ShowModal() != wxID_OK)
-{
-    return;
-}
+    {
+        return;
+    }
 
-//-wxChar dirSep = wxFILE_SEP_PATH;
-wxString fullPath = dlg.GetPath();
-wxFileName fname(fullPath);
+    //-wxChar dirSep = wxFILE_SEP_PATH;
+    wxString fullPath = dlg.GetPath();
+    wxFileName fname(fullPath);
 
-if (not fname.GetName().Contains("clangd")) //could be clangd-12.exe for example
-{
-    wxString msg = _("Failed to select the clangd executable.");
+    if (not fname.GetName().Contains("clangd")) //could be clangd-12.exe for example
+    {
+        wxString msg = _("Failed to select the clangd executable.");
         cbMessageBox(msg, _("ERROR"));
         fname.Clear();
     }
 
     // should check the version here and issue warning message
     if (fname.GetFullPath().Length())
-{
-    ClangLocator clangdLocator;
-    wxString versionID = clangdLocator.GetClangdVersionID(fname.GetFullPath());
+    {
+        ClangLocator clangdLocator;
+        wxString versionID = clangdLocator.GetClangdVersionID(fname.GetFullPath());
 
         if (versionID.empty())
         {

@@ -68,31 +68,36 @@
 					<Add option="`/usr/local/bin/pkg-config hunspell --libs`" />
 					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
-				<ExtraCommands>
-					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
+                <ExtraCommands>
+        			<!-- Create output directory -->
+        			<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+        			<Mode before="always" />
+
+        			<!-- Create plugin zip file-->
+                    <Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxSpellChecker;plugin;" />
+			<Add alias="plugin" targets="plugin;" />
+			<Add alias="All" targets="wxSpellChecker;" />
 		</VirtualTargets>
 		<ExtraCommands>
 			<!-- Create output directory -->
-			<Add before="if [ -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/* ; fi" />
-			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ; fi" />
+			<Add before="if [   -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then rm -r    $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/* ; fi" />
+			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
+			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
 			<Mode before="always" />
 
 			<!-- Copy Spellchecker dictionary files -->
-			<Add after="cp OnlineSpellChecking.xml  $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker" />
-			<!-- Add after="cp dictionaries/*.aff       $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker" /> -->
-			<!-- <Add after="cp dictionaries/*.dic      $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker" /> -->
-			<!-- <Add after="cp dictionaries/th_*.dat   $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker" /> -->
-			<!-- <Add after="cp dictionaries/th_*.idx   $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker" /> -->
+			<Add after="cp -f OnlineSpellChecking.xml $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="cp -rf dictionaries/*         $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
 
 			<!-- Copy Spellchecker image files -->
-			<Add after="cp -r rc  $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker" />
-			<Add after="cp *.png  $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings" />
+			<Add after="cp -rf rc/* $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="if [ ! -d   $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+			<Add after="cp -f *.png $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Compiler>

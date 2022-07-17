@@ -217,7 +217,7 @@ wxString DebuggerConfiguration::GetDebuggerExecutable(bool expandMacro)
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(result);
     }
 
-    return !result.empty() ? result : cbDetectDebuggerExecutable(wxT("gdb"));
+    return !result.empty() ? result : cbDetectDebuggerExecutable(wxEmptyString, "gdb");
 }
 
 wxString DebuggerConfiguration::GetUserArguments(bool expandMacro)

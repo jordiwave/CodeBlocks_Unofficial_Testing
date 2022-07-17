@@ -181,7 +181,7 @@ fi
 %{plugindir}/libautosave.so
 %{plugindir}/libclangd_client.so
 %{plugindir}/libclasswizard.so
-%{plugindir}/libcodecompletion.so
+%{plugindir}/libclangd_client.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
 %{plugindir}/libdefaultmimehandler.so
@@ -211,7 +211,6 @@ fi
 %{pkgdatadir}/autosave.zip
 %{pkgdatadir}/clangd_client.zip
 %{pkgdatadir}/classwizard.zip
-%{pkgdatadir}/codecompletion.zip
 %{pkgdatadir}/compiler.zip
 %{pkgdatadir}/debugger.zip
 %{pkgdatadir}/defaultmimehandler.zip

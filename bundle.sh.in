@@ -34,7 +34,7 @@ copy_deps() {
 	for dep in `otool -L "$1" | sed -n 's/\(.*[^\\ ]\) (.*/\1/gp'`
 	do
 		current_dep=$(basename $dep)
-		if [[ $dep =~ libcodeblocks ]]
+		if [[ $dep =~ libcodeblocks || $dep =~ libdebugger_wxdap ]]
 		then
 			install_name_tool -change $dep @executable_path/$(basename $dep) $1
 		fi
@@ -79,9 +79,9 @@ copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.dylib"
 install_name_tool -id "@executable_path/libcodeblocks.dylib" "$APPDIR/Contents/MacOS/libcodeblocks.dylib"
 echo "--------------------------------------------------------------------------------"
 echo "Copying Debugger WXDAP dylib"
-cp -v ${PREFIX_DIR}/lib/libdebugger_WXDAP.dylib "$APPDIR/Contents/MacOS/"
-copy_deps "${APPDIR}/Contents/MacOS/libdebugger_WXDAP.dylib"
-install_name_tool -id "@executable_path/libdebugger_WXDAP.dylib" "$APPDIR/Contents/MacOS/libdebugger_WXDAP.dylib"
+cp -v ${PREFIX_DIR}/lib/libdebugger_wxdap.dylib "$APPDIR/Contents/MacOS/"
+copy_deps "${APPDIR}/Contents/MacOS/libdebugger_wxdap.dylib"
+install_name_tool -id "@executable_path/libdebugger_wxdap.dylib" "$APPDIR/Contents/MacOS/libdebugger_wxdap.dylib"
 echo "--------------------------------------------------------------------------------"
 
 echo "Copying binaries"

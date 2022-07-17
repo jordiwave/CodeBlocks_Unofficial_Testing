@@ -16,4 +16,4 @@ EXTRA_DIST = \
 			manifest.rc
 
 debugger_dap.zip: $(ZIP_RESOURCES)
-			PWD=`pwd` cd $(srcdir) && zip $(PWD)/debugger_dap.zip manifest.xml *.xrc > /dev/null
+			PWD=`pwd` cd $(srcdir) && zip $(PWD)/debugger_dap.zip $(ZIP_RESOURCES)  > /dev/null

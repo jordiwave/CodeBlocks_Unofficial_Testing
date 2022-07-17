@@ -226,7 +226,7 @@ struct DLLIMPORT cbDebuggerCommonConfig
 /**
   * Tries to detect the path to the debugger's executable.
   */
-DLLIMPORT wxString cbDetectDebuggerExecutable(const wxString & exeName);
+DLLIMPORT wxString cbDetectDebuggerExecutable(const wxString & compilerID, const wxString & exeName);
 
 /** Convert a string in hex form to a uint64_t number.
  * \return The uint64_t representation of the string or 0 when the string can't be converted.

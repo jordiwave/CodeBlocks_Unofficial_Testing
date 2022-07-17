@@ -15,6 +15,8 @@
 #include <sdk.h>
 #include <configmanager.h>
 #include <macrosmanager.h>
+#include <cbplugin.h>
+#include <logmanager.h>
 
 #include "dlg_SettingsOptions.h"
 
@@ -153,7 +155,7 @@ bool DebuggerConfiguration::GetFlag(Flags flag)
             return m_config.ReadBool("do_not_run_debuggee", false);
 
         case PersistDebugElements:
-            return m_config.ReadBool("persist_debug_elements", false);
+            return m_config.ReadBool("persist_debug_elements", true);
 
         default:
             return false;
@@ -193,19 +195,166 @@ void DebuggerConfiguration::SetFlag(Flags flag, bool value)
 
 wxString DebuggerConfiguration::GetDAPExecutable(bool expandMacro)
 {
+    // LogManager *pLogMgr = Manager::Get()->GetLogManager();
+    // pLogMgr->DebugLog(wxString::Format("DebuggerConfiguration::GetDAPExecutable : Line %d", __LINE__));
     wxString result = m_config.Read("executable_path", wxEmptyString);
+    // pLogMgr->DebugLog(wxString::Format("DebuggerConfiguration::GetDAPExecutable : %s  (Line %d)", result, __LINE__));
 
-    if (expandMacro)
+    if (result.IsEmpty())
     {
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(result);
+        result = cbDetectDebuggerExecutable(wxEmptyString, "lldb-vscode");
+    }
+    else
+    {
+        if (expandMacro)
+        {
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(result);
+        }
+
+        // pLogMgr->DebugLog(wxString::Format("GetDAPExecutable : %s  (Line %d)", result, __LINE__));
     }
 
-    return !result.empty() ? result : cbDetectDebuggerExecutable("lldb-vscode");
+    // pLogMgr->DebugLog(wxString::Format("GetDAPExecutable : %s  (Line %d)", result, __LINE__));
+
+    if (result.IsEmpty() || !wxFileExists(result))
+    {
+        result = cbDetectDebuggerExecutable(wxEmptyString, "lldb-vscode");
+
+        // pLogMgr->DebugLog(wxString::Format("GetDAPExecutable : %s  (Line %d)", result, __LINE__));
+        if (result.IsEmpty())
+        {
+            if (platform::windows)
+            {
+                wxString fullFileName  = "C:\\msys64\\mingw64\\bin\\lldb-vscode.exe";
+
+                if (wxFileExists(fullFileName))
+                {
+                    result = fullFileName;
+                }
+                else
+                {
+                    fullFileName  = "C:\\msys64\\clang64\\bin\\lldb-vscode.exe";
+
+                    if (wxFileExists(fullFileName))
+                    {
+                        result = fullFileName;
+                    }
+                    else
+                    {
+                        fullFileName  = "C:\\msys64\\mingw32\\bin\\lldb-vscode.exe";
+
+                        if (wxFileExists(fullFileName))
+                        {
+                            result = fullFileName;
+                        }
+                        else
+                        {
+                            fullFileName  = "C:\\msys64\\clang32\\bin\\lldb-vscode.exe";
+
+                            if (wxFileExists(fullFileName))
+                            {
+                                result = fullFileName;
+                            }
+                            else
+                            {
+                                fullFileName  = "C:\\msys64";
+
+                                if (wxDirExists(fullFileName))
+                                {
+                                    result = fullFileName;
+                                }
+                                else
+                                {
+                                    fullFileName = wxEmptyString;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (platform::Linux)
+            {
+                wxString fullFileName  = L"/usr/bin/lldb-vscode-14";
+
+                if (wxFileExists(fullFileName))
+                {
+                    result = fullFileName;
+                }
+                else
+                {
+                    fullFileName  = L"/usr/bin/lldb-vscode-13";
+
+                    if (wxFileExists(fullFileName))
+                    {
+                        result = fullFileName;
+                    }
+                    else
+                    {
+                        fullFileName  = L"/usr/bin/lldb-vscode-12";
+
+                        if (wxFileExists(fullFileName))
+                        {
+                            result = fullFileName;
+                        }
+                        else
+                        {
+                            fullFileName  = L"/usr/bin/";
+
+                            if (wxDirExists(fullFileName))
+                            {
+                                result = fullFileName;
+                            }
+                            else
+                            {
+                                fullFileName = wxEmptyString;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (platform::macosx)
+            {
+                // pLogMgr->DebugLog(wxString::Format("GetDAPExecutable : (Line %d)", __LINE__));
+                wxString fullFileName  = "/usr/local/opt/llvm/bin/lldb-vscode";
+
+                if (wxFileExists(fullFileName))
+                {
+                    result = fullFileName;
+                    // pLogMgr->DebugLog(wxString::Format("GetDAPExecutable : %s  (Line %d)", result, __LINE__));
+                }
+                else
+                {
+                    fullFileName  = "/usr/local/Cellar/llvm";
+
+                    if (wxDirExists(fullFileName))
+                    {
+                        result = fullFileName;
+                        // pLogMgr->DebugLog(wxString::Format("GetDAPExecutable : %s  (Line %d)", result, __LINE__));
+                    }
+                    else
+                    {
+                        result = wxEmptyString;
+                    }
+                }
+            }
+        }
+    }
+
+    // pLogMgr->DebugLog(wxString::Format("GetDAPExecutable : %s  (Line %d)", result, __LINE__));
+    return result;
 }
 
 wxString DebuggerConfiguration::GetDAPPortNumber()
 {
-    wxString result = m_config.Read("port_number", wxEmptyString);
+    wxString result = m_config.Read("port_number", "12345");
+
+    if (result.empty())
+    {
+        result = "12345";
+    }
+
     return result;
 }
 

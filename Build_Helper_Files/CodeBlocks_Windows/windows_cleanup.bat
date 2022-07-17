@@ -70,6 +70,7 @@ if exist "wxwin.m4"                 del /Q "wxwin.m4"
 if exist "zmake.m4"                 del /Q "zmake.m4"
 if exist ".\src\include\config.h"    del /Q ".\src\include\config.h"
 if exist ".\src\include\config.h.in" del /Q ".\src\include\config.h.in"
+if exist ".\src\include\config.h.in~" del /Q ".\src\include\config.h.in~"
 if exist ".\src\include\stamp-h1"    del /Q ".\src\include\stamp-h1"
 if exist ".\src\src\codeblocks"      del /Q ".\src\src\codeblocks"
 

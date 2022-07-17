@@ -529,7 +529,9 @@ echo
 
 read -r -p 'Would you like to run Code::Blocks? ( type "y" for yes or "n" for no ): '
 if [ "${REPLY}" == 'y' ] || [ "${REPLY}" == 'Y' ]; then
-    sh -c "${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}"
+    export LD_LIBRARY_PATH=${CB_DEVEL_DIR}
+    xfce4-terminal -e "${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}"
 fi
 
 cd ${InitialDir}
+

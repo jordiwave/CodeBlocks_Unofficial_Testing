@@ -14,7 +14,7 @@ if [ -d "$CB_EXE_BUILD_ROOT_DIR" ]; then
     echo CB exe: "$PWD/$CB_EXE_BUILD_ROOT_DIR/codeblocks"
 
     cd $CB_EXE_BUILD_ROOT_DIR
-    ./codeblocks -v
+    ./codeblocks --verbose --debug-log --multiple-instance --personality=debuging
 else
     echo ERROR: Cannot find CB root dir: "$PWD/$CB_EXE_BUILD_ROOT_DIR"
 fi

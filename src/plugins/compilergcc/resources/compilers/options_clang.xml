@@ -257,7 +257,7 @@
     </if>
     <else>
 		<if platform="macosx">
-			<Debugger name="executable_path"   	value="lldb-vscode"/> 	<!-- MACOS:: /usr/local/Cellar/llvm/14.0.6/bin/lldb-vscode -port 12345  -->
+			<Debugger name="executable_path"   	value="lldb-vscode"/> 	<!-- MACOS:: /usr/local/opt/llvm/bin/lldb-vscode -port 12345  -->
 		</if>
 		<else>
 			<Debugger name="executable_path"   	value="lldb-vscode"/>	<!-- Linux: /usr/bin/lldb-vscode-14 -port 12345  -->

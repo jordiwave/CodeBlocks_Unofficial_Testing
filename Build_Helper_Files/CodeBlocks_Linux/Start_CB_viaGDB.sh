@@ -70,6 +70,6 @@ fi
 
 export LD_LIBRARY_PATH=$CB_DEV_DIR
 cd $CB_DEV_DIR
-gdb $CB_EXE
+gdb $CB_EXE  --verbose --debug-log  --multiple-instance --personality=debuging
 
 cd $CurrentDir

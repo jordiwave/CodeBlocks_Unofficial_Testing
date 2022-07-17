@@ -165,16 +165,18 @@ FindReplaceDlg::FindReplaceDlg(wxWindow * parent, const wxString & initial, bool
     XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_hidden"), false));
     wxChoice * chProject = XRCCTRL(*this, "chProject", wxChoice);
     wxChoice * chTarget = XRCCTRL(*this, "chTarget", wxChoice);
+    chProject->Freeze();
+    const unsigned int numProjects = pa->size();
 
-    for (unsigned int i = 0; i < pa->size(); ++i)
+    for (unsigned int i = 0; i < numProjects; ++i)
     {
-        chProject->AppendString((*pa)[i]->GetTitle());
+        chProject->Append((*pa)[i]->GetTitle());
 
         if ((*pa)[i] == active_project)
         {
             chProject->SetSelection(i);
-            chTarget->Clear();
-            chTarget->AppendString(_("All project files"));
+            chTarget->Freeze();
+            chTarget->Append(_("All project files"));
             const bool selectScopeAll = cfg->ReadBool(CONF_GROUP _T("/target_scope_all"), true);
             const int targetCount = active_project->GetBuildTargetsCount();
 
@@ -205,9 +207,12 @@ FindReplaceDlg::FindReplaceDlg(wxWindow * parent, const wxString & initial, bool
 
                 chTarget->Enable(false);
             }
+
+            chTarget->Thaw();
         }
     }
 
+    chProject->Thaw();
     wxRadioBox * rbScope = XRCCTRL(*this, "rbScope2", wxRadioBox);
     EditorManager * edMgr = Manager::Get()->GetEditorManager();
     bool filesOpen = false;
@@ -683,14 +688,16 @@ void FindReplaceDlg::OnSearchProject(cb_unused wxCommandEvent & event)
 
     cbProject * active_project = (*Manager::Get()->GetProjectManager()->GetProjects())[i];
     const bool targAll = (chTarget->GetSelection() == 0);
+    chTarget->Freeze();
     chTarget->Clear();
-    chTarget->AppendString(_("All project files"));
+    chTarget->Append(_("All project files"));
 
     for (int j = 0; j < active_project->GetBuildTargetsCount(); ++j)
     {
-        chTarget->AppendString(active_project->GetBuildTarget(j)->GetTitle());
+        chTarget->Append(active_project->GetBuildTarget(j)->GetTitle());
     }
 
+    chTarget->Thaw();
     const int targIdx = chTarget->FindString(active_project->GetActiveBuildTarget(), true);
     chTarget->SetSelection(targAll || targIdx < 0 ? 0 : targIdx);
 }

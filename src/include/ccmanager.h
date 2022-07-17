@@ -55,20 +55,20 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, public wxEvtHandler
          * If the editor opened a c/c++ file, then it returns the native c/c++ ccPlugin.
          * @param ed input editor, uses active editor if one is not passed; has (minimal) cache optimization
          */
-        cbCodeCompletionPlugin* GetProviderFor(cbEditor* ed = nullptr);
+        cbCodeCompletionPlugin * GetProviderFor(cbEditor * ed = nullptr);
 
         /** Register a new set of characters that, when typed, invoke calltip requests.
          *
          * Use this if the default set is not appropriate.
          */
-        void RegisterCallTipChars(const wxString& chars, cbCodeCompletionPlugin* registrant);
+        void RegisterCallTipChars(const wxString & chars, cbCodeCompletionPlugin * registrant);
 
 
         /** Register a new set of characters that, when typed, auto-launch codecomplete requests.
          *
          * Use this if the default set is not appropriate.
          */
-        void RegisterAutoLaunchChars(const wxString& chars, cbCodeCompletionPlugin* registrant);
+        void RegisterAutoLaunchChars(const wxString & chars, cbCodeCompletionPlugin * registrant);
 
         /** Let CCManager know that new results are available from cbCodeCompletionPlugin::GetDocumentation(). */
         void NotifyDocumentation();
@@ -76,7 +76,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, public wxEvtHandler
         void NotifyPluginStatus();
 
         /** If for some reason you *need* to use wxScintilla::AutoCompShow(), call this instead so CCManager does not step on you. */
-        void InjectAutoCompShow(int lenEntered, const wxString& itemList);
+        void InjectAutoCompShow(int lenEntered, const wxString & itemList);
 
         /** Used by cbStyledTextCtrl to process ArrowUp and ArrowDown key press.
          *
@@ -91,71 +91,71 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, public wxEvtHandler
         ~CCManager() override;
 
         /** Event handler to list the suggestion, when a user press Ctrl-space (by default). */
-        void OnCompleteCode(CodeBlocksEvent& event);
+        void OnCompleteCode(CodeBlocksEvent & event);
 
         /** Event handler to avoid tooltips getting stuck active. */
-        void OnDeactivateApp(CodeBlocksEvent& event);
+        void OnDeactivateApp(CodeBlocksEvent & event);
         /** Event handler to avoid tooltips getting stuck active. */
-        void OnDeactivateEd(CodeBlocksEvent& event);
+        void OnDeactivateEd(CodeBlocksEvent & event);
         /** Event handler to avoid tooltips getting stuck active. */
-        void OnEditorOpen(CodeBlocksEvent& event);
+        void OnEditorOpen(CodeBlocksEvent & event);
         /** Event handler to avoid tooltips getting stuck active. */
-        void OnEditorClose(CodeBlocksEvent& event);
+        void OnEditorClose(CodeBlocksEvent & event);
 
         /** Hook to the editor.
          *
          * This is used so that we know some specific chars were entered, then we can decide
          * whether it time to show a calltip or suggestion list.
          */
-        void OnEditorHook(cbEditor* ed, wxScintillaEvent& event);
+        void OnEditorHook(cbEditor * ed, wxScintillaEvent & event);
 
         /** Mouse hover event. */
-        void OnEditorTooltip(CodeBlocksEvent& event);
+        void OnEditorTooltip(CodeBlocksEvent & event);
 
         /** Event handler to show the call tip, when user press Ctrl-Shift-Space. */
-        void OnShowCallTip(CodeBlocksEvent& event);
+        void OnShowCallTip(CodeBlocksEvent & event);
 
         /** Event handler to show documentation, when user changes autocomplete selection. */
-        void OnAutocompleteSelect(wxListEvent& event);
+        void OnAutocompleteSelect(wxListEvent & event);
 
         /** Event handler to tear down documentation, when autocomplete closes. */
-        void OnAutocompleteHide(wxShowEvent& event);
+        void OnAutocompleteHide(wxShowEvent & event);
 
         /** Defer showing the calltip to avoid a crash issue.
          *
          * Launching this event directly seems to be a candidate for race condition
          * and crash in OnShowCallTip() so we attempt to serialize it.
          */
-        void OnDeferredCallTipShow(wxCommandEvent& event);
+        void OnDeferredCallTipShow(wxCommandEvent & event);
 
         /** Defer canceling the calltip to avoid a crash issue. @see CCManager::OnDeferredCallTipShow */
-        void OnDeferredCallTipCancel(wxCommandEvent& event);
+        void OnDeferredCallTipCancel(wxCommandEvent & event);
 
 #ifdef __WXMSW__
         /** Intercept cbStyledTextCtrl scroll events and forward to autocomplete/documentation popups. */
-        void OnPopupScroll(wxMouseEvent& event);
+        void OnPopupScroll(wxMouseEvent & event);
 #endif // __WXMSW__
 
         /** A link is clicked in the document window. */
-        void OnHtmlLink(wxHtmlLinkEvent& event);
+        void OnHtmlLink(wxHtmlLinkEvent & event);
 
         /** Grouped event handler for several timers. */
-        void OnTimer(wxTimerEvent& event);
+        void OnTimer(wxTimerEvent & event);
 
         /** Handle the CC related menu click. */
-        void OnMenuSelect(wxCommandEvent& event);
+        void OnMenuSelect(wxCommandEvent & event);
 
         /** CC launched in the same state as last run, display via cached data. */
-        void DoBufferedCC(cbStyledTextCtrl* stc);
+        void DoBufferedCC(cbStyledTextCtrl * stc);
 
         /** Hide the documentation popup. */
         void DoHidePopup();
 
         /** Show the documentation popup. */
-        void DoShowDocumentation(cbEditor* ed);
+        void DoShowDocumentation(cbEditor * ed);
 
         /** Update which tip to show next and where to show it. */
-        void DoUpdateCallTip(cbEditor* ed);
+        void DoUpdateCallTip(cbEditor * ed);
 
         /** User click the next or previous small button of the tip window. */
         enum Direction { Previous, Next };
@@ -164,12 +164,12 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, public wxEvtHandler
         void AdvanceTip(Direction direction);
 
         /** Format tips by breaking long lines at (hopefully) logical places. */
-        void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
+        void DoShowTips(const wxStringVec & tips, cbStyledTextCtrl * stc, int pos, int argsPos, int hlStart, int hlEnd);
 
         /** Code completion as just insert some text in the editor, ask the smart indent plugin to adjust the indent. */
-        void CallSmartIndentCCDone(cbEditor* ed);
+        void CallSmartIndentCCDone(cbEditor * ed);
 
-        typedef std::map< cbCodeCompletionPlugin*, std::set<wxChar> > CCPluginCharMap;
+        typedef std::map< cbCodeCompletionPlugin *, std::set<wxChar> > CCPluginCharMap;
         CCPluginCharMap m_CallTipChars;    //!< Chars each plugin is interested in for calltip state.
         CCPluginCharMap m_AutoLaunchChars; //!< Chars each plugin is interested in for autocomplete.
         int m_EditorHookID;
@@ -194,22 +194,22 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, public wxEvtHandler
         /** a handle to the autocomplete list window created by (wx)scintilla, needed under Windows
          * to determine its dimensions (so the scroll event can be sent to it, if relevant)
          */
-        wxListView* m_pAutocompPopup;
+        wxListView * m_pAutocompPopup;
 #endif // __WXMSW__
 
-        cbEditor* m_pLastEditor; //!< Last editor operated on.
-        cbCodeCompletionPlugin* m_pLastCCPlugin; //!< The plugin handling m_pLastEditor.
+        cbEditor * m_pLastEditor; //!< Last editor operated on.
+        cbCodeCompletionPlugin * m_pLastCCPlugin; //!< The plugin handling m_pLastEditor.
 
         /** Container for documentation popup.
          * the window for the doxygen popup, with properties so it is always on top,
          * but cannot be focused.
          */
-        UnfocusablePopupWindow* m_pPopup;
+        UnfocusablePopupWindow * m_pPopup;
 
         /** Documentation popup.
          * it is the rendered doxygen documentation to display in the popup
          */
-        wxHtmlWindow* m_pHtml;
+        wxHtmlWindow * m_pHtml;
 
         struct LastACLaunchState
         {

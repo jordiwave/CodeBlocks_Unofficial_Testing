@@ -944,12 +944,10 @@ void MainFrame::CreateIDE()
     // All message posted before this call are either lost or sent to stdout/stderr.
     // On windows stdout and stderr aren't accessible.
     SetupGUILogging(uiSize16);
-    {
-        wxString msg = wxString::Format(_("Loaded config file '%s' (personality: '%s')"),
-                                        CfgMgrBldr::Get()->GetConfigFile(),
-                                        Manager::Get()->GetPersonalityManager()->GetPersonality());
-        Manager::Get()->GetLogManager()->Log(msg);
-    }
+    wxString msg = wxString::Format(_("Loaded config file '%s' (personality: '%s')"),
+                                    CfgMgrBldr::Get()->GetConfigFile(),
+                                    Manager::Get()->GetPersonalityManager()->GetPersonality());
+    Manager::Get()->GetLogManager()->Log(msg);
     SetupDebuggerUI();
     {
         // Setup the art provider with the images stored in manager_resources.zip

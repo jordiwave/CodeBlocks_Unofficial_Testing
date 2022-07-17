@@ -9,7 +9,7 @@ set WX_DIR_VERSION=32
 :WX_DIR_VERSION_Okay
 
 if "%GITHUB_ACTIONS%" == "true" (
-    "C:\Program Files (x86)\NSIS\makensis.exe" "/DBUILD_TYPE=64" "/DNIGHTLY_BUILD_SVN=%NIGHTLY_BUILD_SVN%" "/DWXVERSION=WX_%DIR_VERSION%" "Installer_NSIS_Simple.nsi"
+    "C:\Program Files (x86)\NSIS\makensis.exe" "/DBUILD_TYPE=64" "/DNIGHTLY_BUILD_SVN=%NIGHTLY_BUILD_SVN%" "/DWXVERSION=%WX_DIR_VERSION%" "Installer_NSIS_Simple.nsi"
 ) else (
-    "C:\Program Files (x86)\NSIS\makensis.exe" "/DBUILD_TYPE=64" "/DNIGHTLY_BUILD_SVN=%NIGHTLY_BUILD_SVN%" "/DWXVERSION=WX_%DIR_VERSION%" "Installer_NSIS_UMUI.nsi"
+    "C:\Program Files (x86)\NSIS\makensis.exe" "/DBUILD_TYPE=64" "/DNIGHTLY_BUILD_SVN=%NIGHTLY_BUILD_SVN%" "/DWXVERSION=%WX_DIR_VERSION%" "Installer_NSIS_UMUI.nsi"
 )

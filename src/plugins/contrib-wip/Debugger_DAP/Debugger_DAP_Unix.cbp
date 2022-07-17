@@ -50,7 +50,7 @@
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
 			<Add option="`pkg-config --libs codeblocks`" />
 			<Add library="codeblocks" />
-			<Add library="debugger_WXDAP" />
+			<Add library="debugger_wxdap" />
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="resources/breakpoints_DAP_dlg.xrc" />

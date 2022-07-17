@@ -365,7 +365,7 @@ ${!defineifexist} DEBUGGER_DAP_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\debugge
 
 ${!defineifexist} PRETTYPRINTERS_FOUND          "${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py"
 ${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      "${CB_BASE}\libcodeblocks.dll"
-${!defineifexist} DEBUGGER_WXDAP_DLL_FOUND      "${CB_BASE}\debugger_WXDAP.dll"
+${!defineifexist} DEBUGGER_WXDAP_DLL_FOUND      "${CB_BASE}\debugger_wxdap.dll"
 
 # Reserved Files
 ${!defineifexist} RESERVE_UNICODE_FOUND         "${NSISDIR}\Plugins\unicode\AdvSplash.dll"
@@ -493,7 +493,7 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 !endif
 !ifdef DEBUGGER_WXDAP_DLL_FOUND        
             # wxWidget Debugger Adapter Protocol generic DLL
-            File ${CB_BASE}\debugger_WXDAP.dll
+            File ${CB_BASE}\debugger_wxdap.dll
 !endif
 
 
@@ -3182,7 +3182,7 @@ Section "-un.Core Files (required)" UNSEC_CORE
 !endif
 !ifdef DEBUGGER_WXDAP_DLL_FOUND        
     # wxWidget Debugger Adapter Protocol generic DLL
-    Delete /REBOOTOK $INSTDIR\debugger_WXDAP.dll
+    Delete /REBOOTOK $INSTDIR\debugger_wxdap.dll
 !endif
 
     # WGET

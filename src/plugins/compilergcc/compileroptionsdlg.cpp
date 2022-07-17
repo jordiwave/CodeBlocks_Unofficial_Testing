@@ -1496,6 +1496,18 @@ void CompilerOptionsDlg::DoSaveCompilerPrograms()
 
     if (m_pProject || !compiler) // no "Programs" page or no compiler
     {
+        LogManager * pLogMgr = Manager::Get()->GetLogManager();
+
+        if (m_pProject)
+        {
+            pLogMgr->DebugLogError(_("DoSaveCompilerPrograms - Cannot save due to m_pProject NOT NULL!"));
+        }
+
+        if (!compiler)
+        {
+            pLogMgr->DebugLogError(_("DoSaveCompilerPrograms - Cannot save due to no compiler!"));
+        }
+
         return;
     }
 

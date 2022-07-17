@@ -26,7 +26,6 @@ Preparations for a release:
     [C::B]\debian\get-orig-source-from-svn
     [C::B]\src\build_tools\Info.plist
     [C::B]\src\src\resources\resources.rc
-    [C::B]src\plugins\codecompletion\codecompletion.doxy
     [C::B]src\plugins\contrib\wxSmith\wxs.doxy
     [C::B]src\sdk.doxy
 

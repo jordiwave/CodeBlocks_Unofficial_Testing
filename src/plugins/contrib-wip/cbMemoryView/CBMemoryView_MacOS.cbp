@@ -36,11 +36,9 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="`/usr/local/bin/pkg-config --cflags codeblocks`" />
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --cflags`" />
 				</Compiler>
 				<Linker>
-					<Add option="`/usr/local/bin/pkg-config --libs codeblocks`" />
 					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --libs`" />
 				</Linker>
 				<ExtraCommands>

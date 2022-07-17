@@ -34,10 +34,9 @@
 			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="`/usr/local/bin/pkg-config --libs codeblocks`" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --toolkit=gtk3 --libs all`" />			
 			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add library="debugger_WXDAP" />
+			<Add library="debugger_wxdap" />
 		</Linker>
 		<!-- Unit filename="manifest.rc" >
 			<Option compilerVar="WINDRES" />

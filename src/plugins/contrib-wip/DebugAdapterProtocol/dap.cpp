@@ -48,7 +48,6 @@ void Initialize()
     REGISTER_CLASS(RunInTerminalRequest);
     REGISTER_CLASS(SourceRequest);
     REGISTER_CLASS(EvaluateRequest);
-
     REGISTER_CLASS(InitializedEvent);
     REGISTER_CLASS(StoppedEvent);
     REGISTER_CLASS(ContinuedEvent);
@@ -59,7 +58,6 @@ void Initialize()
     REGISTER_CLASS(BreakpointEvent);
     REGISTER_CLASS(ProcessEvent);
     REGISTER_CLASS(ModuleEvent);
-
     REGISTER_CLASS(InitializeResponse);
     REGISTER_CLASS(CancelResponse);
     REGISTER_CLASS(ConfigurationDoneResponse);
@@ -80,27 +78,35 @@ void Initialize()
     REGISTER_CLASS(RunInTerminalResponse);
     REGISTER_CLASS(SourceResponse);
     REGISTER_CLASS(EvaluateResponse);
-
     // Needed for windows socket library
     Socket::Initialize();
 }
-ObjGenerator& ObjGenerator::Get()
+ObjGenerator & ObjGenerator::Get()
 {
     static ObjGenerator generator;
     return generator;
 }
 
-ProtocolMessage::Ptr_t ObjGenerator::New(const wxString& type, const wxString& name)
+ProtocolMessage::Ptr_t ObjGenerator::New(const wxString & type, const wxString & name)
 {
-    if(type == "response") {
+    if (type == "response")
+    {
         return New(name, m_responses);
-    } else if(type == "request") {
-        return New(name, m_requests);
-    } else if(type == "event") {
-        return New(name, m_events);
-    } else {
-        return nullptr;
     }
+    else
+        if (type == "request")
+        {
+            return New(name, m_requests);
+        }
+        else
+            if (type == "event")
+            {
+                return New(name, m_events);
+            }
+            else
+            {
+                return nullptr;
+            }
 }
 
 wxString dap::ProtocolMessage::ToString() const
@@ -109,42 +115,49 @@ wxString dap::ProtocolMessage::ToString() const
     return json.ToString(false);
 }
 
-void ObjGenerator::RegisterResponse(const wxString& name, onNewObject func)
+void ObjGenerator::RegisterResponse(const wxString & name, onNewObject func)
 {
     // register new response class
     m_responses.insert({ name, func });
 }
 
-void ObjGenerator::RegisterEvent(const wxString& name, onNewObject func)
+void ObjGenerator::RegisterEvent(const wxString & name, onNewObject func)
 {
     // register new event class
     m_events.insert({ name, func });
 }
 
-void ObjGenerator::RegisterRequest(const wxString& name, onNewObject func)
+void ObjGenerator::RegisterRequest(const wxString & name, onNewObject func)
 {
     // register new request class
     m_requests.insert({ name, func });
 }
 
-ProtocolMessage::Ptr_t ObjGenerator::New(const wxString& name, const unordered_map<wxString, onNewObject>& pool)
+ProtocolMessage::Ptr_t ObjGenerator::New(const wxString & name, const unordered_map<wxString, onNewObject> & pool)
 {
-    const auto& iter = pool.find(name);
-    if(iter == pool.end()) {
+    const auto & iter = pool.find(name);
+
+    if (iter == pool.end())
+    {
         return nullptr;
     }
+
     return iter->second();
 }
 
 ProtocolMessage::Ptr_t dap::ObjGenerator::FromJSON(Json json)
 {
-    if(!json.IsOK()) {
+    if (!json.IsOK())
+    {
         return nullptr;
     }
+
     wxString type = json["type"].GetString();
     wxString command = (type == "event") ? json["event"].GetString() : json["command"].GetString();
     ProtocolMessage::Ptr_t msg = New(type, command);
-    if(!msg) {
+
+    if (!msg)
+    {
         return nullptr;
     }
 
@@ -168,7 +181,7 @@ Json ProtocolMessage::To() const
     return json;
 }
 
-void ProtocolMessage::From(const Json& json)
+void ProtocolMessage::From(const Json & json)
 {
     GET_PROP(seq, Number);
     GET_PROP(type, String);
@@ -186,7 +199,7 @@ Json Request::To() const
     return json;
 }
 
-void Request::From(const Json& json)
+void Request::From(const Json & json)
 {
     PROTOCOL_MSG_FROM();
     GET_PROP(command, String);
@@ -204,10 +217,12 @@ Json CancelRequest::To() const
     return json;
 }
 
-void CancelRequest::From(const Json& json)
+void CancelRequest::From(const Json & json)
 {
     Request::From(json);
-    if(json["arguments"].IsOK()) {
+
+    if (json["arguments"].IsOK())
+    {
         requestId = json["arguments"].GetInteger();
     }
 }
@@ -224,7 +239,7 @@ Json Event::To() const
     return json;
 }
 
-void Event::From(const Json& json)
+void Event::From(const Json & json)
 {
     ProtocolMessage::From(json);
     event = json["event"].GetString();
@@ -244,7 +259,7 @@ Json Response::To() const
     return json;
 }
 
-void Response::From(const Json& json)
+void Response::From(const Json & json)
 {
     ProtocolMessage::From(json);
     GET_PROP(request_seq, Integer);
@@ -263,7 +278,10 @@ Json InitializedEvent::To() const
     return json;
 }
 
-void InitializedEvent::From(const Json& json) { Event::From(json); }
+void InitializedEvent::From(const Json & json)
+{
+    Event::From(json);
+}
 
 // ----------------------------------------
 // ----------------------------------------
@@ -273,7 +291,6 @@ Json StoppedEvent::To() const
 {
     EVENT_TO();
     ADD_BODY();
-
     body.Add("reason", reason);
     body.Add("text", text);
     body.Add("description", description);
@@ -282,7 +299,7 @@ Json StoppedEvent::To() const
     return json;
 }
 
-void StoppedEvent::From(const Json& json)
+void StoppedEvent::From(const Json & json)
 {
     Event::From(json);
     Json body = json["body"];
@@ -306,7 +323,7 @@ Json ContinuedEvent::To() const
     return json;
 }
 
-void ContinuedEvent::From(const Json& json)
+void ContinuedEvent::From(const Json & json)
 {
     Event::From(json);
     Json body = json["body"];
@@ -325,7 +342,7 @@ Json ExitedEvent::To() const
     return json;
 }
 
-void ExitedEvent::From(const Json& json)
+void ExitedEvent::From(const Json & json)
 {
     Event::From(json);
     Json body = json["body"];
@@ -341,7 +358,10 @@ Json TerminatedEvent::To() const
     return json;
 }
 
-void TerminatedEvent::From(const Json& json) { Event::From(json); }
+void TerminatedEvent::From(const Json & json)
+{
+    Event::From(json);
+}
 
 // ----------------------------------------
 // ----------------------------------------
@@ -356,7 +376,7 @@ Json ThreadEvent::To() const
     return json;
 }
 
-void ThreadEvent::From(const Json& json)
+void ThreadEvent::From(const Json & json)
 {
     Event::From(json);
     Json body = json["body"];
@@ -377,7 +397,7 @@ Json OutputEvent::To() const
     return json;
 }
 
-void OutputEvent::From(const Json& json)
+void OutputEvent::From(const Json & json)
 {
     Event::From(json);
     Json body = json["body"];
@@ -395,17 +415,20 @@ Json Source::To() const
     ADD_PROP(name);
 
     // serialise these properties only if they contain values
-    if(!path.empty()) {
+    if (!path.empty())
+    {
         ADD_PROP(path);
     }
 
-    if(sourceReference > 0) {
+    if (sourceReference > 0)
+    {
         ADD_PROP(sourceReference);
     }
+
     return json;
 }
 
-void Source::From(const Json& json)
+void Source::From(const Json & json)
 {
     GET_PROP(name, String);
     GET_PROP(path, String);
@@ -426,7 +449,7 @@ Json StackFrame::To() const
     return json;
 }
 
-void StackFrame::From(const Json& json)
+void StackFrame::From(const Json & json)
 {
     GET_PROP(name, String);
     GET_PROP(id, Integer);
@@ -452,7 +475,7 @@ Json Breakpoint::To() const
     return json;
 }
 
-void Breakpoint::From(const Json& json)
+void Breakpoint::From(const Json & json)
 {
     GET_PROP(id, Integer);
     GET_PROP(verified, Bool);
@@ -464,7 +487,7 @@ void Breakpoint::From(const Json& json)
     READ_OBJ(source);
 }
 
-bool Breakpoint::operator==(const Breakpoint& other) const
+bool Breakpoint::operator==(const Breakpoint & other) const
 {
     return (!source.path.empty() && source.path == other.source.path && line == other.line) ||
            (!source.name.empty() && source.name == other.source.name) ||
@@ -484,7 +507,7 @@ Json BreakpointEvent::To() const
     return json;
 }
 
-void BreakpointEvent::From(const Json& json)
+void BreakpointEvent::From(const Json & json)
 {
     Event::From(json);
     Json body = json["body"];
@@ -508,7 +531,7 @@ Json ProcessEvent::To() const
     return json;
 }
 
-void ProcessEvent::From(const Json& json)
+void ProcessEvent::From(const Json & json)
 {
     Event::From(json);
     Json body = json["body"];
@@ -537,7 +560,7 @@ Json InitializeRequestArguments::To() const
     return json;
 }
 
-void InitializeRequestArguments::From(const Json& json)
+void InitializeRequestArguments::From(const Json & json)
 {
     clientID = json["clientID"].GetString();
     clientName = json["clientName"].GetString();
@@ -560,7 +583,7 @@ Json InitializeRequest::To() const
     return json;
 }
 
-void InitializeRequest::From(const Json& json)
+void InitializeRequest::From(const Json & json)
 {
     Request::From(json);
     arguments.From(json["arguments"]);
@@ -575,7 +598,10 @@ Json InitializeResponse::To() const
     return json;
 }
 
-void InitializeResponse::From(const Json& json) { Response::From(json); }
+void InitializeResponse::From(const Json & json)
+{
+    Response::From(json);
+}
 
 // ----------------------------------------
 // ----------------------------------------
@@ -587,7 +613,10 @@ Json ConfigurationDoneRequest::To() const
     return json;
 }
 
-void ConfigurationDoneRequest::From(const Json& json) { Request::From(json); }
+void ConfigurationDoneRequest::From(const Json & json)
+{
+    Request::From(json);
+}
 
 // ----------------------------------------
 // ----------------------------------------
@@ -598,46 +627,71 @@ Json EmptyAckResponse::To() const
     return json;
 }
 
-void EmptyAckResponse::From(const Json& json) { Response::From(json); }
+void EmptyAckResponse::From(const Json & json)
+{
+    Response::From(json);
+}
 
 // dap::Environment
 Json Environment::To() const
 {
-    switch(format) {
-    case EnvFormat::DICTIONARY: {
-        auto env_dict = Json::CreateObject();
-        for(const auto& vt : vars) {
-            env_dict.Add(vt.first, vt.second);
+    switch (format)
+    {
+        case EnvFormat::DICTIONARY:
+        {
+            auto env_dict = Json::CreateObject();
+
+            for (const auto & vt : vars)
+            {
+                env_dict.Add(vt.first, vt.second);
+            }
+
+            return env_dict;
         }
-        return env_dict;
-    } break;
-    case EnvFormat::LIST: {
-        auto env_arr = Json::CreateArray();
-        for(const auto& vt : vars) {
-            env_arr.Add(vt.first + "=" + vt.second);
+        break;
+
+        case EnvFormat::LIST:
+        {
+            auto env_arr = Json::CreateArray();
+
+            for (const auto & vt : vars)
+            {
+                env_arr.Add(vt.first + "=" + vt.second);
+            }
+
+            return env_arr;
         }
-        return env_arr;
-    } break;
-    case EnvFormat::NONE:
-        return {};
+        break;
+
+        case EnvFormat::NONE:
+            return {};
     }
+
     return {};
 }
 
-void Environment::From(const Json& json)
+void Environment::From(const Json & json)
 {
     vars.clear();
+
     // From() is called when in server mode, i.e. we get to choose which format we accept
     // and we choose to support the LIST format
-    if(!json.IsOK() || !json.IsArray()) {
+    if (!json.IsOK() || !json.IsArray())
+    {
         return;
     }
 
     size_t count = json.GetCount();
-    for(size_t i = 0; i < count; ++i) {
+
+    for (size_t i = 0; i < count; ++i)
+    {
         wxString str = json[i].GetString();
-        if(str.Index('=') == wxString::npos)
+
+        if (str.Index('=') == wxString::npos)
+        {
             continue;
+        }
+
         wxString key = str.BeforeFirst('=');
         wxString value = str.AfterFirst('=');
         vars.insert({ key, value });
@@ -655,13 +709,16 @@ Json LaunchRequestArguments::To() const
     ADD_PROP(args);
     ADD_PROP(cwd);
     auto env_obj = env.To();
-    if(env_obj.IsOK()) {
+
+    if (env_obj.IsOK())
+    {
         json.Add("env", env.To());
     }
+
     return json;
 }
 
-void LaunchRequestArguments::From(const Json& json)
+void LaunchRequestArguments::From(const Json & json)
 {
     GET_PROP(noDebug, Bool);
     GET_PROP(program, String);
@@ -681,7 +738,7 @@ Json LaunchRequest::To() const
     return json;
 }
 
-void LaunchRequest::From(const Json& json)
+void LaunchRequest::From(const Json & json)
 {
     Request::From(json);
     arguments.From(json["arguments"]);
@@ -699,7 +756,7 @@ Json DisconnectRequest::To() const
     return json;
 }
 
-void DisconnectRequest::From(const Json& json)
+void DisconnectRequest::From(const Json & json)
 {
     Request::From(json);
     Json arguments = json["arguments"];
@@ -718,7 +775,7 @@ Json BreakpointLocationsRequest::To() const
     return json;
 }
 
-void BreakpointLocationsRequest::From(const Json& json)
+void BreakpointLocationsRequest::From(const Json & json)
 {
     Request::From(json);
     arguments.From(json["arguments"]);
@@ -739,7 +796,7 @@ Json BreakpointLocationsArguments::To() const
     return json;
 }
 
-void BreakpointLocationsArguments::From(const Json& json)
+void BreakpointLocationsArguments::From(const Json & json)
 {
     source.From(json["source"]);
     line = json["restart"].GetInteger(line);
@@ -761,7 +818,7 @@ Json StepArguments::To() const
     return json;
 }
 
-void StepArguments::From(const Json& json)
+void StepArguments::From(const Json & json)
 {
     threadId = json["threadId"].GetInteger(wxNOT_FOUND);
     singleThread = json["singleThread"].GetBool(singleThread);
@@ -782,7 +839,7 @@ Json BreakpointLocation::To() const
     return json;
 }
 
-void BreakpointLocation::From(const Json& json)
+void BreakpointLocation::From(const Json & json)
 {
     line = json["restart"].GetInteger(line);
     column = json["column"].GetInteger(column);
@@ -802,7 +859,7 @@ Json Thread::To() const
     return json;
 }
 
-void Thread::From(const Json& json)
+void Thread::From(const Json & json)
 {
     id = json["id"].GetInteger(id);
     name = json["name"].GetString();
@@ -818,13 +875,16 @@ Json BreakpointLocationsResponse::To() const
     ADD_BODY();
     // create arr
     ADD_ARRAY(body, "breakpoints");
-    for(const auto& b : breakpoints) {
+
+    for (const auto & b : breakpoints)
+    {
         arr.Add(b.To());
     }
+
     return json;
 }
 
-void BreakpointLocationsResponse::From(const Json& json)
+void BreakpointLocationsResponse::From(const Json & json)
 {
     Response::From(json);
     Json body = json["body"];
@@ -832,7 +892,9 @@ void BreakpointLocationsResponse::From(const Json& json)
     breakpoints.clear();
     size_t size = arr.GetCount();
     breakpoints.reserve(size);
-    for(size_t i = 0; i < size; ++i) {
+
+    for (size_t i = 0; i < size; ++i)
+    {
         BreakpointLocation loc;
         loc.From(arr[i]);
         breakpoints.push_back(loc);
@@ -851,7 +913,7 @@ Json SourceBreakpoint::To() const
     return json;
 }
 
-void SourceBreakpoint::From(const Json& json)
+void SourceBreakpoint::From(const Json & json)
 {
     line = json["line"].GetInteger(line);
     condition = json["condition"].GetString(condition);
@@ -869,7 +931,7 @@ Json FunctionBreakpoint::To() const
     return json;
 }
 
-void FunctionBreakpoint::From(const Json& json)
+void FunctionBreakpoint::From(const Json & json)
 {
     name = json["name"].GetString(name);
     condition = json["condition"].GetString(condition);
@@ -883,21 +945,25 @@ Json SetBreakpointsArguments::To() const
 {
     Json json = Json::CreateObject();
     json.Add("source", source.To());
-
     Json arr = json.AddArray("breakpoints");
-    for(const auto& sb : breakpoints) {
+
+    for (const auto & sb : breakpoints)
+    {
         arr.Add(sb.To());
     }
+
     return json;
 }
 
-void SetBreakpointsArguments::From(const Json& json)
+void SetBreakpointsArguments::From(const Json & json)
 {
     source.From(json["source"]);
     breakpoints.clear();
     Json arr = json["breakpoints"];
     int size = arr.GetCount();
-    for(int i = 0; i < size; ++i) {
+
+    for (int i = 0; i < size; ++i)
+    {
         SourceBreakpoint sb;
         sb.From(arr[i]);
         breakpoints.push_back(sb);
@@ -912,18 +978,23 @@ Json SetFunctionBreakpointsArguments::To() const
 {
     Json json = Json::CreateObject();
     Json arr = json.AddArray("breakpoints");
-    for(const auto& sb : breakpoints) {
+
+    for (const auto & sb : breakpoints)
+    {
         arr.Add(sb.To());
     }
+
     return json;
 }
 
-void SetFunctionBreakpointsArguments::From(const Json& json)
+void SetFunctionBreakpointsArguments::From(const Json & json)
 {
     breakpoints.clear();
     Json arr = json["breakpoints"];
     int size = arr.GetCount();
-    for(int i = 0; i < size; ++i) {
+
+    for (int i = 0; i < size; ++i)
+    {
         FunctionBreakpoint fb;
         fb.From(arr[i]);
         breakpoints.push_back(fb);
@@ -941,7 +1012,7 @@ Json SetBreakpointsRequest::To() const
     return json;
 }
 
-void SetBreakpointsRequest::From(const Json& json)
+void SetBreakpointsRequest::From(const Json & json)
 {
     REQUEST_FROM();
     READ_OBJ(arguments);
@@ -958,7 +1029,7 @@ Json SetFunctionBreakpointsRequest::To() const
     return json;
 }
 
-void SetFunctionBreakpointsRequest::From(const Json& json)
+void SetFunctionBreakpointsRequest::From(const Json & json)
 {
     REQUEST_FROM();
     READ_OBJ(arguments);
@@ -976,7 +1047,7 @@ Json ContinueArguments::To() const
     return json;
 }
 
-void ContinueArguments::From(const Json& json)
+void ContinueArguments::From(const Json & json)
 {
     GET_PROP(threadId, Integer);
     GET_PROP(singleThread, Bool);
@@ -995,7 +1066,7 @@ Json NextArguments::To() const
     return json;
 }
 
-void NextArguments::From(const Json& json)
+void NextArguments::From(const Json & json)
 {
     GET_PROP(threadId, Integer);
     GET_PROP(granularity, String);
@@ -1013,7 +1084,7 @@ Json ContinueRequest::To() const
     return json;
 }
 
-void ContinueRequest::From(const Json& json)
+void ContinueRequest::From(const Json & json)
 {
     REQUEST_FROM();
     READ_OBJ(arguments);
@@ -1029,7 +1100,7 @@ Json StepRequest::To() const
     return json;
 }
 
-void StepRequest::From(const Json& json)
+void StepRequest::From(const Json & json)
 {
     REQUEST_FROM();
     READ_OBJ(arguments);
@@ -1046,7 +1117,7 @@ Json NextRequest::To() const
     return json;
 }
 
-void NextRequest::From(const Json& json)
+void NextRequest::From(const Json & json)
 {
     REQUEST_FROM();
     READ_OBJ(arguments);
@@ -1062,7 +1133,10 @@ Json ThreadsRequest::To() const
     return json;
 }
 
-void ThreadsRequest::From(const Json& json) { REQUEST_FROM(); }
+void ThreadsRequest::From(const Json & json)
+{
+    REQUEST_FROM();
+}
 
 // ----------------------------------------
 // ----------------------------------------
@@ -1076,7 +1150,7 @@ Json ContinueResponse::To() const
     return json;
 }
 
-void ContinueResponse::From(const Json& json)
+void ContinueResponse::From(const Json & json)
 {
     RESPONSE_FROM();
     READ_BODY();
@@ -1093,20 +1167,25 @@ Json SetBreakpointsResponse::To() const
     ADD_BODY();
     // create arr
     ADD_ARRAY(body, "breakpoints");
-    for(const auto& b : breakpoints) {
+
+    for (const auto & b : breakpoints)
+    {
         arr.Add(b.To());
     }
+
     return json;
 }
 
-void SetBreakpointsResponse::From(const Json& json)
+void SetBreakpointsResponse::From(const Json & json)
 {
     RESPONSE_FROM();
     READ_BODY();
     Json arr = body["breakpoints"];
     breakpoints.clear();
     int size = arr.GetCount();
-    for(int i = 0; i < size; ++i) {
+
+    for (int i = 0; i < size; ++i)
+    {
         Breakpoint bp;
         bp.From(arr[i]);
         breakpoints.push_back(bp);
@@ -1123,13 +1202,16 @@ Json ThreadsResponse::To() const
     ADD_BODY();
     // create arr
     ADD_ARRAY(body, "threads");
-    for(const auto& thr : threads) {
+
+    for (const auto & thr : threads)
+    {
         arr.Add(thr.To());
     }
+
     return json;
 }
 
-void ThreadsResponse::From(const Json& json)
+void ThreadsResponse::From(const Json & json)
 {
     RESPONSE_FROM();
     READ_BODY();
@@ -1137,7 +1219,9 @@ void ThreadsResponse::From(const Json& json)
     threads.clear();
     int size = arr.GetCount();
     threads.reserve(size);
-    for(int i = 0; i < size; ++i) {
+
+    for (int i = 0; i < size; ++i)
+    {
         Thread thr;
         thr.From(arr[i]);
         threads.push_back(thr);
@@ -1157,7 +1241,7 @@ Json VariablePresentationHint::To() const
     return json;
 }
 
-void VariablePresentationHint::From(const Json& json)
+void VariablePresentationHint::From(const Json & json)
 {
     kind = json["kind"].GetString();
     visibility = json["visibility"].GetString();
@@ -1179,7 +1263,7 @@ Json Variable::To() const
     return json;
 }
 
-void Variable::From(const Json& json)
+void Variable::From(const Json & json)
 {
     name = json["name"].GetString();
     value = json["value"].GetString();
@@ -1199,7 +1283,10 @@ Json ScopesArguments::To() const
     return json;
 }
 
-void ScopesArguments::From(const Json& json) { frameId = json["frameId"].GetNumber(); }
+void ScopesArguments::From(const Json & json)
+{
+    frameId = json["frameId"].GetNumber();
+}
 
 // ----------------------------------------
 // ----------------------------------------
@@ -1212,7 +1299,7 @@ Json ScopesRequest::To() const
     return json;
 }
 
-void ScopesRequest::From(const Json& json)
+void ScopesRequest::From(const Json & json)
 {
     Request::From(json);
     arguments.From(json["arguments"]);
@@ -1226,19 +1313,24 @@ Json ScopesResponse::To() const
 {
     auto json = Response::To();
     auto arr = json.AddObject("body").AddArray("scopes");
-    for(const auto& scope : scopes) {
+
+    for (const auto & scope : scopes)
+    {
         arr.Add(scope.To());
     }
+
     return json;
 }
 
-void ScopesResponse::From(const Json& json)
+void ScopesResponse::From(const Json & json)
 {
     Response::From(json);
     auto arr = json["body"]["scopes"];
     size_t count = arr.GetCount();
     scopes.reserve(count);
-    for(size_t i = 0; i < count; ++i) {
+
+    for (size_t i = 0; i < count; ++i)
+    {
         Scope s;
         s.From(arr[i]);
         scopes.push_back(s);
@@ -1258,7 +1350,7 @@ Json Scope::To() const
     return json;
 }
 
-void Scope::From(const Json& json)
+void Scope::From(const Json & json)
 {
     name = json["name"].GetString();
     variablesReference = json["variablesReference"].GetInteger();
@@ -1279,7 +1371,7 @@ Json StackTraceArguments::To() const
     return json;
 }
 
-void StackTraceArguments::From(const Json& json)
+void StackTraceArguments::From(const Json & json)
 {
     threadId = json["threadId"].GetInteger();
 #if 0
@@ -1299,7 +1391,10 @@ Json ValueFormat::To() const
     return json;
 }
 
-void ValueFormat::From(const Json& json) { hex = json["hex"].GetBool(); }
+void ValueFormat::From(const Json & json)
+{
+    hex = json["hex"].GetBool();
+}
 
 // ----------------------------------------
 // ----------------------------------------
@@ -1314,7 +1409,7 @@ Json VariablesArguments::To() const
     return json;
 }
 
-void VariablesArguments::From(const Json& json)
+void VariablesArguments::From(const Json & json)
 {
     variablesReference = json["variablesReference"].GetInteger();
     count = json["count"].GetInteger(0);
@@ -1332,7 +1427,7 @@ Json StackTraceRequest::To() const
     return json;
 }
 
-void StackTraceRequest::From(const Json& json)
+void StackTraceRequest::From(const Json & json)
 {
     Request::From(json);
     arguments.From(json["arguments"]);
@@ -1346,20 +1441,25 @@ Json StackTraceResponse::To() const
 {
     auto json = Response::To();
     auto arr = json.AddObject("body").AddArray("stackFrames");
-    for(const auto& sf : stackFrames) {
+
+    for (const auto & sf : stackFrames)
+    {
         arr.Add(sf.To());
     }
+
     return json;
 }
 
-void StackTraceResponse::From(const Json& json)
+void StackTraceResponse::From(const Json & json)
 {
     Response::From(json);
     auto arr = json["body"]["stackFrames"];
     size_t count = arr.GetCount();
     stackFrames.clear();
     stackFrames.reserve(count);
-    for(size_t i = 0; i < count; ++i) {
+
+    for (size_t i = 0; i < count; ++i)
+    {
         StackFrame sf;
         sf.From(arr[i]);
         stackFrames.push_back(sf);
@@ -1377,7 +1477,7 @@ Json VariablesRequest::To() const
     return json;
 }
 
-void VariablesRequest::From(const Json& json)
+void VariablesRequest::From(const Json & json)
 {
     Request::From(json);
     arguments.From(json["arguments"]);
@@ -1391,26 +1491,34 @@ Json VariablesResponse::To() const
 {
     auto json = Response::To();
     auto arr = json.AddObject("body").AddArray("variables");
-    for(const auto& v : variables) {
+
+    for (const auto & v : variables)
+    {
         arr.Add(v.To());
     }
+
     return json;
 }
 
-void VariablesResponse::From(const Json& json)
+void VariablesResponse::From(const Json & json)
 {
     Response::From(json);
     auto arr = json["body"]["variables"];
     size_t count = arr.GetCount();
     variables.reserve(count);
-    for(size_t i = 0; i < count; ++i) {
+
+    for (size_t i = 0; i < count; ++i)
+    {
         Variable v;
         v.From(arr[i]);
         variables.push_back(v);
     }
 }
 
-void PauseArguments::From(const Json& json) { threadId = json["threadId"].GetInteger(threadId); }
+void PauseArguments::From(const Json & json)
+{
+    threadId = json["threadId"].GetInteger(threadId);
+}
 Json PauseArguments::To() const
 {
     auto json = Json::CreateObject();
@@ -1425,13 +1533,13 @@ Json PauseRequest::To() const
     return json;
 }
 
-void PauseRequest::From(const Json& json)
+void PauseRequest::From(const Json & json)
 {
     Request::From(json);
     arguments.From(json["arguments"]);
 }
 
-void RunInTerminalRequestArguments::From(const Json& json)
+void RunInTerminalRequestArguments::From(const Json & json)
 {
     kind = json["kind"].GetString(kind);
     title = json["title"].GetString(title);
@@ -1453,7 +1561,7 @@ Json RunInTerminalRequest::To() const
     return json;
 }
 
-void RunInTerminalRequest::From(const Json& json)
+void RunInTerminalRequest::From(const Json & json)
 {
     Request::From(json);
     arguments.From(json["arguments"]);
@@ -1467,7 +1575,7 @@ Json RunInTerminalResponse::To() const
     return json;
 }
 
-void RunInTerminalResponse::From(const Json& json)
+void RunInTerminalResponse::From(const Json & json)
 {
     RESPONSE_FROM();
     READ_BODY();
@@ -1477,7 +1585,7 @@ void RunInTerminalResponse::From(const Json& json)
 ///
 /// source request + args
 ///
-void SourceArguments::From(const Json& json)
+void SourceArguments::From(const Json & json)
 {
     source.From(json["source"]);
     sourceReference = json["sourceReference"].GetInteger(0);
@@ -1487,13 +1595,16 @@ Json SourceArguments::To() const
 {
     Json json = Json::CreateObject();
     json.Add("source", source.To());
-    if(sourceReference > 0) {
+
+    if (sourceReference > 0)
+    {
         json.Add("sourceReference", sourceReference);
     }
+
     return json;
 }
 
-void SourceRequest::From(const Json& json)
+void SourceRequest::From(const Json & json)
 {
     REQUEST_FROM();
     READ_OBJ(arguments);
@@ -1515,7 +1626,7 @@ Json SourceResponse::To() const
     return json;
 }
 
-void SourceResponse::From(const Json& json)
+void SourceResponse::From(const Json & json)
 {
     RESPONSE_FROM();
     READ_BODY();
@@ -1527,15 +1638,18 @@ Json EvaluateArguments::To() const
 {
     Json json = Json::CreateObject();
     json.Add("expression", expression);
-    if(frameId > 0) {
+
+    if (frameId > 0)
+    {
         json.Add("frameId", frameId);
     }
+
     json.Add("context", context);
     json.Add("format", format.To());
     return json;
 }
 
-void EvaluateArguments::From(const Json& json)
+void EvaluateArguments::From(const Json & json)
 {
     expression = json["expression"].GetString(expression);
     frameId = json["frameId"].GetInteger(wxNOT_FOUND);
@@ -1550,7 +1664,7 @@ Json EvaluateRequest::To() const
     return json;
 }
 
-void EvaluateRequest::From(const Json& json)
+void EvaluateRequest::From(const Json & json)
 {
     REQUEST_FROM();
     READ_OBJ(arguments);
@@ -1566,7 +1680,7 @@ Json EvaluateResponse::To() const
     return json;
 }
 
-void EvaluateResponse::From(const Json& json)
+void EvaluateResponse::From(const Json & json)
 {
     RESPONSE_FROM();
     READ_BODY();
@@ -1575,15 +1689,20 @@ void EvaluateResponse::From(const Json& json)
     GET_BODY_PROP(variablesReference, Number);
 }
 
-void Module::From(const Json& json)
+void Module::From(const Json & json)
 {
     // ID can be number or string
     int nId = json["id"].GetNumber(wxNOT_FOUND);
-    if(nId == wxNOT_FOUND) {
+
+    if (nId == wxNOT_FOUND)
+    {
         id = json["id"].GetString();
-    } else {
+    }
+    else
+    {
         id << nId;
     }
+
     GET_PROP(name, String);
     GET_PROP(path, String);
     GET_PROP(version, String);
@@ -1620,7 +1739,7 @@ Json ModuleEvent::To() const
     return json;
 }
 
-void ModuleEvent::From(const Json& json)
+void ModuleEvent::From(const Json & json)
 {
     Event::From(json);
     Json body = json["body"];

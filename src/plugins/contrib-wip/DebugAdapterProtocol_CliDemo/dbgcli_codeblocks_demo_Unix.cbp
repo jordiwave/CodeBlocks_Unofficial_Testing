@@ -40,7 +40,7 @@
 			<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GLIB) $(#CB_BUILD.PKG_CONFIG_GDK) --libs codeblocks`" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,propgrid`" />
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add library="debugger_WXDAP" />
+			<Add library="debugger_wxdap" />
 		</Linker>
 		<Unit filename="../README.md" />
 		<Unit filename="ConsoleApp.cpp" />

@@ -198,7 +198,6 @@ CfgMgrBldr::CfgMgrBldr() : doc(nullptr), volatile_doc(nullptr), r(false)
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
         doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
         doc->FirstChildElement("CodeBlocksConfig")->SetAttribute("version", CfgMgrConsts::version);
-        Flush();
         return;
     }
 

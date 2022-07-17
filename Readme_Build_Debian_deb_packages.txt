@@ -22,7 +22,7 @@ Requirements:
     1) Optional: A recent Code::Blocks nightly build installed (http://www.codeblocks.org/nightly).
     2) A working GNU GCC C & C++ compiler.
     3) wxWidget and wxGTK3 development environment
-    4) autotools environment (autoconf, automake, libtool, make, etc)
+    4) autotools environment (autoconf, automake, libtool, make, etc) and checkinstall
     5) GTK2 or GTK3 (preferred) development environment
     6) Boost development environment
     7) Hunspell development environment
@@ -30,7 +30,7 @@ Requirements:
     9) Optional: SVN and/or GIT.
     10) Packages needed for building Debian deb files
 
-    DO NOT USE ANY SNAP PACKAGES as the installed packages are sandboxed by default.
+    DO NOT USE ANY SNAP PACKAGES as the installed packages are sand boxed by default.
 
     To install the items above the following are the commands to use for Ubuntu/Xubuntu/Linux Mint:
         # Step 2:
@@ -38,7 +38,7 @@ Requirements:
         # Step 3:
         sudo apt install -y build-essential
         # Step 4:
-        sudo apt install -y libtool automake autoconf
+        sudo apt install -y libtool automake autoconf checkinstall
         # Step 5:
         sudo apt install -y libgtk-3-dev
         # Step 6,7 & 8:

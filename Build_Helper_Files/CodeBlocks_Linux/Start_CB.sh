@@ -51,22 +51,34 @@ fi
 
 if [ -f "${CB_DEV_DIR}/bin/codeblocks" ]; then
     CB_EXE_DIR=${CB_DEV_DIR}/bin
+    CB_EXE_NAME=codeblocks
 fi    
 
 if [ -f "${CB_DEV_DIR}/codeblocks" ]; then
     CB_EXE_DIR=${CB_DEV_DIR}
+    CB_EXE_NAME=codeblocks
 fi    
+
+if [ -f "${CB_DEV_DIR}/CodeBlocks" ]; then
+    CB_EXE_DIR=${CB_DEV_DIR}
+    CB_EXE_NAME=CodeBlocks
+fi 
 
 if [ "${CB_EXE_DIR}"  == "" ]; then
     echo Could not find codeblock exe file in the ${CB_DEV_DIR} directory
     cd ${CurrentDir}
     exit 4
 fi
-echo CodeBlocks exe dir: ${CB_EXE_DIR}
+echo ${CB_EXE_NAME} exe dir: ${CB_EXE_DIR}
 
 cd ${CB_EXE_DIR}
-echo starting: ./codeblocks  -v --prefix ${PWD}
-export LD_LIBRARY_PATH=${PWD}
-./codeblocks -v --prefix ${PWD}
+echo starting: ./${CB_EXE_NAME}  -v --prefix ${PWD}
+#export LD_LIBRARY_PATH=${PWD}
+#export CODEBLOCKS_DATA_DIR=${CB_DEV_DIR}/share/${CB_EXE_NAME}
+
+## ./${CB_EXE_NAME} -v --prefix=${CB_DEV_DIR}/share/${CB_EXE_NAME}
+
+unset LD_LIBRARY_PATH
+./${CB_EXE_NAME} --verbose --debug-log --multiple-instance --personality=debuging
 
 cd ${CurrentDir}

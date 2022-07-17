@@ -33,7 +33,6 @@
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="-std=$(#CB_BUILD.C_STD)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`/usr/local/bin/pkg-config --cflags codeblocks`" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --cflags`" />
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
@@ -49,7 +48,7 @@
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --libs std`" />
 			<Add option="`/usr/local/bin/pkg-config --libs codeblocks`" />
-			<Add library="debugger_WXDAP" />
+			<Add library="debugger_wxdap" />
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="resources/breakpoints_DAP_dlg.xrc" />

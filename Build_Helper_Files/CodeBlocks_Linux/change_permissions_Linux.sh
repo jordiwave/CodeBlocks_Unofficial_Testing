@@ -18,7 +18,7 @@ fi
 
 # -----------------------------------------------------------------------------
 
-CurrentDir=$PWD
+CurrentDir=${PWD}
 
 # -----------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@ if [ ! -f "bootstrap" ]; then
             cd ../..
         else
             echo Could not find bootstrap or ../bootstrap or ../../bootstrap
-            cd $CurrentDir
+            cd ${CurrentDir}
             exit 2
         fi
     fi
@@ -41,67 +41,70 @@ fi
 case "$(uname)" in
   Darwin*)
     echo "Mac OSX is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
   Linux*)
     OSDetected="Linux"
     ;;
   MINGW* | msys* | cygwin* | WindowsNT)
     echo "Windows is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
   AIX*)
     echo "AIX is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
   bsd*)
     echo "BSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
   bsd*)
     echo "BSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
   FreeBSD*)
     echo "FreeBSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
   solaris*)
     echo "SOLARIS is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
   SunOS*)
     echo "SunOS is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
   *)
     echo "unknown: $OSTYPE is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 1
     ;;
 esac
 
 echo
-echo "CurrentDir C::B root is: " $PWD
+echo "C::B CurrentDir is: " ${PWD}
 echo
 
-chmod -R 775 bootstrap
-chmod -R 775 wx-config-cb-win64
+find . -maxdepth 1 -type f -name "*"    | xargs chmod 664 
+find . -maxdepth 1 -type f -name "*.sh" | xargs chmod 764
+grep -l "\/bin\/bash" * 2>/dev/null     | xargs chmod 764
+
 if [ -d "debian" ] ; then 
     # For Linux Debian DEB build cleanup
     cd debian
-    find . -type f -name "*"       | xargs chmod 664
-    find . -type d -name "*"       | xargs chmod +775
+    echo "Now changing permissions in: " ${PWD}
+    find . -maxdepth 1 -type f -name "*"    | xargs chmod 664
+    find . -maxdepth 1 -type f -name "*.sh" | xargs chmod 764
+    grep -l "\/bin\/bash" * 2>/dev/null     | xargs chmod 764
     cd ..
 fi
-find . -type f -name "*.sh"    | xargs chmod -R 775
 
-cd $CurrentDir
+cd ${CurrentDir}

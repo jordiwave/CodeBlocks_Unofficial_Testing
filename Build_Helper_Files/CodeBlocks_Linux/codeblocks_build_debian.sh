@@ -65,7 +65,7 @@ echo "|     Code::Blocks build script running on " $(uname) "    |"
 echo "+-----------------------------------------------------+"
 echo
 
-CurrentDir=$PWD
+CurrentDir=${PWD}
 
 # -----------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ if [ ! -f "bootstrap" ]; then
             cd ../..
         else
             echo Could not find bootstrap or ../bootstrap or ../../bootstrap
-            cd $CurrentDir
+            cd ${CurrentDir}
             exit 2
         fi
     fi
@@ -88,56 +88,57 @@ fi
 case "$(uname)" in
   Darwin*)
     echo "Mac OSX is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   Linux*)
     OSDetected="Linux"
     ;;
   MINGW* | msys* | cygwin* | WindowsNT)
     echo "Windows is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   AIX*)
     echo "AIX is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   bsd*)
     echo "BSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   bsd*)
     echo "BSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   FreeBSD*)
     echo "FreeBSD is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   solaris*)
     echo "SOLARIS is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   SunOS*)
     echo "SunOS is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
   *)
     echo "unknown: $OSTYPE is not supported"
-    cd $CurrentDir
-    exit 0
+    cd ${CurrentDir}
+    exit 3
     ;;
 esac
 
-echo "CurrentDir C::B root is: " $PWD
+echo "CurrentDir C::B root is: " ${PWD}
 echo
+
 # --------------------------------------------------------------------------------------
 # The following is to enable sending the output of this script to the terminal and to the 
 # file specified:
@@ -156,7 +157,7 @@ COLOR_REVERT="\033[0m"
 # -----------------------------------------------------------------------------
 
 start_datetime=$(date +%s)
-failureDetected="no"
+FailureDetected="no"
 echo "Start at                                    : "$(date +"%d-%b-%Y %T")
 
 # -----------------------------------------------------------------------------
@@ -213,19 +214,19 @@ if ./update_revision.sh > z_update_revision_result.txt 2>&1 ; then
                 echo -e "\\r${CHECK_MARK}dpkg-buildpackage -us -uc.... finish at : "$(date +"%d-%b-%Y %T")" , delta : "$(date -d "1970-01-01 + $stepDeltaTime seconds" "+%H:%M:%S")" ,    duration : "$(date -d "1970-01-01 + $durationTotalTime seconds" "+%H:%M:%S")
             else
                 echo -e "\\r${CROSS_MARK}dpkg-buildpackage -us -uc failed"
-                failureDetected="yes"
+                FailureDetected="yes"
             fi
         else
             echo -e "\\r${CROSS_MARK}./debian/setup_control.sh failed"
-            failureDetected="yes"
+            FailureDetected="yes"
         fi
     else
         echo -e "\\r${CROSS_MARK}Bootstrap failed"
-        failureDetected="yes"
+        FailureDetected="yes"
     fi
 else
     echo -e "\\r${CROSS_MARK}./update_revision.sh failed"
-    failureDetected="yes"
+    FailureDetected="yes"
 fi
 
 echo "Finished at                                : "$(date +"%d-%b-%Y %T")
@@ -240,7 +241,7 @@ echo "|                                                           |"
 echo "+-----------------------------------------------------------+"
 echo
 
-if test "x$failureDetected" = "xyes" ; then
+if test "x${FailureDetected}" = "xyes" ; then
     echo
     echo -e "\\r${RED_START}***************************************************************************************************"
     echo -e "\\r${RED_START}*                                                                                                 *"
@@ -254,6 +255,8 @@ if test "x$failureDetected" = "xyes" ; then
     echo -e "\\r${RED_START}*                                                                                                 *"
     echo -e "\\r${RED_START}***************************************************************************************************"
     echo -e "\\r${COLOR_REVERT} "
+    cd ${CurrentDir}
+    exit 4
 else
     echo
     echo -e "\\r${GREEN_START}+--------------------------------------------------------------------------------------+"
@@ -268,8 +271,7 @@ else
     echo -e "\\r${GREEN_START}|                                                                                      |"
     echo -e "\\r${GREEN_START}+--------------------------------------------------------------------------------------+"
     echo -e "\\r${COLOR_REVERT} "
+    cd ${CurrentDir}
+    exit 0
 fi
-echo
 
-cd $CurrentDir
-exit 0

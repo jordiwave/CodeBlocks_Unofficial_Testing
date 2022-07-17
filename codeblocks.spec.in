@@ -286,7 +286,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libautosave.so
 %{plugindir}/libclangd_client.so
 %{plugindir}/libclasswizard.so
-%{plugindir}/libcodecompletion.so
+%{plugindir}/libclangd_client.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
 %{plugindir}/libdefaultmimehandler.so
@@ -318,7 +318,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/autosave.zip
 %{pkgdatadir}/clangd_client.zip
 %{pkgdatadir}/classwizard.zip
-%{pkgdatadir}/codecompletion.zip
 %{pkgdatadir}/compiler.zip
 %{pkgdatadir}/debugger.zip
 %{pkgdatadir}/defaultmimehandler.zip

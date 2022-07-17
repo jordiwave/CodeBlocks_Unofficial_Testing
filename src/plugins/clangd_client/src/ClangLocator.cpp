@@ -10,24 +10,25 @@
 #include <wx/tokenzr.h>
 #if defined(__WXMSW__)
     #include <wx/msw/registry.h>
-#endif // __WXMSW__
-#include "globals.h"
-#include "manager.h"
-#include "logmanager.h"
-#include "configmanager.h"
-
-#if defined(_WIN32)
     #include "winprocess/asyncprocess/procutils.h"
 #else
     #include "procutils.h"
-#endif
+#endif // __WXMSW__
 
+#include "globals.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "cbproject.h"
+#include "compiler.h"
+#include "compilerfactory.h"
+#include "configmanager.h"
+#include "projectmanager.h"
 
 // ----------------------------------------------------------------------------
 namespace   //anonymous
 // ----------------------------------------------------------------------------
 {
-#if defined(_WIN32) //Thanks Andrew
+#if defined(_WIN32)
     wxString clangdexe("clangd.exe");
     wxString LLVM_Dirmaybe = "c:\\program files\\LLVM\\bin";
 #else
@@ -159,30 +160,93 @@ wxString ClangLocator::Locate_ClangdDir()
 // ----------------------------------------------------------------------------
 {
     wxFileName fnClangdPath;
-    wxArrayString clangLocations;
     LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    // Set filename to find
+    fnClangdPath.SetFullName(clangdexe);
     // See if executable dir contains ...lsp/clangd.*
-    ConfigManager * pCfgMgr = Manager::Get()->GetConfigManager("app");
-    wxString execDir = pCfgMgr->GetExecutableFolder();
+    wxString execDir  = Manager::Get()->GetConfigManager("app")->GetExecutableFolder();
+    fnClangdPath.SetPath(execDir + fileSep + "lsp");
 
-    if (wxFileExists(execDir + fileSep + "lsp" + fileSep + clangdexe))
+    if (fnClangdPath.FileExists())
     {
-        return execDir + fileSep + "lsp";
+        pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), execDir + fileSep + "lsp"));
     }
 
-    // Try to find clang from the registry
-    fnClangdPath.SetPath(MSWLocate());
-    fnClangdPath.SetName(clangdexe);
-
-    if (fnClangdPath.Exists())
+    if (!fnClangdPath.FileExists())
     {
-        return fnClangdPath.GetPath();
+        // Check Project default compiler path to search if a project is loaded
+        cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+        if (pProject)
+        {
+            // First check project global compiler is valid
+            int compilerIdx = CompilerFactory::GetCompilerIndex(pProject->GetCompilerID());
+
+            if (compilerIdx != -1)
+            {
+                Compiler * prjCompiler = CompilerFactory::GetCompiler(compilerIdx);
+
+                if (prjCompiler)
+                {
+                    wxString mPath = prjCompiler->GetMasterPath();
+
+                    if (!mPath.empty() && wxDirExists(mPath))
+                    {
+                        fnClangdPath.SetPath(mPath);
+
+                        if (fnClangdPath.FileExists())
+                        {
+                            pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                        }
+                        else
+                        {
+                            fnClangdPath.SetPath(mPath + fileSep + "bin");
+
+                            if (fnClangdPath.FileExists())
+                            {
+                                pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (!fnClangdPath.FileExists())
+    {
+        // Check default compiler path to search
+        Compiler * defaultCompiler = CompilerFactory::GetDefaultCompiler();
+
+        if (defaultCompiler)
+        {
+            wxString mPath = defaultCompiler->GetMasterPath();
+
+            if (!mPath.empty() && wxDirExists(mPath))
+            {
+                fnClangdPath.SetPath(mPath);
+
+                if (fnClangdPath.FileExists())
+                {
+                    pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                }
+                else
+                {
+                    fnClangdPath.SetPath(mPath + fileSep + "bin");
+
+                    if (fnClangdPath.FileExists())
+                    {
+                        pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                    }
+                }
+            }
+        }
     }
 
     // Try to find clangd from the environment path
-    if (fnClangdPath.GetPath().empty())
+    if (!fnClangdPath.FileExists())
     {
-        fnClangdPath.Clear(); //sanity
+        wxArrayString clangLocations;
         wxLogNull nolog; // turn off 'not found' messages
         wxArrayString envPaths = GetEnvPaths();
 
@@ -193,40 +257,76 @@ wxString ClangLocator::Locate_ClangdDir()
 
             for (size_t ii = 0; ii < cnt; ++ii)
             {
-                if (wxFileExists(clangLocations[ii]))
+                fnClangdPath.SetPath(clangLocations[ii]);
+
+                if (fnClangdPath.FileExists())
                 {
-                    fnClangdPath = clangLocations[ii];
+                    pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
                     break;
                 }
             }
 
-            if (not fnClangdPath.GetFullPath().empty())
+            if (fnClangdPath.FileExists())
             {
                 break;
             }
         }
     }
 
-    if (fnClangdPath.GetPath().empty())
+#if defined(__WXMSW__)
+
+    if (!fnClangdPath.FileExists())
     {
-        // Try the default install  location
-        if (wxFileExists(LLVM_Dirmaybe + fileSep + clangdexe))
+        // Check Windows LLVM registry entries
+        wxString llvmInstallPath, llvmVersion;
+        wxArrayString regKeys;
+        regKeys.Add("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\LLVM");
+        regKeys.Add("Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\LLVM");
+
+        for (size_t i = 0; i < regKeys.size(); ++i)
         {
-            fnClangdPath.Assign(LLVM_Dirmaybe + fileSep + clangdexe);
+            if (ReadMSWInstallLocation(regKeys.Item(i), llvmInstallPath, llvmVersion))
+            {
+                if (!llvmInstallPath.empty() && wxDirExists(llvmInstallPath))
+                {
+                    fnClangdPath.SetPath(llvmInstallPath);
+
+                    if (fnClangdPath.FileExists())
+                    {
+                        pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+#endif
+
+    if (!fnClangdPath.FileExists())
+    {
+        fnClangdPath.SetPath(LLVM_Dirmaybe);
+
+        if (fnClangdPath.FileExists())
+        {
+            pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
         }
 
 #ifdef __WXMAC__
-
-        // Try the default install  location
-        if (wxFileExists(LLVM_DirmaybeMAC + fileSep + clangdexe))
+        else
         {
-            fnClangdPath.Assign(LLVM_DirmaybeMAC + fileSep + clangdexe);
+            fnClangdPath.SetPath(LLVM_DirmaybeMAC);
+
+            if (fnClangdPath.FileExists())
+            {
+                pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+            }
         }
 
 #endif
     }
 
-    if (not fnClangdPath.GetFullPath().empty())
+    if (fnClangdPath.FileExists())
     {
         // clangd must be version 13 or newer
         // Version 12 crashes when changing lines at bottom of .h files
@@ -240,37 +340,13 @@ wxString ClangLocator::Locate_ClangdDir()
             wxString msg = _("clangd version must be 13 or newer.");
             cbMessageBox(msg, _("Error"));
             pLogMgr->LogError(msg);
-            return wxString();
+            return wxEmptyString;
         }
     }
 
     return fnClangdPath.GetPath();
 }
-// ----------------------------------------------------------------------------
-wxString ClangLocator::MSWLocate()
-// ----------------------------------------------------------------------------
-{
-#ifdef __WXMSW__
-    wxString llvmInstallPath, llvmVersion;
-    wxArrayString regKeys;
-    regKeys.Add("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\LLVM");
-    regKeys.Add("Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\LLVM");
 
-    for (size_t i = 0; i < regKeys.size(); ++i)
-    {
-        if (ReadMSWInstallLocation(regKeys.Item(i), llvmInstallPath, llvmVersion))
-        {
-            //CompilerPtr compiler(new Compiler(NULL));
-            wxString clangLoc;
-            clangLoc << llvmInstallPath;
-            clangLoc.Replace("\\\\", "\\");
-            return clangLoc;
-        }
-    }
-
-#endif
-    return wxEmptyString;
-}
 // ----------------------------------------------------------------------------
 wxArrayString ClangLocator::GetEnvPaths() const
 // ----------------------------------------------------------------------------
