@@ -122,6 +122,7 @@ Debugger_DAP::Debugger_DAP() :
     m_dapClient.Bind(wxEVT_DAP_RUN_IN_TERMINAL_REQUEST,         &Debugger_DAP::OnRunInTerminalRequest, this);
     m_dapClient.Bind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,               this);
     m_dapClient.Bind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,       this);
+    m_dapClient.SetWantsLogEvents(true); // send use log events
 }
 
 // destructor
@@ -695,6 +696,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     m_dap_debuggee = debuggee;
     wxFileName fndebugee(debuggee);
     m_dap_debuggeepath = fndebugee.GetPath();
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dap_debuggeepath: %s", m_dap_debuggeepath), dbg_DAP::LogPaneLogger::LineType::Debug);
     m_frame_id = wxNOT_FOUND;
     // The protocol starts by us sending an initialize request
     dap::InitializeRequestArguments args;
@@ -1015,19 +1017,7 @@ cb::shared_ptr<cbBreakpoint> Debugger_DAP::AddBreakpoint(const wxString & filena
 
 cb::shared_ptr<cbBreakpoint> Debugger_DAP::UpdateOrAddBreakpoint(const wxString & filename, const int line, const int id)
 {
-    wxFileName absfnfilename(filename);
-    wxString absfilename;
-
-    if (absfnfilename.IsAbsolute())
-    {
-        absfilename = filename;
-    }
-    else
-    {
-        absfnfilename.MakeAbsolute(m_dap_debuggeepath);
-        absfilename = absfnfilename.GetFullPath();
-    }
-
+    wxString brkFileName = wxFileName(filename).GetFullName();
     cbProject * project = Manager::Get()->GetProjectManager()->FindProjectForFile(filename, nullptr, false, false);
 
     if (id != -1)
@@ -1037,23 +1027,23 @@ cb::shared_ptr<cbBreakpoint> Debugger_DAP::UpdateOrAddBreakpoint(const wxString 
             if (
                 ((*it)->GetProject() == project)
                 &&
-                ((*it)->GetFilename() == absfilename)
+                ((*it)->GetFilename() == brkFileName)
                 &&
                 ((*it)->GetLine() == line)
             )
             {
                 (*it)->SetID(id);
-                m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("UpdateOrAddBreakpoint update %s:%d set ID %d"), absfilename, line, id), dbg_DAP::LogPaneLogger::LineType::Debug);
+                m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("UpdateOrAddBreakpoint update %s:%d set ID %d"), brkFileName, line, id), dbg_DAP::LogPaneLogger::LineType::Debug);
                 return *it;
             }
         }
     }
 
-    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("UpdateOrAddBreakpoint add %s:%d"), absfilename, line), dbg_DAP::LogPaneLogger::LineType::Debug);
-    cb::shared_ptr<dbg_DAP::GDBBreakpoint> ptr(new dbg_DAP::GDBBreakpoint(project, m_pLogger, absfilename, line, id));
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("UpdateOrAddBreakpoint add %s:%d", brkFileName, line), dbg_DAP::LogPaneLogger::LineType::Debug);
+    cb::shared_ptr<dbg_DAP::GDBBreakpoint> ptr(new dbg_DAP::GDBBreakpoint(project, m_pLogger, brkFileName, line, id));
     m_breakpoints.push_back(ptr);
     std::map<wxString, dbg_DAP::GDBBreakpointsContainer>::iterator mapit;
-    mapit = m_map_filebreakpoints.find(absfilename);
+    mapit = m_map_filebreakpoints.find(brkFileName);
 
     if (mapit != m_map_filebreakpoints.end())
     {
@@ -1063,24 +1053,25 @@ cb::shared_ptr<cbBreakpoint> Debugger_DAP::UpdateOrAddBreakpoint(const wxString 
     {
         std::vector<cb::shared_ptr<dbg_DAP::GDBBreakpoint>> filebreakpoint;
         filebreakpoint.push_back(ptr);
-        m_map_filebreakpoints.insert(std::pair<wxString, std::vector<cb::shared_ptr<dbg_DAP::GDBBreakpoint>>>(absfilename, filebreakpoint));
+        m_map_filebreakpoints.insert(std::pair<wxString, std::vector<cb::shared_ptr<dbg_DAP::GDBBreakpoint>>>(brkFileName, filebreakpoint));
     }
 
     if (IsRunning())
     {
-        mapit = m_map_filebreakpoints.find(absfilename);
+        wxString sLineInfo = wxEmptyString;
+        mapit = m_map_filebreakpoints.find(brkFileName);
         std::vector<dap::SourceBreakpoint> vlines;
         dbg_DAP::GDBBreakpointsContainer filebreakpoints = mapit->second;
 
         for (dbg_DAP::GDBBreakpointsContainer::iterator it = filebreakpoints.begin(); it != filebreakpoints.end(); ++it)
         {
-            vlines.push_back({ static_cast<int>((*it)->GetLine()), wxEmptyString });
+            int line = static_cast<int>((*it)->GetLine());
+            sLineInfo.Append(wxString::Format("%d ", line));
+            vlines.push_back({ line, wxEmptyString });
         }
 
-        wxFileName relfnfilename(absfnfilename);
-        relfnfilename.MakeRelativeTo(m_dap_debuggeepath);
-        wxString relfilename = relfnfilename.GetFullPath();
-        m_dapClient.SetBreakpointsFile(relfilename, vlines);
+        m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", brkFileName, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
+        m_dapClient.SetBreakpointsFile(brkFileName, vlines);
     }
 
     return cb::static_pointer_cast<cbBreakpoint>(m_breakpoints.back());
@@ -2510,6 +2501,10 @@ bool Debugger_DAP::LoadStateFromFile(cbProject * pProject)
     return true;
 }
 
+/// --------------------------------------------------------------------------------------------------------------------------------------------
+/// ---------  DAP SUPPORT FUNCTIONS START - DAP SUPPORT FUNCTIONS START - DAP SUPPORT FUNCTIONS START - DAP SUPPORT FUNCTIONS START -----------
+/// --------------------------------------------------------------------------------------------------------------------------------------------
+
 void Debugger_DAP::OnProcessBreakpointData(const wxString & brkDescription)
 {
     wxString::size_type brkLookupIndexStart = brkDescription.find(' ');
@@ -2547,9 +2542,10 @@ void Debugger_DAP::OnProcessBreakpointData(const wxString & brkDescription)
     }
 }
 
-/// ----------------------------------
-/// -- DAP EVENTS START --
-/// ----------------------------------
+
+/// ---------------------------------------------------------------------------------------------------------------------------------------
+/// ---------  DAP EVENTS START - DAP EVENTS START - DAP EVENTS START - DAP EVENTS START - DAP EVENTS START - DAP EVENTS START  -----------
+/// ---------------------------------------------------------------------------------------------------------------------------------------
 
 void Debugger_DAP::OnLaunchResponse(DAPEvent & event)
 {
@@ -2834,14 +2830,23 @@ void Debugger_DAP::OnBreakpointSet(DAPEvent & event)
 
         for (const auto & bp : resp->breakpoints)
         {
-            wxString message;
+            dbg_DAP::LogPaneLogger::LineType logType = dbg_DAP::LogPaneLogger::LineType::UserDisplay;
+
+            if ((bp.line == -1) || (bp.verified == false))
+            {
+                logType = dbg_DAP::LogPaneLogger::LineType::Error;
+            }
+
             m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__,
                                      __LINE__,
-                                     wxString::Format(_("OnBreakpointSet: ID %d , Verified: %s , File: %s , Line: %d"), bp.id, bp.verified ? "True" : "False", bp.source.path, bp.line)
-                                     , dbg_DAP::LogPaneLogger::LineType::UserDisplay
+                                     wxString::Format(_("OnBreakpointSet: ID %d , Verified: %s , File: %s , Line: %d, Message: %s"), bp.id, bp.verified ? "True" : "False", bp.source.path, bp.line, bp.message),
+                                     logType
                                     );
+        }
 
-            if (bp.line != -1)
+        for (const auto & bp : resp->breakpoints)
+        {
+            if ((bp.line != -1) && bp.verified)
             {
                 UpdateOrAddBreakpoint(bp.source.path, bp.line, bp.id);
             }
@@ -2851,7 +2856,7 @@ void Debugger_DAP::OnBreakpointSet(DAPEvent & event)
 
 void Debugger_DAP::OnDapLog(DAPEvent & event)
 {
-    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, event.GetString());
+    m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, event.GetString(), dbg_DAP::LogPaneLogger::LineType::Debug);
 }
 
 void Debugger_DAP::OnDapModuleEvent(DAPEvent & event)
@@ -2865,8 +2870,7 @@ void Debugger_DAP::OnDapModuleEvent(DAPEvent & event)
     }
 
     wxString log_entry;
-    log_entry << event_data->module.id << ": " << event_data->module.name << " " << event_data->module.symbolStatus
-              << event_data->module.version << " " << event_data->module.path;
+    log_entry << event_data->module.id << ": " << event_data->module.name << " " << event_data->module.symbolStatus << event_data->module.version << " " << event_data->module.path;
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, log_entry, dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
 
@@ -2906,10 +2910,9 @@ void Debugger_DAP::OnRunInTerminalRequest(DAPEvent & event)
     m_dapClient.SendResponse(response);
 }
 
-/// ----------------------------------
-/// -- DAP EVENTS END --
-/// ----------------------------------
-
+/// ---------------------------------------------------------------------------------------------------------------------------------------
+/// -------- DAP EVENTS END - DAP EVENTS END - DAP EVENTS END - DAP EVENTS END - DAP EVENTS END - DAP EVENTS END - DAP EVENTS END ---------
+/// ---------------------------------------------------------------------------------------------------------------------------------------
 
 
 // Windows: C:\msys64\mingw64\bin\lldb-vscode.exe -port 12345

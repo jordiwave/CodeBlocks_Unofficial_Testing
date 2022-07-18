@@ -25,8 +25,8 @@ MainFrameBase::MainFrameBase(wxWindow * parent, wxWindowID id, const wxString & 
 
     m_toolbar12 = this->CreateToolBar(wxTB_HORZ_TEXT | wxTB_NOICONS | wxTB_FLAT, wxID_ANY);
     m_toolbar12->SetToolBitmapSize(wxSize(16, 16));
-    m_toolbar12->AddTool(wxID_NETWORK, _("Connect..."), wxXmlResource::Get()->LoadBitmap(wxT("placeholder16")),
-                         wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    m_toolbar12->AddTool(wxID_NETWORK, _("Launch"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
+    m_toolbar12->AddTool(ID_ATTACH, _("Attach"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxT(""), wxT(""), NULL);
     m_toolbar12->AddSeparator();
     m_toolbar12->AddTool(wxID_FORWARD, _("Next"),
                          wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, wxSize(24, 24)), wxNullBitmap,
@@ -312,6 +312,8 @@ MainFrameBase::MainFrameBase(wxWindow * parent, wxWindowID id, const wxString & 
     // Connect events
     this->Bind(wxEVT_COMMAND_TOOL_CLICKED, &MainFrameBase::OnConnect, this, wxID_NETWORK);
     this->Bind(wxEVT_UPDATE_UI, &MainFrameBase::OnConnectUI, this, wxID_NETWORK);
+    this->Bind(wxEVT_COMMAND_TOOL_CLICKED, &MainFrameBase::OnAttach, this, ID_ATTACH);
+    this->Bind(wxEVT_UPDATE_UI, &MainFrameBase::OnAttachUI, this, ID_ATTACH);
     this->Bind(wxEVT_COMMAND_TOOL_CLICKED, &MainFrameBase::OnNext, this, wxID_FORWARD);
     this->Bind(wxEVT_UPDATE_UI, &MainFrameBase::OnNextUI, this, wxID_FORWARD);
     this->Bind(wxEVT_COMMAND_TOOL_CLICKED, &MainFrameBase::OnStepIn, this, wxID_DOWN);
@@ -332,6 +334,8 @@ MainFrameBase::~MainFrameBase()
 {
     this->Unbind(wxEVT_COMMAND_TOOL_CLICKED, &MainFrameBase::OnConnect, this, wxID_NETWORK);
     this->Unbind(wxEVT_UPDATE_UI, &MainFrameBase::OnConnectUI, this, wxID_NETWORK);
+    this->Unbind(wxEVT_COMMAND_TOOL_CLICKED, &MainFrameBase::OnAttach, this, ID_ATTACH);
+    this->Unbind(wxEVT_UPDATE_UI, &MainFrameBase::OnAttachUI, this, ID_ATTACH);
     this->Unbind(wxEVT_COMMAND_TOOL_CLICKED, &MainFrameBase::OnNext, this, wxID_FORWARD);
     this->Unbind(wxEVT_UPDATE_UI, &MainFrameBase::OnNextUI, this, wxID_FORWARD);
     this->Unbind(wxEVT_COMMAND_TOOL_CLICKED, &MainFrameBase::OnStepIn, this, wxID_DOWN);

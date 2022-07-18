@@ -154,3 +154,33 @@ I do not recommend the following as you may encounter issues with EOL if you tra
 DUMPING GROUND:
 
 zip -r MACOS . -i /*_MacOS.cbp 
+
+
+1) git clone https://github.com/acotty/CodeBlocks_Unofficial_Testing
+2) cd ./CodeBlocks_Unofficial_Testing/Build_Helper_Files/CodeBlocks_MacOS
+3) chmod +x *
+4) ./change_permissions_MacOS.sh
+5) ./MacOS_codeblocks_build.sh
+6) To test the resulting C::B before installing the DMG file run the following script:
+    ./StartCB_Makefile.sh
+
+In the C::B source root directory you should find the DMG file if everything worked or if it did not then errors will be shown.
+
+With this repo you can use build Code::Blocks using Code::Blocks as follows:
+1) Copy the file:
+    from: CodeBlocks_Unofficial_Testing/Build_Helper_Files/CB_GlobalVariables.xml
+    to:   CodeBlocks_Unofficial_Testing/Build_Helper_Files/CB_MacOSVariables.xml
+2) Open the CB_MacOSVariables.xml file in an editor and :
+    a) remove the windows and Linux environment variables so that just the <cb_macos>...</cb_macos> variable data is left.
+    b) Edit the data to match your configuration. Set the <wxwidgets> <BASE> to "" if you have 
+        used brew to install wxWidgets.
+3) Run C::B
+4) Open the "Global Variable Editor" by selecting the following sub menu: Settings->Global variables...
+5) In the "Global Variable Editor" dialog click on the "Import Set/All" button at the bottom of the 
+    dialog and load the "CodeBlocks_Unofficial_Testing/Build_Helper_Files/CB_MacOSVariables.xml" file
+6) Load the CodeBlocks_Unofficial_Testing/src/CodeBlocks_MacOS.workspace
+7) Build the workspace 
+8) At the moment you cannot debug C::B, so you will need to run it via the following file:
+    "CodeBlocks_Unofficial_Testing/Build_Helper_Files/CodeBlocks_MacOS/StartCB_Devel3264.sh" 
+
+The next thing I will be working on is getting the DAP debugger debugging the C::B build

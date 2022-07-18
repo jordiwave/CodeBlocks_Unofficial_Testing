@@ -33,8 +33,8 @@ void LogPaneLogger::LogGDBMsgType(wxString const & functionName, int const iLine
         !m_dbgGDB->HasDebugLog() &&
         (
             //UserDisplay = 0,
-            (type == LineType::Info) ||
-            (type == LineType::Debug) ||
+            //                    (type == LineType::Info) ||
+            //                    (type == LineType::Debug) ||
             //LineType::Warning,
             //LineType::Error,
             //LineType::GDB_Stop_Start,

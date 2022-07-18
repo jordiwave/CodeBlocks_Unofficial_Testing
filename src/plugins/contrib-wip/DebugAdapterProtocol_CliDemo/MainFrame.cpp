@@ -140,9 +140,17 @@ void MainFrame::OnStepOut(wxCommandEvent & event)
     m_client.StepOut();
 }
 
+void MainFrame::OnAttach(wxCommandEvent & event)
+{
+    wxUnusedVar(event);
+    m_attaching = true;
+    InitializeClient();
+}
+
 void MainFrame::OnConnect(wxCommandEvent & event)
 {
     wxUnusedVar(event);
+    m_attaching = false;
     InitializeClient();
 }
 
@@ -168,8 +176,17 @@ void MainFrame::OnLaunchResponse(DAPEvent & event)
 void MainFrame::OnInitializeResponse(DAPEvent & event)
 {
     wxUnusedVar(event);
-    AddLog("Got Initialize response");
-    m_client.Launch({ m_ExecutableFileName });
+
+    if (m_attaching)
+    {
+        AddLog("Attaching to dap server");
+        m_client.Attach({});
+    }
+    else
+    {
+        AddLog("Launching program: " + m_ExecutableFileName);
+        m_client.Launch({ m_ExecutableFileName });
+    }
 }
 
 void MainFrame::OnInitializedEvent(DAPEvent & event)
@@ -551,4 +568,8 @@ void MainFrame::OnEval(wxCommandEvent & event)
 void MainFrame::OnEvalUI(wxUpdateUIEvent & event)
 {
     event.Enable(m_client.IsConnected() && m_client.CanInteract());
+}
+void MainFrame::OnAttachUI(wxUpdateUIEvent & event)
+{
+    event.Enable(!m_client.IsConnected());
 }

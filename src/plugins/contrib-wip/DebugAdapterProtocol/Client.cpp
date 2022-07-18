@@ -776,3 +776,10 @@ void dap::Client::EvaluateExpression(const wxString & expression, int frameId, E
 
     SendRequest(req);
 }
+
+void dap::Client::Attach(int pid, const std::vector<wxString> & arguments)
+{
+    AttachRequest req = MakeRequest<AttachRequest>();
+    req.arguments.arguments = arguments;
+    SendRequest(req);
+}

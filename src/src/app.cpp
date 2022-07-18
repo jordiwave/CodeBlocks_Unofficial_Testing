@@ -1112,12 +1112,12 @@ void CodeBlocksApp::LogPaths()
 {
     LogManager * log = Manager::Get()->GetLogManager();
     log->Log(wxString::Format("\n\n--------------------------------------------------------------------------------"));
-    log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetDataDir():             %s"), wxStandardPathsBase::Get().GetDataDir()));
-    log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetUserDataDir():         %s"), wxStandardPathsBase::Get().GetUserDataDir()));
-    log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetLocalDataDir():        %s"), wxStandardPathsBase::Get().GetLocalDataDir()));
-    log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetConfigDir():           %s"), wxStandardPathsBase::Get().GetConfigDir()));
-    log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetUserConfigDir():       %s"), wxStandardPathsBase::Get().GetUserConfigDir()));
-    log->Log(wxString::Format(_("SwxStandardPathsBase::Get().GetUserLocalDataDir():    %s"), wxStandardPathsBase::Get().GetUserLocalDataDir()));
+    log->Log(wxString::Format(_("wxStandardPathsBase::Get().GetDataDir():             %s"), wxStandardPathsBase::Get().GetDataDir()));
+    log->Log(wxString::Format(_("wxStandardPathsBase::Get().GetUserDataDir():         %s"), wxStandardPathsBase::Get().GetUserDataDir()));
+    log->Log(wxString::Format(_("wxStandardPathsBase::Get().GetLocalDataDir():        %s"), wxStandardPathsBase::Get().GetLocalDataDir()));
+    log->Log(wxString::Format(_("wxStandardPathsBase::Get().GetConfigDir():           %s"), wxStandardPathsBase::Get().GetConfigDir()));
+    log->Log(wxString::Format(_("wxStandardPathsBase::Get().GetUserConfigDir():       %s"), wxStandardPathsBase::Get().GetUserConfigDir()));
+    log->Log(wxString::Format(_("wxStandardPathsBase::Get().GetUserLocalDataDir():    %s"), wxStandardPathsBase::Get().GetUserLocalDataDir()));
     log->Log(wxString::Format("-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -"));
     log->Log(wxString::Format(_("System-wide temp folder - (sdTemp):             %s"), ConfigManager::GetFolder(sdTemp)));
     log->Log(wxString::Format("-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -"));
