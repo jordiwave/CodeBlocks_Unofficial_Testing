@@ -23,10 +23,10 @@
 namespace dbg_DAP
 {
 
-EditWatchDlg::EditWatchDlg(cb::shared_ptr<dbg_DAP::GDBWatch> watch, wxWindow * parent)
+EditWatchDlg::EditWatchDlg(cb::shared_ptr<dbg_DAP::DAPWatch> watch, wxWindow * parent)
     : m_watch(watch)
 {
-    wxXmlResource::Get()->LoadObject(this, parent, "dlgEditWatchGDBMI", "wxScrollingDialog");
+    wxXmlResource::Get()->LoadObject(this, parent, "dlgEditWatchDAPMI", "wxScrollingDialog");
 
     if (m_watch)
     {
@@ -57,7 +57,7 @@ void EditWatchDlg::EndModal(int retCode)
         long lArrayEnd = lArrayStart + XRCCTRL(*this, "spnArrCount", wxSpinCtrl)->GetValue();
         wxString symbol = CleanStringValue(XRCCTRL(*this, "txtKeyword", wxTextCtrl)->GetValue());
         m_watch->SetSymbol(symbol);
-        m_watch->SetFormat((GDBWatch::WatchFormat)XRCCTRL(*this, "rbFormat", wxRadioBox)->GetSelection());
+        m_watch->SetFormat((DAPWatch::WatchFormat)XRCCTRL(*this, "rbFormat", wxRadioBox)->GetSelection());
         m_watch->SetIsArray(XRCCTRL(*this, "chkArray", wxCheckBox)->GetValue());
         m_watch->SetRangeArray(lArrayStart, lArrayEnd);
     }

@@ -4,8 +4,8 @@
  *
 */
 
-#ifndef _DEBUGGER_DAP_GDB_LOGGER_H_
-#define _DEBUGGER_DAP_GDB_LOGGER_H_
+#ifndef _DEBUGGER_DAP_DAP_LOGGER_H_
+#define _DEBUGGER_DAP_DAP_LOGGER_H_
 
 #include <cbplugin.h>
 #include <logmanager.h>
@@ -26,7 +26,7 @@ class LogPaneLogger
             Warning,
             Error,
 
-            GDB_Stop_Start,
+            DAP_Stop_Start,
             Queue,
             Command,
             CommandResult,
@@ -39,14 +39,14 @@ class LogPaneLogger
         };
 
     public:
-        LogPaneLogger(Debugger_DAP * dbgGDB);
+        LogPaneLogger(Debugger_DAP * dbgDAP);
         ~LogPaneLogger();
 
-        static void LogGDBMsgType(wxString const & functionName, int const iLineNumber, wxString const & msg, LineType type = LineType::Error);
+        static void LogDAPMsgType(wxString const & functionName, int const iLineNumber, wxString const & msg, LineType type = LineType::Error);
 
     private:
-        static Debugger_DAP * m_dbgGDB;
+        static Debugger_DAP * m_dbgDAP;
 };
 } //namespace dbg_DAP
 
-#endif // _DEBUGGER_DAP_GDB_LOGGER_H_
+#endif // _DEBUGGER_DAP_DAP_LOGGER_H_

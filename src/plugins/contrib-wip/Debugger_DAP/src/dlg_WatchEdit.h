@@ -15,13 +15,13 @@ namespace dbg_DAP
 class EditWatchDlg : public wxScrollingDialog
 {
     public:
-        EditWatchDlg(cb::shared_ptr<dbg_DAP::GDBWatch> watch, wxWindow * parent);
+        EditWatchDlg(cb::shared_ptr<dbg_DAP::DAPWatch> watch, wxWindow * parent);
         ~EditWatchDlg() override;
 
     protected:
         void EndModal(int retCode) override;
 
-        cb::shared_ptr<dbg_DAP::GDBWatch> m_watch;
+        cb::shared_ptr<dbg_DAP::DAPWatch> m_watch;
 };
 }; // namespace dbg_DAP
 

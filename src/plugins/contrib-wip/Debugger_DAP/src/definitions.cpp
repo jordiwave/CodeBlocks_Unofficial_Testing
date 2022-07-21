@@ -8,14 +8,14 @@
 #include <tinyxml2.h>
 #include <wx/version.h>
 
-// CB include files (not GDB)
+// CB include files (not DAP)
 #include "cbproject.h"
 #include "cbeditor.h"
 #include "editormanager.h"
 #include "manager.h"
 #include "cbdebugger_interfaces.h"
 
-// GDB include files
+// DAP include files
 #include "definitions.h"
 #include "plugin.h"
 
@@ -145,7 +145,7 @@ bool ReadChildNodeBool(tinyxml2::XMLElement * pElementParent,  const wxString ch
     return wxStringToBool(ReadChildNodewxString(pElementParent, childName));
 }
 
-void GDBBreakpoint::SaveBreakpointToXML(tinyxml2::XMLNode * pNodeParent)
+void DAPBreakpoint::SaveBreakpointToXML(tinyxml2::XMLNode * pNodeParent)
 {
     tinyxml2::XMLDocument * pDoc = pNodeParent->GetDocument();
     tinyxml2::XMLElement * pNewXMLElement = pDoc->NewElement("Breakpoint");
@@ -169,13 +169,13 @@ void GDBBreakpoint::SaveBreakpointToXML(tinyxml2::XMLNode * pNodeParent)
     AddChildNode(pNodeBreakpoint, "function", m_function);                  // The function to set the breakpoint. If this is set, it is preferred over the filename/line combination.
     AddChildNodeHex(pNodeBreakpoint, "address", m_address);                    // The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
     AddChildNode(pNodeBreakpoint, "alreadySet", m_alreadySet);              // Is this already set? Used to mark temporary breakpoints for removal.
-    AddChildNode(pNodeBreakpoint, "lineText", m_lineText);                  // Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
+    AddChildNode(pNodeBreakpoint, "lineText", m_lineText);                  // Optionally, the breakpoint line's text (used by DAP for setting breapoints on ctors/dtors).
     AddChildNode(pNodeBreakpoint, "breakAddress", m_breakAddress);          // Valid only for type==bptData: address to break when read/written.
     AddChildNode(pNodeBreakpoint, "breakOnRead", m_breakOnRead);            // Valid only for type==bptData: break when memory is read from.
     AddChildNode(pNodeBreakpoint, "breakOnWrite", m_breakOnWrite);          // Valid only for type==bptData: break when memory is written to.
 }
 
-void GDBBreakpoint::LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpoint, Debugger_DAP * dbgGDB)
+void DAPBreakpoint::LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpoint, Debugger_DAP * dbgDAP)
 {
     //Only load the breakpoints that belong to the current project
     SetType(ReadChildNodewxString(pElementBreakpoint, "type"));                    // The type of this breakpoint.
@@ -193,7 +193,7 @@ void GDBBreakpoint::LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpo
     m_function = ReadChildNodewxString(pElementBreakpoint, "function");            // The function to set the breakpoint. If this is set, it is preferred over the filename/line combination.
     m_address = ReadChildNodeHex(pElementBreakpoint, "address");                   // The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
     m_alreadySet = ReadChildNodeBool(pElementBreakpoint, "alreadySet");            // Is this already set? Used to mark temporary breakpoints for removal.
-    m_lineText = ReadChildNodewxString(pElementBreakpoint, "lineText");            // Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
+    m_lineText = ReadChildNodewxString(pElementBreakpoint, "lineText");            // Optionally, the breakpoint line's text (used by DAP for setting breapoints on ctors/dtors).
     m_breakAddress = ReadChildNodewxString(pElementBreakpoint, "breakAddress");    // Valid only for type==bptData: address to break when read/written.
     m_breakOnRead = ReadChildNodeBool(pElementBreakpoint, "breakOnRead");          // Valid only for type==bptData: break when memory is read from.
     m_breakOnWrite = ReadChildNodeBool(pElementBreakpoint, "breakOnWrite");        // Valid only for type==bptData: break when memory is written to.
@@ -201,7 +201,7 @@ void GDBBreakpoint::LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpo
 
     if (ed == nullptr)
     {
-        dbgGDB->AddBreakpoint(m_filename, m_line);
+        dbgDAP->AddBreakpoint(m_filename, m_line);
     }
     else
     {
@@ -209,12 +209,12 @@ void GDBBreakpoint::LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpo
     }
 }
 
-void GDBBreakpoint::SetEnabled(bool flag)
+void DAPBreakpoint::SetEnabled(bool flag)
 {
     m_enabled = flag;
 }
 
-wxString GDBBreakpoint::GetLocation() const
+wxString DAPBreakpoint::GetLocation() const
 {
     switch (m_type)
     {
@@ -232,17 +232,17 @@ wxString GDBBreakpoint::GetLocation() const
     }
 }
 
-int GDBBreakpoint::GetLine() const
+int DAPBreakpoint::GetLine() const
 {
     return m_line;
 }
 
-wxString GDBBreakpoint::GetLineString() const
+wxString DAPBreakpoint::GetLineString() const
 {
     return wxString::Format("%d", m_line);
 }
 
-wxString GDBBreakpoint::GetType() const
+wxString DAPBreakpoint::GetType() const
 {
     switch (m_type)
     {
@@ -260,7 +260,7 @@ wxString GDBBreakpoint::GetType() const
     }
 }
 
-wxString GDBBreakpoint::GetInfo() const
+wxString DAPBreakpoint::GetInfo() const
 {
     switch (m_type)
     {
@@ -294,26 +294,26 @@ wxString GDBBreakpoint::GetInfo() const
     }
 }
 
-bool GDBBreakpoint::IsEnabled() const
+bool DAPBreakpoint::IsEnabled() const
 {
     return m_enabled;
 }
 
-bool GDBBreakpoint::IsVisibleInEditor() const
+bool DAPBreakpoint::IsVisibleInEditor() const
 {
     return true;
 }
 
-bool GDBBreakpoint::IsTemporary() const
+bool DAPBreakpoint::IsTemporary() const
 {
     return m_temporary;
 }
 
-cb::shared_ptr<GDBWatch> FindWatch(wxString const & expression, GDBWatchesContainer & watches)
+cb::shared_ptr<DAPWatch> FindWatch(wxString const & expression, DAPWatchesContainer & watches)
 {
     size_t expLength = expression.length();
 
-    for (GDBWatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
+    for (DAPWatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
     {
         if (expression.StartsWith(it->get()->GetID()))
         {
@@ -323,16 +323,16 @@ cb::shared_ptr<GDBWatch> FindWatch(wxString const & expression, GDBWatchesContai
             }
             else
             {
-                cb::shared_ptr<GDBWatch> curr = *it;
+                cb::shared_ptr<DAPWatch> curr = *it;
 
                 while (curr)
                 {
-                    cb::shared_ptr<GDBWatch> temp = curr;
-                    curr = cb::shared_ptr<GDBWatch>();
+                    cb::shared_ptr<DAPWatch> temp = curr;
+                    curr = cb::shared_ptr<DAPWatch>();
 
                     for (int child = 0; child < temp->GetChildCount(); ++child)
                     {
-                        cb::shared_ptr<GDBWatch> p = cb::static_pointer_cast<GDBWatch>(temp->GetChild(child));
+                        cb::shared_ptr<DAPWatch> p = cb::static_pointer_cast<DAPWatch>(temp->GetChild(child));
                         wxString id = p->GetID();
 
                         if (expression.StartsWith(id))
@@ -357,10 +357,10 @@ cb::shared_ptr<GDBWatch> FindWatch(wxString const & expression, GDBWatchesContai
         }
     }
 
-    return cb::shared_ptr<GDBWatch>();
+    return cb::shared_ptr<DAPWatch>();
 }
 
-wxString GDBWatch::GetWatchFormatTowxString()
+wxString DAPWatch::GetWatchFormatTowxString()
 {
     switch (m_format)
     {
@@ -396,7 +396,7 @@ wxString GDBWatch::GetWatchFormatTowxString()
     };
 }
 
-GDBWatch::WatchFormat GDBWatch::GetWatchFormatFromwxString(wxString wFormat)
+DAPWatch::WatchFormat DAPWatch::GetWatchFormatFromwxString(wxString wFormat)
 {
     if (wFormat.IsSameAs("Undefined", false))         // Format is undefined (whatever the debugger uses by default).
     {
@@ -446,12 +446,12 @@ GDBWatch::WatchFormat GDBWatch::GetWatchFormatFromwxString(wxString wFormat)
     return WatchFormat::Undefined;
 }
 
-void GDBWatch::SaveWatchToXML(tinyxml2::XMLNode * pWatchesMasterNode)
+void DAPWatch::SaveWatchToXML(tinyxml2::XMLNode * pWatchesMasterNode)
 {
     tinyxml2::XMLDocument * pDoc = pWatchesMasterNode->GetDocument();
     tinyxml2::XMLElement * pNewXMLElement = pDoc->NewElement("Watch");
     tinyxml2::XMLNode * pNodeWatch = pWatchesMasterNode->InsertEndChild(pNewXMLElement);
-    AddChildNode(pNodeWatch, "GDBWatchClassName", m_GDBWatchClassName);
+    AddChildNode(pNodeWatch, "DAPWatchClassName", m_DAPWatchClassName);
     AddChildNode(pNodeWatch, "projectTitle", m_project->GetTitle());   // The Project the file belongs to.
     // AddChildNode(pNodeWatch, "id", m_id);
     AddChildNode(pNodeWatch, "symbol", m_symbol);
@@ -468,10 +468,10 @@ void GDBWatch::SaveWatchToXML(tinyxml2::XMLNode * pWatchesMasterNode)
     AddChildNode(pNodeWatch, "forTooltip", m_forTooltip);
 }
 
-void GDBWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgGDB)
+void DAPWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgDAP)
 {
     //Only load the breakpoints that belong to the current project
-    m_GDBWatchClassName = ReadChildNodewxString(pElementWatch, "GDBWatchClassName");
+    m_DAPWatchClassName = ReadChildNodewxString(pElementWatch, "DAPWatchClassName");
     m_id = ReadChildNodewxString(pElementWatch, "id");
     m_symbol = ReadChildNodewxString(pElementWatch, "symbol");
     m_value = ReadChildNodewxString(pElementWatch, "value");
@@ -489,16 +489,16 @@ void GDBWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_D
     if (!m_symbol.IsEmpty())
     {
         // See debuggermenu.cpp DebuggerMenuHandler::OnAddWatch(...) function
-        cb::shared_ptr<cbWatch> watch = dbgGDB->AddWatch(this, true);
+        cb::shared_ptr<cbWatch> watch = dbgDAP->AddWatch(this, true);
         cbWatchesDlg * dialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
         dialog->AddWatch(watch);   // This call adds the watch to the debugger and GUI
     }
 }
 
-GDBMemoryRangeWatch::GDBMemoryRangeWatch(cbProject * project, dbg_DAP::LogPaneLogger * logger, uint64_t address, uint64_t size, const wxString & symbol) :
+DAPMemoryRangeWatch::DAPMemoryRangeWatch(cbProject * project, dbg_DAP::LogPaneLogger * logger, uint64_t address, uint64_t size, const wxString & symbol) :
     m_project(project),
     m_pLogger(logger),
-    m_GDBWatchClassName("GDBMemoryRangeWatch"),
+    m_DAPWatchClassName("DAPMemoryRangeWatch"),
     m_address(address),
     m_size(size),
     m_symbol(symbol),
@@ -506,7 +506,7 @@ GDBMemoryRangeWatch::GDBMemoryRangeWatch(cbProject * project, dbg_DAP::LogPaneLo
 {
 }
 
-bool GDBMemoryRangeWatch::SetValue(const wxString & value)
+bool DAPMemoryRangeWatch::SetValue(const wxString & value)
 {
     if (m_value != value)
     {
@@ -517,13 +517,13 @@ bool GDBMemoryRangeWatch::SetValue(const wxString & value)
     return true;
 }
 
-wxString GDBMemoryRangeWatch::MakeSymbolToAddress() const
+wxString DAPMemoryRangeWatch::MakeSymbolToAddress() const
 {
     return wxString::Format("&%s", m_symbol);
 };
 
-// Use this function to sanitize user input which might end as the last part of GDB commands.
-// If the last character is '\', GDB will treat it as line continuation and it will stall.
+// Use this function to sanitize user input which might end as the last part of DAP commands.
+// If the last character is '\', DAP will treat it as line continuation and it will stall.
 wxString CleanStringValue(wxString value)
 {
     while (value.EndsWith("\\"))
@@ -534,22 +534,22 @@ wxString CleanStringValue(wxString value)
     return value;
 }
 
-void GDBMemoryRangeWatch::SaveWatchToXML(tinyxml2::XMLNode * pMemoryRangeMasterNode)
+void DAPMemoryRangeWatch::SaveWatchToXML(tinyxml2::XMLNode * pMemoryRangeMasterNode)
 {
     tinyxml2::XMLDocument * pDoc = pMemoryRangeMasterNode->GetDocument();
     tinyxml2::XMLElement * pNewXMLElement = pDoc->NewElement("MemoryRangeWatch");
     tinyxml2::XMLNode * pNodeMemoryRange = pMemoryRangeMasterNode->InsertEndChild(pNewXMLElement);
-    AddChildNode(pNodeMemoryRange, "GDBMemoryRangeWatch", m_GDBWatchClassName);
+    AddChildNode(pNodeMemoryRange, "DAPMemoryRangeWatch", m_DAPWatchClassName);
     AddChildNode(pNodeMemoryRange, "projectTitle", m_project->GetTitle());   // The Project the file belongs to.
     AddChildNode(pNodeMemoryRange, "address", m_address);
     AddChildNode(pNodeMemoryRange, "size", m_size);
     AddChildNode(pNodeMemoryRange, "symbol", m_symbol);
 }
 
-void GDBMemoryRangeWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgGDB)
+void DAPMemoryRangeWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgDAP)
 {
     //Only load the breakpoints that belong to the current project
-    m_GDBWatchClassName = ReadChildNodewxString(pElementWatch, "GDBMemoryRangeWatch");
+    m_DAPWatchClassName = ReadChildNodewxString(pElementWatch, "DAPMemoryRangeWatch");
     m_address = ReadChildNodeUint64(pElementWatch, "address");
     m_size = ReadChildNodeUint64(pElementWatch, "size");
     m_symbol = ReadChildNodewxString(pElementWatch, "symbol");
@@ -558,7 +558,7 @@ void GDBMemoryRangeWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch,
     {
 #if 0
         // See debuggermenu.cpp DebuggerMenuHandler::OnAddWatch(...) function
-        cb::shared_ptr<cbWatch> watch = dbgGDB->AddWatch(this, true);
+        cb::shared_ptr<cbWatch> watch = dbgDAP->AddWatch(this, true);
         cbWatchesDlg * dialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
         dialog->AddWatch(watch);   // This call adds the watch to the debugger and GUI
 #endif

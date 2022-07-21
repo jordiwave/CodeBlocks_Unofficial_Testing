@@ -19,7 +19,7 @@
 // CB includes
 #include <debuggermanager.h>
 
-// GDB include files
+// DAP include files
 #include "debugger_logger.h"
 
 class Debugger_DAP;
@@ -43,7 +43,7 @@ uint64_t ReadChildNodeUint64(tinyxml2::XMLElement * pElementParent,  const wxStr
 uint64_t ReadChildNodeHex(tinyxml2::XMLElement * pElementParent,  const wxString childName);
 bool ReadChildNodeBool(tinyxml2::XMLElement * pElementParent,  const wxString childName);
 
-class GDBBreakpoint : public cbBreakpoint
+class DAPBreakpoint : public cbBreakpoint
 {
     public:
         enum BreakpointType
@@ -53,7 +53,7 @@ class GDBBreakpoint : public cbBreakpoint
             bptData         // Data breakpoint
         };
 
-        GDBBreakpoint(cbProject * project, dbg_DAP::LogPaneLogger * logger) :
+        DAPBreakpoint(cbProject * project, dbg_DAP::LogPaneLogger * logger) :
             m_pLogger(logger),
             m_type(bptCode),
             m_project(project),
@@ -75,7 +75,7 @@ class GDBBreakpoint : public cbBreakpoint
         {
         }
 
-        GDBBreakpoint(cbProject * project, dbg_DAP::LogPaneLogger * logger, const wxString & filename, int line, int id) :
+        DAPBreakpoint(cbProject * project, dbg_DAP::LogPaneLogger * logger, const wxString & filename, int line, int id) :
             m_pLogger(logger),
             m_type(bptCode),
             m_project(project),
@@ -108,7 +108,7 @@ class GDBBreakpoint : public cbBreakpoint
         virtual bool IsVisibleInEditor() const;
         virtual bool IsTemporary() const;
 
-        // GDB additional
+        // DAP additional
         int GetIndex() const
         {
             return m_index;
@@ -384,9 +384,9 @@ class GDBBreakpoint : public cbBreakpoint
             m_breakOnWrite = breakOnWrite;
         }
 
-        // GDB additional
+        // DAP additional
         void SaveBreakpointToXML(tinyxml2::XMLNode * pNodeParent);
-        void LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpoint, Debugger_DAP * dbgGDB);
+        void LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpoint, Debugger_DAP * dbgDAP);
 
     private:
         dbg_DAP::LogPaneLogger * m_pLogger;
@@ -411,18 +411,18 @@ class GDBBreakpoint : public cbBreakpoint
         wxString m_function;            // The function to set the breakpoint. If this is set, it is preferred over the filename/line combination.
         uint64_t m_address;             // The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
         bool m_alreadySet;              // Is this already set? Used to mark temporary breakpoints for removal.
-        wxString m_lineText;            // Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
+        wxString m_lineText;            // Optionally, the breakpoint line's text (used by DAP for setting breapoints on ctors/dtors).
         wxString m_breakAddress;        // Valid only for type==bptData: address to break when read/written.
         bool m_breakOnRead;             // Valid only for type==bptData: break when memory is read from.
         bool m_breakOnWrite;            // Valid only for type==bptData: break when memory is written to.
 };
 
-typedef std::vector<cb::shared_ptr<dbg_DAP::GDBBreakpoint> > GDBBreakpointsContainer;
+typedef std::vector<cb::shared_ptr<dbg_DAP::DAPBreakpoint> > DAPBreakpointsContainer;
 
-typedef std::deque<cb::shared_ptr<cbStackFrame> > GDBBacktraceContainer;
-typedef std::deque<cb::shared_ptr<cbThread> > GDBThreadsContainer;
+typedef std::deque<cb::shared_ptr<cbStackFrame> > DAPBacktraceContainer;
+typedef std::deque<cb::shared_ptr<cbThread> > DAPThreadsContainer;
 
-class GDBWatch : public cbWatch
+class DAPWatch : public cbWatch
 {
     public:
         /** Watch variable format.
@@ -446,10 +446,10 @@ class GDBWatch : public cbWatch
 
     public:
 
-        GDBWatch(cbProject * project, dbg_DAP::LogPaneLogger * logger, wxString const & symbol, bool for_tooltip, bool delete_on_collapse = true) :
+        DAPWatch(cbProject * project, dbg_DAP::LogPaneLogger * logger, wxString const & symbol, bool for_tooltip, bool delete_on_collapse = true) :
             m_project(project),
             m_pLogger(logger),
-            m_GDBWatchClassName("GDBWatch"),
+            m_DAPWatchClassName("DAPWatch"),
             m_id(wxEmptyString),
             m_symbol(symbol),
             m_address(0),
@@ -468,7 +468,7 @@ class GDBWatch : public cbWatch
         {
         }
 
-        dbg_DAP::LogPaneLogger * GetGDBLogger()
+        dbg_DAP::LogPaneLogger * GetDAPLogger()
         {
             return m_pLogger;
         }
@@ -650,9 +650,9 @@ class GDBWatch : public cbWatch
             return wxT("&") + m_symbol;
         }
 
-        // GDB additional
+        // DAP additional
         void SaveWatchToXML(tinyxml2::XMLNode * pWatchesMasterNode);
-        void LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgGDB);
+        void LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgDAP);
 
     protected:
         virtual void DoDestroy() {}
@@ -661,7 +661,7 @@ class GDBWatch : public cbWatch
         cbProject * m_project;              // The Project the watch belongs to.
         dbg_DAP::LogPaneLogger * m_pLogger;
 
-        wxString m_GDBWatchClassName;
+        wxString m_DAPWatchClassName;
         wxString m_id;
         wxString m_symbol;
         uint64_t m_address;
@@ -682,14 +682,14 @@ class GDBWatch : public cbWatch
         bool m_ValueErrorMessage;   // True if the m_value is a message instead of data
 };
 
-typedef std::vector<cb::shared_ptr<GDBWatch>> GDBWatchesContainer;
+typedef std::vector<cb::shared_ptr<DAPWatch>> DAPWatchesContainer;
 
-cb::shared_ptr<GDBWatch> FindWatch(wxString const & expression, GDBWatchesContainer & watches);
+cb::shared_ptr<DAPWatch> FindWatch(wxString const & expression, DAPWatchesContainer & watches);
 
-class GDBMemoryRangeWatch  : public cbWatch
+class DAPMemoryRangeWatch  : public cbWatch
 {
     public:
-        GDBMemoryRangeWatch(cbProject * project, dbg_DAP::LogPaneLogger * logger, uint64_t address, uint64_t size, const wxString & symbol);
+        DAPMemoryRangeWatch(cbProject * project, dbg_DAP::LogPaneLogger * logger, uint64_t address, uint64_t size, const wxString & symbol);
 
     public:
         void GetSymbol(wxString & symbol) const override
@@ -768,14 +768,14 @@ class GDBMemoryRangeWatch  : public cbWatch
             return m_project;
         }
 
-        // GDB additional
+        // DAP additional
         void SaveWatchToXML(tinyxml2::XMLNode * pWatchesMasterNode);
-        void LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgGDB);
+        void LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgDAP);
 
     private:
         cbProject * m_project;              // The Project the watch belongs to.
         dbg_DAP::LogPaneLogger * m_pLogger;
-        wxString m_GDBWatchClassName;
+        wxString m_DAPWatchClassName;
 
         uint64_t m_address;
         uint64_t m_size;
@@ -785,22 +785,22 @@ class GDBMemoryRangeWatch  : public cbWatch
         bool m_ValueErrorMessage;
 };
 
-typedef std::vector<cb::shared_ptr<GDBWatch>> GDBWatchesContainer;
-typedef std::vector<cb::shared_ptr<GDBMemoryRangeWatch>> GDBMemoryRangeWatchesContainer;
+typedef std::vector<cb::shared_ptr<DAPWatch>> DAPWatchesContainer;
+typedef std::vector<cb::shared_ptr<DAPMemoryRangeWatch>> DAPMemoryRangeWatchesContainer;
 
-enum class GDBWatchType
+enum class DAPWatchType
 {
     Normal,
     MemoryRange
 };
 
-typedef std::unordered_map<cb::shared_ptr<cbWatch>, GDBWatchType> GDBMapWatchesToType;
+typedef std::unordered_map<cb::shared_ptr<cbWatch>, DAPWatchType> DAPMapWatchesToType;
 
 // Custom window to display output of DebuggerInfoCmd
-class GDBTextInfoWindow : public wxScrollingDialog
+class DAPTextInfoWindow : public wxScrollingDialog
 {
     public:
-        GDBTextInfoWindow(wxWindow * parent, const wxChar * title, const wxString & content) :
+        DAPTextInfoWindow(wxWindow * parent, const wxChar * title, const wxString & content) :
             wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize,
                               wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX),
             m_font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)
@@ -823,10 +823,10 @@ class GDBTextInfoWindow : public wxScrollingDialog
         wxFont m_font;
 };
 
-class GDBCurrentFrame
+class DAPCurrentFrame
 {
     public:
-        GDBCurrentFrame() :
+        DAPCurrentFrame() :
             m_line(-1),
             m_stack_frame(-1),
             m_user_selected_stack_frame(-1),
@@ -840,7 +840,7 @@ class GDBCurrentFrame
             m_user_selected_stack_frame = -1;
         }
 
-        void GDBSwitchToFrame(int frame_number)
+        void DAPSwitchToFrame(int frame_number)
         {
             m_user_selected_stack_frame = m_stack_frame = frame_number;
         }
@@ -892,8 +892,8 @@ class GDBCurrentFrame
         int m_thread;
 };
 
-// Use this function to sanitize user input which might end as the last part of GDB commands.
-// If the last character is '\', GDB will treat it as line continuation and it will stall.
+// Use this function to sanitize user input which might end as the last part of DAP commands.
+// If the last character is '\', DAP will treat it as line continuation and it will stall.
 wxString CleanStringValue(wxString value);
 
 } // namespace dbg_DAP

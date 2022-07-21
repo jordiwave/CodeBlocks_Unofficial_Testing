@@ -31,7 +31,7 @@ BEGIN_EVENT_TABLE(DebuggerOptionsProjectDlg, wxPanel)
 END_EVENT_TABLE()
 
 DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow * parent, Debugger_DAP * debugger, cbProject * project)
-    : m_pDebuggerGDBMI(debugger),
+    : m_pDebuggerDAPMI(debugger),
       m_pProject(project),
       m_LastTargetSel(-1)
 {
@@ -40,8 +40,8 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow * parent, Debugger
         return;
     }
 
-    //        m_OldPaths = m_pDebuggerGDBMI->ParseSearchDirs(m_pProject);
-    //        m_OldRemoteDebugging = m_pDebuggerGDBMI->ParseRemoteDebuggingMap(*m_pProject);
+    //        m_OldPaths = m_pDebuggerDAPMI->ParseSearchDirs(m_pProject);
+    //        m_OldRemoteDebugging = m_pDebuggerDAPMI->ParseRemoteDebuggingMap(*m_pProject);
     //        m_CurrentRemoteDebugging = m_OldRemoteDebugging;
     wxListBox * control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
     control->Clear();
@@ -339,13 +339,13 @@ void DebuggerOptionsProjectDlg::OnApply()
 
     if (m_OldPaths != newPaths)
     {
-        //            m_pDebuggerGDBMI->SetSearchDirs(*m_pProject, newPaths);
+        //            m_pDebuggerDAPMI->SetSearchDirs(*m_pProject, newPaths);
         m_pProject->SetModified(true);
     }
 
     //        if (m_OldRemoteDebugging != m_CurrentRemoteDebugging)
     //        {
-    //            m_pDebuggerGDBMI->SetRemoteDebuggingMap(*m_pProject, m_CurrentRemoteDebugging);
+    //            m_pDebuggerDAPMI->SetRemoteDebuggingMap(*m_pProject, m_CurrentRemoteDebugging);
     //            m_pProject->SetModified(true);
     //        }
 }

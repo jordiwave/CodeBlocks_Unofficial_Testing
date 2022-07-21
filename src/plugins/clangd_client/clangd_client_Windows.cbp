@@ -114,6 +114,7 @@
 		</Linker>
 		<Unit filename="src\ClangLocator.cpp" />
 		<Unit filename="src\ClangLocator.h" />
+		<Unit filename="src/ClgdCCToken.h" />
 		<Unit filename="src\LSP_SymbolKind.h" />
 		<Unit filename="src\LSPclient\client.cpp" />
 		<Unit filename="src\LSPclient\client.h" />

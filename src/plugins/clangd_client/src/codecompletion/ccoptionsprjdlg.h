@@ -16,34 +16,28 @@ class cbProject;
 
 class CCOptionsProjectDlg : public cbConfigurationPanel
 {
-    public:
-        CCOptionsProjectDlg(wxWindow * parent, cbProject * project, ParseManager * np);
-        ~CCOptionsProjectDlg() override;
+public:
+    CCOptionsProjectDlg(wxWindow* parent, cbProject* project, ParseManager* np);
+    ~CCOptionsProjectDlg() override;
 
-        wxString GetTitle() const override
-        {
-            return _("C/C++ parser options");
-        }
-        wxString GetBitmapBaseName() const override
-        {
-            return _T("generic-plugin");
-        }
-        void OnApply() override;
-        void OnCancel() override {}
+    wxString GetTitle() const override { return _("C/C++ parser options"); }
+    wxString GetBitmapBaseName() const override { return _T("generic-plugin"); }
+    void OnApply() override;
+    void OnCancel() override {}
 
-    protected:
-        void OnAdd(wxCommandEvent & event);
-        void OnEdit(wxCommandEvent & event);
-        void OnDelete(wxCommandEvent & event);
-        void OnUpdateUI(wxUpdateUIEvent & event);
+protected:
+    void OnAdd(wxCommandEvent& event);
+    void OnEdit(wxCommandEvent& event);
+    void OnDelete(wxCommandEvent& event);
+    void OnUpdateUI(wxUpdateUIEvent& event);
 
-    private:
-        cbProject  *  m_Project;
-        ParseManager * m_ParseManager;
-        ParserBase  * m_Parser;
-        wxArrayString m_OldPaths;
+private:
+    cbProject*    m_Project;
+    ParseManager* m_ParseManager;
+    ParserBase*   m_Parser;
+    wxArrayString m_OldPaths;
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // CCOPTIONSPRJDLG_H

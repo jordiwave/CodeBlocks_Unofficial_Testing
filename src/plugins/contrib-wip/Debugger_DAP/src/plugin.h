@@ -84,44 +84,29 @@ class Debugger_DAP : public cbDebuggerPlugin
         // breakpoints calls
         virtual cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString & filename, int line);
         cb::shared_ptr<cbBreakpoint> UpdateOrAddBreakpoint(const wxString & filename, const int line, const int id);
-        //        cb::shared_ptr<cbBreakpoint> AddBreakpoint(cb::shared_ptr<dbg_DAP::GDBBreakpoint> bp);
-        virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString & dataExpression)
-        {
-            return 0;
-        };
+        //        cb::shared_ptr<cbBreakpoint> AddBreakpoint(cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp);
+        virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString & dataExpression);
         virtual int GetBreakpointsCount() const;
         virtual cb::shared_ptr<cbBreakpoint> GetBreakpoint(int index);
         virtual cb::shared_ptr<const cbBreakpoint> GetBreakpoint(int index) const;
         cb::shared_ptr<cbBreakpoint> GetBreakpointByID(int id);
-        virtual void UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) {};
-        virtual void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) {};
-        virtual void DeleteAllBreakpoints() {};
-        virtual void ShiftBreakpoint(int index, int lines_to_shift) {};
-        virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable) {};
+        virtual void UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
+        virtual void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
+        virtual void DeleteAllBreakpoints();
+        virtual void ShiftBreakpoint(int index, int lines_to_shift);
+        virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable);
 
         // threads
-        virtual int GetThreadsCount() const
-        {
-            return 0;
-        };
-        virtual cb::shared_ptr<const cbThread> GetThread(int index) const
-        {
-            return nullptr;
-        };
-        virtual bool SwitchToThread(int thread_number)
-        {
-            return false;
-        };
+        virtual int GetThreadsCount() const;
+        virtual cb::shared_ptr<const cbThread> GetThread(int index) const;
+        virtual bool SwitchToThread(int thread_number);
 
         // watches
         void UpdateDAPWatches(int updateType);
         virtual cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol, bool update);
-        virtual cb::shared_ptr<cbWatch> AddWatch(dbg_DAP::GDBWatch * watch, cb_unused bool update);
-        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update)
-        {
-            return 0;
-        };
-        //        void AddTooltipWatch(const wxString & symbol, wxRect const & rect);
+        virtual cb::shared_ptr<cbWatch> AddWatch(dbg_DAP::DAPWatch * watch, cb_unused bool update);
+        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update);
+        void AddTooltipWatch(const wxString & symbol, wxRect const & rect);
         virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch);
         virtual bool HasWatch(cb::shared_ptr<cbWatch> watch);
         bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch);
@@ -133,21 +118,22 @@ class Debugger_DAP : public cbDebuggerPlugin
 
         //
         virtual void SendCommand(const wxString & cmd, bool debugLog) {};
-        virtual void AttachToProcess(const wxString & pid) {};
-        virtual void DetachFromProcess() {};
-        virtual bool IsAttachedToProcess() const
-        {
-            return 0;
-        };
-        virtual void GetCurrentPosition(wxString & filename, int & line) {};
 
+        // Preocess
+        virtual void AttachToProcess(const wxString & pid);
+        virtual void DetachFromProcess();
+        virtual bool IsAttachedToProcess() const;
+        virtual void GetCurrentPosition(wxString & filename, int & line);
+
+        // Misc
         virtual void RequestUpdate(DebugWindows window);
-        //        virtual void OnValueTooltip(const wxString & token, const wxRect & evalRect);
-        //        virtual bool ShowValueTooltip(int style);
+        virtual void OnValueTooltip(const wxString & token, const wxRect & evalRect);
+        virtual bool ShowValueTooltip(int style);
 
+        // Conversion
         void StripQuotes(wxString & str);
-        void ConvertToGDBFriendly(wxString & str);
-        void ConvertToGDBDirectory(wxString & str, wxString base = "", bool relative = true);
+        void ConvertToDAPFriendly(wxString & str);
+        void ConvertToDAPDirectory(wxString & str, wxString base = "", bool relative = true);
         wxArrayString ParseSearchDirs(cbProject * project);
         //        TiXmlElement* GetElementForSaving(cbProject &project, const char *elementsToClear);
         //        void SetSearchDirs(cbProject &project, const wxArrayString &dirs);
@@ -196,17 +182,17 @@ class Debugger_DAP : public cbDebuggerPlugin
     public:
         void UpdateWhenStopped();
         void UpdateOnFrameChanged(bool wait);
-        //        dbg_DAP::GDBCurrentFrame & GetGDBCurrentFrame()
+        //        dbg_DAP::DAPCurrentFrame & GetDAPCurrentFrame()
         //        {
         //            return m_current_frame;
         //        }
         //
-        //        dbg_DAP::GDBExecutor & GetGDBExecutor()
+        //        dbg_DAP::DAPExecutor & GetDAPExecutor()
         //        {
         //            return m_executor;
         //        }
 
-        dbg_DAP::LogPaneLogger * GetGDBLogger()
+        dbg_DAP::LogPaneLogger * GetDAPLogger()
         {
             return m_pLogger;
         }
@@ -238,14 +224,14 @@ class Debugger_DAP : public cbDebuggerPlugin
         wxTimer m_timer_poll_debugger;
         cbProject * m_pProject;
 
-        //        dbg_DAP::GDBExecutor m_executor;
+        //        dbg_DAP::DAPExecutor m_executor;
         //        dbg_DAP::ActionsMap  m_actions;
         dbg_DAP::LogPaneLogger * m_pLogger;
-        //        dbg_DAP::GDBThreadsContainer m_threads;
-        //
-        //
-        //        dbg_DAP::GDBMemoryRangeWatchesContainer m_memoryRanges;
-        //        dbg_DAP::GDBTextInfoWindow * m_command_stream_dialog;
+        dbg_DAP::DAPThreadsContainer m_threads;
+
+
+        //        dbg_DAP::DAPMemoryRangeWatchesContainer m_memoryRanges;
+        //        dbg_DAP::DAPTextInfoWindow * m_command_stream_dialog;
         int m_exit_code;
         //        int m_console_pid;
         //        int m_pid_attached;
@@ -270,18 +256,22 @@ class Debugger_DAP : public cbDebuggerPlugin
         DAPState  DAPDebuggerState;
 
         // breakpoints
-        dbg_DAP::GDBBreakpointsContainer m_breakpoints;
-        std::map<wxString, std::vector<cb::shared_ptr<dbg_DAP::GDBBreakpoint>>> m_map_filebreakpoints;
-        dbg_DAP::GDBBreakpointsContainer m_temporary_breakpoints;
+        dbg_DAP::DAPBreakpointsContainer m_breakpoints;
+        std::map<wxString, std::vector<cb::shared_ptr<dbg_DAP::DAPBreakpoint>>> m_map_filebreakpoints;
+        dbg_DAP::DAPBreakpointsContainer m_temporary_breakpoints;
+        cb::shared_ptr<dbg_DAP::DAPBreakpoint> FindBreakpoint(const cbProject * project, const wxString & filename, const int line);
+        void UpdateMapFileBreakPoints(const wxString & filename, cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp, bool bAddBreakpoint);
+        void UpdateDAPSetBreakpointsByFileName(const wxString & filename);
+
 
         // Stack
-        dbg_DAP::GDBCurrentFrame m_current_frame;
-        dbg_DAP::GDBBacktraceContainer m_backtrace;
+        dbg_DAP::DAPCurrentFrame m_current_frame;
+        dbg_DAP::DAPBacktraceContainer m_backtrace;
 
         // Watches
-        dbg_DAP::GDBWatchesContainer m_watches;
-        dbg_DAP::GDBMapWatchesToType m_mapWatchesToType;
-        cb::shared_ptr<dbg_DAP::GDBWatch> m_WatchLocalsandArgs;
+        dbg_DAP::DAPWatchesContainer m_watches;
+        dbg_DAP::DAPMapWatchesToType m_mapWatchesToType;
+        cb::shared_ptr<dbg_DAP::DAPWatch> m_WatchLocalsandArgs;
         std::vector<dap::Variable> m_stackdapvariables;
 
         // misc

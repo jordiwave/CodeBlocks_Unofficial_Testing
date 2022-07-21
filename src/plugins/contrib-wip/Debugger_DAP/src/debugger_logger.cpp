@@ -10,34 +10,34 @@
 namespace dbg_DAP
 {
 
-Debugger_DAP * LogPaneLogger::m_dbgGDB = nullptr;
+Debugger_DAP * LogPaneLogger::m_dbgDAP = nullptr;
 
-LogPaneLogger::LogPaneLogger(Debugger_DAP * dbgGDB)
+LogPaneLogger::LogPaneLogger(Debugger_DAP * dbgDAP)
 {
-    m_dbgGDB = dbgGDB;
+    m_dbgDAP = dbgDAP;
 }
 
 LogPaneLogger::~LogPaneLogger()
 {
-    m_dbgGDB = nullptr;
+    m_dbgDAP = nullptr;
 }
 
-void LogPaneLogger::LogGDBMsgType(wxString const & functionName, int const iLineNumber, wxString const & msg, LineType type)
+void LogPaneLogger::LogDAPMsgType(wxString const & functionName, int const iLineNumber, wxString const & msg, LineType type)
 {
-    if (!m_dbgGDB)
+    if (!m_dbgDAP)
     {
         return;
     }
 
     if (
-        !m_dbgGDB->HasDebugLog() &&
+        !m_dbgDAP->HasDebugLog() &&
         (
             //UserDisplay = 0,
             //                    (type == LineType::Info) ||
             //                    (type == LineType::Debug) ||
             //LineType::Warning,
             //LineType::Error,
-            //LineType::GDB_Stop_Start,
+            //LineType::DAP_Stop_Start,
             (type == LineType::Queue) ||
             (type == LineType::Command) ||
             (type == LineType::CommandResult) ||
@@ -55,6 +55,7 @@ void LogPaneLogger::LogGDBMsgType(wxString const & functionName, int const iLine
 
     wxString logMsg = msg;
     wxString msgType;
+    Logger::level msgLogLevel = Logger::level::info;
     wxChar msgNewLineChar('-');
     wxString msgDeliminators = "[]";
     wxString msgNewLine(msgNewLineChar, 15);
@@ -79,11 +80,13 @@ void LogPaneLogger::LogGDBMsgType(wxString const & functionName, int const iLine
         case LineType::Warning:
             msgDeliminators = "##";
             msgType = "warning";
+            msgLogLevel = Logger::level::warning;
             break;
 
         case LineType::Error:
             msgDeliminators = "**";
             msgType = " ERROR";
+            msgLogLevel = Logger::level::error;
             //                #ifdef __MINGW32__
             //                    if (IsDebuggerPresent())
             //                    {
@@ -133,10 +136,10 @@ void LogPaneLogger::LogGDBMsgType(wxString const & functionName, int const iLine
 
             break;
 
-        case LineType::GDB_Stop_Start:
+        case LineType::DAP_Stop_Start:
             msgNewLineChar = '*';
             msgDeliminators = "==";
-            msgType = "GDB_Stop_Start";
+            msgType = "DAP_Stop_Start";
             msgPrefix.Append("\n");
             msgPrefix.Append(msgNewLine);
             msgAppend.Append(msgNewLine);
@@ -207,14 +210,14 @@ void LogPaneLogger::LogGDBMsgType(wxString const & functionName, int const iLine
 
     if (!msgPrefix.empty())
     {
-        m_dbgGDB->Log(msgPrefix);
+        m_dbgDAP->Log(msgPrefix, msgLogLevel);
     }
 
-    m_dbgGDB->Log(wxString::Format("%c%-8s%c <%42s(L%6d)> %s", msgDeliminators[0], msgType, msgDeliminators[1], classAndFunctionName, iLineNumber, logMsg), ::Logger::info);
+    m_dbgDAP->Log(wxString::Format("%c%-8s%c <%42s(L%6d)> %s", msgDeliminators[0], msgType, msgDeliminators[1], classAndFunctionName, iLineNumber, logMsg), msgLogLevel);
 
     if (!msgAppend.empty())
     {
-        m_dbgGDB->Log(msgAppend);
+        m_dbgDAP->Log(msgAppend, msgLogLevel);
     }
 }
 } //namespace dbg_DAP

@@ -1101,6 +1101,9 @@
 		<Unit filename="plugins/clangd_client/src/ClangLocator.h">
 			<Option target="Clangd_Client" />
 		</Unit>
+		<Unit filename="plugins/clangd_client/src/ClgdCCToken.h">
+			<Option target="Clangd_Client" />
+		</Unit>
 		<Unit filename="plugins/clangd_client/src/LSP_SymbolKind.h">
 			<Option target="Clangd_Client" />
 		</Unit>

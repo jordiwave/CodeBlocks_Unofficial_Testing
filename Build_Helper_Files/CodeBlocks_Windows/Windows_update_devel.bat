@@ -3,6 +3,8 @@
 @REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
 setlocal
 SET CurrentDir="%CD%"
+@rem set WXWIDGET_VERSION=3.1.7
+@rem set WX_DIR_VERSION=31
 set WXWIDGET_VERSION=3.2.0
 set WX_DIR_VERSION=32
 

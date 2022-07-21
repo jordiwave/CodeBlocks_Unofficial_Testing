@@ -27,7 +27,7 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
 
         wxString GetTitle() const override
         {
-            return "Debugger GDB/MI";
+            return "Debugger DAP/MI";
         }
         wxString GetBitmapBaseName() const override
         {
@@ -48,7 +48,7 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
         void LoadCurrentRemoteDebuggingRecord();
         void SaveCurrentRemoteDebuggingRecord();
 
-        Debugger_DAP * m_pDebuggerGDBMI;
+        Debugger_DAP * m_pDebuggerDAPMI;
         cbProject * m_pProject;
         wxArrayString m_OldPaths;
         //            RemoteDebuggingMap m_OldRemoteDebugging;

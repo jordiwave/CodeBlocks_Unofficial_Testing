@@ -123,6 +123,7 @@ endif
 
 noinst_HEADERS = \
 			src/ClangLocator.h \
+			src/ClgdCCToken.h \
 			src/codecompletion/ccoptionsdlg.h \
 			src/codecompletion/ccoptionsprjdlg.h \
 			src/codecompletion/cctreectrl.h \

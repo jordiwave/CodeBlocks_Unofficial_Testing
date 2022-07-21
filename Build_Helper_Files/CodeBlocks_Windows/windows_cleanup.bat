@@ -15,6 +15,9 @@ exit 1
 )
 echo C::B Root Directory is: %CD%
 
+@rem Build log files
+for /f "usebackq delims=^=^" %%a in (`"dir zz*.txt /b" 2^>nul`) do del /Q "%%a"
+
 @rem Remove directories
 for /f "usebackq delims=^=^" %%a in (`"dir *.libs           /ad/b/s" 2^>nul`) do rmdir /Q /S "%%a"
 for /f "usebackq delims=^=^" %%a in (`"dir *.deps           /ad/b/s" 2^>nul`) do rmdir /Q /S "%%a"
@@ -97,6 +100,10 @@ for /f "usebackq delims=^=^" %%a in (`"dir .objs3*  /ad/b/s" 2^>nul`)    do rmdi
 for /f "usebackq delims=^=^" %%a in (`"dir devel3*  /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
 for /f "usebackq delims=^=^" %%a in (`"dir output3* /ad/b/s" 2^>nul`)    do rmdir /Q /S  "%%a"
  
+@rem Build log files
+@cd /d %CurrentDir%
+for /f "usebackq delims=^=^" %%a in (`"dir "zz*.txt /b" 2^>nul`) do del /Q "%%a"
+
 :Finish
 @echo Done
 @cd /d %CurrentDir%

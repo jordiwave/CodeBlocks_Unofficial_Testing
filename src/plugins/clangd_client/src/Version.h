@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 67 $
- * $Id: Version.h 67 2022-06-30 18:38:38Z pecanh $
+ * $Revision: 68 $
+ * $Id: Version.h 68 2022-07-18 19:45:22Z pecanh $
  * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/Version.h $
  */
 
@@ -18,14 +18,14 @@
 
 #define LOGIT wxLogDebug
 #if defined(LOGGING)
-    #define LOGGING 1
-    #undef LOGIT
-    #define LOGIT wxLogMessage
-    #define TRAP asm("int3")
+ #define LOGGING 1
+ #undef LOGIT
+ #define LOGIT wxLogMessage
+ #define TRAP asm("int3")
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.30 2022/06/29")
+#define VERSION wxT("0.2.31 2022/07/16")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -35,19 +35,13 @@ class AppVersion
 // ----------------------------------------------------------------------------
 {
     public:
-        AppVersion()
-        {
-            m_version = VERSION;
-        }
-        ~AppVersion() {};
+        AppVersion() { m_version = VERSION;}
+       ~AppVersion(){};
 
-        wxString GetVersion()
-        {
-            return m_version;
-        }
+    wxString GetVersion(){return m_version;}
 
-        wxString m_version;
-        wxString m_AppName;
+    wxString m_version;
+    wxString m_AppName;
     protected:
     private:
 };
@@ -56,7 +50,31 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
-//0.2.30
+//0.2.31    Commit 2022/07/18 rev 68
+//          2022/07/16
+//          Parser::OnLSP_BatchTimer(): stop all background parsing when debugger is active (code rework).
+//              to see if it solves "Invalid AST" notifications after using the debugger.
+//          Revert use of ".utf8_string();" in ProcessLanguageClient::LSP_DidOpen()
+//              and LSP_DidChange() because it caused empty buffers to be sent to clangd
+//              when using chinese chars in editor text.
+//              Ref: https: forums.codeblocks.org/index.php/topic,24357.msg170563.html#msg170563
+//          2022/07/16 Apply AndrewCo patch #52 CCOptionsDlg changes
+//          2022/07/15
+//          Apply AndrewCo patch #52 ClangLocator changes
+//          2022/07/13
+//          Fixed: LSP_SymbolsParser::Parse() not initializing m_pControl to handle empty SemanticTokens.
+//          Fixed: OnEditorActivated() crash when using menu/File/New/File...
+//          Fixed: LSP messages log being closed before all open projects closed.
+//          2022/07/11
+//          Fix GetCompletionPopupDocumentation (again) to use completion and semantic token cache.
+//          Fix completion to append "()" to functions. Was missing when function
+//              was not local.
+//          2022/07/9
+//          Re-instate "Add function parens" options to DoAutoComplete()
+//          2022/07/7
+//          More santity checks for GetDocumentation() popup
+//          Commited ccmanager fix to CodeBlocks repo to fix ignored completion requests.
+//0.2.30    Commit 2022/06/30 rev 67
 //          2022/06/29
 //          Cut the chaff from hover response in Parser::OnLSP_HoverResponse()
 //          Parser::LSP_ParseSemanticTokens() add sanity checks for race condition.

@@ -7,6 +7,8 @@ setlocal
 
 set WXWIDGET_VERSION=3.2.0
 set WX_DIR_VERSION=32
+@rem set WXWIDGET_VERSION=3.1.7
+@rem set WX_DIR_VERSION=31
 
 set BUILD_BITS=%1
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay

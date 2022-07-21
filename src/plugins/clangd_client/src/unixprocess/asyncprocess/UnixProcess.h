@@ -33,79 +33,64 @@
 class CPipe
 // --------------------------------------------------------------
 {
-    private:
-        int fd[2];
+private:
+    int fd[2];
 
-    public:
-        const inline int read_fd() const
-        {
-            return fd[0];
-        }
-        const inline int write_fd() const
-        {
-            return fd[1];
-        }
-        CPipe()
-        {
-            pipe(fd);
-        }
-        void close()
-        {
-            ::close(fd[0]);
-            ::close(fd[1]);
-        }
-        ~CPipe()
-        {
-            close();
-        }
+public:
+    const inline int read_fd() const { return fd[0]; }
+    const inline int write_fd() const { return fd[1]; }
+    CPipe() { pipe(fd); }
+    void close()
+    {
+        ::close(fd[0]);
+        ::close(fd[1]);
+    }
+    ~CPipe() { close(); }
 };
 
 // --------------------------------------------------------------
 class UnixProcess : public wxEvtHandler
 // --------------------------------------------------------------
 {
-    private:
-        CPipe m_childStdin;
-        CPipe m_childStdout;
-        CPipe m_childStderr;
-        std::thread * m_writerThread = nullptr;
-        std::thread * m_readerThread = nullptr;
-        wxMessageQueue<std::string> m_outgoingQueue;
-        std::atomic_bool m_goingDown;
-        wxEvtHandler * m_owner = nullptr;
+private:
+    CPipe m_childStdin;
+    CPipe m_childStdout;
+    CPipe m_childStderr;
+    std::thread* m_writerThread = nullptr;
+    std::thread* m_readerThread = nullptr;
+    wxMessageQueue<std::string> m_outgoingQueue;
+    std::atomic_bool m_goingDown;
+    wxEvtHandler* m_owner = nullptr;
 
-    protected:
-        // sync operations
-        static bool ReadAll(int fd, std::string & content, int timeoutMilliseconds);
-        static bool Write(int fd, const std::string & message, std::atomic_bool & shutdown);
+protected:
+    // sync operations
+    static bool ReadAll(int fd, std::string& content, int timeoutMilliseconds);
+    static bool Write(int fd, const std::string& message, std::atomic_bool& shutdown);
 
-        void StartWriterThread();
-        void StartReaderThread();
+    void StartWriterThread();
+    void StartReaderThread();
 
-    public:
-        int child_pid = -1;
+public:
+    int child_pid = -1;
 
-        UnixProcess(wxEvtHandler * owner, const wxArrayString & args);
-        ~UnixProcess();
+    UnixProcess(wxEvtHandler* owner, const wxArrayString& args);
+    ~UnixProcess();
 
-        int GetPid()
-        {
-            return (child_pid > 0 ? child_pid : 0);
-        }
+    int GetPid(){return (child_pid > 0 ? child_pid : 0);}
 
-        // wait for process termination
-        int Wait();
+    // wait for process termination
+    int Wait();
 
-        // Async calls with callbacks
-        void Write(const std::string & message);
+    // Async calls with callbacks
+    void Write(const std::string& message);
 
-        // stop the running process
-        void Stop();
+    // stop the running process
+    void Stop();
 
-        /**
-         * @brief stop sending events from the process
-         */
-        void Detach();
+    /**
+     * @brief stop sending events from the process
+     */
+    void Detach();
 };
 #endif // defined(__WXGTK__)||defined(__WXOSX__)
 #endif // UNIX_PROCESS_H

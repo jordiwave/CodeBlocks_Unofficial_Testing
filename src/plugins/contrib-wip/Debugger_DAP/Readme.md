@@ -69,12 +69,12 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Watches created on project open                         |           |            |
 |                                                             |           |            |
 | **Breakpoints**                                             |           |            |
-|   * Add line break point before starting the debugger       |  27-Jun   |    Pass    |
-|   * Add line break point after the starting the debugger    |  27-Jun   |    Pass    |
+|   * Add line break point before starting the debugger       |  20-Jul   |    Pass    |
+|   * Add line break point after the starting the debugger    |  20-Jul   |    Pass    |
 |   * Debug menu option to Toggle line break point (F5)       |           |            |
 |   * Debug menu option to Remove all breakpoints             |           |            |
 |   * Disable/Enable line break point via pop up menu         |           |            |
-|   * Remove line break point                                 |           |            |
+|   * Remove line break point                                 |  20-Jul   |    Pass    |
 |   * Edit line break point                                   |           |            |
 |     * ignore count before break                             |           |            |
 |     * break when expression is true                         |           |            |
@@ -82,7 +82,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Break points data saved on project close                |  27-Jun   |    Pass    |
 |   * Break points removed after closing the project          |           |            |
 |   * Break points removed after changing debugger            |           |            |
-|   * Break points created on project open                    |  27-Jun   |    Pass    |
+|   * Break points created on project open                    |  19-Jul   |    Fail    |
 |                                                             |           |            |
 | **Exception Handling**                                      |           |            |
 |   * Linux Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
@@ -158,8 +158,10 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Data used by Plugin                                     |           |            |
 |                                                             |           |            |
 | **DAP Debugger configuration dialog**                       |           |            |
-|   * Show debugger options dialog                            |           |            |
-|   * Close debugger options dialog                           |           |            |
+|   * Show debugger options dialog                            |  19-Jul   |   Pass     |
+|   * Close debugger options dialog                           |  19-Jul   |   Pass     |
+|   * Auto detected lldb-vscode exe                           |  19-Jul   |   Pass     |
+|   * Default port # configured                               |  19-Jul   |   Pass     |
 |   * Executable path save/loaded/used                        |           |            |
 |   * Arguments save/loaded/used                              |           |            |
 |   * Arguments used in starting debugger                     |           |            |
@@ -194,7 +196,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Create and test DAP cbplugin for MacOS                  |   8-Jul   |   Pass     |
 |                                                             |           |            |
 
-The table above was updated on 08-Jul-2022.
+The table above was updated on 20-Jul-2022.
 
 NOTES:
  "PASS"     - initial testing showed the item worked as expected, but changes since may have broken it... Please raise an issue if you find it broken.
