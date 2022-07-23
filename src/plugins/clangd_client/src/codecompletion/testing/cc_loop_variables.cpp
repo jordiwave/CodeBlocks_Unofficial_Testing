@@ -2,6 +2,7 @@
 void Function1(void)
 {
     int some_int;
+
     for (int for_int = 0; for_int < 5; ++for_int)
     {
         //some  //some_int
@@ -16,6 +17,7 @@ void Function2(void)
 
     // hover on "value1"
     if (!value1) {}
+
     // hover on "value1" and "value2"
     if (value1 && value2) {}
 
@@ -30,6 +32,7 @@ void Function2(void)
 void Function3(void)
 {
     int for_int = 0;
+
     for (; for_int < 5; ++for_int)
     {
         //for   //for_int

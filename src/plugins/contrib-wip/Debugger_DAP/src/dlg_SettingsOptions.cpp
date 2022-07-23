@@ -114,6 +114,8 @@ wxPanel * DebuggerConfiguration::MakePanel(wxWindow * parent)
     XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->SetValue(GetFlag(AddOtherProjectDirs));
     XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->SetValue(GetFlag(DoNotRun));
     XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->SetValue(GetFlag(PersistDebugElements));
+    XRCCTRL(*panel, "chkStopOnMain",            wxCheckBox)->SetValue(GetFlag(StopOnMain));
+    XRCCTRL(*panel, "chkRunDAPServer",          wxCheckBox)->SetValue(GetFlag(RunDAPServer));
     XRCCTRL(*panel, "choDisassemblyFlavor",     wxChoice)->SetSelection(m_config.ReadInt("disassembly_flavor", 0));
     XRCCTRL(*panel, "txtInstructionSet",        wxTextCtrl)->ChangeValue(m_config.Read("instruction_set", wxEmptyString));
     return panel;
@@ -121,17 +123,19 @@ wxPanel * DebuggerConfiguration::MakePanel(wxWindow * parent)
 
 bool DebuggerConfiguration::SaveChanges(wxPanel * panel)
 {
-    m_config.Write("executable_path",       XRCCTRL(*panel, "txtDAPExecutable",        wxTextCtrl)->GetValue());
-    m_config.Write("port_number",           XRCCTRL(*panel, "txtPortNumber",           wxTextCtrl)->GetValue());
-    m_config.Write("init_commands",         XRCCTRL(*panel, "txtInit",                 wxTextCtrl)->GetValue());
-    m_config.Write("watch_locals_and_args", XRCCTRL(*panel, "chkWatchLocalsandArgs",   wxCheckBox)->GetValue());
-    m_config.Write("catch_exceptions",      XRCCTRL(*panel, "chkCatchExceptions",      wxCheckBox)->GetValue());
-    m_config.Write("eval_tooltip",          XRCCTRL(*panel, "chkTooltipEval",          wxCheckBox)->GetValue());
-    m_config.Write("add_other_search_dirs", XRCCTRL(*panel, "chkAddForeignDirs",       wxCheckBox)->GetValue());
-    m_config.Write("do_not_run_debuggee",   XRCCTRL(*panel, "chkDoNotRun",             wxCheckBox)->GetValue());
-    m_config.Write("persist_debug_elements", XRCCTRL(*panel, "chkPersistDebugElements", wxCheckBox)->GetValue());
-    m_config.Write("disassembly_flavor",    XRCCTRL(*panel, "choDisassemblyFlavor",    wxChoice)->GetSelection());
-    m_config.Write("instruction_set",       XRCCTRL(*panel, "txtInstructionSet",       wxTextCtrl)->GetValue());
+    m_config.Write("executable_path",       XRCCTRL(*panel, "txtDAPExecutable",         wxTextCtrl)->GetValue());
+    m_config.Write("port_number",           XRCCTRL(*panel, "txtPortNumber",            wxTextCtrl)->GetValue());
+    m_config.Write("init_commands",         XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->GetValue());
+    m_config.Write("watch_locals_and_args", XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->GetValue());
+    m_config.Write("catch_exceptions",      XRCCTRL(*panel, "chkCatchExceptions",       wxCheckBox)->GetValue());
+    m_config.Write("eval_tooltip",          XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->GetValue());
+    m_config.Write("add_other_search_dirs", XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->GetValue());
+    m_config.Write("do_not_run_debuggee",   XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->GetValue());
+    m_config.Write("persist_debug_elements", XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->GetValue());
+    m_config.Write("stop_on_main",          XRCCTRL(*panel, "chkStopOnMain",            wxCheckBox)->GetValue());
+    m_config.Write("run_DAP_server",        XRCCTRL(*panel, "chkRunDAPServer",          wxCheckBox)->GetValue());
+    m_config.Write("disassembly_flavor",    XRCCTRL(*panel, "choDisassemblyFlavor",     wxChoice)->GetSelection());
+    m_config.Write("instruction_set",       XRCCTRL(*panel, "txtInstructionSet",        wxTextCtrl)->GetValue());
     return true;
 }
 
@@ -155,7 +159,13 @@ bool DebuggerConfiguration::GetFlag(Flags flag)
             return m_config.ReadBool("do_not_run_debuggee", false);
 
         case PersistDebugElements:
-            return m_config.ReadBool("persist_debug_elements", true);
+            return m_config.ReadBool("persist_debug_elements", false);
+
+        case StopOnMain:
+            return m_config.ReadBool("stop_on_main", false);
+
+        case RunDAPServer:
+            return m_config.ReadBool("run_DAP_server", true);
 
         default:
             return false;
@@ -187,6 +197,12 @@ void DebuggerConfiguration::SetFlag(Flags flag, bool value)
 
         case PersistDebugElements:
             m_config.Write("persist_debug_elements", value);
+
+        case StopOnMain:
+            m_config.Write("stop_on_main", value);
+
+        case RunDAPServer:
+            m_config.Write("run_DAP_server", value);
 
         default:
             ;

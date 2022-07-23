@@ -28,8 +28,10 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
             CatchExceptions,
             EvalExpression,
             AddOtherProjectDirs,
+            DoNotRun,
             PersistDebugElements,
-            DoNotRun
+            StopOnMain,
+            RunDAPServer
         };
 
         bool GetFlag(Flags flag);

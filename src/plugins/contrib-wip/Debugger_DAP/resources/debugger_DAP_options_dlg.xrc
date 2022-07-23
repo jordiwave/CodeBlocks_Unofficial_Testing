@@ -124,6 +124,18 @@
 						</object>
 						<flag>wxEXPAND</flag>
 					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkStopOnMain">
+							<label>Stop at main</label>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkRunDAPServer">
+							<label>Run DAP server</label>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+					</object>
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>

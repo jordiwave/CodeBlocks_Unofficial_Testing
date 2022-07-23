@@ -8,7 +8,8 @@
 #define max ORIG_MAX
 #define min ORIG_MIN
 
-struct Test {
+struct Test
+{
     int test;
     int min;
 

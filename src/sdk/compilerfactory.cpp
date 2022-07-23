@@ -417,32 +417,32 @@ Compiler * CompilerFactory::SelectCompilerUI(const wxString & message, const wxS
             continue;
         }
 
+        // Only check if an actual compiler, ignore "NO compiler"
         wxString currentCompilerID = compiler->GetID();
 
-        // Only check if an actual compiler, ignore "NO compiler"
         if (!currentCompilerID.IsSameAs("null"))
         {
             wxString path = compiler->GetMasterPath();
 
             if (!path.IsEmpty() && wxFileName::DirExists(path))
             {
-                compilerChoices.Add(Compilers[i]->GetName());
-            }
+                const size_t pos = compilerChoices.Add(Compilers[i]->GetName());
 
-            if (selected == -1)
-            {
-                if (lid.IsEmpty())
+                if (selected == -1)
                 {
-                    if (Compilers[i] == s_DefaultCompiler)
+                    if (lid.empty())
                     {
-                        selected = i;
+                        if (Compilers[i] == s_DefaultCompiler)
+                        {
+                            selected = pos;
+                        }
                     }
-                }
-                else
-                {
-                    if (Compilers[i]->GetID().IsSameAs(lid))
+                    else
                     {
-                        selected = i;
+                        if (Compilers[i]->GetID().IsSameAs(lid))
+                        {
+                            selected = pos;
+                        }
                     }
                 }
             }

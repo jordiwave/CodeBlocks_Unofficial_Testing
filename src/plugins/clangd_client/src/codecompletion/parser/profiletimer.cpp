@@ -27,20 +27,24 @@ void ProfileTimerData::Zero()
     m_Count = 0;
 }
 
-ProfileTimerHelper::ProfileTimerHelper(ProfileTimerData& profileTimerData) :
+ProfileTimerHelper::ProfileTimerHelper(ProfileTimerData & profileTimerData) :
     m_ProfileTimerData(profileTimerData)
 {
     if (m_ProfileTimerData.m_Count++ == 0)
+    {
         m_ProfileTimerData.m_StopWatch.Resume();
+    }
 }
 
 ProfileTimerHelper::~ProfileTimerHelper()
 {
     if (--m_ProfileTimerData.m_Count == 0)
+    {
         m_ProfileTimerData.m_StopWatch.Pause();
+    }
 }
 
-/* static */ size_t ProfileTimer::Registry(ProfileTimerData* ptd, const wxString& funcName)
+/* static */ size_t ProfileTimer::Registry(ProfileTimerData * ptd, const wxString & funcName)
 {
     m_ProfileMap[ptd] = funcName;
     return 1;

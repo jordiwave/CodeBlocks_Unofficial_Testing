@@ -47,76 +47,84 @@
 #endif
 
 #if CC_CODEREFACTORING_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
-        CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE(format, args...) \
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+#define TRACE2(format, args...)
 #elif CC_CODEREFACTORING_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
-        do                                                                      \
-        {                                                                       \
-            if (g_EnableDebugTrace)                                             \
-                CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
-        }                                                                       \
-        while (false)
-    #define TRACE2(format, args...) \
-        CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+#define TRACE(format, args...)                                              \
+    do                                                                      \
+    {                                                                       \
+        if (g_EnableDebugTrace)                                             \
+            CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
+    }                                                                       \
+    while (false)
+#define TRACE2(format, args...) \
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 // ----------------------------------------------------------------------------
 class ScopeDialog : public wxDialog
 // ----------------------------------------------------------------------------
 {
-public:
-    ScopeDialog(wxWindow* parent, const wxString& title) :
-        wxDialog(parent, wxID_ANY, title)
-    {
-        wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-        wxBoxSizer* infoSizer = new wxBoxSizer(wxHORIZONTAL);
-        const wxBitmap iconBmp = wxArtProvider::GetBitmap(wxT("core/find"), wxART_BUTTON);
-        wxStaticBitmap* findIco = new wxStaticBitmap(this, wxID_ANY, iconBmp, wxDefaultPosition,
-                                                     wxSize(iconBmp.GetWidth(),
-                                                            iconBmp.GetHeight()));
-        infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-        wxStaticText* scopeText = new wxStaticText(this, wxID_ANY, _("Please choose the find scope for search tokens"));
-        infoSizer->Add(scopeText, 1, wxALL | wxALIGN_CENTER_VERTICAL,
-                       wxDLG_UNIT(this, wxSize(5, 0)).GetWidth());
-        sizer->Add(infoSizer, 1, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-        wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
-        m_OpenFiles = new wxButton(this, ID_OPEN_FILES, _("&Open files"), wxDefaultPosition, wxDefaultSize, 0,
-                                   wxDefaultValidator, _T("ID_OPEN_FILES"));
-        m_OpenFiles->SetDefault();
-        btnSizer->Add(m_OpenFiles, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-        m_ProjectFiles = new wxButton(this, ID_PROJECT_FILES, _("&Project files"), wxDefaultPosition,
-                                      wxDefaultSize, 0, wxDefaultValidator, _T("ID_PROJECT_FILES"));
-        btnSizer->Add(m_ProjectFiles, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-        wxButton *closeButton = new wxButton(this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition,
-                                      wxDefaultSize);
-        btnSizer->Add(closeButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-        sizer->Add(btnSizer, 1, wxBOTTOM | wxLEFT | wxRIGHT | wxALIGN_CENTER_HORIZONTAL, 5);
-        SetSizer(sizer);
-        sizer->Fit(this);
-        sizer->SetSizeHints(this);
-        Center();
+    public:
+        ScopeDialog(wxWindow * parent, const wxString & title) :
+            wxDialog(parent, wxID_ANY, title)
+        {
+            wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
+            wxBoxSizer * infoSizer = new wxBoxSizer(wxHORIZONTAL);
+            const wxBitmap iconBmp = wxArtProvider::GetBitmap(wxT("core/find"), wxART_BUTTON);
+            wxStaticBitmap * findIco = new wxStaticBitmap(this, wxID_ANY, iconBmp, wxDefaultPosition,
+                                                          wxSize(iconBmp.GetWidth(),
+                                                                 iconBmp.GetHeight()));
+            infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+            wxStaticText * scopeText = new wxStaticText(this, wxID_ANY, _("Please choose the find scope for search tokens"));
+            infoSizer->Add(scopeText, 1, wxALL | wxALIGN_CENTER_VERTICAL,
+                           wxDLG_UNIT(this, wxSize(5, 0)).GetWidth());
+            sizer->Add(infoSizer, 1, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+            wxBoxSizer * btnSizer = new wxBoxSizer(wxHORIZONTAL);
+            m_OpenFiles = new wxButton(this, ID_OPEN_FILES, _("&Open files"), wxDefaultPosition, wxDefaultSize, 0,
+                                       wxDefaultValidator, _T("ID_OPEN_FILES"));
+            m_OpenFiles->SetDefault();
+            btnSizer->Add(m_OpenFiles, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+            m_ProjectFiles = new wxButton(this, ID_PROJECT_FILES, _("&Project files"), wxDefaultPosition,
+                                          wxDefaultSize, 0, wxDefaultValidator, _T("ID_PROJECT_FILES"));
+            btnSizer->Add(m_ProjectFiles, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+            wxButton * closeButton = new wxButton(this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition,
+                                                  wxDefaultSize);
+            btnSizer->Add(closeButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+            sizer->Add(btnSizer, 1, wxBOTTOM | wxLEFT | wxRIGHT | wxALIGN_CENTER_HORIZONTAL, 5);
+            SetSizer(sizer);
+            sizer->Fit(this);
+            sizer->SetSizeHints(this);
+            Center();
+            Connect(ID_OPEN_FILES, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ScopeDialog::OnOpenFilesClick);
+            Connect(ID_PROJECT_FILES, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ScopeDialog::OnProjectFilesClick);
+            Connect(wxID_ANY, wxEVT_CLOSE_WINDOW, (wxObjectEventFunction)&ScopeDialog::OnClose);
+        }
 
-        Connect(ID_OPEN_FILES, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ScopeDialog::OnOpenFilesClick);
-        Connect(ID_PROJECT_FILES, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ScopeDialog::OnProjectFilesClick);
-        Connect(wxID_ANY, wxEVT_CLOSE_WINDOW, (wxObjectEventFunction)&ScopeDialog::OnClose);
-    }
+    public:
+        static const long ID_OPEN_FILES;
+        static const long ID_PROJECT_FILES;
 
-public:
-    static const long ID_OPEN_FILES;
-    static const long ID_PROJECT_FILES;
+    private:
+        void OnClose(cb_unused wxCloseEvent & event)
+        {
+            EndDialog(wxID_CLOSE);
+        }
+        void OnOpenFilesClick(cb_unused wxCommandEvent & event)
+        {
+            EndDialog(ID_OPEN_FILES);
+        }
+        void OnProjectFilesClick(cb_unused wxCommandEvent & event)
+        {
+            EndDialog(ID_PROJECT_FILES);
+        }
 
-private:
-    void OnClose(cb_unused wxCloseEvent& event) { EndDialog(wxID_CLOSE); }
-    void OnOpenFilesClick(cb_unused wxCommandEvent& event) { EndDialog(ID_OPEN_FILES);}
-    void OnProjectFilesClick(cb_unused wxCommandEvent& event) { EndDialog(ID_PROJECT_FILES); }
-
-    wxButton* m_OpenFiles;
-    wxButton* m_ProjectFiles;
+        wxButton * m_OpenFiles;
+        wxButton * m_ProjectFiles;
 };
 
 const long ScopeDialog::ID_OPEN_FILES = wxNewId();
@@ -124,8 +132,8 @@ const long ScopeDialog::ID_PROJECT_FILES = wxNewId();
 
 
 // ----------------------------------------------------------------------------
-CodeRefactoring::CodeRefactoring(ParseManager* pParseManager) :
-// ----------------------------------------------------------------------------
+CodeRefactoring::CodeRefactoring(ParseManager * pParseManager) :
+    // ----------------------------------------------------------------------------
     m_pParseManager(pParseManager)
 {
 }
@@ -138,15 +146,21 @@ CodeRefactoring::~CodeRefactoring()
 wxString CodeRefactoring::GetSymbolUnderCursor()
 // ----------------------------------------------------------------------------
 {
-    EditorManager* edMan = Manager::Get()->GetEditorManager();
-    cbEditor* editor = edMan->GetBuiltinActiveEditor();
-    if (!editor)
-        return wxEmptyString;
+    EditorManager * edMan = Manager::Get()->GetEditorManager();
+    cbEditor * editor = edMan->GetBuiltinActiveEditor();
 
-    cbStyledTextCtrl* control = editor->GetControl();
-    const int style = control->GetStyleAt(control->GetCurrentPos());
-    if (control->IsString(style) || control->IsComment(style))
+    if (!editor)
+    {
         return wxEmptyString;
+    }
+
+    cbStyledTextCtrl * control = editor->GetControl();
+    const int style = control->GetStyleAt(control->GetCurrentPos());
+
+    if (control->IsString(style) || control->IsComment(style))
+    {
+        return wxEmptyString;
+    }
 
     if (!m_pParseManager->GetParser().Done())
     {
@@ -154,7 +168,6 @@ wxString CodeRefactoring::GetSymbolUnderCursor()
         cbMessageBox(msg, _("Code Refactoring"), wxOK | wxICON_WARNING);
         msg += m_pParseManager->GetParser().NotDoneReason();
         CCLogger::Get()->DebugLog(msg);
-
         return wxEmptyString;
     }
 
@@ -169,66 +182,65 @@ bool CodeRefactoring::Parse()
 {
     cbThrow("CodeRefactoring::Parse() calling m_pParseManager->MarkItemsByAI()");
     return false;
-
-//    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-//    if (!editor)
-//        return false;
-//
-//    const wxString targetText = GetSymbolUnderCursor();
-//    if (targetText.IsEmpty())
-//        return false;
-//
-//    TokenIdxSet targetResult;
-//    const int endOfWord = editor->GetControl()->WordEndPosition(editor->GetControl()->GetCurrentPos(), true);
-//    m_pParseManager->MarkItemsByAI(targetResult, true, false, true, endOfWord);
-//    if (targetResult.empty())
-//    {
-//        cbMessageBox(_("Symbol not found under cursor!"), _("Code Refactoring"), wxOK | wxICON_WARNING);
-//        return false;
-//    }
-//
-//    // handle local variables
-//    bool isLocalVariable = false;
-//
-//    TokenTree* tree = m_pParseManager->GetParser().GetTokenTree();
-//
-//    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-//
-//    const Token* token = tree->at(*targetResult.begin());
-//    if (token)
-//    {
-//        const Token* parent = tree->at(token->m_ParentIndex);
-//        if (parent && parent->m_TokenKind == tkFunction)
-//            isLocalVariable = true;
-//    }
-//
-//    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-//
-//    wxArrayString files;
-//    cbProject* project = m_pParseManager->GetProjectByEditor(editor);
-//    if (isLocalVariable || !project)
-//        files.Add(editor->GetFilename());
-//    else
-//    {
-//        ScopeDialog scopeDlg(Manager::Get()->GetAppWindow(), _("Code Refactoring"));
-//        PlaceWindow(&scopeDlg);
-//        const int ret = scopeDlg.ShowModal();
-//        if (ret == ScopeDialog::ID_OPEN_FILES)
-//            GetOpenedFiles(files);
-//        else if (ret == ScopeDialog::ID_PROJECT_FILES)
-//            GetAllProjectFiles(files, project);
-//        else
-//            return false;
-//    }
-//
-//    if (files.IsEmpty())
-//        return false;
-//
-//    size_t count = SearchInFiles(files, targetText);
-//    if (count)
-//        count = VerifyResult(targetResult, targetText, isLocalVariable);
-//
-//    return count != 0;
+    //    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    //    if (!editor)
+    //        return false;
+    //
+    //    const wxString targetText = GetSymbolUnderCursor();
+    //    if (targetText.IsEmpty())
+    //        return false;
+    //
+    //    TokenIdxSet targetResult;
+    //    const int endOfWord = editor->GetControl()->WordEndPosition(editor->GetControl()->GetCurrentPos(), true);
+    //    m_pParseManager->MarkItemsByAI(targetResult, true, false, true, endOfWord);
+    //    if (targetResult.empty())
+    //    {
+    //        cbMessageBox(_("Symbol not found under cursor!"), _("Code Refactoring"), wxOK | wxICON_WARNING);
+    //        return false;
+    //    }
+    //
+    //    // handle local variables
+    //    bool isLocalVariable = false;
+    //
+    //    TokenTree* tree = m_pParseManager->GetParser().GetTokenTree();
+    //
+    //    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+    //
+    //    const Token* token = tree->at(*targetResult.begin());
+    //    if (token)
+    //    {
+    //        const Token* parent = tree->at(token->m_ParentIndex);
+    //        if (parent && parent->m_TokenKind == tkFunction)
+    //            isLocalVariable = true;
+    //    }
+    //
+    //    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+    //
+    //    wxArrayString files;
+    //    cbProject* project = m_pParseManager->GetProjectByEditor(editor);
+    //    if (isLocalVariable || !project)
+    //        files.Add(editor->GetFilename());
+    //    else
+    //    {
+    //        ScopeDialog scopeDlg(Manager::Get()->GetAppWindow(), _("Code Refactoring"));
+    //        PlaceWindow(&scopeDlg);
+    //        const int ret = scopeDlg.ShowModal();
+    //        if (ret == ScopeDialog::ID_OPEN_FILES)
+    //            GetOpenedFiles(files);
+    //        else if (ret == ScopeDialog::ID_PROJECT_FILES)
+    //            GetAllProjectFiles(files, project);
+    //        else
+    //            return false;
+    //    }
+    //
+    //    if (files.IsEmpty())
+    //        return false;
+    //
+    //    size_t count = SearchInFiles(files, targetText);
+    //    if (count)
+    //        count = VerifyResult(targetResult, targetText, isLocalVariable);
+    //
+    //    return count != 0;
 }
 
 ////// ----------------------------------------------------------------------------
@@ -243,44 +255,50 @@ bool CodeRefactoring::Parse()
 void CodeRefactoring::RenameSymbols()
 // ----------------------------------------------------------------------------
 {
-
 }
 
 // ----------------------------------------------------------------------------
-size_t CodeRefactoring::SearchInFiles(const wxArrayString& files, const wxString& targetText)
+size_t CodeRefactoring::SearchInFiles(const wxArrayString & files, const wxString & targetText)
 // ----------------------------------------------------------------------------
 {
-    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    EditorManager * edMan = Manager::Get()->GetEditorManager();
     m_SearchDataMap.clear();
-
     // now that list is filled, we'll search
-    wxWindow* parent = edMan->GetBuiltinActiveEditor()->GetParent();
-    cbStyledTextCtrl* control = new cbStyledTextCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(0, 0));
+    wxWindow * parent = edMan->GetBuiltinActiveEditor()->GetParent();
+    cbStyledTextCtrl * control = new cbStyledTextCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(0, 0));
     control->Show(false);
-
     // let's create a progress dialog because it might take some time depending on the files count
-    wxProgressDialog* progress = new wxProgressDialog(_("Code Refactoring"),
-                                                      _("Please wait while searching inside the project..."),
-                                                      files.GetCount(),
-                                                      Manager::Get()->GetAppWindow(),
-                                                      wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+    wxProgressDialog * progress = new wxProgressDialog(_("Code Refactoring"),
+                                                       _("Please wait while searching inside the project..."),
+                                                       files.GetCount(),
+                                                       Manager::Get()->GetAppWindow(),
+                                                       wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
     PlaceWindow(progress);
 
     for (size_t i = 0; i < files.GetCount(); ++i)
     {
         // update the progress bar
         if (!progress->Update(i))
-            break; // user pressed "Cancel"
+        {
+            break;    // user pressed "Cancel"
+        }
 
         // check if the file is already opened in built-in editor and do search in it
-        cbEditor* ed = edMan->IsBuiltinOpen(files[i]);
+        cbEditor * ed = edMan->IsBuiltinOpen(files[i]);
+
         if (ed)
+        {
             control->SetText(ed->GetControl()->GetText());
+        }
         else // else load the file in the control
         {
             EncodingDetector detector(files[i]);
+
             if (!detector.IsOK())
-                continue; // failed
+            {
+                continue;    // failed
+            }
+
             control->SetText(detector.GetWxStr());
         }
 
@@ -289,164 +307,162 @@ size_t CodeRefactoring::SearchInFiles(const wxArrayString& files, const wxString
 
     delete control; // done with it
     delete progress; // done here too
-
     return m_SearchDataMap.size();
 }
 
-size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxString& targetText,
+size_t CodeRefactoring::VerifyResult(const TokenIdxSet & targetResult, const wxString & targetText,
                                      bool isLocalVariable)
 {
     cbThrow("CodeRefactoring::VerifyResult() calling  m_pParseManager->MarkItemsByAI()");
     return 0;
-
-//    EditorManager* edMan = Manager::Get()->GetEditorManager();
-//    cbEditor* editor = edMan->GetBuiltinActiveEditor();
-//    if (!editor)
-//        return 0;
-//
-//    const Token* parentOfLocalVariable = nullptr;
-//    if (isLocalVariable)
-//    {
-//        TokenTree* tree = m_pParseManager->GetParser().GetTokenTree();
-//
-//        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-//
-//        const Token* token = tree->at(*targetResult.begin());
-//        parentOfLocalVariable = tree->at(token->m_ParentIndex);
-//
-//        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-//    }
-//
-//    // now that list is filled, we'll search
-//    cbStyledTextCtrl* control = new cbStyledTextCtrl(editor->GetParent(), wxID_ANY, wxDefaultPosition,
-//                                                     wxSize(0, 0));
-//    control->Show(false);
-//
-//    // styled the text to support control->GetStyleAt()
-//    cbEditor::ApplyStyles(control);
-//    EditorColourSet edColSet;
-//
-//    size_t totalCount = 0;
-//    for (SearchDataMap::const_iterator it = m_SearchDataMap.begin(); it != m_SearchDataMap.end(); ++it)
-//        totalCount += it->second.size();
-//
-//    // let's create a progress dialog because it might take some time depending on the files count
-//    wxProgressDialog* progress = new wxProgressDialog(_("Code Refactoring"),
-//                                                      _("Please wait while verifying result..."),
-//                                                      totalCount,
-//                                                      Manager::Get()->GetAppWindow(),
-//                                                      wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
-//    PlaceWindow(progress);
-//
-//    size_t task = totalCount;
-//    TokenIdxSet result;
-//    bool userBreak = false;
-//    for (SearchDataMap::iterator it = m_SearchDataMap.begin(); it != m_SearchDataMap.end();)
-//    {
-//        // check if the file is already opened in built-in editor and do search in it
-//        cbEditor* ed = edMan->IsBuiltinOpen(it->first);
-//        if (ed)
-//            control->SetText(ed->GetControl()->GetText());
-//        else // else load the file in the control
-//        {
-//            EncodingDetector detector(it->first);
-//            if (!detector.IsOK())
-//            {
-//                task -= it->second.size();
-//                m_SearchDataMap.erase(it++);
-//                continue; // failed
-//            }
-//            control->SetText(detector.GetWxStr());
-//        }
-//
-//        // apply the corlor setting
-//        edColSet.Apply(editor->GetLanguage(), control, false, true);
-//
-//        ccSearchData searchData = { control, it->first };
-//        for (SearchDataList::iterator itList = it->second.begin(); itList != it->second.end();)
-//        {
-//            // update the progress bar
-//            if (!progress->Update(totalCount - (--task)))
-//            {
-//                userBreak = true;
-//                break; // user pressed "Cancel"
-//            }
-//
-//            // skip string or comment
-//            const int style = control->GetStyleAt(itList->pos);
-//            if (control->IsString(style) || control->IsComment(style))
-//            {
-//                it->second.erase(itList++);
-//                continue;
-//            }
-//
-//            // do cc search
-//            const int endOfWord = itList->pos + targetText.Len();
-//            control->GotoPos(endOfWord);
-//            m_pParseManager->MarkItemsByAI(&searchData, result, true, false, true, endOfWord);
-//            if (result.empty())
-//            {
-//                it->second.erase(itList++);
-//                continue;
-//            }
-//
-//            // verify result
-//            TokenIdxSet::const_iterator findIter = targetResult.begin();
-//            for (; findIter != targetResult.end(); ++findIter)
-//            {
-//                if (result.find(*findIter) != result.end())
-//                    break;
-//            }
-//
-//            if (findIter == targetResult.end()) // not found
-//                it->second.erase(itList++);
-//            else
-//            {
-//                // handle for local variable
-//                if (isLocalVariable)
-//                {
-//                    bool do_continue = false;
-//
-//                    TokenTree* tree = m_pParseManager->GetParser().GetTokenTree();
-//
-//                    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-//
-//                    const Token* token = tree->at(*findIter);
-//                    if (token)
-//                    {
-//                        const Token* parent = tree->at(token->m_ParentIndex);
-//                        if (parent != parentOfLocalVariable)
-//                        {
-//                            it->second.erase(itList++);
-//                            do_continue = true;
-//                        }
-//                    }
-//
-//                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-//
-//                    if (do_continue) continue;
-//                }
-//
-//                ++itList;
-//            }
-//        }
-//
-//        if (it->second.empty())
-//            m_SearchDataMap.erase(it++);
-//        else
-//            ++it;
-//
-//        if (userBreak)
-//            break;
-//    }
-//
-//    delete control; // done with it
-//    delete progress; // done here too
-//
-//    return m_SearchDataMap.size();
+    //    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    //    cbEditor* editor = edMan->GetBuiltinActiveEditor();
+    //    if (!editor)
+    //        return 0;
+    //
+    //    const Token* parentOfLocalVariable = nullptr;
+    //    if (isLocalVariable)
+    //    {
+    //        TokenTree* tree = m_pParseManager->GetParser().GetTokenTree();
+    //
+    //        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+    //
+    //        const Token* token = tree->at(*targetResult.begin());
+    //        parentOfLocalVariable = tree->at(token->m_ParentIndex);
+    //
+    //        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+    //    }
+    //
+    //    // now that list is filled, we'll search
+    //    cbStyledTextCtrl* control = new cbStyledTextCtrl(editor->GetParent(), wxID_ANY, wxDefaultPosition,
+    //                                                     wxSize(0, 0));
+    //    control->Show(false);
+    //
+    //    // styled the text to support control->GetStyleAt()
+    //    cbEditor::ApplyStyles(control);
+    //    EditorColourSet edColSet;
+    //
+    //    size_t totalCount = 0;
+    //    for (SearchDataMap::const_iterator it = m_SearchDataMap.begin(); it != m_SearchDataMap.end(); ++it)
+    //        totalCount += it->second.size();
+    //
+    //    // let's create a progress dialog because it might take some time depending on the files count
+    //    wxProgressDialog* progress = new wxProgressDialog(_("Code Refactoring"),
+    //                                                      _("Please wait while verifying result..."),
+    //                                                      totalCount,
+    //                                                      Manager::Get()->GetAppWindow(),
+    //                                                      wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+    //    PlaceWindow(progress);
+    //
+    //    size_t task = totalCount;
+    //    TokenIdxSet result;
+    //    bool userBreak = false;
+    //    for (SearchDataMap::iterator it = m_SearchDataMap.begin(); it != m_SearchDataMap.end();)
+    //    {
+    //        // check if the file is already opened in built-in editor and do search in it
+    //        cbEditor* ed = edMan->IsBuiltinOpen(it->first);
+    //        if (ed)
+    //            control->SetText(ed->GetControl()->GetText());
+    //        else // else load the file in the control
+    //        {
+    //            EncodingDetector detector(it->first);
+    //            if (!detector.IsOK())
+    //            {
+    //                task -= it->second.size();
+    //                m_SearchDataMap.erase(it++);
+    //                continue; // failed
+    //            }
+    //            control->SetText(detector.GetWxStr());
+    //        }
+    //
+    //        // apply the corlor setting
+    //        edColSet.Apply(editor->GetLanguage(), control, false, true);
+    //
+    //        ccSearchData searchData = { control, it->first };
+    //        for (SearchDataList::iterator itList = it->second.begin(); itList != it->second.end();)
+    //        {
+    //            // update the progress bar
+    //            if (!progress->Update(totalCount - (--task)))
+    //            {
+    //                userBreak = true;
+    //                break; // user pressed "Cancel"
+    //            }
+    //
+    //            // skip string or comment
+    //            const int style = control->GetStyleAt(itList->pos);
+    //            if (control->IsString(style) || control->IsComment(style))
+    //            {
+    //                it->second.erase(itList++);
+    //                continue;
+    //            }
+    //
+    //            // do cc search
+    //            const int endOfWord = itList->pos + targetText.Len();
+    //            control->GotoPos(endOfWord);
+    //            m_pParseManager->MarkItemsByAI(&searchData, result, true, false, true, endOfWord);
+    //            if (result.empty())
+    //            {
+    //                it->second.erase(itList++);
+    //                continue;
+    //            }
+    //
+    //            // verify result
+    //            TokenIdxSet::const_iterator findIter = targetResult.begin();
+    //            for (; findIter != targetResult.end(); ++findIter)
+    //            {
+    //                if (result.find(*findIter) != result.end())
+    //                    break;
+    //            }
+    //
+    //            if (findIter == targetResult.end()) // not found
+    //                it->second.erase(itList++);
+    //            else
+    //            {
+    //                // handle for local variable
+    //                if (isLocalVariable)
+    //                {
+    //                    bool do_continue = false;
+    //
+    //                    TokenTree* tree = m_pParseManager->GetParser().GetTokenTree();
+    //
+    //                    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+    //
+    //                    const Token* token = tree->at(*findIter);
+    //                    if (token)
+    //                    {
+    //                        const Token* parent = tree->at(token->m_ParentIndex);
+    //                        if (parent != parentOfLocalVariable)
+    //                        {
+    //                            it->second.erase(itList++);
+    //                            do_continue = true;
+    //                        }
+    //                    }
+    //
+    //                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+    //
+    //                    if (do_continue) continue;
+    //                }
+    //
+    //                ++itList;
+    //            }
+    //        }
+    //
+    //        if (it->second.empty())
+    //            m_SearchDataMap.erase(it++);
+    //        else
+    //            ++it;
+    //
+    //        if (userBreak)
+    //            break;
+    //    }
+    //
+    //    delete control; // done with it
+    //    delete progress; // done here too
+    //
+    //    return m_SearchDataMap.size();
 }
 
-void CodeRefactoring::Find(cbStyledTextCtrl* control, const wxString& file, const wxString& target)
+void CodeRefactoring::Find(cbStyledTextCtrl * control, const wxString & file, const wxString & target)
 {
     const int end = control->GetLength();
     int start = 0;
@@ -455,6 +471,7 @@ void CodeRefactoring::Find(cbStyledTextCtrl* control, const wxString& file, cons
     {
         int endPos;
         int pos = control->FindText(start, end, target, wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, &endPos);
+
         if (pos != wxSCI_INVALID_POSITION)
         {
             start = endPos;
@@ -463,7 +480,9 @@ void CodeRefactoring::Find(cbStyledTextCtrl* control, const wxString& file, cons
             m_SearchDataMap[file].push_back(crSearchData(pos, line + 1, text));
         }
         else
+        {
             break;
+        }
     }
 }
 
@@ -471,15 +490,20 @@ void CodeRefactoring::Find(cbStyledTextCtrl* control, const wxString& file, cons
 void CodeRefactoring::DoFindReferences()
 // ----------------------------------------------------------------------------
 {
-     /// Unused for clangd
+    /// Unused for clangd
+    cbEditor * editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!editor)
+    {
         return;
+    }
 
-    cbSearchResultsLog* searchLog = Manager::Get()->GetSearchResultLogger();
+    cbSearchResultsLog * searchLog = Manager::Get()->GetSearchResultLogger();
+
     if (!searchLog)
+    {
         return;
+    }
 
     const wxString focusFile = editor->GetFilename();
     const int focusLine = editor->GetControl()->GetCurrentLine() + 1;
@@ -487,7 +511,6 @@ void CodeRefactoring::DoFindReferences()
     const wxString basePath(fn.GetPath());
     size_t index = 0;
     size_t focusIndex = 0;
-
     searchLog->Clear();
     searchLog->SetBasePath(basePath);
 
@@ -496,7 +519,9 @@ void CodeRefactoring::DoFindReferences()
         for (SearchDataList::iterator itList = it->second.begin(); itList != it->second.end(); ++itList)
         {
             if (it->first == focusFile && itList->line == focusLine)
+            {
                 focusIndex = index;
+            }
 
             wxArrayString values;
             wxFileName curFn(it->first);
@@ -505,7 +530,6 @@ void CodeRefactoring::DoFindReferences()
             values.Add(wxString::Format(_T("%d"), itList->line));
             values.Add(itList->text);
             searchLog->Append(values, Logger::info);
-
             ++index;
         }
     }
@@ -521,25 +545,30 @@ void CodeRefactoring::DoFindReferences()
     searchLog->FocusEntry(focusIndex);
 }
 
-void CodeRefactoring::DoRenameSymbols(const wxString& targetText, const wxString& replaceText)
+void CodeRefactoring::DoRenameSymbols(const wxString & targetText, const wxString & replaceText)
 {
-    EditorManager* edMan = Manager::Get()->GetEditorManager();
-    cbEditor* editor = edMan->GetBuiltinActiveEditor();
-    if (!editor)
-        return;
+    EditorManager * edMan = Manager::Get()->GetEditorManager();
+    cbEditor * editor = edMan->GetBuiltinActiveEditor();
 
-    cbProject* project = m_pParseManager->GetProjectByEditor(editor);
+    if (!editor)
+    {
+        return;
+    }
+
+    cbProject * project = m_pParseManager->GetProjectByEditor(editor);
+
     for (SearchDataMap::iterator it = m_SearchDataMap.begin(); it != m_SearchDataMap.end(); ++it)
     {
         // check if the file is already opened in built-in editor and do search in it
-        cbEditor* ed = edMan->IsBuiltinOpen(it->first);
+        cbEditor * ed = edMan->IsBuiltinOpen(it->first);
+
         if (!ed)
         {
-            ProjectFile* pf = project ? project->GetFileByFilename(it->first) : 0;
+            ProjectFile * pf = project ? project->GetFileByFilename(it->first) : 0;
             ed = edMan->Open(it->first, it->second.front().pos, pf);
         }
 
-        cbStyledTextCtrl* control = ed->GetControl();
+        cbStyledTextCtrl * control = ed->GetControl();
         control->BeginUndoAction();
 
         for (SearchDataList::reverse_iterator rIter = it->second.rbegin(); rIter != it->second.rend(); ++rIter)
@@ -555,31 +584,42 @@ void CodeRefactoring::DoRenameSymbols(const wxString& targetText, const wxString
     }
 }
 
-void CodeRefactoring::GetAllProjectFiles(wxArrayString& files, cbProject* project)
+void CodeRefactoring::GetAllProjectFiles(wxArrayString & files, cbProject * project)
 {
     if (!project)
+    {
         return;
+    }
 
     // fill the search list with all the project files
     for (FilesList::const_iterator it = project->GetFilesList().begin();
-                                   it != project->GetFilesList().end(); ++it)
+            it != project->GetFilesList().end(); ++it)
     {
-        ProjectFile* pf = *it;
+        ProjectFile * pf = *it;
+
         if (!pf)
+        {
             continue;
+        }
 
         ParserCommon::EFileType ft = ParserCommon::FileType(pf->relativeFilename);
+
         if (ft != ParserCommon::ftOther)
+        {
             files.Add(pf->file.GetFullPath());
+        }
     }
 }
 
-void CodeRefactoring::GetOpenedFiles(wxArrayString& files)
+void CodeRefactoring::GetOpenedFiles(wxArrayString & files)
 {
-    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    EditorManager * edMan = Manager::Get()->GetEditorManager();
+
     if (edMan)
     {
         for (int i = 0; i < edMan->GetEditorsCount(); ++i)
+        {
             files.Add(edMan->GetEditor(i)->GetFilename());
+        }
     }
 }

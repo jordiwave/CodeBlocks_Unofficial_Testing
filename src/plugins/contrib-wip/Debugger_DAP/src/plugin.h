@@ -263,7 +263,6 @@ class Debugger_DAP : public cbDebuggerPlugin
         void UpdateMapFileBreakPoints(const wxString & filename, cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp, bool bAddBreakpoint);
         void UpdateDAPSetBreakpointsByFileName(const wxString & filename);
 
-
         // Stack
         dbg_DAP::DAPCurrentFrame m_current_frame;
         dbg_DAP::DAPBacktraceContainer m_backtrace;
@@ -285,6 +284,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         void OnVariables(DAPEvent & event);
         void OnInitializedEvent(DAPEvent & event);
         void OnInitializeResponse(DAPEvent & event);
+        void OnConfigurationDoneResponse(DAPEvent & event);
         void OnExited(DAPEvent & event);
         void OnTerminated(DAPEvent & event);
         void OnOutput(DAPEvent & event);

@@ -16,7 +16,16 @@
                 <Program name="LIB" value="ar.exe"/>
             </if>
         </else>
-        <Program name="WINDRES"   value="windres.exe"/>
+        <Program name="WINDRES"  value="llvm-rc.exe"/>
+        <if exec="llvm-rc.exe -version">
+            <!-- found, do nothing -->
+        </if>
+        <else>
+            <if exec="windres.exe --version">
+                <!-- use GNU resource compiler -->
+                <Program name="WINDRES" value="windres.exe"/>
+            </if>		
+        </else>
         <Program name="MAKE"      value="mingw32-make.exe"/>
     </if>
     <else>
@@ -88,8 +97,13 @@
                 checkAgainst="-O1 -O2 -Os -O3 -O4"
                 checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
                 supersedes="-s -g"/>
-        <Option name="Produce full debugging symbols"
-                option="-g"
+        <Option name="Tune Debugging for GDB"
+                option="-ggdb"
+                checkAgainst="-O1 -O2 -Os -O3 -O4"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+                supersedes="-s -gline-tables-only"/>
+        <Option name="Tune Debugging for DWARF-2 (LLDB)"
+                option="-gdwarf-2"
                 checkAgainst="-O1 -O2 -Os -O3 -O4"
                 checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
                 supersedes="-s -gline-tables-only"/>
@@ -129,34 +143,39 @@
                 supersedes="-g -gline-tables-only"/>
         <Option name="Optimize generated code for debugging"
                 option="-Og"
-                checkAgainst="-O1 -O2 -Os -O3 -O4"
+                checkAgainst="-O0 -O1 -O2 -Os -O3 -O4"
                 checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
-                supersedes="-O2 -Os -O3 -O4 -s -gline-tables-only"/>
+                supersedes="-O0 -O2 -Os -O3 -O4 -s -gline-tables-only"/>
+        <Option name="Reduce compilation time and make debugging produce the expected results. This is the default. "
+                option="-O0"
+                checkAgainst="-Og -O1 -O2 -Os -O3 -O4"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+                supersedes="-Og -Os -O0 -O1 -O2 -O3 -O4 -s -gline-tables-only"/>
         <Option name="Optimize generated code"
                 option="-O1"
                 checkAgainst="-g -gline-tables-only"
                 checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
-                supersedes="-O2 -Os -O3 -O4"/>
+                supersedes="-O2 -Os -O0 -O2 -O3 -O4"/>
         <Option name="Optimize more"
                 option="-O2"
                 checkAgainst="-g -gline-tables-only"
                 checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
-                supersedes="-O1 -Os -O3 -O4"/>
+                supersedes="-Og -Os -O0 -O1 -O3 -O4"/>
         <Option name="Optimize more (for size)"
                 option="-Os"
                 checkAgainst="-g -gline-tables-only"
                 checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
-                supersedes="-O1 -O2 -O3 -O4"/>
+                supersedes="-Og -Os -O0 -O1 -O2 -O3 -O4"/>
         <Option name="Optimize even more (for speed)"
                 option="-O3"
                 checkAgainst="-g -gline-tables-only"
                 checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
-                supersedes="-O1 -O2 -Os -O4"/>
+                supersedes="-Og -Os -O0 -O1 -O2 -O4"/>
         <Option name="Optimize even more (with link time optimization)"
                 option="-O4"
                 checkAgainst="-g -gline-tables-only"
                 checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
-                supersedes="-O1 -O2 -Os -O3"/>
+                supersedes="-Og -Os -O0 -O1 -O2 -O3"/>
         <Option name="Don't keep the frame pointer in a register for functions that don't need one"
                 option="-fomit-frame-pointer"
                 category="Optimization"
@@ -220,9 +239,9 @@
                  value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -Wl,--subsystem,native"/>
         <Command name="LinkExe"
                  value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -Wl,--subsystem,windows"/>
-        <Command name="LinkDynamic"
-                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
-    </if>
+		<Command name="LinkDynamic"
+				 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+	</if>
     <else>
         <Command name="LinkNative"
                  value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>

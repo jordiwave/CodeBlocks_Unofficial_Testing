@@ -407,7 +407,12 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow * parent, CompilerGCC * compiler
         }
     }
 
-    bool detected = CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected;
+    bool detected = false;
+
+    if (compilerIdx != -1)
+    {
+        detected = CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected;
+    }
 
     if (((m_pTarget || m_pProject) && compilerIdx == -1) || (!detected))
     {

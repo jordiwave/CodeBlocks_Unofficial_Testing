@@ -20,22 +20,25 @@
 
 class SelectIncludeFile: public wxScrollingDialog
 {
-public:
-    SelectIncludeFile(wxWindow* parent,wxWindowID id = -1);
-    virtual ~SelectIncludeFile();
+    public:
+        SelectIncludeFile(wxWindow * parent, wxWindowID id = -1);
+        virtual ~SelectIncludeFile();
 
-    void AddListEntries(const wxArrayString& IncludeFile);
-    wxString GetIncludeFile() const { return m_SelectedIncludeFile; }
+        void AddListEntries(const wxArrayString & IncludeFile);
+        wxString GetIncludeFile() const
+        {
+            return m_SelectedIncludeFile;
+        }
 
-private:
-    void OnOk(wxCommandEvent& event);
-    void OnCancel(wxCommandEvent& event);
+    private:
+        void OnOk(wxCommandEvent & event);
+        void OnCancel(wxCommandEvent & event);
 
-    wxListBox* LstIncludeFiles;
+        wxListBox * LstIncludeFiles;
 
-    wxString m_SelectedIncludeFile;
+        wxString m_SelectedIncludeFile;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // SELECTINCLUDEFILE_H

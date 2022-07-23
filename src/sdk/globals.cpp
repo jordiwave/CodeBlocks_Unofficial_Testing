@@ -54,25 +54,17 @@
 const wxString DEFAULT_WORKSPACE     = _T("default.workspace");
 const wxString DEFAULT_ARRAY_SEP     = _T(";");
 
-#ifndef __WXMAC__
-    const wxString DEFAULT_CONSOLE_TERM  = _T("xterm -T $TITLE -e");
-#else
+#ifdef __WXMAC__
     const wxString DEFAULT_CONSOLE_TERM  = _T("osascript -e 'tell app \"Terminal\"' -e 'activate' -e 'do script quoted form of \"$SCRIPT\"' -e 'end tell'");
-#endif
-
-#if defined __WXMSW__
-    const wxString DEFAULT_CONSOLE_SHELL = _T("cmd");
-#elif defined __WXMAC__
-    const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/bash -c");
-#else
-    const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
-#endif
-
-#if defined __WXMSW__
-    const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("explorer.exe /select,");
-#elif defined __WXMAC__
+    const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/zsh -c");
     const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("open -R");
+#elif defined __WXMSW__
+    const wxString DEFAULT_CONSOLE_TERM  = _T("none");
+    const wxString DEFAULT_CONSOLE_SHELL = _T("cmd");
+    const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("explorer.exe /select,");
 #else
+    const wxString DEFAULT_CONSOLE_TERM  = _T("xterm -T $TITLE -e");
+    const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
     const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("xdg-open");
 #endif
 

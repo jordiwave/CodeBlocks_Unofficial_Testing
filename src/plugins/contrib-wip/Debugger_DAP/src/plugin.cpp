@@ -122,6 +122,7 @@ Debugger_DAP::Debugger_DAP() :
     m_dapClient.Bind(wxEVT_DAP_RUN_IN_TERMINAL_REQUEST,         &Debugger_DAP::OnRunInTerminalRequest, this);
     m_dapClient.Bind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,               this);
     m_dapClient.Bind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,       this);
+    m_dapClient.Bind(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE,    &Debugger_DAP::OnConfigurationDoneResponse,  this);
     m_dapClient.SetWantsLogEvents(true); // send use log events
 }
 
@@ -586,6 +587,11 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
 
     int res = LaunchDebugger(project, dap_debugger, debuggee, dap_port_number, working_dir, 0, console, start_type);
 
+    if (oldLibPath != newLibPath)
+    {
+        wxSetEnv(CB_LIBRARY_ENVVAR, oldLibPath);
+    }
+
     if (res != 0)
     {
         m_hasStartUpError = true;
@@ -594,12 +600,6 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
 
     m_pProject = project;
     m_hasStartUpError = false;
-
-    if (oldLibPath != newLibPath)
-    {
-        wxSetEnv(CB_LIBRARY_ENVVAR, oldLibPath);
-    }
-
     return 0;
 }
 
@@ -648,6 +648,7 @@ void Debugger_DAP::LaunchDAPDebugger(const wxString & dap_debugger, const wxStri
     // start the dap_debugger process
     m_dapPid = wxExecute(dapStartCmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER);
     //m_dapPid = 0;
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("finished dapStartCmd: %s"), dapStartCmd), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
 
 int Debugger_DAP::LaunchDebugger(cbProject * project,
@@ -671,7 +672,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
 
     if (dap_port_number.IsEmpty())
     {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dap_debugger is empty!!!!"), dap_port_number), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("dap_debugger is empty!!!!"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
         return 2;
     }
     else
@@ -685,10 +686,17 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     }
 
     wxBusyCursor cursor;
-    LaunchDAPDebugger(dap_debugger, dap_port_number);
-    // Reset the client
-    m_dapClient.Reset();
-    // For this demo, we use socket transport. But you may choose
+
+    if (GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::RunDAPServer))
+    {
+        LaunchDAPDebugger(dap_debugger, dap_port_number);
+    }
+    else
+    {
+        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("You have configured the debugger so you need to manually run the DAP server on port %s"), dap_port_number), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    }
+
+    // For this we use socket transport. But you may choose
     // to write your own transport that implements the dap::Transport interface
     // This is useful when the user wishes to use stdin/out for communicating with
     // the dap and not over socket
@@ -703,11 +711,13 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
             m_dapPid = 0;
         }
 
-        wxMessageBox("Failed to connect to DAP server", "DAP Demo", wxICON_ERROR | wxOK | wxCENTRE);
+        wxMessageBox("Failed to connect to DAP server", "DAP Debugger Plugin", wxICON_ERROR | wxOK | wxCENTRE);
         return 1;
     }
 
     DAPDebuggerState = DAPState::Connected;
+    // Reset the client
+    m_dapClient.Reset();
     // construct new client with the transport
     m_dapClient.SetTransport(transport);
     // This part is done in mode **sync**
@@ -1036,13 +1046,15 @@ void Debugger_DAP::UpdateMapFileBreakPoints(const wxString & filename, cb::share
             }
             else
             {
-                (*mapit).second.erase(itFBrk);
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints erase for filename %s ,  BP %s Line %d bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
-
-                if ((*mapit).second.size() == 0)
+                if ((*mapit).second.size() == 1)
                 {
                     m_map_filebreakpoints.erase(mapit);
                     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints erase filename %s bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
+                }
+                else
+                {
+                    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints erase for filename %s ,  BP %s Line %d bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
+                    (*mapit).second.erase(itFBrk);
                 }
             }
         }
@@ -2791,26 +2803,83 @@ void Debugger_DAP::OnLaunchResponse(DAPEvent & event)
 }
 
 /// DAP server responded to our `initialize` request
-void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
-{
-    wxUnusedVar(event);
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    m_dapClient.Launch({m_dap_debuggee});
-}
-
-/// DAP server responded to our `initialize` request
 void Debugger_DAP::OnInitializedEvent(DAPEvent & event)
 {
     // got initialized event, place breakpoints and continue
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got Initialized event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    // Setup initial breakpoints
-    CreateStartBreakpoints(true);
-    // Setup initial data watches
-    CreateStartWatches();
-    // Set breakpoint on "main"
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Placing breakpoint at main..."), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    m_dapClient.SetFunctionBreakpoints({ { "main" } });
-    m_dapClient.ConfigurationDone();
+}
+
+#define SHOW_RESPONSE_DATA(msg, data)                       \
+    m_pLogger->LogDAPMsgType("", -1,            \
+                             wxString::Format(msg, data),                \
+                             dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+
+/// DAP server sent `initialize` reponse to our `initialize` message
+void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
+{
+    dap::InitializeResponse * response_data = event.GetDapResponse()->As<dap::InitializeResponse>();
+
+    if (response_data->success)
+    {
+        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        SHOW_RESPONSE_DATA(_("seq %d"), response_data->seq);
+        SHOW_RESPONSE_DATA(_("request_seq %d"), response_data->request_seq);
+        //        SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"),               response_data->body->supportTerminateDebuggee?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsCompletionsRequest: %s"),             response_data->body->supportsCompletionsRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsConditionalBreakpoints: %s"),         response_data->body->supportsConditionalBreakpoints?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsConfigurationDoneRequest: %s"),       response_data->body->supportsConfigurationDoneRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsDelayedStackTraceLoading: %s"),       response_data->body->supportsDelayedStackTraceLoading?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsEvaluateForHovers: %s"),              response_data->body->supportsEvaluateForHovers?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsExceptionInfoRequest: %s"),           response_data->body->supportsExceptionInfoRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsExceptionOptions: %s"),               response_data->body->supportsExceptionOptions?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsFunctionBreakpoints: %s"),            response_data->body->supportsFunctionBreakpoints?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsGotoTargetsRequest: %s"),             response_data->body->supportsGotoTargetsRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsHitConditionalBreakpoints: %s"),      response_data->body->supportsHitConditionalBreakpoints?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsLoadedSourcesRequest: %s"),           response_data->body->supportsLoadedSourcesRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsModulesRequest: %s"),                 response_data->body->supportsModulesRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsProgressReporting: %s"),              response_data->body->supportsProgressReporting?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsRestartFrame: %s"),                   response_data->body->supportsRestartFrame?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsRestartRequest: %s"),                 response_data->body->supportsRestartRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsRunInTerminalRequest: %s"),           response_data->body->supportsRunInTerminalRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsSetVariable: %s"),                    response_data->body->supportsSetVariable?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsStepBack: %s"),                       response_data->body->supportsStepBack?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsStepInTargetsRequest: %s"),           response_data->body->supportsStepInTargetsRequest?"True":"False: %s"),
+        //        SHOW_RESPONSE_DATA(_("supportsValueFormattingOptions: %s"),         response_data->body->supportsValueFormattingOptions?"True":"False: %s"),
+        // Setup initial breakpoints
+        CreateStartBreakpoints(true);
+        // Setup initial data watches
+        CreateStartWatches();
+
+        // Set breakpoint on "main"
+        if (GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::StopOnMain))
+        {
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Placing breakpoint at main..."), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+            m_dapClient.SetFunctionBreakpoints({ { "main" } });
+        }
+
+        // Let DAP server know that we have completed the configuration required
+        m_dapClient.ConfigurationDone();
+    }
+    else
+    {
+        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got BAD OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::Error);
+    }
+}
+
+
+void Debugger_DAP::OnConfigurationDoneResponse(DAPEvent & event)
+{
+    //    dap::ConfigurationDoneResponse * response_data = event.GetDapEvent()->As<dap::ConfigurationDoneResponse>();
+    //
+    //    if (response_data->success)
+    //    {
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got OnConfigurationDoneResponse Response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    m_dapClient.Launch({m_dap_debuggee});
+    //    }
+    //    else
+    //    {
+    //        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got BAD OnConfigurationDoneResponse Response"), dbg_DAP::LogPaneLogger::LineType::Error);
+    //    }
 }
 
 /// DAP server stopped. This can happen for multiple reasons:
@@ -3029,7 +3098,6 @@ void Debugger_DAP::OnTerminated(DAPEvent & event)
         pDialogDisassembly->Clear(sf);
     }
 }
-
 
 void Debugger_DAP::OnOutput(DAPEvent & event)
 {

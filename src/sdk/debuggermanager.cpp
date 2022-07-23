@@ -2053,11 +2053,13 @@ void DebuggerManager::FindTargetsDebugger()
 
     if (target)
     {
-        log->LogError(wxString::Format(_("Can't find the debugger config: '%s' for the current target '%s'!"), dbgString, target->GetTitle()));
+        log->LogError(wxString::Format(_("Can't find the debugger config: '%s' for the current target '%s'!"),
+                                       dbgString, target->GetTitle()));
     }
     else
     {
-        log->LogError(wxString::Format(_("Can't find the debugger config: '%s' for the compiler '%s'!"), dbgString, compiler->GetName()));
+        log->LogError(wxString::Format(_("Can't find the debugger config: '%s' for the compiler '%s'!"),
+                                       dbgString, compiler->GetName()));
     }
 
     m_menuHandler->MarkActiveTargetAsValid(false);
