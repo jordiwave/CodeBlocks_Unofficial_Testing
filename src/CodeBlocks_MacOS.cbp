@@ -158,7 +158,7 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/CodeBlocks" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--personality=debuging --multiple-instance" />
+				<Option parameters="—personality=debuging —multiple-instance —verbose —prefix=$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />

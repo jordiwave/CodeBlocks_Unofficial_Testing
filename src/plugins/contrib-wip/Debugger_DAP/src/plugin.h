@@ -8,16 +8,14 @@
 #define _DEBUGGER_DAP_PLUGIN_H_
 
 // System and library includes
-#include <tinyxml2.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-    // For compilers that support precompilation, includes <wx/wx.h>
-    #include <wx/wx.h>
-#endif
 #include <memory>
+#include <wx/menu.h>
+#include <wx/timer.h>
+#include <wx/wxprec.h>
 
 // CB includes
 #include <cbplugin.h> // for "class cbPlugin"
+#include <tinyxml2.h>
 
 // Debugger includes
 #include "debugger_logger.h"
@@ -202,7 +200,6 @@ class Debugger_DAP : public cbDebuggerPlugin
         void OnTimer(wxTimerEvent & event);
         void OnIdle(wxIdleEvent & event);
         void OnMenuInfoCommandStream(wxCommandEvent & event);
-        wxString GetShellString();
         void LaunchDAPDebugger(const wxString & dap_debugger, const wxString & dap_port_number);
         int LaunchDebugger(cbProject * project,
                            const wxString & dap_debugger,
@@ -245,6 +242,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         wxString m_dap_debuggeepath;
         dap::Process * m_DAPTerminalProcess = nullptr;
         int m_frame_id = wxNOT_FOUND;
+        bool m_bSentConfigurationDone = false;
 
         enum DAPState
         {
@@ -274,7 +272,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         std::vector<dap::Variable> m_stackdapvariables;
 
         // misc
-        void KillDAPDebugger();
+        void DAPDebuggerResetData();
         void OnProcessBreakpointData(const wxString & brkDescription);
 
         /// Dap events
