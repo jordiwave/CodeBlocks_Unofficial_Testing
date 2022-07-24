@@ -173,7 +173,7 @@
 
 					<Add after="if [ -f $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip ; fi" />
 					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip src/resources/*.xrc" />
-				    <Add after="cd src/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip . -i /images/*.png -x /images/settings/*" />
+				    <Add after="cd src/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip . -i ./images/*.png -x ./images/settings/*" />
 
 					<Add after="if [ -f $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/start_here.zip ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/start_here.zip ; fi" />
 					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/start_here.zip src/resources/start_here/*" />
@@ -211,7 +211,8 @@
 
 					<Add after="if [ -f $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/abbreviations.zip ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/abbreviations.zip ; fi" />
 					<Add after="cd plugins/abbreviations/resources &amp;&amp; zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/abbreviations.zip *.xrc *.xml" />
-					<Add after="cd plugins/abbreviations/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/abbreviations.zip . -i /images/*.png " />
+					<Add after="cd plugins/abbreviations/resources &amp;&amp; find . -type f -name &quot;*.png&quot; | xargs zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/abbreviations.zip " />
+					<!-- Add after="cd plugins/abbreviations/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/abbreviations.zip . -i ./images " / -->
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

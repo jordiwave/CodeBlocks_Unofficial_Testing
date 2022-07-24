@@ -116,8 +116,8 @@ Debugger_DAP::Debugger_DAP() :
     m_dapClient.Bind(wxEVT_DAP_OUTPUT_EVENT,                    &Debugger_DAP::OnOutput,               this);
     m_dapClient.Bind(wxEVT_DAP_BREAKPOINT_LOCATIONS_RESPONSE,   &Debugger_DAP::OnBreakpointLocations,  this);
     m_dapClient.Bind(wxEVT_DAP_LOST_CONNECTION,                 &Debugger_DAP::OnConnectionError,      this);
-    m_dapClient.Bind(wxEVT_DAP_SET_SOURCE_BREAKPOINT_RESPONSE,  &Debugger_DAP::OnBreakpointSet,        this);
-    m_dapClient.Bind(wxEVT_DAP_SET_FUNCTION_BREAKPOINT_RESPONSE, &Debugger_DAP::OnBreakpointSet,        this);
+    m_dapClient.Bind(wxEVT_DAP_SET_SOURCE_BREAKPOINT_RESPONSE,  &Debugger_DAP::OnBreakpointDataSet,        this);
+    m_dapClient.Bind(wxEVT_DAP_SET_FUNCTION_BREAKPOINT_RESPONSE, &Debugger_DAP::OnBreakpointFunctionSet,        this);
     m_dapClient.Bind(wxEVT_DAP_LAUNCH_RESPONSE,                 &Debugger_DAP::OnLaunchResponse,       this);
     m_dapClient.Bind(wxEVT_DAP_RUN_IN_TERMINAL_REQUEST,         &Debugger_DAP::OnRunInTerminalRequest, this);
     m_dapClient.Bind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,               this);
@@ -129,6 +129,26 @@ Debugger_DAP::Debugger_DAP() :
 // destructor
 Debugger_DAP::~Debugger_DAP()
 {
+    // unbind the client events
+    m_dapClient.Unbind(wxEVT_DAP_STOPPED_EVENT,                   &Debugger_DAP::OnStopped,              this);
+    m_dapClient.Unbind(wxEVT_DAP_INITIALIZED_EVENT,               &Debugger_DAP::OnInitializedEvent,     this);
+    m_dapClient.Unbind(wxEVT_DAP_INITIALIZE_RESPONSE,             &Debugger_DAP::OnInitializeResponse,   this);
+    m_dapClient.Unbind(wxEVT_DAP_EXITED_EVENT,                    &Debugger_DAP::OnExited,               this);
+    m_dapClient.Unbind(wxEVT_DAP_TERMINATED_EVENT,                &Debugger_DAP::OnTerminated,           this);
+    m_dapClient.Unbind(wxEVT_DAP_STACKTRACE_RESPONSE,             &Debugger_DAP::OnStackTrace,           this);
+    m_dapClient.Unbind(wxEVT_DAP_SCOPES_RESPONSE,                 &Debugger_DAP::OnScopes,               this);
+    m_dapClient.Unbind(wxEVT_DAP_VARIABLES_RESPONSE,              &Debugger_DAP::OnVariables,            this);
+    m_dapClient.Unbind(wxEVT_DAP_OUTPUT_EVENT,                    &Debugger_DAP::OnOutput,               this);
+    m_dapClient.Unbind(wxEVT_DAP_BREAKPOINT_LOCATIONS_RESPONSE,   &Debugger_DAP::OnBreakpointLocations,  this);
+    m_dapClient.Unbind(wxEVT_DAP_LOST_CONNECTION,                 &Debugger_DAP::OnConnectionError,      this);
+    m_dapClient.Unbind(wxEVT_DAP_SET_SOURCE_BREAKPOINT_RESPONSE,  &Debugger_DAP::OnBreakpointDataSet,        this);
+    m_dapClient.Unbind(wxEVT_DAP_SET_FUNCTION_BREAKPOINT_RESPONSE, &Debugger_DAP::OnBreakpointFunctionSet,        this);
+    m_dapClient.Unbind(wxEVT_DAP_LAUNCH_RESPONSE,                 &Debugger_DAP::OnLaunchResponse,       this);
+    m_dapClient.Unbind(wxEVT_DAP_RUN_IN_TERMINAL_REQUEST,         &Debugger_DAP::OnRunInTerminalRequest, this);
+    m_dapClient.Unbind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,               this);
+    m_dapClient.Unbind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,       this);
+    m_dapClient.Unbind(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE,    &Debugger_DAP::OnConfigurationDoneResponse,  this);
+
     if (m_dapPid != 0)
     {
         wxKill(m_dapPid);
@@ -631,24 +651,12 @@ void Debugger_DAP::LaunchDAPDebugger(const wxString & dap_debugger, const wxStri
 {
     wxString dapStartCmd = wxEmptyString;
     wxString shell = GetShellString();
-
-    if (platform::windows)
-    {
-        dapStartCmd = wxString::Format("%s /k %s -port %s", shell, dap_debugger, dap_port_number);
-        //dapStartCmd = wxString::Format("cmd /k %s -port %s", shell, dap_debugger, dap_port_number);
-    }
-    else
-    {
-        dapStartCmd = wxString::Format("%s -port %s", dap_debugger, dap_port_number);
-    }
-
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("shell: %s"), shell), dbg_DAP::LogPaneLogger::LineType::Debug);
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dap_debugger: %s"), dap_debugger), dbg_DAP::LogPaneLogger::LineType::Debug);
+    dapStartCmd = wxString::Format("%s -port %s", dap_debugger, dap_port_number);
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dapStartCmd: %s"), dapStartCmd), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     // start the dap_debugger process
-    m_dapPid = wxExecute(dapStartCmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER);
-    //m_dapPid = 0;
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("finished dapStartCmd: %s"), dapStartCmd), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    // NOTE: If the debugger does not start check the PYTHONHOME environment variable is set correctly!!!!
+    m_dapPid = wxExecute(dapStartCmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER |  wxEXEC_SHOW_CONSOLE);
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("finished dapStartCmd: %s , m_dapPid: %ld"), dapStartCmd, m_dapPid), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
 
 int Debugger_DAP::LaunchDebugger(cbProject * project,
@@ -660,6 +668,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
                                  bool console,
                                  StartType start_type)
 {
+    KillDAPDebugger();
     m_current_frame.Reset();
 
     if (dap_debugger.IsEmpty())
@@ -717,6 +726,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
 
     DAPDebuggerState = DAPState::Connected;
     // Reset the client
+    KillDAPDebugger();
     m_dapClient.Reset();
     // construct new client with the transport
     m_dapClient.SetTransport(transport);
@@ -873,7 +883,6 @@ void Debugger_DAP::Stop()
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("stop debugger"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     ClearActiveMarkFromAllEditors();
     MarkAsStopped();
-    m_dapClient.Reset();
     DAPDebuggerState = DAPState::NotConnected;
 }
 
@@ -2819,50 +2828,53 @@ void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
 {
     dap::InitializeResponse * response_data = event.GetDapResponse()->As<dap::InitializeResponse>();
 
-    if (response_data->success)
+    if (response_data)
     {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-        SHOW_RESPONSE_DATA(_("seq %d"), response_data->seq);
-        SHOW_RESPONSE_DATA(_("request_seq %d"), response_data->request_seq);
-        //        SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"),               response_data->body->supportTerminateDebuggee?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsCompletionsRequest: %s"),             response_data->body->supportsCompletionsRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsConditionalBreakpoints: %s"),         response_data->body->supportsConditionalBreakpoints?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsConfigurationDoneRequest: %s"),       response_data->body->supportsConfigurationDoneRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsDelayedStackTraceLoading: %s"),       response_data->body->supportsDelayedStackTraceLoading?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsEvaluateForHovers: %s"),              response_data->body->supportsEvaluateForHovers?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsExceptionInfoRequest: %s"),           response_data->body->supportsExceptionInfoRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsExceptionOptions: %s"),               response_data->body->supportsExceptionOptions?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsFunctionBreakpoints: %s"),            response_data->body->supportsFunctionBreakpoints?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsGotoTargetsRequest: %s"),             response_data->body->supportsGotoTargetsRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsHitConditionalBreakpoints: %s"),      response_data->body->supportsHitConditionalBreakpoints?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsLoadedSourcesRequest: %s"),           response_data->body->supportsLoadedSourcesRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsModulesRequest: %s"),                 response_data->body->supportsModulesRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsProgressReporting: %s"),              response_data->body->supportsProgressReporting?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsRestartFrame: %s"),                   response_data->body->supportsRestartFrame?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsRestartRequest: %s"),                 response_data->body->supportsRestartRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsRunInTerminalRequest: %s"),           response_data->body->supportsRunInTerminalRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsSetVariable: %s"),                    response_data->body->supportsSetVariable?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsStepBack: %s"),                       response_data->body->supportsStepBack?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsStepInTargetsRequest: %s"),           response_data->body->supportsStepInTargetsRequest?"True":"False: %s"),
-        //        SHOW_RESPONSE_DATA(_("supportsValueFormattingOptions: %s"),         response_data->body->supportsValueFormattingOptions?"True":"False: %s"),
-        // Setup initial breakpoints
-        CreateStartBreakpoints(true);
-        // Setup initial data watches
-        CreateStartWatches();
-
-        // Set breakpoint on "main"
-        if (GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::StopOnMain))
+        if (response_data->success)
         {
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Placing breakpoint at main..."), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-            m_dapClient.SetFunctionBreakpoints({ { "main" } });
-        }
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+            SHOW_RESPONSE_DATA(_("seq %d"), response_data->seq);
+            SHOW_RESPONSE_DATA(_("request_seq %d"), response_data->request_seq);
+            //        SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"),               response_data->body->supportTerminateDebuggee?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsCompletionsRequest: %s"),             response_data->body->supportsCompletionsRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsConditionalBreakpoints: %s"),         response_data->body->supportsConditionalBreakpoints?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsConfigurationDoneRequest: %s"),       response_data->body->supportsConfigurationDoneRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsDelayedStackTraceLoading: %s"),       response_data->body->supportsDelayedStackTraceLoading?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsEvaluateForHovers: %s"),              response_data->body->supportsEvaluateForHovers?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsExceptionInfoRequest: %s"),           response_data->body->supportsExceptionInfoRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsExceptionOptions: %s"),               response_data->body->supportsExceptionOptions?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsFunctionBreakpoints: %s"),            response_data->body->supportsFunctionBreakpoints?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsGotoTargetsRequest: %s"),             response_data->body->supportsGotoTargetsRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsHitConditionalBreakpoints: %s"),      response_data->body->supportsHitConditionalBreakpoints?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsLoadedSourcesRequest: %s"),           response_data->body->supportsLoadedSourcesRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsModulesRequest: %s"),                 response_data->body->supportsModulesRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsProgressReporting: %s"),              response_data->body->supportsProgressReporting?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsRestartFrame: %s"),                   response_data->body->supportsRestartFrame?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsRestartRequest: %s"),                 response_data->body->supportsRestartRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsRunInTerminalRequest: %s"),           response_data->body->supportsRunInTerminalRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsSetVariable: %s"),                    response_data->body->supportsSetVariable?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsStepBack: %s"),                       response_data->body->supportsStepBack?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsStepInTargetsRequest: %s"),           response_data->body->supportsStepInTargetsRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsValueFormattingOptions: %s"),         response_data->body->supportsValueFormattingOptions?"True":"False: %s"),
+            // Setup initial breakpoints
+            CreateStartBreakpoints(true);
+            // Setup initial data watches
+            CreateStartWatches();
 
-        // Let DAP server know that we have completed the configuration required
-        m_dapClient.ConfigurationDone();
-    }
-    else
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got BAD OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::Error);
+            // Set breakpoint on "main"
+            if (GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::StopOnMain))
+            {
+                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Placing breakpoint at main..."), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+                m_dapClient.SetFunctionBreakpoints({ { "main" } });
+            }
+
+            // Let DAP server know that we have completed the configuration required
+            m_dapClient.ConfigurationDone();
+        }
+        else
+        {
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got BAD OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::Error);
+        }
     }
 }
 
@@ -3067,6 +3079,7 @@ void Debugger_DAP::OnTerminated(DAPEvent & event)
     DAPDebuggerState = DAPState::NotConnected;
     wxUnusedVar(event);
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Session terminated!"));
+    KillDAPDebugger();
     m_dapClient.Reset();
     m_frame_id = wxNOT_FOUND;
     ClearActiveMarkFromAllEditors();
@@ -3131,7 +3144,7 @@ void Debugger_DAP::OnConnectionError(DAPEvent & event)
     wxMessageBox(_("Lost connection to dap server"));
 }
 
-void Debugger_DAP::OnBreakpointSet(DAPEvent & event)
+void Debugger_DAP::OnBreakpointDataSet(DAPEvent & event)
 {
     dap::SetBreakpointsResponse * resp = event.GetDapResponse()->As<dap::SetBreakpointsResponse>();
 
@@ -3150,7 +3163,7 @@ void Debugger_DAP::OnBreakpointSet(DAPEvent & event)
 
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
                                      __LINE__,
-                                     wxString::Format(_("OnBreakpointSet: ID %d , Verified: %s , File: %s , Line: %d, Message: %s"), bp.id, bp.verified ? "True" : "False", bp.source.path, bp.line, bp.message),
+                                     wxString::Format(_("ID %d , Verified: %s , File: %s , Line: %d, Message: %s"), bp.id, bp.verified ? "True" : "False", bp.source.path, bp.line, bp.message),
                                      logType
                                     );
         }
@@ -3161,6 +3174,23 @@ void Debugger_DAP::OnBreakpointSet(DAPEvent & event)
             {
                 UpdateOrAddBreakpoint(bp.source.path, bp.line, bp.id);
             }
+        }
+    }
+}
+
+void Debugger_DAP::OnBreakpointFunctionSet(DAPEvent & event)
+{
+    dap::SetBreakpointsResponse * resp = event.GetDapResponse()->As<dap::SetBreakpointsResponse>();
+
+    if (resp)
+    {
+        if (resp->success)
+        {
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got OnBreakpointFunctionSet event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        }
+        else
+        {
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got BAD OnBreakpointFunctionSet Response"), dbg_DAP::LogPaneLogger::LineType::Error);
         }
     }
 }
@@ -3203,11 +3233,11 @@ void Debugger_DAP::OnRunInTerminalRequest(DAPEvent & event)
     }
 
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Starting process: %s"), command), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    m_process = dap::ExecuteProcess(command);
+    m_DAPTerminalProcess = dap::ExecuteProcess(command);
     dap::RunInTerminalResponse response = m_dapClient.MakeRequest<dap::RunInTerminalResponse>();
     response.request_seq = request->seq;
 
-    if (!m_process)
+    if (!m_DAPTerminalProcess)
     {
         response.success = false;
         response.processId = 0;
@@ -3215,7 +3245,7 @@ void Debugger_DAP::OnRunInTerminalRequest(DAPEvent & event)
     else
     {
         response.success = true;
-        response.processId = m_process->GetProcessId();
+        response.processId = m_DAPTerminalProcess->GetProcessId();
     }
 
     m_dapClient.SendResponse(response);

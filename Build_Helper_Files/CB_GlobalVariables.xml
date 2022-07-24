@@ -82,22 +82,22 @@
 <!-- ====================================================================================== -->
 	<cb_macos>
 		<cb_build>
-			<BASE>/Users/Andy/Code/CodeBLocks_Private_Experimental/src</BASE>
+			<BASE>/Users/Andy/Code/CodeBLocks_Private_Experimental_MAC/src</BASE>
 			<INCLUDE>$(#CB_BUILD)/include</INCLUDE>
-			<CFLAGS>-g -O0 -ggdb</CFLAGS>
+			<CFLAGS>-Og -gdwarf-4</CFLAGS>
 			<OSBITS>64</OSBITS>
 			<C_STD>c90</C_STD>
 			<CPP_STD>gnu++17</CPP_STD>
 			<PKG_CONFIG_GLIB>glib-2.0</PKG_CONFIG_GLIB>
 		</cb_build>
 		<wxwidgets>
-			<BASE>/Users/Andy/Code/wxwidgets-code</BASE>
+			<BASE>&quot;&quot;</BASE>
 			<INCLUDE>$(#WXWIDGETS)/include</INCLUDE>
 			<LIB>$(#WXWIDGETS)/lib</LIB>
-			<WX_CFG>""</WX_CFG>
-			<WX_VERSION>31</WX_VERSION>
+			<WX_CFG>&quot;&quot;</WX_CFG>
+			<WX_VERSION>32</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
-			<WX_CONFIG_MACOS>/usr/local/bin/wx-config --version=3.1</WX_CONFIG_MACOS>
+			<WX_CONFIG_MACOS>/usr/local/bin/wx-config --version=3.2</WX_CONFIG_MACOS>
 		</wxwidgets>
 	</cb_macos>
 <!-- ====================================================================================== -->

@@ -243,7 +243,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         long m_dapPid;
         wxString m_dap_debuggee;
         wxString m_dap_debuggeepath;
-        dap::Process * m_process = nullptr;
+        dap::Process * m_DAPTerminalProcess = nullptr;
         int m_frame_id = wxNOT_FOUND;
 
         enum DAPState
@@ -290,7 +290,8 @@ class Debugger_DAP : public cbDebuggerPlugin
         void OnOutput(DAPEvent & event);
         void OnBreakpointLocations(DAPEvent & event);
         void OnConnectionError(DAPEvent & event);
-        void OnBreakpointSet(DAPEvent & event);
+        void OnBreakpointDataSet(DAPEvent & event);
+        void OnBreakpointFunctionSet(DAPEvent & event);
         void OnLaunchResponse(DAPEvent & event);
         void OnRunInTerminalRequest(DAPEvent & event);
         void OnDapLog(DAPEvent & event);
