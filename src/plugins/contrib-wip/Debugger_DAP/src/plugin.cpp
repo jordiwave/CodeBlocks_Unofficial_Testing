@@ -21,7 +21,7 @@
 #endif // __MINGW64__
 
 // CB include files (not DAP)
-#include "sdk.h" // Code::Blocks SDK
+#include "sdk.h"
 #include "cbdebugger_interfaces.h"
 #include "cbproject.h"
 #include "compilercommandgenerator.h"
@@ -106,7 +106,6 @@ Debugger_DAP::Debugger_DAP() :
     }
 
     m_pLogger = new dbg_DAP::LogPaneLogger(this);
-
     // bind the client events
     m_dapClient.Bind(wxEVT_DAP_STOPPED_EVENT,                   &Debugger_DAP::OnStopped,              this);
     m_dapClient.Bind(wxEVT_DAP_INITIALIZED_EVENT,               &Debugger_DAP::OnInitializedEvent,     this);
@@ -126,7 +125,6 @@ Debugger_DAP::Debugger_DAP() :
     m_dapClient.Bind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,               this);
     m_dapClient.Bind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,       this);
     m_dapClient.Bind(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE,    &Debugger_DAP::OnConfigurationDoneResponse,  this);
-
     m_dapClient.SetWantsLogEvents(true); // send use log events
 }
 
@@ -134,7 +132,6 @@ Debugger_DAP::Debugger_DAP() :
 Debugger_DAP::~Debugger_DAP()
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__));
-
     // unbind the client events
     m_dapClient.Unbind(wxEVT_DAP_STOPPED_EVENT,                   &Debugger_DAP::OnStopped,              this);
     m_dapClient.Unbind(wxEVT_DAP_INITIALIZED_EVENT,               &Debugger_DAP::OnInitializedEvent,     this);
@@ -165,7 +162,6 @@ Debugger_DAP::~Debugger_DAP()
 void Debugger_DAP::OnAttachReal()
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__));
-
     m_timer_poll_debugger.SetOwner(this, id_gdb_poll_timer);
     DebuggerManager & dbg_manager = *Manager::Get()->GetDebuggerManager();
     dbg_manager.RegisterDebugger(this);
@@ -176,7 +172,6 @@ void Debugger_DAP::OnAttachReal()
 void Debugger_DAP::OnReleaseReal(bool appShutDown)
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__));
-
     Manager::Get()->GetDebuggerManager()->UnregisterDebugger(this);
     DAPDebuggerResetData();
     //    if (m_command_stream_dialog)
@@ -496,18 +491,21 @@ void Debugger_DAP::CleanupWhenProjectClosed(cbProject * project)
     if (!project)
     {
         cbBacktraceDlg * pDialogBacktrace = Manager::Get()->GetDebuggerManager()->GetBacktraceDialog();
+
         if (pDialogBacktrace)
         {
             pDialogBacktrace->Reload();
         }
 
         cbBreakpointsDlg * pDialogBreakpoint = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
+
         if (pDialogBreakpoint)
         {
             pDialogBreakpoint->RemoveAllBreakpoints();
         }
 
         cbExamineMemoryDlg * pDialogExamineMemory = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
+
         if (pDialogExamineMemory)
         {
             pDialogExamineMemory->SetBaseAddress("");
@@ -515,17 +513,20 @@ void Debugger_DAP::CleanupWhenProjectClosed(cbProject * project)
         }
 
         cbThreadsDlg * pDialogThreads = Manager::Get()->GetDebuggerManager()->GetThreadsDialog();
+
         if (pDialogThreads)
         {
             pDialogThreads->Reload();
         }
 
         cbWatchesDlg * pDialogWatches = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+
         if (pDialogWatches)
         {
             pDialogWatches->RefreshUI();
         }
     }
+
     ClearLog();
 }
 
@@ -614,7 +615,6 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
 
     m_pProject = project;
     m_hasStartUpError = false;
-
     return 0;
 }
 
@@ -622,11 +622,9 @@ void Debugger_DAP::LaunchDAPDebugger(const wxString & dap_debugger, const wxStri
 {
     wxString dapStartCmd = wxString::Format("%s -port %s", dap_debugger, dap_port_number);
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("dapStartCmd: %s"), dapStartCmd), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-
     // start the dap_debugger process
     // NOTE: If the debugger does not start check the PYTHONHOME environment variable is set correctly!!!!
     m_dapPid = wxExecute(dapStartCmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER);
-
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("finished dapStartCmd: %s , m_dapPid: %ld"), dapStartCmd, m_dapPid), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
 
@@ -666,6 +664,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     }
 
     wxBusyCursor cursor;
+
     if (GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::RunDAPServer))
     {
         LaunchDAPDebugger(dap_debugger, dap_port_number);
@@ -695,25 +694,35 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     }
 
     DAPDebuggerState = eDAPState::Connected;
-
     // construct new client with the transport
     m_dapClient.SetTransport(transport);
-
     // This part is done in mode **sync**
     DAPDebuggerState = eDAPState::Running;
-    m_dap_debuggee = debuggee;
-    wxFileName fndebugee(debuggee);
-    m_dap_debuggeepath = fndebugee.GetPath();
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dap_debuggeepath: %s", m_dap_debuggeepath), dbg_DAP::LogPaneLogger::LineType::Debug);
     m_frame_id = wxNOT_FOUND;
+    // Create the DAP debuggee command line including any parameters
+    Compiler * compiler;
+    ProjectBuildTarget * target;
+    SelectCompiler(*project, compiler, target, 0);
+    wxString debugeeArgs = target->GetExecutionParameters();
+    m_DAP_DebuggeeStartCMD.clear();
+    m_DAP_DebuggeeStartCMD.push_back(static_cast<wxString>(debuggee));
+
+    if (!debugeeArgs.IsEmpty())
+    {
+        wxArrayString debugeeArgsArray = wxSplit(debugeeArgs, ' ');
+
+        for (wxString param : debugeeArgsArray)
+        {
+            m_DAP_DebuggeeStartCMD.push_back(param);
+        }
+    }
 
     // The protocol starts by us sending an initialize request
-    dap::InitializeRequestArguments args;
-    args.linesStartAt1 = true;
-    args.clientID = "CB_DAP_Plugin";
-    args.clientName = "CB_DAP_Plugin";
-    m_dapClient.Initialize(&args);
-
+    dap::InitializeRequestArguments initArgs;
+    initArgs.linesStartAt1 = true;
+    initArgs.clientID = "CB_DAP_Plugin";
+    initArgs.clientName = "CB_DAP_Plugin";
+    m_dapClient.Initialize(&initArgs);
     //    if (active_config.GetFlag(dbg_DAP::DebuggerConfiguration::CatchExceptions))
     //    {
     //        DoSendCommand("catch throw");
@@ -734,9 +743,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     //    }
     //
     //
-
     m_timer_poll_debugger.Start(20);
-
     return 0;
 }
 
@@ -1014,7 +1021,6 @@ void Debugger_DAP::UpdateMapFileBreakPoints(const wxString & filename, cb::share
             }
             else
             {
-
                 if ((*mapit).second.size() == 1)
                 {
                     m_map_filebreakpoints.erase(mapit);
@@ -2075,20 +2081,20 @@ void Debugger_DAP::DAPDebuggerResetData()
 
     ClearActiveMarkFromAllEditors();
     MarkAsStopped();
-
     // Notify debugger plugins for end of debug session
     PluginManager * plm = Manager::Get()->GetPluginManager();
     CodeBlocksEvent evt(cbEVT_DEBUGGER_FINISHED);
     plm->NotifyPlugins(evt);
     SwitchToPreviousLayout();
-
     cbCPURegistersDlg * pDialogCPURegisters = Manager::Get()->GetDebuggerManager()->GetCPURegistersDialog();
+
     if (pDialogCPURegisters)
     {
         pDialogCPURegisters->Clear();
     }
 
     cbDisassemblyDlg * pDialogDisassembly = Manager::Get()->GetDebuggerManager()->GetDisassemblyDialog();
+
     if (pDialogDisassembly)
     {
         cbStackFrame sf;
@@ -2791,11 +2797,10 @@ void Debugger_DAP::OnProcessBreakpointData(const wxString & brkDescription)
 void Debugger_DAP::OnLaunchResponse(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-
     // Check that the debugee was started successfully
     dap::LaunchResponse * resp = event.GetDapResponse()->As<dap::LaunchResponse>();
 
-    if (resp )
+    if (resp)
     {
         if (resp->success)
         {
@@ -2818,10 +2823,8 @@ void Debugger_DAP::OnInitializedEvent(DAPEvent & event)
 {
     // got initialized event, place breakpoints and continue
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-
     // Setup initial breakpoints
     CreateStartBreakpoints(true);
-
     // Setup initial data watches
     CreateStartWatches();
 
@@ -2837,46 +2840,45 @@ void Debugger_DAP::OnInitializedEvent(DAPEvent & event)
 }
 
 #define SHOW_RESPONSE_DATA(msg, data)                       \
-                m_pLogger->LogDAPMsgType("", -1,            \
-                wxString::Format(msg, data),                \
-               dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    m_pLogger->LogDAPMsgType("", -1,            \
+                             wxString::Format(msg, data),                \
+                             dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 
 /// DAP server sent `initialize` reponse to our `initialize` message
 void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-
     dap::InitializeResponse * response_data = event.GetDapResponse()->As<dap::InitializeResponse>();
+
     if (response_data)
     {
         if (response_data->success)
         {
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-//            SHOW_RESPONSE_DATA(_("seq %d"), response_data->seq);
-//            SHOW_RESPONSE_DATA(_("request_seq %d"), response_data->request_seq);
-    //        SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"),               response_data->body->supportTerminateDebuggee?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsCompletionsRequest: %s"),             response_data->body->supportsCompletionsRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsConditionalBreakpoints: %s"),         response_data->body->supportsConditionalBreakpoints?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsConfigurationDoneRequest: %s"),       response_data->body->supportsConfigurationDoneRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsDelayedStackTraceLoading: %s"),       response_data->body->supportsDelayedStackTraceLoading?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsEvaluateForHovers: %s"),              response_data->body->supportsEvaluateForHovers?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsExceptionInfoRequest: %s"),           response_data->body->supportsExceptionInfoRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsExceptionOptions: %s"),               response_data->body->supportsExceptionOptions?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsFunctionBreakpoints: %s"),            response_data->body->supportsFunctionBreakpoints?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsGotoTargetsRequest: %s"),             response_data->body->supportsGotoTargetsRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsHitConditionalBreakpoints: %s"),      response_data->body->supportsHitConditionalBreakpoints?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsLoadedSourcesRequest: %s"),           response_data->body->supportsLoadedSourcesRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsModulesRequest: %s"),                 response_data->body->supportsModulesRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsProgressReporting: %s"),              response_data->body->supportsProgressReporting?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsRestartFrame: %s"),                   response_data->body->supportsRestartFrame?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsRestartRequest: %s"),                 response_data->body->supportsRestartRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsRunInTerminalRequest: %s"),           response_data->body->supportsRunInTerminalRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsSetVariable: %s"),                    response_data->body->supportsSetVariable?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsStepBack: %s"),                       response_data->body->supportsStepBack?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsStepInTargetsRequest: %s"),           response_data->body->supportsStepInTargetsRequest?"True":"False: %s"),
-    //        SHOW_RESPONSE_DATA(_("supportsValueFormattingOptions: %s"),         response_data->body->supportsValueFormattingOptions?"True":"False: %s"),
-
-            m_dapClient.Launch({m_dap_debuggee});
+            //            SHOW_RESPONSE_DATA(_("seq %d"), response_data->seq);
+            //            SHOW_RESPONSE_DATA(_("request_seq %d"), response_data->request_seq);
+            //        SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"),               response_data->body->supportTerminateDebuggee?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsCompletionsRequest: %s"),             response_data->body->supportsCompletionsRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsConditionalBreakpoints: %s"),         response_data->body->supportsConditionalBreakpoints?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsConfigurationDoneRequest: %s"),       response_data->body->supportsConfigurationDoneRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsDelayedStackTraceLoading: %s"),       response_data->body->supportsDelayedStackTraceLoading?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsEvaluateForHovers: %s"),              response_data->body->supportsEvaluateForHovers?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsExceptionInfoRequest: %s"),           response_data->body->supportsExceptionInfoRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsExceptionOptions: %s"),               response_data->body->supportsExceptionOptions?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsFunctionBreakpoints: %s"),            response_data->body->supportsFunctionBreakpoints?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsGotoTargetsRequest: %s"),             response_data->body->supportsGotoTargetsRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsHitConditionalBreakpoints: %s"),      response_data->body->supportsHitConditionalBreakpoints?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsLoadedSourcesRequest: %s"),           response_data->body->supportsLoadedSourcesRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsModulesRequest: %s"),                 response_data->body->supportsModulesRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsProgressReporting: %s"),              response_data->body->supportsProgressReporting?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsRestartFrame: %s"),                   response_data->body->supportsRestartFrame?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsRestartRequest: %s"),                 response_data->body->supportsRestartRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsRunInTerminalRequest: %s"),           response_data->body->supportsRunInTerminalRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsSetVariable: %s"),                    response_data->body->supportsSetVariable?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsStepBack: %s"),                       response_data->body->supportsStepBack?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsStepInTargetsRequest: %s"),           response_data->body->supportsStepInTargetsRequest?"True":"False: %s"),
+            //        SHOW_RESPONSE_DATA(_("supportsValueFormattingOptions: %s"),         response_data->body->supportsValueFormattingOptions?"True":"False: %s"),
+            m_dapClient.Launch(std::move(m_DAP_DebuggeeStartCMD));
         }
         else
         {
@@ -3079,7 +3081,6 @@ void Debugger_DAP::OnTerminated(DAPEvent & event)
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     wxUnusedVar(event);
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("debugger terminated!")), dbg_DAP::LogPaneLogger::LineType::Warning);
-
     // Reset the client and data
     DAPDebuggerResetData();
 }
@@ -3115,9 +3116,7 @@ void Debugger_DAP::OnConnectionError(DAPEvent & event)
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     wxUnusedVar(event);
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("OnConnectionError!")), dbg_DAP::LogPaneLogger::LineType::Error);
-
     DAPDebuggerResetData();
-
     wxMessageBox(_("Lost connection to dap server"));
 }
 
