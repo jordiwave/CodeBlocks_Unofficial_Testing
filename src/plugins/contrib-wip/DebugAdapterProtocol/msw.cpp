@@ -14,53 +14,39 @@ namespace dap
 static bool CheckIsAlive(HANDLE hProcess)
 {
     DWORD dwExitCode;
-
-    if (GetExitCodeProcess(hProcess, &dwExitCode))
-    {
-        if (dwExitCode == STILL_ACTIVE)
-        {
+    if(GetExitCodeProcess(hProcess, &dwExitCode)) {
+        if(dwExitCode == STILL_ACTIVE)
             return true;
-        }
     }
-
     return false;
 }
 
 template <typename T>
-bool WriteStdin(const T & buffer, HANDLE hStdin, HANDLE hProcess)
+bool WriteStdin(const T& buffer, HANDLE hStdin, HANDLE hProcess)
 {
     DWORD dwMode;
+
     // Make the pipe to non-blocking mode
     dwMode = PIPE_READMODE_BYTE | PIPE_NOWAIT;
     SetNamedPipeHandleState(hStdin, &dwMode, NULL, NULL);
     DWORD bytesLeft = buffer.length();
     long offset = 0;
     size_t retryCount = 0;
-
-    while (bytesLeft > 0 && (retryCount < 100))
-    {
+    while(bytesLeft > 0 && (retryCount < 100)) {
         DWORD dwWritten = 0;
-
-        if (!WriteFile(hStdin, buffer.c_str() + offset, bytesLeft, &dwWritten, NULL))
-        {
+        if(!WriteFile(hStdin, buffer.c_str() + offset, bytesLeft, &dwWritten, NULL)) {
             return false;
         }
-
-        if (!CheckIsAlive(hProcess))
-        {
+        if(!CheckIsAlive(hProcess)) {
             return false;
         }
-
-        if (dwWritten == 0)
-        {
+        if(dwWritten == 0) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
-
         bytesLeft -= dwWritten;
         offset += dwWritten;
         ++retryCount;
     }
-
     return true;
 }
 
@@ -72,45 +58,39 @@ bool WriteStdin(const T & buffer, HANDLE hStdin, HANDLE hProcess)
 
 class ProcessMSW : public Process
 {
-    public:
-        HANDLE m_stdinRead = INVALID_HANDLE_VALUE;
-        HANDLE m_stdinWrite = INVALID_HANDLE_VALUE;
-        HANDLE m_stdoutWrite = INVALID_HANDLE_VALUE;
-        HANDLE m_stdoutRead = INVALID_HANDLE_VALUE;
-        HANDLE m_stderrWrite = INVALID_HANDLE_VALUE;
-        HANDLE m_stderrRead = INVALID_HANDLE_VALUE;
+public:
+    HANDLE m_stdinRead = INVALID_HANDLE_VALUE;
+    HANDLE m_stdinWrite = INVALID_HANDLE_VALUE;
+    HANDLE m_stdoutWrite = INVALID_HANDLE_VALUE;
+    HANDLE m_stdoutRead = INVALID_HANDLE_VALUE;
+    HANDLE m_stderrWrite = INVALID_HANDLE_VALUE;
+    HANDLE m_stderrRead = INVALID_HANDLE_VALUE;
 
-        DWORD m_dwProcessId = -1;
-        PROCESS_INFORMATION m_piProcInfo;
-        char m_buffer[65537];
+    DWORD m_dwProcessId = -1;
+    PROCESS_INFORMATION m_piProcInfo;
+    char m_buffer[65537];
 
-    protected:
-        bool DoReadFromPipe(HANDLE pipe, wxString & buff);
-        bool DoRead(wxString & ostrout, wxString & ostrerr);
-        bool DoWrite(const wxString & str, bool appendLf);
+protected:
+    bool DoReadFromPipe(HANDLE pipe, wxString& buff);
+    bool DoRead(wxString& ostrout, wxString& ostrerr);
+    bool DoWrite(const wxString& str, bool appendLf);
 
-    public:
-        ProcessMSW() {}
-        virtual ~ProcessMSW()
-        {
-            Cleanup();
-        }
-        bool Write(const wxString & str);
-        bool WriteLn(const wxString & str);
-        bool IsAlive() const;
-        void Cleanup();
-        void Terminate();
+public:
+    ProcessMSW() {}
+    virtual ~ProcessMSW() { Cleanup(); }
+    bool Write(const wxString& str);
+    bool WriteLn(const wxString& str);
+    bool IsAlive() const;
+    void Cleanup();
+    void Terminate();
 };
 
 void ProcessMSW::Cleanup()
 {
     Process::Cleanup();
-
-    if (IsAlive())
-    {
+    if(IsAlive()) {
         TerminateProcess(m_piProcInfo.hProcess, 255);
     }
-
     CLOSE_HANDLE(m_piProcInfo.hProcess);
     CLOSE_HANDLE(m_piProcInfo.hThread);
     CLOSE_HANDLE(m_stdinRead);
@@ -121,10 +101,9 @@ void ProcessMSW::Cleanup()
     CLOSE_HANDLE(m_stderrRead);
 }
 
-bool ProcessMSW::DoRead(wxString & ostrout, wxString & ostrerr)
+bool ProcessMSW::DoRead(wxString& ostrout, wxString& ostrerr)
 {
-    if (!IsAlive())
-    {
+    if(!IsAlive()) {
         return false;
     }
 
@@ -133,7 +112,7 @@ bool ProcessMSW::DoRead(wxString & ostrout, wxString & ostrerr)
     return !ostrerr.empty() || !ostrout.empty();
 }
 
-Process * ExecuteProcess(const wxString & cmd, const wxString & workingDir)
+Process* ExecuteProcess(const wxString& cmd, const wxString& workingDir)
 {
     UNUSED(workingDir);
     // Set the bInheritHandle flag so pipe handles are inherited.
@@ -141,31 +120,28 @@ Process * ExecuteProcess(const wxString & cmd, const wxString & workingDir)
     saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
     saAttr.bInheritHandle = TRUE;
     saAttr.lpSecurityDescriptor = NULL;
-    ProcessMSW * prc = new ProcessMSW();
-    PROCESS_INFORMATION & process_info = prc->m_piProcInfo;
+
+    ProcessMSW* prc = new ProcessMSW();
+    PROCESS_INFORMATION& process_info = prc->m_piProcInfo;
 
     // Save the handle to the current STDOUT.
-    //    HANDLE savedStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-    //    HANDLE savedStderr = GetStdHandle(STD_ERROR_HANDLE);
-    //    HANDLE savedStdin = GetStdHandle(STD_INPUT_HANDLE);
+    HANDLE savedStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE savedStderr = GetStdHandle(STD_ERROR_HANDLE);
+    HANDLE savedStdin = GetStdHandle(STD_INPUT_HANDLE);
 
     // Create a pipe for the child process's STDOUT.
-    if (!CreatePipe(&prc->m_stdoutRead, &prc->m_stdoutWrite, &saAttr, 0))
-    {
+    if(!CreatePipe(&prc->m_stdoutRead, &prc->m_stdoutWrite, &saAttr, 0)) {
         delete prc;
         return nullptr;
     }
 
     // Create a pipe for the child process's STDERR.
-    if (!CreatePipe(&prc->m_stderrRead, &prc->m_stderrWrite, &saAttr, 0))
-    {
+    if(!CreatePipe(&prc->m_stderrRead, &prc->m_stderrWrite, &saAttr, 0)) {
         delete prc;
         return NULL;
     }
-
     // Create a pipe for the child process's STDIN.
-    if (!CreatePipe(&prc->m_stdinRead, &prc->m_stdinWrite, &saAttr, 0))
-    {
+    if(!CreatePipe(&prc->m_stdinRead, &prc->m_stdinWrite, &saAttr, 0)) {
         delete prc;
         return NULL;
     }
@@ -174,6 +150,7 @@ Process * ExecuteProcess(const wxString & cmd, const wxString & workingDir)
     STARTUPINFO startup_info;
     ZeroMemory(&process_info, sizeof(PROCESS_INFORMATION));
     ZeroMemory(&startup_info, sizeof(STARTUPINFO));
+
     startup_info.cb = sizeof(STARTUPINFO);
     startup_info.hStdInput = prc->m_stdinRead;
     startup_info.hStdOutput = prc->m_stdoutWrite;
@@ -189,13 +166,9 @@ Process * ExecuteProcess(const wxString & cmd, const wxString & workingDir)
                              NULL,                // CD to tmp dir
                              &startup_info,       // STARTUPINFO pointer
                              &prc->m_piProcInfo); // receives PROCESS_INFORMATION
-
-    if (ret)
-    {
+    if(ret) {
         prc->m_dwProcessId = prc->m_piProcInfo.dwProcessId;
-    }
-    else
-    {
+    } else {
         delete prc;
         return NULL;
     }
@@ -205,23 +178,21 @@ Process * ExecuteProcess(const wxString & cmd, const wxString & workingDir)
     return prc;
 }
 
-bool ProcessMSW::DoReadFromPipe(HANDLE pipe, wxString & buff)
+bool ProcessMSW::DoReadFromPipe(HANDLE pipe, wxString& buff)
 {
     DWORD dwRead;
     DWORD dwMode;
     DWORD dwTimeout;
+
     // Make the pipe to non-blocking mode
     dwMode = PIPE_READMODE_BYTE | PIPE_NOWAIT;
     dwTimeout = 1000;
     SetNamedPipeHandleState(pipe, &dwMode, NULL, &dwTimeout);
+
     bool read_something = false;
-
-    while (true)
-    {
+    while(true) {
         BOOL bRes = ReadFile(pipe, m_buffer, sizeof(m_buffer) - 1, &dwRead, NULL);
-
-        if (bRes)
-        {
+        if(bRes) {
             wxString tmpBuff;
             // Success read
             m_buffer[dwRead / sizeof(char)] = 0;
@@ -230,35 +201,25 @@ bool ProcessMSW::DoReadFromPipe(HANDLE pipe, wxString & buff)
             read_something = true;
             continue;
         }
-
         break;
     }
-
     return read_something;
 }
 
-bool ProcessMSW::Write(const wxString & buff)
-{
-    return DoWrite(buff, false);
-}
+bool ProcessMSW::Write(const wxString& buff) { return DoWrite(buff, false); }
 
-bool ProcessMSW::WriteLn(const wxString & buff)
-{
-    return DoWrite(buff, true);
-}
+bool ProcessMSW::WriteLn(const wxString& buff) { return DoWrite(buff, true); }
 
-bool ProcessMSW::DoWrite(const wxString & buff, bool appendLf)
+bool ProcessMSW::DoWrite(const wxString& buff, bool appendLf)
 {
     DWORD dwMode;
     DWORD dwTimeout;
-    wxString tmpCmd = buff;
-    StringUtils::Rtrim(tmpCmd);
 
-    if (appendLf)
-    {
+    wxString tmpCmd = buff;
+    DapStringUtils::Rtrim(tmpCmd);
+    if(appendLf) {
         tmpCmd += "\n";
     }
-
     // Make the pipe to non-blocking mode
     dwMode = PIPE_READMODE_BYTE | PIPE_NOWAIT;
     dwTimeout = 30000;
@@ -268,10 +229,7 @@ bool ProcessMSW::DoWrite(const wxString & buff, bool appendLf)
     return WriteStdin(tmpCmd, m_stdinWrite, m_piProcInfo.hProcess);
 }
 
-bool ProcessMSW::IsAlive() const
-{
-    return CheckIsAlive(m_piProcInfo.hProcess);
-}
+bool ProcessMSW::IsAlive() const { return CheckIsAlive(m_piProcInfo.hProcess); }
 
 void ProcessMSW::Terminate()
 {

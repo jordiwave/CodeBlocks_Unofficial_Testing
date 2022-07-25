@@ -242,16 +242,15 @@ class Debugger_DAP : public cbDebuggerPlugin
         wxString m_dap_debuggeepath;
         dap::Process * m_DAPTerminalProcess = nullptr;
         int m_frame_id = wxNOT_FOUND;
-        bool m_bSentConfigurationDone = false;
 
-        enum DAPState
+        enum eDAPState
         {
             NotConnected = 0,
             Connected,
             Stopped,
             Running
         };
-        DAPState  DAPDebuggerState;
+        eDAPState  DAPDebuggerState;
 
         // breakpoints
         dbg_DAP::DAPBreakpointsContainer m_breakpoints;
