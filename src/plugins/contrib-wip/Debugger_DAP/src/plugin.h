@@ -292,6 +292,13 @@ class Debugger_DAP : public cbDebuggerPlugin
         void OnRunInTerminalRequest(DAPEvent & event);
         void OnDapLog(DAPEvent & event);
         void OnDapModuleEvent(DAPEvent & event);
+
+        void OnTreadResponse(DAPEvent & event);
+        void OnStopOnEntryEvent(DAPEvent & event);
+        void OnProcessEvent(DAPEvent & event);
+        void OnBreakpointEvent(DAPEvent & event);
+        void OnCcontinuedEvent(DAPEvent & event);
+        void OnDebugPYWaitingForServerEvent(DAPEvent & event);
 };
 
 #endif // _DEBUGGER_DAP_PLUGIN_H_

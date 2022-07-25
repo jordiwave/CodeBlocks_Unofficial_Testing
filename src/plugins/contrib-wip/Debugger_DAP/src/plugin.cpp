@@ -119,12 +119,18 @@ Debugger_DAP::Debugger_DAP() :
     m_dapClient.Bind(wxEVT_DAP_BREAKPOINT_LOCATIONS_RESPONSE,   &Debugger_DAP::OnBreakpointLocations,  this);
     m_dapClient.Bind(wxEVT_DAP_LOST_CONNECTION,                 &Debugger_DAP::OnConnectionError,      this);
     m_dapClient.Bind(wxEVT_DAP_SET_SOURCE_BREAKPOINT_RESPONSE,  &Debugger_DAP::OnBreakpointDataSet,        this);
-    m_dapClient.Bind(wxEVT_DAP_SET_FUNCTION_BREAKPOINT_RESPONSE, &Debugger_DAP::OnBreakpointFunctionSet,        this);
+    m_dapClient.Bind(wxEVT_DAP_SET_FUNCTION_BREAKPOINT_RESPONSE, &Debugger_DAP::OnBreakpointFunctionSet, this);
     m_dapClient.Bind(wxEVT_DAP_LAUNCH_RESPONSE,                 &Debugger_DAP::OnLaunchResponse,       this);
     m_dapClient.Bind(wxEVT_DAP_RUN_IN_TERMINAL_REQUEST,         &Debugger_DAP::OnRunInTerminalRequest, this);
     m_dapClient.Bind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,               this);
     m_dapClient.Bind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,       this);
     m_dapClient.Bind(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE,    &Debugger_DAP::OnConfigurationDoneResponse,  this);
+    m_dapClient.Bind(wxEVT_DAP_THREADS_RESPONSE,                &Debugger_DAP::OnTreadResponse,         this);
+    m_dapClient.Bind(wxEVT_DAP_STOPPED_ON_ENTRY_EVENT,          &Debugger_DAP::OnStopOnEntryEvent,      this);
+    m_dapClient.Bind(wxEVT_DAP_PROCESS_EVENT,                   &Debugger_DAP::OnProcessEvent,          this);
+    m_dapClient.Bind(wxEVT_DAP_BREAKPOINT_EVENT,                &Debugger_DAP::OnBreakpointEvent,       this);
+    m_dapClient.Bind(wxEVT_DAP_CONTINUED_EVENT,                 &Debugger_DAP::OnCcontinuedEvent,       this);
+    m_dapClient.Bind(wxEVT_DAP_DEBUGPYWAITINGFORSERVER_EVENT,   &Debugger_DAP::OnDebugPYWaitingForServerEvent,  this);
     m_dapClient.SetWantsLogEvents(true); // send use log events
 }
 
@@ -151,6 +157,12 @@ Debugger_DAP::~Debugger_DAP()
     m_dapClient.Unbind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,               this);
     m_dapClient.Unbind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,       this);
     m_dapClient.Unbind(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE,    &Debugger_DAP::OnConfigurationDoneResponse,  this);
+    m_dapClient.Unbind(wxEVT_DAP_THREADS_RESPONSE,                &Debugger_DAP::OnTreadResponse,           this);
+    m_dapClient.Unbind(wxEVT_DAP_STOPPED_ON_ENTRY_EVENT,          &Debugger_DAP::OnStopOnEntryEvent,        this);
+    m_dapClient.Unbind(wxEVT_DAP_PROCESS_EVENT,                   &Debugger_DAP::OnProcessEvent,            this);
+    m_dapClient.Unbind(wxEVT_DAP_BREAKPOINT_EVENT,                &Debugger_DAP::OnBreakpointEvent,         this);
+    m_dapClient.Unbind(wxEVT_DAP_CONTINUED_EVENT,                 &Debugger_DAP::OnCcontinuedEvent,         this);
+    m_dapClient.Unbind(wxEVT_DAP_DEBUGPYWAITINGFORSERVER_EVENT,   &Debugger_DAP::OnDebugPYWaitingForServerEvent,  this);
 
     if (m_dapPid != 0)
     {
@@ -709,6 +721,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
 
     if (!debugeeArgs.IsEmpty())
     {
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(debugeeArgs);
         wxArrayString debugeeArgsArray = wxSplit(debugeeArgs, ' ');
 
         for (wxString param : debugeeArgsArray)
@@ -2744,39 +2757,40 @@ bool Debugger_DAP::LoadStateFromFile(cbProject * pProject)
 
 void Debugger_DAP::OnProcessBreakpointData(const wxString & brkDescription)
 {
-    wxString::size_type brkLookupIndexStart = brkDescription.find(' ');
-    wxString brkLookup = brkDescription.substr(brkLookupIndexStart);
-
-    if (brkLookup.IsEmpty())
+    if (!brkDescription.IsEmpty())
     {
-        return;
-    }
+        wxString::size_type brkLookupIndexStart = brkDescription.find(' ');
+        wxString brkLookup = brkDescription.substr(brkLookupIndexStart);
 
-    wxString::size_type brkLookupIndexEnd = brkLookup.find('.');
-    wxString brkID = brkLookup.substr(0, brkLookupIndexEnd);
-
-    if (brkID.IsEmpty())
-    {
-        return;
-    }
-
-    long id;
-
-    if (brkID.ToLong(&id, 10))
-    {
-        cb::shared_ptr<cbBreakpoint> breakpoint = Debugger_DAP::GetBreakpointByID(id);
-
-        if (breakpoint)
+        if (!brkLookup.IsEmpty())
         {
-            cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp = cb::static_pointer_cast<dbg_DAP::DAPBreakpoint>(breakpoint);
+            wxString::size_type brkLookupIndexEnd = brkLookup.find('.');
+            wxString brkID = brkLookup.substr(0, brkLookupIndexEnd);
 
-            if (bp && !bp->GetFilename().IsEmpty())
+            if (!brkID.IsEmpty())
             {
-                //GetDAPCurrentFrame().SetPosition(bp.GetFilename(), bp.GetLine());
-                SyncEditor(bp->GetFilename(), bp->GetLine() + 1, true);
+                long id;
+
+                if (brkID.ToLong(&id, 10))
+                {
+                    cb::shared_ptr<cbBreakpoint> breakpoint = Debugger_DAP::GetBreakpointByID(id);
+
+                    if (breakpoint)
+                    {
+                        cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp = cb::static_pointer_cast<dbg_DAP::DAPBreakpoint>(breakpoint);
+
+                        if (bp && !bp->GetFilename().IsEmpty())
+                        {
+                            //GetDAPCurrentFrame().SetPosition(bp.GetFilename(), bp.GetLine());
+                            SyncEditor(bp->GetFilename(), bp->GetLine() + 1, true);
+                        }
+                    }
+                }
             }
         }
     }
+
+    m_dapClient.GetFrames();
 }
 
 // "======================================================================================================================="
@@ -2811,7 +2825,6 @@ void Debugger_DAP::OnLaunchResponse(DAPEvent & event)
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Bad Response: %s"), resp->message), dbg_DAP::LogPaneLogger::LineType::Error);
             // launch failed!
             wxMessageBox("Failed to launch debuggee: " + resp->message, "DAP", wxICON_ERROR | wxOK | wxOK_DEFAULT | wxCENTRE);
-            m_dapClient.CallAfter(&dap::Client::Reset);
             // Reset plugin back to default state!!!!
             DAPDebuggerResetData();
         }
@@ -2906,22 +2919,29 @@ void Debugger_DAP::OnStopped(DAPEvent & event)
 
     if (stopped_data)
     {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped reason: %s"), stopped_data->reason), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("text: %s"),  stopped_data->text), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("description: %s"),  stopped_data->description), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("All threads stopped: %s"),  stopped_data->allThreadsStopped ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped thread ID: %d (active thread ID: %d)"), stopped_data->threadId, m_dapClient.GetActiveThreadId()), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-
-        if (stopped_data->reason.IsSameAs("breakpoint"))
+        //m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("text: %s"),  stopped_data->text), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        //m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("description: %s"),  stopped_data->description), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        //m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("All threads stopped: %s"),  stopped_data->allThreadsStopped ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        //m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped thread ID: %d (active thread ID: %d)"), stopped_data->threadId, m_dapClient.GetActiveThreadId()), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        if (
+            (stopped_data->reason.IsSameAs("breakpoint")) ||
+            (stopped_data->reason.IsSameAs("step")) ||
+            (stopped_data->reason.IsSameAs("goto"))
+        )
         {
             /* reason:
-            * Values: 'step', 'breakpoint', 'exception', 'pause', 'entry', 'goto',
-            * 'function breakpoint', 'data breakpoint', etc.
+            * Values: 'step', 'breakpoint', 'goto',
             */
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped reason: %s"), stopped_data->reason), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
             OnProcessBreakpointData(stopped_data->description);
         }
-
-        m_dapClient.GetFrames();
+        else
+        {
+            /* reason:
+            * Values: 'exception', 'pause', 'entry', 'function breakpoint', 'data breakpoint', etc
+            */
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped reason: %s not suported"), stopped_data->reason), dbg_DAP::LogPaneLogger::LineType::Error);
+        }
     }
 
     MarkAsStopped();
@@ -3116,8 +3136,9 @@ void Debugger_DAP::OnConnectionError(DAPEvent & event)
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     wxUnusedVar(event);
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("OnConnectionError!")), dbg_DAP::LogPaneLogger::LineType::Error);
-    DAPDebuggerResetData();
     wxMessageBox(_("Lost connection to dap server"));
+    event.Skip();
+    DAPDebuggerResetData();
 }
 
 void Debugger_DAP::OnBreakpointDataSet(DAPEvent & event)
@@ -3181,16 +3202,14 @@ void Debugger_DAP::OnDapLog(DAPEvent & event)
 void Debugger_DAP::OnDapModuleEvent(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    auto event_data = event.GetDapEvent()->As<dap::ModuleEvent>();
+    dap::ModuleEvent * event_data = event.GetDapEvent()->As<dap::ModuleEvent>();
 
-    if (!event_data)
+    if (event_data)
     {
-        return;
+        //wxString log_entry;
+        //log_entry << event_data->module.id << ": " << event_data->module.name << " " << event_data->module.symbolStatus << event_data->module.version << " " << event_data->module.path;
+        //m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, log_entry, dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     }
-
-    wxString log_entry;
-    log_entry << event_data->module.id << ": " << event_data->module.name << " " << event_data->module.symbolStatus << event_data->module.version << " " << event_data->module.path;
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, log_entry, dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
 
 void Debugger_DAP::OnRunInTerminalRequest(DAPEvent & event)
@@ -3227,6 +3246,36 @@ void Debugger_DAP::OnRunInTerminalRequest(DAPEvent & event)
     }
 
     m_dapClient.SendResponse(response);
+}
+
+void Debugger_DAP::OnTreadResponse(DAPEvent & event)
+{
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+}
+
+void Debugger_DAP::OnStopOnEntryEvent(DAPEvent & event)
+{
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+}
+
+void Debugger_DAP::OnProcessEvent(DAPEvent & event)
+{
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+}
+
+void Debugger_DAP::OnBreakpointEvent(DAPEvent & event)
+{
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+}
+
+void Debugger_DAP::OnCcontinuedEvent(DAPEvent & event)
+{
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+}
+
+void Debugger_DAP::OnDebugPYWaitingForServerEvent(DAPEvent & event)
+{
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
 
 // "==================================================================================================================="
