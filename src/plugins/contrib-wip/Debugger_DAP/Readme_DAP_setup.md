@@ -82,3 +82,9 @@ export RUST_LOG_STYLE=always
 export RUST_BACKTRACE=full
 ./codelldb --port 12345
 ~~~
+
+3) If you get any of the following errors when debuging C::B then "brew install mesa" and try again:
+
+    * +[MTLIOAccelDevice registerDevices]: Zero Metal services found
+    * [api] No Metal renderer available.
+    * [render]Unable to create basic Accelerated OpenGL renderer.
