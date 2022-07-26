@@ -38,6 +38,7 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
         void SetFlag(Flags flag, bool value);
         wxString GetDAPExecutable(bool expandMacro = true);
         wxString GetDAPPortNumber();
+        wxString GetDAPPythonHomeEnvSetting();
         wxString GetDisassemblyFlavorCommand();
         wxString GetInitialCommands();
 

@@ -106,6 +106,7 @@ wxPanel * DebuggerConfiguration::MakePanel(wxWindow * parent)
     XRCCTRL(*panel, "txtDAPExecutable", wxTextCtrl)->ChangeValue(GetDAPExecutable(false));
     panel->ValidateExecutablePath();
     XRCCTRL(*panel, "txtPortNumber",            wxTextCtrl)->ChangeValue(GetDAPPortNumber());
+    XRCCTRL(*panel, "txtPythonHome",            wxTextCtrl)->ChangeValue(GetDAPPythonHomeEnvSetting());
     XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->ChangeValue(GetInitialCommands());
     XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->SetMinSize(wxSize(-1, 75));;
     XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->SetValue(GetFlag(WatchFuncLocalsArgs));
@@ -124,14 +125,14 @@ wxPanel * DebuggerConfiguration::MakePanel(wxWindow * parent)
 bool DebuggerConfiguration::SaveChanges(wxPanel * panel)
 {
     m_config.Write("executable_path",       XRCCTRL(*panel, "txtDAPExecutable",         wxTextCtrl)->GetValue());
-    m_config.Write("port_number",           XRCCTRL(*panel, "txtPortNumber",            wxTextCtrl)->GetValue());
+    m_config.Write("python_home_env",       XRCCTRL(*panel, "txtPythonHome",            wxTextCtrl)->GetValue());
     m_config.Write("init_commands",         XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->GetValue());
     m_config.Write("watch_locals_and_args", XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->GetValue());
     m_config.Write("catch_exceptions",      XRCCTRL(*panel, "chkCatchExceptions",       wxCheckBox)->GetValue());
     m_config.Write("eval_tooltip",          XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->GetValue());
     m_config.Write("add_other_search_dirs", XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->GetValue());
     m_config.Write("do_not_run_debuggee",   XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->GetValue());
-    m_config.Write("persist_debug_elements", XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->GetValue());
+    m_config.Write("persist_debug_elements",XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->GetValue());
     m_config.Write("stop_on_main",          XRCCTRL(*panel, "chkStopOnMain",            wxCheckBox)->GetValue());
     m_config.Write("run_DAP_server",        XRCCTRL(*panel, "chkRunDAPServer",          wxCheckBox)->GetValue());
     m_config.Write("disassembly_flavor",    XRCCTRL(*panel, "choDisassemblyFlavor",     wxChoice)->GetSelection());
@@ -370,6 +371,13 @@ wxString DebuggerConfiguration::GetDAPPortNumber()
     {
         result = "12345";
     }
+
+    return result;
+}
+
+wxString DebuggerConfiguration::GetDAPPythonHomeEnvSetting()
+{
+    wxString result = m_config.Read("python_home_env", "");
 
     return result;
 }

@@ -50,6 +50,25 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT_PythonHome">
+							<label>PYTHON Home:</label>
+						</object>
+						<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtPythonHome" />
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
 					<label>Debugger initialization commands</label>
 					<orient>wxVERTICAL</orient>

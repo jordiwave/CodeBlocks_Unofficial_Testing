@@ -27,7 +27,7 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
 
         wxString GetTitle() const override
         {
-            return "Debugger DAP/MI";
+            return "DAP Debugger";
         }
         wxString GetBitmapBaseName() const override
         {
@@ -35,12 +35,14 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
         }
         void OnApply() override;
         void OnCancel() override {}
+
     protected:
         void OnTargetSel(wxCommandEvent & event);
         void OnAdd(wxCommandEvent & event);
         void OnEdit(wxCommandEvent & event);
         void OnDelete(wxCommandEvent & event);
         void OnUpdateUI(wxUpdateUIEvent & event);
+
     private:
         void OnBuildTargetRemoved(CodeBlocksEvent & event);
         void OnBuildTargetAdded(CodeBlocksEvent & event);
@@ -51,8 +53,6 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
         Debugger_DAP * m_pDebuggerDAPMI;
         cbProject * m_pProject;
         wxArrayString m_OldPaths;
-        //            RemoteDebuggingMap m_OldRemoteDebugging;
-        //            RemoteDebuggingMap m_CurrentRemoteDebugging;
         int m_LastTargetSel;
         DECLARE_EVENT_TABLE()
 };

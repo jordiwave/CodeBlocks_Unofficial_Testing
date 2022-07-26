@@ -200,7 +200,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         void OnTimer(wxTimerEvent & event);
         void OnIdle(wxIdleEvent & event);
         void OnMenuInfoCommandStream(wxCommandEvent & event);
-        void LaunchDAPDebugger(const wxString & dap_debugger, const wxString & dap_port_number);
+        void LaunchDAPDebugger(cbProject * project, const wxString & dap_debugger, const wxString & dap_port_number);
         int LaunchDebugger(cbProject * project,
                            const wxString & dap_debugger,
                            const wxString & debuggee,
