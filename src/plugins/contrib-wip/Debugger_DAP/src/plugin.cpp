@@ -3166,9 +3166,8 @@ void Debugger_DAP::OnExited(DAPEvent & event)
 /// Debug session terminated
 void Debugger_DAP::OnTerminated(DAPEvent & event)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     wxUnusedVar(event);
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("debugger terminated!")), dbg_DAP::LogPaneLogger::LineType::Warning);
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event for debugger terminated!"), dbg_DAP::LogPaneLogger::LineType::Warning);
 
     // Reset the client and data
     DAPDebuggerResetData();
@@ -3180,7 +3179,13 @@ void Debugger_DAP::OnOutput(DAPEvent & event)
 
     if (output_data)
     {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _(output_data->category << ":" << output_data->output), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+        wxString msg(output_data->output);
+        msg.Replace("\r\n", "");
+        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("%s - %s", output_data->category, msg), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    }
+    else
+    {
+        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     }
 }
 
