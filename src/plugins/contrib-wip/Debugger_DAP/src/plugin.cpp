@@ -600,6 +600,18 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
         return 6;
     }
 
+    wxEnvVariableHashMap env;
+    if ( wxGetEnvMap(&env) )
+    {
+        for ( wxEnvVariableHashMap::iterator it = env.begin(); it != env.end(); ++it )
+        {
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
+                                    __LINE__,
+                                    wxString::Format("OS: %s  %s", it->first, it->second),
+                                    dbg_DAP::LogPaneLogger::LineType::Debug);
+        }
+    }
+
     bool console = target->GetTargetType() == ttConsoleOnly;
     wxString oldLibPath;
     wxGetEnv(CB_LIBRARY_ENVVAR, &oldLibPath);
