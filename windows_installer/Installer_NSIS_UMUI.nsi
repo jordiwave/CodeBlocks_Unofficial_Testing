@@ -3,12 +3,12 @@
 #!define NIGHTLY_BUILD_SVN 12825_EXPERIMENTAL_PLUS
 
 ###########################################################################################
-# The installer is divided into 5 main sections (section groups):   #
-# "Default"           -> includes C::B core and core plugins        #
-# "Lexers"            -> includes C::B lexers for different langs   #
-# "Contrib plugins"   -> includes C::B contrib plugins              #
-# "C::B share config" -> includes the C::B Share Config tool        #
-# "C::B Launcher"     -> includes CbLauncher                        #
+# The installer is divided into 5 main sections (section groups):                         #
+# "Default"           -> includes C::B core and core plugins                              #
+# "Lexers"            -> includes C::B lexers for different langs                         #
+# "Contrib plugins"   -> includes C::B contrib plugins                                    #
+# "C::B share config" -> includes the C::B Share Config tool                              #
+# "C::B Launcher"     -> includes CbLauncher                                              #
 ###########################################################################################
 # What to do to add a new installer section (e.g. a new plugin):                          #
 # 1.) Add Installer section                                                               #
@@ -454,6 +454,8 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 !endif
             File ${CB_BASE}\libstdc++-6.dll
             File ${CB_BASE}\libwinpthread-1.dll
+            File ${CB_BASE}\libbz2-1.dll
+            File ${CB_BASE}\libhunspell-1.7-0.dll
             
             ${If} ${IsWinXP}
                 # crash handler for Windows XP!!!!
@@ -3201,6 +3203,8 @@ Section "-un.Core Files (required)" UNSEC_CORE
         Delete /REBOOTOK $INSTDIR\dbgcore.dll
     ${EndIf}
     # MinGW DLL's for thread handling etc.
+    Delete /REBOOTOK $INSTDIR\libhunspell-1.7-0.dll
+    Delete /REBOOTOK $INSTDIR\libbz2-1.dll
     Delete /REBOOTOK $INSTDIR\libwinpthread-1.dll
     Delete /REBOOTOK $INSTDIR\libstdc++-6.dll
 !if ${BUILD_TYPE} == 64

@@ -8,9 +8,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxSpellChecker">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\wxSpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxSpellChecker" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\SpellChecker\wxSpellChecker" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker/wxSpellChecker" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -21,24 +21,24 @@
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-DHUNSPELL_STATIC" />
-					<Add directory="wxspellchecker\include" />
+					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#WXWIDGETS.include)" />
-					<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
+					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add library="hunspell" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-					<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-					<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
+					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
 				</Linker>
 			</Target>
 			<Target title="plugin">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\SpellChecker" prefix_auto="0" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\SpellChecker" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/SpellChecker" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations -ns -nd --multiple-instance -p debug" />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_BUILD.CFLAGS)" />
@@ -46,45 +46,36 @@
 					<Add option="-fexceptions" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
-					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-Winvalid-pch" />
+					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
-					<Add directory="wxspellchecker\include" />
+					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
-					<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
+					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
+					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 					<Add directory="$(#WXWIDGETS.include)" />
-					<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
+					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
-					<Add library="wxSpellChecker" />
+   				    <Add library="wxSpellChecker" />
 					<Add library="hunspell" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-					<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-					<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
+					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
-					<!-- Create output directory -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Mode before="always" />
-
-					<!-- Create plugin zip file-->
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
-
-					<!-- Copy Spellchecker dictionary files -->
 					<Add before="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker" />
-					<Add after="xcopy /Y /Q OnlineSpellChecking.xml $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker\ " />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
+					<Add after="xcopy /Y /Q OnlineSpellChecking.xml $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker\" />
 					<Add after="xcopy /Y /S /Q dictionaries\*.aff $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker\" />
 					<Add after="xcopy /Y /S /Q dictionaries\*.dic $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker\" />
 					<Add after="xcopy /Y /S /Q rc\*               $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\SpellChecker\" />
-
-					<!-- Copy Spellchecker image files -->
 					<Add after="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings" />
-					<Add after="xcopy /Y /Q *.png   $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ " />
-
+					<Add after="xcopy /Y /Q *.png   $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -180,11 +171,11 @@
 		<Unit filename="ThesaurusDialog.h">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="manifest.xml">
+		<Unit filename="manifest.rc">
+			<Option compilerVar="WINDRES" />
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="manifest.rc" >
-			<Option compilerVar="WINDRES" />
+		<Unit filename="manifest.xml">
 			<Option target="plugin" />
 		</Unit>
 		<Unit filename="mythes.cxx">
@@ -199,73 +190,78 @@
 		<Unit filename="wxThes.h">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="wxsmith\SpellCheckSettingsPanel.wxs">
+		<Unit filename="wxsmith/SpellCheckSettingsPanel.wxs">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\PersonalDictionary.h">
+		<Unit filename="wxspellchecker/include/PersonalDictionary.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckCmdLineInterface.h">
+		<Unit filename="wxspellchecker/include/SpellCheckCmdLineInterface.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckDialogInterface.h">
+		<Unit filename="wxspellchecker/include/SpellCheckDialogInterface.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckEngineInterface.h">
+		<Unit filename="wxspellchecker/include/SpellCheckEngineInterface.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckEngineOption.h">
+		<Unit filename="wxspellchecker/include/SpellCheckEngineOption.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckUserInterface.h">
+		<Unit filename="wxspellchecker/include/SpellCheckUserInterface.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckerOptionsDialog.h">
+		<Unit filename="wxspellchecker/include/SpellCheckerOptionsDialog.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\XmlPersonalDictionaryDialog.h">
+		<Unit filename="wxspellchecker/include/XmlPersonalDictionaryDialog.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\XmlSpellCheckDialog.h">
+		<Unit filename="wxspellchecker/include/XmlSpellCheckDialog.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\exports.h">
+		<Unit filename="wxspellchecker/include/exports.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\PersonalDictionary.cpp">
+		<Unit filename="wxspellchecker/src/PersonalDictionary.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckCmdLineInterface.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckCmdLineInterface.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckDialogInterface.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckDialogInterface.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckEngineInterface.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckEngineInterface.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckEngineOption.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckEngineOption.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckUserInterface.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckUserInterface.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckerOptionsDialog.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckerOptionsDialog.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\XmlPersonalDictionaryDialog.cpp">
+		<Unit filename="wxspellchecker/src/XmlPersonalDictionaryDialog.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\XmlSpellCheckDialog.cpp">
+		<Unit filename="wxspellchecker/src/XmlSpellCheckDialog.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\exports.cpp">
+		<Unit filename="wxspellchecker/src/exports.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\open.xpm">
+		<Unit filename="wxspellchecker/src/open.xpm">
 			<Option target="wxSpellChecker" />
 		</Unit>
 		<Extensions>
+			<cbSystemView>
+				<target name="#project#">
+					<svdFile path="" />
+				</target>
+			</cbSystemView>
 			<wxsmith version="1">
 				<resources>
 					<wxPanel wxs="wxsmith\SpellCheckSettingsPanel.wxs" src="SpellCheckSettingsPanel.cpp" hdr="SpellCheckSettingsPanel.h" xrc="SpellCheckSettingsPanel.xrc" fwddecl="0" i18n="1" name="SpellCheckSettingsPanel" language="CPP" />

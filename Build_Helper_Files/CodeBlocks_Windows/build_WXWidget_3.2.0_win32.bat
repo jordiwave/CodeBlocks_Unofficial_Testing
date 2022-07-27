@@ -134,7 +134,6 @@ goto FAIL
 @rem ==========================================================================================================
 
 :ErrNowxWidget
-@echo on
 echo Could not find %WXWIN%
 @echo.
 @echo.

@@ -415,6 +415,8 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 !endif
             File ${CB_BASE}\libstdc++-6.dll
             File ${CB_BASE}\libwinpthread-1.dll
+            File ${CB_BASE}\libbz2-1.dll
+            File ${CB_BASE}\libhunspell-1.7-0.dll
             
             ${If} ${IsWinXP}
                 # crash handler for Windows XP!!!!
@@ -3118,6 +3120,8 @@ Section "-un.Core Files (required)" UNSEC_CORE
         Delete /REBOOTOK $INSTDIR\dbgcore.dll
     ${EndIf}
     # MinGW DLL's for thread handling etc.
+    Delete /REBOOTOK $INSTDIR\libhunspell-1.7-0.dll
+    Delete /REBOOTOK $INSTDIR\libbz2-1.dll
     Delete /REBOOTOK $INSTDIR\libwinpthread-1.dll
     Delete /REBOOTOK $INSTDIR\libstdc++-6.dll
 !if ${BUILD_TYPE} == 64

@@ -53,15 +53,21 @@ if not exist "%BUILD_DEV_OUTPUT_DIR%\libcodeblocks.la"  if not exist "%BUILD_DEV
 @rem Copy the compiler DLL and wxWidget DLL's into the %BUILD_DEV_OUTPUT_DIR% directory
 @rem ----------------------------------------------------------------------------
 @echo Copying compiler and wxWidget DLL's into the %BUILD_DEV_OUTPUT_DIR% directory.
+
 if "%BUILD_BITS%" == "32" if exist "%GCC_ROOT%\bin\libgcc_s_dw2-1.dll"    copy /Y "%GCC_ROOT%\bin\libgcc_s_dw2-1.dll"        %BUILD_DEV_OUTPUT_DIR% > nul
 if "%BUILD_BITS%" == "64" if exist "%GCC_ROOT%\bin\libgcc_s_seh-1.dll"    copy /Y "%GCC_ROOT%\bin\libgcc_s_seh-1.dll"        %BUILD_DEV_OUTPUT_DIR% > nul
 @rem The next DLL is required for some GCC compilers, but not for others. Either way copy it is if exists.
 if "%BUILD_BITS%" == "64" if exist "%GCC_ROOT%\bin\libgcc_s_seh_64-1.dll" copy /Y "%GCC_ROOT%\bin\libgcc_s_seh_64-1.dll"     %BUILD_DEV_OUTPUT_DIR% > nul
-if exist "%GCC_ROOT%\bin\libwinpthread-1.dll"       copy /Y "%GCC_ROOT%\bin\libwinpthread-1.dll"       %BUILD_DEV_OUTPUT_DIR% > nul
-if exist "%GCC_ROOT%\bin\libstdc++-6.dll"           copy /Y "%GCC_ROOT%\bin\libstdc++-6.dll"           %BUILD_DEV_OUTPUT_DIR% > nul
+
+if exist "%GCC_ROOT%\bin\libwinpthread-1.dll"   copy /Y "%GCC_ROOT%\bin\libwinpthread-1.dll"    %BUILD_DEV_OUTPUT_DIR% > nul
+if exist "%GCC_ROOT%\bin\libstdc++-6.dll"       copy /Y "%GCC_ROOT%\bin\libstdc++-6.dll"        %BUILD_DEV_OUTPUT_DIR% > nul
+if exist "%GCC_ROOT%\bin\libhunspell-*.dll"     copy /Y "%GCC_ROOT%\bin\libhunspell-*.dll"      %BUILD_DEV_OUTPUT_DIR% > nul
+if exist "%GCC_ROOT%\bin\libbz2*.dll"           copy /Y "%GCC_ROOT%\bin\libbz2*.dll"            %BUILD_DEV_OUTPUT_DIR% > nul
+if exist "%GCC_ROOT%\bin\zlib*.dll"             copy /Y "%GCC_ROOT%\bin\zlib*.dll"              %BUILD_DEV_OUTPUT_DIR% > nul
 
 if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gcc_cb.dll"    copy /Y "%WXWIN%\lib\gcc_dll\wxmsw*_gcc_cb.dll"    %BUILD_DEV_OUTPUT_DIR% > nul
 if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" copy /Y "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" %BUILD_DEV_OUTPUT_DIR% > nul
+
 
 if not exist "%BUILD_DEV_OUTPUT_DIR%\exchndl.dll" (
     if "%WIN_Version%" == "10.0" copy /Y "exchndl\win_10\bin\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul

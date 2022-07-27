@@ -195,7 +195,6 @@ IF %ERRORLEVEL% NEQ 0 (
 @rem Run the Windows_Ouput_Create.bat if the user wanted it to run and we did not spawn the build 
 @rem -------------------------------------------------------------------------------
 :UpdateStart
-echo on 
 if "%SpawnBuild%" == "True" goto UpdateFinish
 if /I "%UserInput%" NEQ "Y" goto UpdateFinish
 @echo.
