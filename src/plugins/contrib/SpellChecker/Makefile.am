@@ -98,7 +98,6 @@ EXTRA_DIST = \
 			*.xrc \
 			*.png \
 			wxsmith \
-			hunspell \
 			dictionaries \
 			manifest.xml
 

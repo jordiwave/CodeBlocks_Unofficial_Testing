@@ -19,7 +19,6 @@
 //------------------------------------------------------------------------------
 #include <iostream>
 //------------------------------------------------------------------------------
-#include "macros.h"
 #include "cbpunit.h"
 #include "cbhelper.h"
 #include "stlconvert.h"
@@ -43,7 +42,7 @@ void CBuildUnit::Clear(void)
     m_Targets.Clear();
     m_DoCompile = true;
     m_DoLink = true;
-    //m_Type = utNone;
+//m_Type = utNone;
     m_Weight = 0;
 }
 
@@ -52,67 +51,45 @@ CString CBuildUnit::Extension(void) const
     return ExtractFileExt(m_FileName);
 }
 
-bool CBuildUnit::BelongToTarget(const CString & TargetName)
+bool CBuildUnit::BelongToTarget(const CString& TargetName)
 {
-    return ((m_Targets.GetCount() == 0) || (m_Targets.FindString(TargetName) >= 0));
+    return ((m_Targets.GetCount()==0) || (m_Targets.FindString(TargetName)>=0));
 }
 
-void CBuildUnit::Read(const TiXmlElement * UnitRoot)
+void CBuildUnit::Read(const TiXmlElement *UnitRoot)
 {
-    char * value = 0;
-
-    if ((value = (char *)UnitRoot->Attribute("filename")))
-    {
+    char *value = 0;
+    if ((value = (char *)UnitRoot->Attribute("filename"))) {
         m_FileName = value;
     }
-
-    TiXmlNode * _option = (TiXmlNode *)UnitRoot->FirstChild("Option");
-
-    while (0 != _option)
-    {
-        TiXmlElement * option = _option->ToElement();
-
-        if (0 != option)
-        {
-            char * value_ex = 0;
-
-            if ((value_ex = (char *)option->Attribute("compilerVar")))
-            {
+    TiXmlNode *_option = (TiXmlNode *)UnitRoot->FirstChild("Option");
+    while (0 != _option) {
+        TiXmlElement* option = _option->ToElement();
+        if (0 != option) {
+            char *value_ex = 0;
+            if ((value_ex = (char *)option->Attribute("compilerVar"))) {
                 m_CompilerVariable = value_ex;
             }
-
-            if ((value_ex = (char *)option->Attribute("compiler")))
-            {
+            if ((value_ex = (char *)option->Attribute("compiler"))) {
                 m_CompilerVariable = value_ex;
             }
-
-            if ((value_ex = (char *)option->Attribute("compile")))
-            {
+            if ((value_ex = (char *)option->Attribute("compile"))) {
                 m_DoCompile = StringToBoolean(value_ex);
             }
-
-            if ((value_ex = (char *)option->Attribute("link")))
-            {
+            if ((value_ex = (char *)option->Attribute("link"))) {
                 m_DoLink = StringToBoolean(value_ex);
             }
-
-            if ((value_ex = (char *)option->Attribute("target")))
-            {
+            if ((value_ex = (char *)option->Attribute("target"))) {
                 m_Targets.Insert(value_ex);
             }
-
-            if ((value_ex = (char *)option->Attribute("weight")))
-            {
+            if ((value_ex = (char *)option->Attribute("weight"))) {
                 m_Weight = StringToInteger(value_ex);
             }
-
-            if ((value_ex = (char *)option->Attribute("buildCommand")))
-            {
+            if ((value_ex = (char *)option->Attribute("buildCommand"))) {
                 m_CustomBuildCommand = value_ex;
                 m_CustomBuildCommand = FindReplaceStr(m_CustomBuildCommand, "\\n", "\n\t");
             }
         }
-
         _option = (TiXmlNode *)UnitRoot->IterateChildren(_option);
     } // option
 }
@@ -120,42 +97,31 @@ void CBuildUnit::Read(const TiXmlElement * UnitRoot)
 void CBuildUnit::Show(void)
 {
 #ifdef SHOW_MODE_ONELINE
-    std::cout << m_FileName.GetString();
-    std::cout << ", Weight: " << m_Weight;
-    std::cout << ", Compile: " << BooleanToYesNoString(m_DoCompile).GetString();
-    std::cout << ", Link: " << BooleanToYesNoString(m_DoLink).GetString();
-    std::cout << ", Targets: ";
-
-    if (m_Targets.GetCount())
-    {
-        for (int i = 0, n = m_Targets.GetCount(); i < n; i++)
-        {
-            std::cout << m_Targets[i].GetString() << " ";
+    std::cout<<m_FileName.GetString();
+    std::cout<<", Weight: "<<m_Weight;
+    std::cout<<", Compile: "<<BooleanToYesNoString(m_DoCompile).GetString();
+    std::cout<<", Link: "<<BooleanToYesNoString(m_DoLink).GetString();
+    std::cout<<", Targets: ";
+    if (m_Targets.GetCount()) {
+        for (int i = 0, n = m_Targets.GetCount(); i < n; i++) {
+            std::cout<<m_Targets[i].GetString()<<" ";
         }
+    } else {
+        std::cout<<"all";
     }
-    else
-    {
-        std::cout << "all";
-    }
-
-    std::cout << std::endl;
+    std::cout<<std::endl;
 #else
-    std::cout << "Filename: " << m_Filename.GetString() << std::endl;
-    std::cout << "Weight: " << m_Weight << std::endl;
-    std::cout << "Compile: " << BooleanToYesNoString(m_DoCompile).GetString() << std::endl;
-    std::cout << "Link: " << BooleanToYesNoString(m_DoLink).GetString() << std::endl;
-    std::cout << "Targets: ";
-
-    if (m_Targets.GetCount())
-    {
-        ShowStringList("Targets", "Target", m_Targets);
+    std::cout<<"Filename: "<<m_FileName.GetString()<<std::endl;
+    std::cout<<"Weight: "<<m_Weight<<std::endl;
+    std::cout<<"Compile: "<<BooleanToYesNoString(m_DoCompile).GetString()<<std::endl;
+    std::cout<<"Link: "<<BooleanToYesNoString(m_DoLink).GetString()<<std::endl;
+    std::cout<<"Targets: ";
+    if (m_Targets.GetCount()) {
+        ShowStringList("Targets","Target",m_Targets);
+    } else {
+        std::cout<<"all";
     }
-    else
-    {
-        std::cout << "all";
-    }
-
-    std::cout << std::endl;
+    std::cout<<std::endl;
 #endif
 }
 

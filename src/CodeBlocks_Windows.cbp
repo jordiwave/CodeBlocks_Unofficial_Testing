@@ -180,7 +180,9 @@
 				<Option compiler="gcc" />
 				<Option parameters="--personality=debuging --multiple-instance" />
 				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DEXPORT_LIB" />
+					<Add option="-DWXMAKINGDLL_SCI" />
+					<Add option="-DEXPORT_EVENTS" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />
 					<Add directory="$(#CB_BUILD.INCLUDE)/scripting/include" />
 					<Add directory="$(#CB_BUILD)/exchndl/win_10/win$(#CB_BUILD.OSBITS)/include" />

@@ -1,14 +1,3 @@
-DIST_SUBDIRS = bzip2 zlib
-SUBDIRS =
-
-if ! HAVE_BZIP2
-SUBDIRS += bzip2
-endif
-
-if ! HAVE_ZLIB
-SUBDIRS += zlib
-endif
-
 .rc.lo:
 	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
 
@@ -64,25 +53,11 @@ libhelp_plugin_la_LIBADD += \
 			$(CB_SQUIRREL_LIBS)
 endif
 
-if ! HAVE_BZIP2
-libhelp_plugin_la_LIBADD += \
-			bzip2/libbzip2.la
-AM_CPPFLAGS += \
-			-Ibzip2
-else
 libhelp_plugin_la_LIBADD += \
 			-lbz2
-endif
 
-if ! HAVE_ZLIB
-libhelp_plugin_la_LIBADD += \
-			zlib/libz.la
-AM_CPPFLAGS += \
-			-Izlib
-else
 libhelp_plugin_la_LIBADD += \
 			-lz
-endif
 
 libhelp_plugin_la_SOURCES = \
 			help_common.cpp \

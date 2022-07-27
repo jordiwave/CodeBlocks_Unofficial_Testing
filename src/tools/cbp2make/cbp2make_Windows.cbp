@@ -36,6 +36,7 @@
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="-m$(#CB_BUILD.OSBITS)" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+			<Add option="-DSHOW_MODE_ONELINE" />
 			<Add directory="lib" />
 			<Add directory="lib/tinyxml" />
 			<Add directory="src" />

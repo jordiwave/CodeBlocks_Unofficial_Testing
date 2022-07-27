@@ -37,6 +37,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DPIC" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-DSHOW_MODE_ONELINE" />
 			<Add directory="lib" />
 			<Add directory="lib/tinyxml" />
 			<Add directory="src" />
@@ -46,9 +47,6 @@
 		</Unit>
 		<Unit filename="lib/doc/stringhash.dox">
 			<Option target="Doxygen" />
-		</Unit>
-		<Unit filename="lib/macros.h">
-			<Option target="default" />
 		</Unit>
 		<Unit filename="lib/stlconfig.cpp">
 			<Option target="default" />
@@ -228,9 +226,6 @@
 			<Option target="default" />
 		</Unit>
 		<Extensions>
-			<envvars />
-			<code_completion />
-			<debugger />
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

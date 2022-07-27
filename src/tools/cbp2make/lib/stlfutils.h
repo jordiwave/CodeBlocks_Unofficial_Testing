@@ -20,38 +20,37 @@
 #ifndef STL_FUTILS_H
 #define STL_FUTILS_H
 //------------------------------------------------------------------------------
-#include "macros.h"
-#ifdef OS_WIN
-    #include <io.h>
+#ifdef _WIN32
+#include <io.h>
 #endif
 //------------------------------------------------------------------------------
 #include "stlstrings.h"
 //------------------------------------------------------------------------------
 char PathDelimiter(void);
 CString NativePathDelimiter(void);
-CString ChangeFileExt(const CString & FileName, const CString & FileExt);
-CString ExtractFilePath(const CString & FilePathName);
-CString ExtractFileName(const CString & FilePathName);
-CString ExtractFileExt(const CString & FilePathName);
-void SplitFilePathName(const CString & FilePathName, CString & FilePath, CString & FileName, CString & FileExt);
-CString MakeUnixPath(const CString & FilePathName);
-CString MakeWindowsPath(const CString & FilePathName);
-CString MakeNativePath(const CString & FilePathName);
-CString RemoveLeadingPathDelimiter(const CString & FilePathName);
-CString IncludeLeadingPathDelimiter(const CString & FilePathName);
-CString RemoveTrailingPathDelimiter(const CString & FilePathName);
-CString IncludeTrailingPathDelimiter(const CString & FilePathName);
-CString QuoteSpaces(const CString & FilePathName, const int QuoteMode = 0);
-CString JoinPaths(const CString & HeadPath, const CString & TailPath, const char Separator = PathDelimiter());
+CString ChangeFileExt(const CString& FileName, const CString& FileExt);
+CString ExtractFilePath(const CString& FilePathName);
+CString ExtractFileName(const CString& FilePathName);
+CString ExtractFileExt(const CString& FilePathName);
+void SplitFilePathName(const CString& FilePathName, CString& FilePath, CString& FileName, CString& FileExt);
+CString MakeUnixPath(const CString& FilePathName);
+CString MakeWindowsPath(const CString& FilePathName);
+CString MakeNativePath(const CString& FilePathName);
+CString RemoveLeadingPathDelimiter(const CString& FilePathName);
+CString IncludeLeadingPathDelimiter(const CString& FilePathName);
+CString RemoveTrailingPathDelimiter(const CString& FilePathName);
+CString IncludeTrailingPathDelimiter(const CString& FilePathName);
+CString QuoteSpaces(const CString& FilePathName, const int QuoteMode = 0);
+CString JoinPaths(const CString& HeadPath, const CString& TailPath, const char Separator = PathDelimiter());
 
-bool FileExists(const CString & FileName);
-bool DirExists(const CString & FileName);
-bool MakeDir(const CString & DirPath, int DirMode = 0755);
+bool FileExists(const CString& FileName);
+bool DirExists(const CString& FileName);
+bool MakeDir(const CString& DirPath, int DirMode = 0755);
 CString RootDirPath(void);
 CString HomeDirPath(void);
 CString TempDirPath(void);
 
 CString GetCurrentDir(void);
-bool ChangeDir(const CString & DirPath);
+bool ChangeDir(const CString& DirPath);
 //------------------------------------------------------------------------------
 #endif

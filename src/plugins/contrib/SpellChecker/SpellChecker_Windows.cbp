@@ -7,24 +7,6 @@
 		<Option default_target="plugin" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="hunspell">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\hunspell" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\SpellChecker\hunspell" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Option createDefFile="1" />
-				<Compiler>
-					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="-pipe" />
-					<Add option="-mthreads" />
-					<Add option="-fmessage-length=0" />
-					<Add option="-fexceptions" />
-					<Add option="-DHUNSPELL_STATIC" />
-					<Add directory="hunspell\src\hunspell" />
-					<Add directory="hunspell" />
-				</Compiler>
-			</Target>
 			<Target title="wxSpellChecker">
 				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\wxSpellChecker" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
@@ -39,7 +21,6 @@
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-DHUNSPELL_STATIC" />
-					<Add directory="hunspell\src\hunspell" />
 					<Add directory="wxspellchecker\include" />
 					<Add directory="$(#WXWIDGETS.include)" />
 					<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
@@ -69,7 +50,6 @@
 					<Add option="-Winvalid-pch" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
-					<Add directory="hunspell\src" />
 					<Add directory="wxspellchecker\include" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />
 					<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
@@ -110,7 +90,7 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="hunspell;wxSpellChecker;plugin;" />
+			<Add alias="All" targets="wxSpellChecker;plugin;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-m$(#CB_BUILD.OSBITS)" />
@@ -199,135 +179,6 @@
 		</Unit>
 		<Unit filename="ThesaurusDialog.h">
 			<Option target="plugin" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\affentry.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\affentry.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\affixmgr.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\affixmgr.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\atypes.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\baseaffix.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\csutil.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\csutil.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\filemgr.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\filemgr.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\hashmgr.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\hashmgr.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\htypes.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunspell.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunspell.h">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunspell.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunvisapi.h">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunzip.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunzip.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\langnum.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\phonet.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\phonet.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\replist.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\replist.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\suggestmgr.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\suggestmgr.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\utf_info.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\hunspell\w_char.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\firstparser.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\firstparser.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\htmlparser.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\htmlparser.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\latexparser.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\latexparser.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\manparser.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\manparser.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\odfparser.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\odfparser.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\testparser.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\textparser.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\textparser.hxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\xmlparser.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell\src\parsers\xmlparser.hxx">
-			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="manifest.xml">
 			<Option target="plugin" />

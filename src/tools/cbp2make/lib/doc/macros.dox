@@ -22,17 +22,17 @@
 */
 
 /*!
-  \def OS_MAC
+  \def __APPLE__
   \brief This macro is set if at compile-time the platform is Apple MacOS.
 */
 
 /*!
-  \def OS_WIN
+  \def _WIN32
   \brief This macro is set if at compile-time the platform is Microsoft Windows.
 */
 
 /*!
-  \def OS_UNIX
+  \def __linux__
   \brief This macro is set if at compile-time the platform is UNIX-like (GNU/Linux etc).
 */
 
