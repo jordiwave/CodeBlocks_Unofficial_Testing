@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: BrowseTracker.cpp 12797 2022-04-17 19:47:12Z pecanh $
+// RCS-ID: $Id: BrowseTracker.cpp 12853 2022-07-27 11:10:54Z wh11204 $
 
 // Notes:
 //
@@ -2083,7 +2083,6 @@ void BrowseTracker::AppShuttingDown(CodeBlocksEvent & event)
     //Don't write to log when shutting down, causes crash 2017/11/23
     //-Manager::Get()->GetLogManager()->Log(_T("BrowseTracker OnStartShutdown() initiated."));
     event.Skip();
-    m_bAppShutdown = true;
     // Crashes occur when logging during shutdown
     //-#if defined(LOGGING)
     //-InfoWindow::Display(_T("Browstracker"),_T("Browstracker OnStartShutdown"), 7000);

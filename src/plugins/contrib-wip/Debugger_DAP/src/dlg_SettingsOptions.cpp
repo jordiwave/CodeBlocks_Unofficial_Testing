@@ -132,7 +132,7 @@ bool DebuggerConfiguration::SaveChanges(wxPanel * panel)
     m_config.Write("eval_tooltip",          XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->GetValue());
     m_config.Write("add_other_search_dirs", XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->GetValue());
     m_config.Write("do_not_run_debuggee",   XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->GetValue());
-    m_config.Write("persist_debug_elements",XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->GetValue());
+    m_config.Write("persist_debug_elements", XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->GetValue());
     m_config.Write("stop_on_main",          XRCCTRL(*panel, "chkStopOnMain",            wxCheckBox)->GetValue());
     m_config.Write("run_DAP_server",        XRCCTRL(*panel, "chkRunDAPServer",          wxCheckBox)->GetValue());
     m_config.Write("disassembly_flavor",    XRCCTRL(*panel, "choDisassemblyFlavor",     wxChoice)->GetSelection());
@@ -378,7 +378,6 @@ wxString DebuggerConfiguration::GetDAPPortNumber()
 wxString DebuggerConfiguration::GetDAPPythonHomeEnvSetting()
 {
     wxString result = m_config.Read("python_home_env", "");
-
     return result;
 }
 
