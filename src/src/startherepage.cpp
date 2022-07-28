@@ -38,22 +38,24 @@ int idWin = wxNewId();
 class MyHtmlWin : public wxHtmlWindow
 {
     public:
-        MyHtmlWin(StartHerePage* parent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxHW_SCROLLBAR_AUTO)
+        MyHtmlWin(StartHerePage * parent, int id, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, long style = wxHW_SCROLLBAR_AUTO)
             : wxHtmlWindow(parent, id, pos, size, style),
-            m_pOwner(parent)
+              m_pOwner(parent)
         {
         }
 
-        void OnLinkClicked(const wxHtmlLinkInfo& link) override
+        void OnLinkClicked(const wxHtmlLinkInfo & link) override
         {
             if (m_pOwner)
             {
                 if (!m_pOwner->LinkClicked(link))
+                {
                     wxLaunchDefaultBrowser(link.GetHref());
+                }
             }
         }
     private:
-        StartHerePage* m_pOwner;
+        StartHerePage * m_pOwner;
 };
 
 BEGIN_EVENT_TABLE(StartHerePage, EditorBase)
@@ -62,20 +64,20 @@ END_EVENT_TABLE()
 namespace
 {
 
-wxString wrapText(const wxString &text, const wxString &textColour)
+wxString wrapText(const wxString & text, const wxString & textColour)
 {
     return wxT("<font color=\"") + textColour + wxT("\">") + text + wxT("</font>");
 }
 
-void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, const wxFileHistory &files,
-                               const wxString &linkColour, const wxString &textColour)
+void ReplaceRecentProjectFiles(wxString & buf, const wxFileHistory & projects, const wxFileHistory & files,
+                               const wxString & linkColour, const wxString & textColour)
 {
     // replace history vars
     wxString links;
-
     links << _T("<table>\n<tr><td colspan=\"2\"><b>");
     links << wrapText(_("Recent projects"), textColour);
     links << _T("</b></td></tr>\n");
+
     if (projects.GetCount())
     {
         for (size_t i = 0; i < projects.GetCount(); ++i)
@@ -99,7 +101,8 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
 
     links << _T("</table>\n<table>\n<tr><td colspan=\"2\"><b>");
     links << wrapText(_("Recent files"), textColour);
-    links <<_T("</b></td></tr>\n");
+    links << _T("</b></td></tr>\n");
+
     if (files.GetCount())
     {
         for (size_t i = 0; i < files.GetCount(); ++i)
@@ -121,8 +124,6 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
     }
 
     links << _T("</table>\n");
-
-
     // update page
     buf.Replace(_T("CB_VAR_RECENT_FILES_AND_PROJECTS"), links);
     buf.Replace(_T("CB_TXT_NEW_PROJECT"), _("Create a new project"));
@@ -132,7 +133,7 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
     buf.Replace(_T("CB_TXT_TIP_OF_THE_DAY"), _("Tip of the Day"));
 }
 
-void CopyToClipboard(const wxString& text)
+void CopyToClipboard(const wxString & text)
 {
     if (wxTheClipboard->Open())
     {
@@ -143,74 +144,72 @@ void CopyToClipboard(const wxString& text)
 
 } // anonymous namespace
 
-StartHerePage::StartHerePage(wxEvtHandler* owner, const RecentItemsList &projects,
-                             const RecentItemsList &files, wxWindow* parent)
+StartHerePage::StartHerePage(wxEvtHandler * owner, const RecentItemsList & projects,
+                             const RecentItemsList & files, wxWindow * parent)
     : EditorBase(parent, g_StartHereTitle, true),
-    m_pOwner(owner),
-    m_projects(projects),
-    m_files(files)
+      m_pOwner(owner),
+      m_projects(projects),
+      m_files(files)
 {
     RegisterColours();
-
     //ctor
-    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
-
+    wxBoxSizer * bs = new wxBoxSizer(wxVERTICAL);
     wxString resPath = ConfigManager::ReadDataPath();
-
     // avoid gtk-critical because of sizes less than -1 (can happen with wxAuiNotebook/cbAuiNotebook)
     wxSize size = GetSize();
     size.x = std::max(size.x, -1);
     size.y = std::max(size.y, -1);
-
-    m_pWin = new MyHtmlWin(this, idWin, wxPoint(0,0), size);
-
+    m_pWin = new MyHtmlWin(this, idWin, wxPoint(0, 0), size);
     // set default font sizes based on system default font size
-
     /* NOTE (mandrav#1#): wxWidgets documentation on wxHtmlWindow::SetFonts(),
     states that the sizes array accepts values from -2 to +4.
     My tests (under linux at least) have showed that it actually
     expects real point sizes. */
-
     wxFont systemFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     int sizes[7] = {};
-    for (int i = 0; i < 7; ++i)
-        sizes[i] = systemFont.GetPointSize();
-    m_pWin->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
 
+    for (int i = 0; i < 7; ++i)
+    {
+        sizes[i] = systemFont.GetPointSize();
+    }
+
+    m_pWin->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
     // must load the page this way because if we don't the image can't be found...
     m_pWin->LoadPage(resPath + _T("/start_here.zip#zip:dummy_page.html"));
-
     // alternate way to read the file so we can perform some search and replace
     // the C::B image referenced in the default start page can be found now
     // because we used LoadPage() above...
     wxString buf;
-    wxFileSystem* fs = new wxFileSystem;
-    wxFSFile* f = fs->OpenFile(resPath + _T("/start_here.zip#zip:start_here.html"));
+    wxFileSystem * fs = new wxFileSystem;
+    wxFSFile * f = fs->OpenFile(resPath + _T("/start_here.zip#zip:start_here.html"));
+
     if (f)
     {
-        wxInputStream* is = f->GetStream();
+        wxInputStream * is = f->GetStream();
         char tmp[1024] = {};
+
         while (!is->Eof() && is->CanRead())
         {
             memset(tmp, 0, sizeof(tmp));
             is->Read(tmp, sizeof(tmp) - 1);
-            buf << cbC2U((const char*)tmp);
+            buf << cbC2U((const char *)tmp);
         }
+
         delete f;
     }
     else
+    {
         buf = _("<html><body><h1>Welcome to Code::Blocks!</h1><br>The default start page seems to be missing...</body></html>");
-    delete fs;
+    }
 
+    delete fs;
 #if defined(_LP64) || defined(_WIN64)
     const int bit_type = 64;
 #else
     const int bit_type = 32;
 #endif
-
     revInfo.Printf(_T("%s (%s)   "),
                    appglobals::AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str());
-
 #if defined(__clang__)
     revInfo += wxString::Format(wxT("clang %d.%d.%d "), __clang_major__, __clang_minor__,
                                 __clang_patchlevel__);
@@ -219,16 +218,13 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, const RecentItemsList &project
 #endif
     revInfo += wxString::Format(wxT("%s/%s - %d bit"), appglobals::AppPlatform.c_str(),
                                 appglobals::AppWXAnsiUnicode.c_str(), bit_type);
-
     // perform var substitution
     buf.Replace(_T("CB_VAR_REVISION_INFO"), revInfo);
     buf.Replace(_T("CB_VAR_VERSION_VERB"), appglobals::AppActualVersionVerb);
     buf.Replace(_T("CB_VAR_VERSION"), appglobals::AppActualVersion);
     buf.Replace(_T("CB_SAFE_MODE"), PluginManager::GetSafeMode() ? _("SAFE MODE") : _T(""));
-
     m_OriginalPageContent = buf; // keep a copy of original for Reload()
     Reload();
-
     bs->Add(m_pWin, 1, wxEXPAND);
     SetSizer(bs);
     SetAutoLayout(true);
@@ -243,11 +239,14 @@ StartHerePage::~StartHerePage()
 void StartHerePage::RegisterColours()
 {
     static bool inited = false;
-    if (inited)
-        return;
-    inited = true;
 
-    ColourManager* cm = Manager::Get()->GetColourManager();
+    if (inited)
+    {
+        return;
+    }
+
+    inited = true;
+    ColourManager * cm = Manager::Get()->GetColourManager();
     cm->RegisterColour(_("Start here page"), _("Background colour"), wxT("start_here_background"),
                        wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
     cm->RegisterColour(_("Start here page"), _("Link colour"), wxT("start_here_link"), *wxBLUE);
@@ -259,34 +258,35 @@ void StartHerePage::Reload()
 {
     // Called every time something in the history changes.
     wxString buf = m_OriginalPageContent;
-
-    ColourManager* cm = Manager::Get()->GetColourManager();
-    const wxString &backgroundColour = cm->GetColour(wxT("start_here_background")).GetAsString(wxC2S_HTML_SYNTAX);
-    const wxString &linkColour       = cm->GetColour(wxT("start_here_link")).GetAsString(wxC2S_HTML_SYNTAX);
-    const wxString &textColour       = cm->GetColour(wxT("start_here_text")).GetAsString(wxC2S_HTML_SYNTAX);
-
+    ColourManager * cm = Manager::Get()->GetColourManager();
+    const wxString & backgroundColour = cm->GetColour(wxT("start_here_background")).GetAsString(wxC2S_HTML_SYNTAX);
+    const wxString & linkColour       = cm->GetColour(wxT("start_here_link")).GetAsString(wxC2S_HTML_SYNTAX);
+    const wxString & textColour       = cm->GetColour(wxT("start_here_text")).GetAsString(wxC2S_HTML_SYNTAX);
     ReplaceRecentProjectFiles(buf, *m_projects.GetFileHistory(), *m_files.GetFileHistory(), linkColour, textColour);
-
     buf.Replace(wxT("CB_BODY_BGCOLOUR"), backgroundColour);
     buf.Replace(wxT("CB_LINK_COLOUR"),   linkColour);
     buf.Replace(wxT("CB_TEXT_COLOUR"),   textColour);
-
     int x, y;
     m_pWin->GetViewStart(&x, &y);
     m_pWin->SetPage(buf);
     m_pWin->Scroll(x, y);
 }
 
-bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
+bool StartHerePage::LinkClicked(const wxHtmlLinkInfo & link)
 {
     //If it's already loading something, stop here
     if (Manager::Get()->GetProjectManager()->IsLoading())
+    {
         return true;
+    }
 
     if (!m_pOwner)
+    {
         return true;
+    }
 
     wxString href = link.GetHref();
+
     if (href.StartsWith("CB_CMD_"))
     {
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idStartHerePageLink);
@@ -295,8 +295,8 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
         return true;
     }
 
-    if (   href.IsSameAs("https://www.codeblocks.org/")
-        || href.StartsWith("https://sourceforge.net/p/codeblocks/tickets"))
+    if (href.IsSameAs("https://www.codeblocks.org/")
+            || href.StartsWith("https://sourceforge.net/p/codeblocks/tickets"))
     {
         CopyToClipboard(revInfo);
         return false;
