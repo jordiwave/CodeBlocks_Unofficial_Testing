@@ -4249,6 +4249,9 @@
 		<Unit filename="src/resources/start_here/start_here.html">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/resources/start_here/dummy_page.html">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/resources/virtualbuildtargetsdlg.xrc">
 			<Option target="src" />
 		</Unit>
