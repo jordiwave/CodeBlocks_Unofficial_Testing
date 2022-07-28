@@ -247,7 +247,7 @@ function cb_build()
     # Ask the user if they want to run the Windows_Ouput_Create.bat after the build
     # ----------------------------------------------------------------
     DLL_COUNT=$(ls -1q ${CB_ROOT_DIR}/src/devel* 2>/dev/null | wc -l)
-    if [ ${DLL_COUNT} != 0 ] ; then
+    if [ ${DLL_COUNT} -gt 0 ] ; then
         while true; do
             read -p "Do you want to delete the previous build directories [Y/N]? " yn
             case $yn in

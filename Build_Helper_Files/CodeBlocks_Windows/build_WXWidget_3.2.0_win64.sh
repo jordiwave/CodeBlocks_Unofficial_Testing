@@ -344,7 +344,7 @@ if [ $status == 0 ] ; then
             else
                 DLL_COUNT=$(ls -1q ${WX_CB_BUILD_DIR}/lib/gcc_dll/wxmsw${WXWIDGET_RELEASE_VER}ud_*gcc_cb.dll | wc -l)
             fi
-            if [ "${DLL_COUNT}" == "2" ] ; then
+            if [ ${DLL_COUNT} -eq 2 ] ; then
                 echo "CB wxWidget DLL count: ${DLL_COUNT} (good)"
                 failureDetected="no"
             else

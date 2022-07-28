@@ -31,7 +31,7 @@ if [ ! -f "bootstrap" ]; then
 fi
 
 DEB_COUNT=$(ls -1q ../*.deb | wc -l)
-if [ "${LIB_SO_COUNT}" != "0" ] ; then
+if [ ${LIB_SO_COUNT} gt 0 ] ; then
     PreviousDir=${PWD}
     cd ..
     # For Linux Debian DEB build cleanup

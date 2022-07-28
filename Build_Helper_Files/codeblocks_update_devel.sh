@@ -126,10 +126,12 @@ CB_SRC=${CB_ROOT}/src
 # ----------------------------------------------------------------------------
 
 DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel3*_32 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  BUILD_BITS=32 ; fi
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; fi
+
 DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel3*_64 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  BUILD_BITS=64 ; fi
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; fi
 unset DEVEL_DIR_COUNT
+
 if [ "${BUILD_BITS}" == "" ] ; then
     echo "+-------------------------------------------------------------------------------------------------+"
     echo "|                                                                                                 |"
@@ -148,12 +150,15 @@ fi
 
 # -----------------------------------------------------------------------------
 
-DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel30_* 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel30_${BUILD_BITS} ; fi
-DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel31_* 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel31_${BUILD_BITS} ; fi
-DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel32_* 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} > 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel32_${BUILD_BITS} ; fi
+echo "---------------------------------------"
+DEVEL_DIR_COUNT_30=$(ls -1q ${CB_SRC}/devel30_* 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT_30} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel30_${BUILD_BITS} ; fi
+
+DEVEL_DIR_COUNT_31=$(ls -1q ${CB_SRC}/devel31_* 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT_31} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel31_${BUILD_BITS} ; fi
+
+DEVEL_DIR_COUNT_32=$(ls -1q ${CB_SRC}/devel32_* 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT_32} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel32_${BUILD_BITS} ; fi
 
 if [ "${CB_DEVEL_DIR}" == "" ] ; then
     echo "+-------------------------------------------------------------------------------------------------+"
@@ -285,7 +290,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     [ ! -f "${CB_DEVEL_DIR}/exchndl.dll" ]  && cp -f -r "${CB_SRC}/exchndl/Win_10/win${BUILD_BITS}/bin/."  ${CB_DEVEL_DIR} > /dev/null
 
     count=$(ls ${GCC_ROOT}/libhunspell-*.dll 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         for libHunspellDLLFile in ${GCC_ROOT}/libhunspell-*.dll
         do 
             cp -f $libHunspellDLLFile ${CB_DEVEL_DIR} > /dev/null
@@ -293,7 +298,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     fi
 
     count=$(ls $WX_CB_BUILD_DIR/lib/gcc_dll/*.dll 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         for wxFileDLL in $WX_CB_BUILD_DIR/lib/gcc_dll/*.dll
         do 
             cp $wxFileDLL  ${CB_DEVEL_DIR} > /dev/null
@@ -319,7 +324,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     fi
 
     count=$(ls -1 ${CB_DEVEL_DIR}/share/codeblocks/plugins/lib*.dll 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         PrevDirectory=$PWD
         cd "${CB_DEVEL_DIR}/share/codeblocks/plugins"
         for pluginLibFile in lib*.dll
@@ -335,7 +340,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # Delete DLL l*.la redundant files built with MSYS 2 using bootstrap/configure/make/make install process
     # -------------------------------------------------------------------------------------------------------
     count=$(ls -1 ${CB_DEVEL_DIR}/*.la 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         PrevDirectory=$PWD
         cd "${CB_DEVEL_DIR}"
         find . -type f -name "*.la" | xargs rm -f
@@ -346,7 +351,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # Delete Plugin DLL *.a redundant files built with MSYS 2 using bootstrap/configure/make/make install process
     # -------------------------------------------------------------------------------------------------------
     count=$(ls -1 ${CB_DEVEL_DIR}/share/CodeBlocks/plugins/*.a 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         PrevDirectory=$PWD
         cd "${CB_DEVEL_DIR}/share/CodeBlocks/plugins"
         find . -type f -name "*.a" | xargs rm -f
@@ -368,8 +373,7 @@ else
         done
     }
 
-    CB_DEVEL=${CB_ROOT}/src/devel31_${BUILD_BITS}
-    CB_DEVEL_RESDIR=${CB_DEVEL}/share/codeblocks
+    CB_DEVEL_RESDIR=${CB_DEVEL_DIR}/share/codeblocks
 
     mkdir -p ${CB_DEVEL_RESDIR}/compilers
     mkdir -p ${CB_DEVEL_RESDIR}/lexers

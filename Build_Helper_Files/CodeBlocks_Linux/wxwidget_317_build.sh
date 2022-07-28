@@ -245,7 +245,7 @@ fi
 # -----------------------------------------------------------------
 
 LIB_SO_COUNT=$(ls -1q ./lib/libwx*.so | wc -l)
-if [ "${LIB_SO_COUNT}" == "14" ] ; then
+if [ ${LIB_SO_COUNT} -eq 14 ] ; then
     echo "**********************************************"
     echo "*       BUILD COMPELTED NOW TO INSTALL       *"
     echo "**********************************************"

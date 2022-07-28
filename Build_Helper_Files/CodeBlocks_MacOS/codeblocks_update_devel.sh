@@ -252,7 +252,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     [ ! -f "${CB_SRC}/devel31_${BUILD_BITS}/exchndl.dll" ]  && cp -f -r "${CB_SRC}/exchndl/Win_10/win${BUILD_BITS}/bin/."  ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
 
     count=$(ls ${GCC_ROOT}/libhunspell-*.dll 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         for libHunspellDLLFile in ${GCC_ROOT}/libhunspell-*.dll
         do 
             cp -f $libHunspellDLLFile ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
@@ -260,7 +260,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     fi
 
     count=$(ls $WX_CB_BUILD_DIR/lib/gcc_dll/*.dll 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         for wxFileDLL in $WX_CB_BUILD_DIR/lib/gcc_dll/*.dll
         do 
             cp $wxFileDLL  ${CB_SRC}/devel31_${BUILD_BITS} > /dev/null
@@ -271,7 +271,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # Rename DLL files if built with MSYS 2 using bootstrap/configure/make/make install process
     # ------------------------------------------------------------------------------------------
     count=$(ls -1 ${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/*.dll 2>/dev/null | wc -l)
-    if [ $count == 0 ] ; then
+    if [ $count -eq 0 ] ; then
         echo "|                                                                                                 |"
         echo "|             +-----------------------------------------------------------+                       |"
         echo "|             | Error: Code::Blocks Plugin DLL files not found in:        |                       |"
@@ -286,7 +286,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     fi
 
     count=$(ls -1 ${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins/lib*.dll 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         PrevDirectory=$PWD
         cd "${CB_SRC}/devel31_${BUILD_BITS}/share/codeblocks/plugins"
         for pluginLibFile in lib*.dll
@@ -302,7 +302,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # Delete DLL l*.la redundant files built with MSYS 2 using bootstrap/configure/make/make install process
     # -------------------------------------------------------------------------------------------------------
     count=$(ls -1 ${CB_SRC}/devel31_${BUILD_BITS}/*.la 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         PrevDirectory=$PWD
         cd "${CB_SRC}/devel31_${BUILD_BITS}"
         find . -type f -name "*.la" | xargs rm -f
@@ -313,7 +313,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # Delete Plugin DLL *.a redundant files built with MSYS 2 using bootstrap/configure/make/make install process
     # -------------------------------------------------------------------------------------------------------
     count=$(ls -1 ${CB_SRC}/devel31_${BUILD_BITS}/share/CodeBlocks/plugins/*.a 2>/dev/null | wc -l)
-    if [ $count != 0 ] ; then
+    if [ $count -gt 0 ] ; then
         PrevDirectory=$PWD
         cd "${CB_SRC}/devel31_${BUILD_BITS}/share/CodeBlocks/plugins"
         find . -type f -name "*.a" | xargs rm -f

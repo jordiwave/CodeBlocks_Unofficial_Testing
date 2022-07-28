@@ -300,9 +300,9 @@ echo
 OBJS_DIR_COUNT=$(ls -1q ${CB_SRC_DIR}/.objsl3* 2>/dev/null | wc -l 2>/dev/null)
 DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC_DIR}/devel3* 2>/dev/null | wc -l 2>/dev/null)
 OUTPUT_DIR_COUNT=$(ls -1q ${CB_SRC_DIR}/output3* 2>/dev/null | wc -l 2>/dev/null)
-if  [ "${OBJS_DIR_COUNT}"   != "0" ] || 
-    [ "${DEVEL_DIR_COUNT}"  != "0" ] || 
-    [ "${OUTPUT_DIR_COUNT}" != "0" ]  ; then
+if  [ ${OBJS_DIR_COUNT}   -gt 0 ] || 
+    [ ${DEVEL_DIR_COUNT}  -gt 0 ] || 
+    [ ${OUTPUT_DIR_COUNT} -gt 0 ]  ; then
     echo     OBJS_DIR_COUNT=${OBJS_DIR_COUNT}
     echo     DEVEL_DIR_COUNT=${DEVEL_DIR_COUNT}
     echo     OUTPUT_DIR_COUNT=${OUTPUT_DIR_COUNT}
