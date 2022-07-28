@@ -7,19 +7,6 @@
 		<Option default_target="default" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="libbz2">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\libbz2_devpak.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\devpak_plugin" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-mthreads" />
-				</Compiler>
-				<Linker>
-					<Add option="-mthreads" />
-				</Linker>
-			</Target>
 			<Target title="default">
 				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\devpakupdater.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\devpak_plugin" />
@@ -29,43 +16,35 @@
 				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectResourceIncludeDirsRelation="0" />
-				<Compiler>
-					<Add option="-Wall" />
-					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="-mthreads" />
-					<Add option="-fexceptions" />
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-Winvalid-pch" />
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DHAVE_W32API_H" />
-					<Add option="-D__WXMSW__" />
-					<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-					<Add option="-DWXUSINGDLL" />
-					<Add option="-DcbDEBUG" />
-					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
-				</Compiler>
-				<Linker>
-					<Add option="-mthreads" />
-					<Add library="codeblocks" />
-					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-					<Add library="bz2_devpak" />
-					<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-					<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
-				</Linker>
 				<ExtraCommands>
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Mode before="always" />
+
 					<Add after="zip $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\devpakupdater.zip manifest.xml *.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="libbz2;default;" />
+			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-Wall" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add directory="bzip2" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="-mthreads" />
+			<Add option="-fexceptions" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>
@@ -73,42 +52,14 @@
 			<Add directory="$(#WXWIDGETS.include)" />
 		</ResourceCompiler>
 		<Linker>
+			<Add option="-mthreads" />
+			<Add library="codeblocks" />
+			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add library="bz2" />
+			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
 			<Add option="-Wl,--enable-auto-import" />
 		</Linker>
-		<Unit filename="bzip2\blocksort.c">
-			<Option compilerVar="CC" />
-			<Option target="libbz2" />
-		</Unit>
-		<Unit filename="bzip2\bzlib.c">
-			<Option compilerVar="CC" />
-			<Option target="libbz2" />
-		</Unit>
-		<Unit filename="bzip2\bzlib.h">
-			<Option target="libbz2" />
-		</Unit>
-		<Unit filename="bzip2\bzlib_private.h">
-			<Option target="libbz2" />
-		</Unit>
-		<Unit filename="bzip2\compress.c">
-			<Option compilerVar="CC" />
-			<Option target="libbz2" />
-		</Unit>
-		<Unit filename="bzip2\crctable.c">
-			<Option compilerVar="CC" />
-			<Option target="libbz2" />
-		</Unit>
-		<Unit filename="bzip2\decompress.c">
-			<Option compilerVar="CC" />
-			<Option target="libbz2" />
-		</Unit>
-		<Unit filename="bzip2\huffman.c">
-			<Option compilerVar="CC" />
-			<Option target="libbz2" />
-		</Unit>
-		<Unit filename="bzip2\randtable.c">
-			<Option compilerVar="CC" />
-			<Option target="libbz2" />
-		</Unit>
 		<Unit filename="cbiniparser.cpp">
 			<Option target="default" />
 		</Unit>

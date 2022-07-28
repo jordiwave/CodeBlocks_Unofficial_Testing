@@ -111,9 +111,6 @@ rm -rf src/sdk/scripting/{squirrel,sqstdlib}
 #currently no Fedora has a recent enough astyle (at least 2.06 is needed), so keep the bundled one
 #rm -rf src/plugins/astyle/astyle
 %endif
-rm -rf src/plugins/contrib/SpellChecker/hunspell
-rm -rf src/plugins/contrib/devpak_plugin/bzip2
-rm -rf src/plugins/contrib/help_plugin/{bzip2,zlib}
 
 # Don't use rpath!
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool

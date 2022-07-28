@@ -432,7 +432,6 @@ AC_CONFIG_FILES([Makefile
     src/plugins/contrib/CppCheck/Makefile
     src/plugins/contrib/CppCheck/resources/Makefile
     src/plugins/contrib/Cscope/Makefile
-    src/plugins/contrib/devpak_plugin/bzip2/Makefile
     src/plugins/contrib/devpak_plugin/Makefile
     src/plugins/contrib/DoxyBlocks/Makefile
     src/plugins/contrib/dragscroll/Makefile
@@ -462,9 +461,7 @@ AC_CONFIG_FILES([Makefile
     src/plugins/contrib/FortranProject/images/Makefile
     src/plugins/contrib/FortranProject/Makefile
     src/plugins/contrib/headerfixup/Makefile
-    src/plugins/contrib/help_plugin/bzip2/Makefile
     src/plugins/contrib/help_plugin/Makefile
-    src/plugins/contrib/help_plugin/zlib/Makefile
     src/plugins/contrib/HexEditor/Makefile
     src/plugins/contrib/IncrementalSearch/Makefile
     src/plugins/contrib/keybinder/Makefile

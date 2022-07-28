@@ -163,12 +163,16 @@ Debugger_DAP::~Debugger_DAP()
     m_dapClient.Unbind(wxEVT_DAP_BREAKPOINT_EVENT,                &Debugger_DAP::OnBreakpointEvent,         this);
     m_dapClient.Unbind(wxEVT_DAP_CONTINUED_EVENT,                 &Debugger_DAP::OnCcontinuedEvent,         this);
     m_dapClient.Unbind(wxEVT_DAP_DEBUGPYWAITINGFORSERVER_EVENT,   &Debugger_DAP::OnDebugPYWaitingForServerEvent,  this);
+    Manager::Get()->GetLogManager()->DebugLog(wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__));
 
     if (m_dapPid != 0)
     {
+        Manager::Get()->GetLogManager()->DebugLog(wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__));
         wxKill(m_dapPid);
         m_dapPid = 0;
     }
+
+    Manager::Get()->GetLogManager()->DebugLog(wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__));
 }
 
 void Debugger_DAP::OnAttachReal()

@@ -1,5 +1,3 @@
-# SUBDIRS = bzip2
-
 .rc.lo:
 	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
 
