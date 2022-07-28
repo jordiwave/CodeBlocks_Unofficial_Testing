@@ -166,8 +166,8 @@
 					<Add after="cmd /c &quot;cd sdk\resources &amp;&amp; zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\manager_resources.zip images&quot;" />
 
 					<!-- lexers -->
-					<Add after="cmd /c if not exist  devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers" />
-					<Add after="xcopy /Q /Y sdk\resources\lexers\lexer_* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers\" />
+					<Add after="cmd /c if not exist  $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers mkdir $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers" />
+					<Add after="xcopy /Q /Y sdk\resources\lexers\lexer_* $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers\" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -217,22 +217,22 @@
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
 					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\resources.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\resources.zip" />
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\resources.zip src\resources\*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\resources.zip src\resources\*.xrc" />
 					<Add after="cmd /c &quot;cd src\resources &amp;&amp; zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\resources.zip . -i images\*.png -x images/settings/* &quot;" />
 
 					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\start_here.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\start_here.zip" />
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\start_here.zip src\resources\start_here\*" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\start_here.zip src\resources\start_here\*" />
 
-					<Add after="cmd /c if exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll del devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll" />
-					<Add after="cmd /c if exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes  del devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes" />
+					<Add after="cmd /c if exist $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll del $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll" />
+					<Add after="cmd /c if exist $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes  del $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes" />
 					<Add after="cmd /c &quot;(for /F &quot;usebackq delims=^=^ &quot; %%a in (`&quot;dir /b/s &quot;$(#CB_BUILD)\exchndl\win_10\win$(#CB_BUILD.OSBITS)\bin\*.*&quot; &quot;`) do @xcopy /Q /Y $(#CB_BUILD)\exchndl\win_10\win$(#CB_BUILD.OSBITS)\bin\%%~nxa  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\ )&quot;" />
 
 					<!-- images -->
-					<Add after="cmd /c if not exist  devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings" />
-					<Add after="xcopy /S /Q /Y src\resources\images\*.png          devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\" />
-					<Add after="xcopy /S /Q /Y src\resources\images\settings\*.png devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\" />
+					<Add after="cmd /c if not exist  $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings" />
+					<Add after="xcopy /S /Q /Y src\resources\images\*.png          $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\" />
+					<Add after="xcopy /S /Q /Y src\resources\images\settings\*.png $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\" />
 
-					<Add after="cmd /c copy /Y $(#CB_BUILD)\tips.txt devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks" />
+					<Add after="cmd /c copy /Y $(#CB_BUILD)\tips.txt $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -297,7 +297,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -327,7 +327,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\autosave.zip plugins\autosave\manifest.xml plugins\autosave\*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\autosave.zip plugins\autosave\manifest.xml plugins\autosave\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -377,12 +377,12 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="cmd /c if exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compiler.zip del devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compiler.zip" />
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc" />
+					<Add after="cmd /c if exist $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compiler.zip del $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compiler.zip" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc" />
 					<Add after='cmd /c &quot;cd plugins\compilergcc\resources &amp; zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compiler.zip . -i images\*.png &quot;' />
 
-					<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compilers mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compilers" />
-					<Add after="xcopy /Q /Y plugins\compilergcc\resources\compilers\*.* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compilers\" />
+					<Add after="cmd /c if not exist $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compilers mkdir $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compilers" />
+					<Add after="xcopy /Q /Y plugins\compilergcc\resources\compilers\*.* $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\compilers\" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -412,8 +412,8 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\debugger.zip plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc" />
-					<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\gdb_pretty_printers\*.* xcopy /Q /Y plugins\debuggergdb\gdb_pretty_printers\*.* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\gdb_pretty_printers\" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\debugger.zip plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc" />
+					<Add after="cmd /c if not exist $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\gdb_pretty_printers\*.* xcopy /Q /Y plugins\debuggergdb\gdb_pretty_printers\*.* $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\gdb_pretty_printers\" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -484,7 +484,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\classwizard.zip plugins\classwizard\resources\manifest.xml plugins\classwizard\resources\*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\classwizard.zip plugins\classwizard\resources\manifest.xml plugins\classwizard\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -514,7 +514,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\defaultmimehandler.zip plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\defaultmimehandler.zip plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -545,7 +545,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\OccurrencesHighlighting.zip plugins\occurrenceshighlighting\resources\manifest.xml plugins\occurrenceshighlighting\resources\*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\OccurrencesHighlighting.zip plugins\occurrenceshighlighting\resources\manifest.xml plugins\occurrenceshighlighting\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -575,7 +575,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\openfileslist.zip plugins\openfileslist\manifest.xml" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\openfileslist.zip plugins\openfileslist\manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -605,7 +605,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\projectsimporter.zip plugins\projectsimporter\resources\manifest.xml plugins\projectsimporter\resources\*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\projectsimporter.zip plugins\projectsimporter\resources\manifest.xml plugins\projectsimporter\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -635,12 +635,15 @@
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Add before="cmd /c if not exist $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard  mkdir $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard" />
+					<Mode before="always" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\scriptedwizard.zip plugins\scriptedwizard\resources\manifest.xml" />
+					<!-- Create ZIP file-->
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\scriptedwizard.zip plugins\scriptedwizard\resources\manifest.xml" />
 
-					<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard  mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard" />
+					<!-- Copy files into share/CodeBlocks/templates tree -->
 					<Add after="cmd /c dir plugins\scriptedwizard\resources\Makefile.am /s/b >MakefileNoCopy.txt" />
-					<Add after="xcopy /Q /F /Y /S /Exclude:MakefileNoCopy.txt plugins\scriptedwizard\resources\* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard\" />
+					<Add after="xcopy /Q /F /Y /S /Exclude:MakefileNoCopy.txt plugins\scriptedwizard\resources\* $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\wizard\" />
 					<Add after="cmd /c if exist MakefileNoCopy.txt del MakefileNoCopy.txt" />
 					<Mode after="always" />
 				</ExtraCommands>
@@ -671,7 +674,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\todo.zip plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\todo.zip plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -701,7 +704,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\xpmanifest.zip plugins\xpmanifest\manifest.xml" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\xpmanifest.zip plugins\xpmanifest\manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -745,18 +748,18 @@
 		</ResourceCompiler>
 		<ExtraCommands>
 			<!-- Templates -->
-			<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates" />
+			<Add after="cmd /c if not exist $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates mkdir $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates" />
 			<Add after="cmd /c dir templates\common\Makefile.am /s/b >MakefileNoCopy.txt" />
-			<Add after="xcopy /Q /F /Y /S /EXCLUDE:MakefileNoCopy.txt templates\common\* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\" />
+			<Add after="xcopy /Q /F /Y /S /EXCLUDE:MakefileNoCopy.txt templates\common\* $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\" />
 			<Add after="cmd /c if exist MakefileNoCopy.txt del MakefileNoCopy.txt" />
 
 			<Add after="cmd /c dir templates\win32\Makefile.am /s/b >MakefileNoCopy.txt" />
-			<Add after="xcopy /Q /F /Y /S /EXCLUDE:MakefileNoCopy.txt templates\win32\*  devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\" />
+			<Add after="xcopy /Q /F /Y /S /EXCLUDE:MakefileNoCopy.txt templates\win32\*  $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\templates\" />
 			<Add after="cmd /c if exist MakefileNoCopy.txt del MakefileNoCopy.txt" />
 			<!-- scripts -->
-			<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\scripts\tests mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\scripts" />
+			<Add after="cmd /c if not exist $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\scripts\tests mkdir $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\scripts" />
 			<Add after="cmd /c dir scripts\Makefile.am /s/b >MakefileNoCopy.txt" />
-			<Add after="xcopy /Q /F /Y /S /EXCLUDE:MakefileNoCopy.txt scripts\* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\scripts\" />
+			<Add after="xcopy /Q /F /Y /S /EXCLUDE:MakefileNoCopy.txt scripts\* $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\scripts\" />
 			<Add after="cmd /c if exist MakefileNoCopy.txt del MakefileNoCopy.txt" />
 			<Mode after="always" />
 		</ExtraCommands>

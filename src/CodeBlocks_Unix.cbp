@@ -148,8 +148,8 @@
 					<Add after="cd sdk/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/manager_resources.zip images" />
 
 					<!-- lexers -->
-					<Add after="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers; fi" />
-					<Add after="cp -f sdk/resources/lexers/lexer_* devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers/" />
+					<Add after="if [ ! -d $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers ] ; then mkdir -p $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers; fi" />
+					<Add after="cp -f sdk/resources/lexers/lexer_* $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/lexers/" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -174,18 +174,18 @@
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
 					<Add after="if [ -f $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip ; fi" />
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip src/resources/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip src/resources/*.xrc" />
 				    <Add after="cd src/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/resources.zip . -i /images/*.png -x /images/settings/*" />
 
 					<Add after="if [ -f $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/start_here.zip ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/start_here.zip ; fi" />
 					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/start_here.zip src/resources/start_here/*" />
 
 					<!-- images -->
-					<Add after="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
-					<Add after="cp -f src/resources/images/*.png devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/" />
-					<Add after="cp -f src/resources/images/settings/*.png devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings" />
+					<Add after="if [ ! -d $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+					<Add after="cp -f src/resources/images/*.png $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/" />
+					<Add after="cp -f src/resources/images/settings/*.png $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings" />
 
-					<Add after="cp -f $(#CB_BUILD)/tips.txt devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks" />
+					<Add after="cp -f $(#CB_BUILD)/tips.txt $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -242,7 +242,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/astyle.zip plugins/astyle/resources/manifest.xml plugins/astyle/resources/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/astyle.zip plugins/astyle/resources/manifest.xml plugins/astyle/resources/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -268,7 +268,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/autosave.zip plugins/autosave/manifest.xml plugins/autosave/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/autosave.zip plugins/autosave/manifest.xml plugins/autosave/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -406,7 +406,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/classwizard.zip plugins/classwizard/resources/manifest.xml plugins/classwizard/resources/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/classwizard.zip plugins/classwizard/resources/manifest.xml plugins/classwizard/resources/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -432,7 +432,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/defaultmimehandler.zip plugins/defaultmimehandler/resources/manifest.xml plugins/defaultmimehandler/resources/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/defaultmimehandler.zip plugins/defaultmimehandler/resources/manifest.xml plugins/defaultmimehandler/resources/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -459,7 +459,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/OccurrencesHighlighting.zip plugins/occurrenceshighlighting/resources/manifest.xml plugins/occurrenceshighlighting/resources/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/OccurrencesHighlighting.zip plugins/occurrenceshighlighting/resources/manifest.xml plugins/occurrenceshighlighting/resources/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -485,7 +485,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/openfileslist.zip plugins/openfileslist/manifest.xml" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/openfileslist.zip plugins/openfileslist/manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -511,7 +511,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/projectsimporter.zip plugins/projectsimporter/resources/manifest.xml plugins/projectsimporter/resources/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/projectsimporter.zip plugins/projectsimporter/resources/manifest.xml plugins/projectsimporter/resources/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -537,10 +537,13 @@
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates/wizard ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates/wizard ; fi" />
+					<Mode before="always" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml" />
+					<!-- Create ZIP file-->
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml" />
 
-					<Add before="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates/wizard ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates/wizard ; fi" />
+					<!-- Copy files into share/CodeBlocks/templates tree -->
 					<Add after="cd plugins/scriptedwizard/resources &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates/wizard " />
 					<Mode after="always" />
 				</ExtraCommands>
@@ -567,7 +570,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/todo.zip plugins/todo/resources/manifest.xml plugins/todo/resources/*.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/todo.zip plugins/todo/resources/manifest.xml plugins/todo/resources/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -595,7 +598,7 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/xpmanifest.zip plugins/xpmanifest/manifest.xml" />
+					<Add after="zip -jq9 $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/xpmanifest.zip plugins/xpmanifest/manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -630,12 +633,12 @@
 		</Linker>
 		<ExtraCommands>
 			<!-- Templates -->
-			<Add after="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates ; fi" />
+			<Add after="if [ ! -d $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates ] ; then mkdir -p $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates ; fi" />
 			<Add after="cd templates/common &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates " />
-			<Add after="cd templates/win32  &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates " />
+			<Add after="cd templates/unix   &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/templates " />
 
 			<!-- scripts -->
-			<Add after="if [ ! -d devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scripts/tests ] ; then mkdir -p devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scripts/tests ; fi" />
+			<Add after="if [ ! -d $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scripts/tests ] ; then mkdir -p $(#CB_BUILD)/$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scripts/tests ; fi" />
 			<Add after="cd scripts &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/scripts " />
 			<Mode after="always" />
 		</ExtraCommands>
