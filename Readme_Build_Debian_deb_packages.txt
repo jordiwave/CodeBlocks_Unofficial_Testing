@@ -29,6 +29,7 @@ Requirements:
     8) Gamin development environment
     9) Optional: SVN and/or GIT.
     10) Packages needed for building Debian deb files
+    11) Optional package to resolve warnings when run from shell
 
     DO NOT USE ANY SNAP PACKAGES as the installed packages are sand boxed by default.
 
@@ -47,6 +48,8 @@ Requirements:
         sudo apt install -y subversion git
         # step 10:
         sudo apt install -y libbz2-dev debhelper cdbs xsltproc fakeroot zip libjpeg-dev libtiff-dev
+        # Optional step 11:
+        sudo apt install yaru-theme-icon
 
 To build Code::Blocks:
     1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via the following

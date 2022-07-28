@@ -24,7 +24,7 @@
 //------------------------------------------------------------------------------
 #include "stlfutils.h"
 //------------------------------------------------------------------------------
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
     #include "sys/stat.h"
 #endif
 #ifdef _WIN32
@@ -279,7 +279,7 @@ CString JoinPaths(const CString & HeadPath, const CString & TailPath, const char
 bool FileExists(const CString & FileName)
 {
     bool result = false;
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
     struct stat st;
 
     if (stat(FileName.GetCString(), &st) == 0)

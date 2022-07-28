@@ -79,6 +79,6 @@ echo starting: ./${CB_EXE_NAME}  -v --prefix ${PWD}
 ## ./${CB_EXE_NAME} -v --prefix=${CB_DEV_DIR}/share/${CB_EXE_NAME}
 
 unset LD_LIBRARY_PATH
-./${CB_EXE_NAME} --verbose --debug-log --multiple-instance --personality=debuging
+./${CB_EXE_NAME} --verbose --debug-log --application-log --multiple-instance --personality=debuging
 
 cd ${CurrentDir}
