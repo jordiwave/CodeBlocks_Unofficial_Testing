@@ -200,6 +200,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build the DAP debugger plugin)
+dap_dbg_default="yes"
+AC_ARG_ENABLE(dapdebugger, [AC_HELP_STRING([--enable-dapdebugger], [build the DAP debugger plugin (default YES)])],,
+                            enable_dap_dbg=$dap_dbg_default)
+AM_CONDITIONAL([BUILD_DAPDEBUGGER], [test "x$enable_dap_dbg" = "xyes"])
+if test "x$enable_dap_dbg" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to build the default MIME handler plugin)
 mime_default="yes"
 AC_ARG_ENABLE(mime-handler, [AC_HELP_STRING([--enable-mime-handler], [build the default MIME handler plugin (default YES)])],,

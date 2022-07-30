@@ -37,5 +37,8 @@ usr/lib/codeblocks/plugins/libwxsmith.so
 usr/lib/codeblocks/plugins/libwxsmithcontribitems.so
 usr/lib/codeblocks/plugins/libwxSmithAui.so
 
+usr/lib/codeblocks/plugins/libdebugger_dap.so
+usr/lib/libdebugger_wxdap.so
+
 ../lintian/codeblocks-contrib  usr/share/lintian/overrides/
 usr/lib/pkgconfig/wxsmithaui.pc usr/lib/pkgconfig/

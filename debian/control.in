@@ -41,17 +41,16 @@ Description: Code::Blocks integrated development environment (IDE)
  It is based on a self-developed plugin framework allowing unlimited
  extensibility. Most of its functionality is already provided by plugins.
  Plugins included in the base package are:
-    * Compiler front end to many free compilers
-    * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
+    * Compiler frontend to many free compilers
+    * Debugger frontend for GDB (and CDB for windows platforms)
     * Source formatter (based on AStyle)
     * Wizard to create new C++ classes
-    * Clangd_Client / symbols-browser
+    * Code-completion / symbols-browser (work in progress)
     * Default MIME handler
     * Wizard to create new Code::Blocks plugins
     * To-do list
     * Extensible wizard based on scripts
-    * Auto save (saves your work in the unfortunate case of a crash)
+    * Autosave (saves your work in the unfortunate case of a crash)
     * Occurrences highlighter
     * Open files list
 
@@ -81,20 +80,6 @@ Description: Code::Blocks shared libraries
  Environment (IDE).
  It is based on a self-developed plugin framework allowing unlimited
  extensibility. Most of its functionality is already provided by plugins.
- Plugins included in the base package are:
-    * Compiler front end to many free compilers
-    * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
-    * Source formatter (based on AStyle)
-    * Wizard to create new C++ classes
-    * Clangd_Client / symbols-browser
-    * Default MIME handler
-    * Wizard to create new Code::Blocks plugins
-    * To-do list
-    * Extensible wizard based on scripts
-    * Auto save (saves your work in the unfortunate case of a crash)
-    * Occurrences highlighter
-    * Open files list
  .
  This package contains the Code::Blocks shared library.
 
@@ -112,7 +97,6 @@ Description: Code::Blocks debugging libraries
  Plugins included in the base package are:
     * Compiler front end to many free compilers
     * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
     * Source formatter (based on AStyle)
     * Wizard to create new C++ classes
     * Clangd_Client / symbols-browser
@@ -125,7 +109,7 @@ Description: Code::Blocks debugging libraries
     * Open files list
  .
  This package contains the debugging libraries for the 'codeblocks' and the
- 'libcodeblockso' package.
+ 'libcodeblock.so' package.
 
 Package: codeblocks-contrib
 Architecture: any
@@ -151,6 +135,7 @@ Description: contrib plugins for Code::Blocks IDE
     * Copy strings
     * CppCheck
     * Cscope
+    * Debugger front end for DAP (LLDB client and other DAP clients)
     * DoxyBlocks
     * DragScroll (enhances mouse operations)
     * EditorConfig
@@ -271,23 +256,10 @@ Description: Code::Blocks development libraries (SDK)
  Environment (IDE).
  It is based on a self-developed plugin framework allowing unlimited
  extensibility. Most of its functionality is already provided by plugins.
- Plugins included in the base package are:
-    * Compiler front end to many free compilers
-    * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
-    * Source formatter (based on AStyle)
-    * Wizard to create new C++ classes
-    * Clangd_Client / symbols-browser
-    * Default MIME handler
-    * Wizard to create new Code::Blocks plugins
-    * To-do list
-    * Extensible wizard based on scripts
-    * Auto save (saves your work in the unfortunate case of a crash)
-    * Occurrences highlighter
-    * Open files list
+ Items included in this package are:
+    * usr/lib/libcodeblocks.so
  .
- This package contains the development libraries for creating plugins
- for the Code::Blocks IDE.
+ This package contains Code::Blocks IDE common library
 
 Package: codeblocks-headers
 Architecture: all
@@ -298,20 +270,8 @@ Description: Code::Blocks development headers (SDK)
  Environment (IDE).
  It is based on a self-developed plugin framework allowing unlimited
  extensibility. Most of its functionality is already provided by plugins.
- Plugins included in the base package are:
-    * Compiler front end to many free compilers
-    * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
-    * Source formatter (based on AStyle)
-    * Wizard to create new C++ classes
-    * Clangd_Client / symbols-browser
-    * Default MIME handler
-    * Wizard to create new Code::Blocks plugins
-    * To-do list
-    * Extensible wizard based on scripts
-    * Auto save (saves your work in the unfortunate case of a crash)
-    * Occurrences highlighter
-    * Open files list
+ Items included in this package are:
+    * TBA
  .
  This package contains the development headers for creating plugins
  for the Code::Blocks IDE.
@@ -368,34 +328,11 @@ Description: wxSmith shared library (Code::Blocks plugin for RAD GUI editing)
  Environment (IDE).
  It is based on a self-developed plugin framework allowing unlimited
  extensibility. Most of its functionality is already provided by plugins.
- Plugins included in the base package are:
-    * Compiler front end to many free compilers
-    * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
-    * Source formatter (based on AStyle)
-    * Wizard to create new C++ classes
-    * Clangd_Client / symbols-browser
-    * Default MIME handler
-    * Wizard to create new Code::Blocks plugins
-    * To-do list
-    * Extensible wizard based on scripts
-    * Auto save (saves your work in the unfortunate case of a crash)
-    * Occurrences highlighter
-    * Open files list
+ Items included in this package are:
+    * libwxsmithlib.so
  .
  This package contains the wxSmith shared library.
  wxSmith is included in the codeblocks-contrib package.
-
-Package: libwxsmithlib0-dev
-Architecture: any
-Section: libdevel
-Depends: ${misc:Depends}
- , wxsmith-dev (= ${binary:Version})
-Conflicts: libwxsmithlib0-dev (<< ${source:Version})
-Description: wxSmith development metapackage
- This is a transitional dummy package to ensure clean upgrades to new
- package and directory structure.
- It can be safely removed.
 
 Package: wxsmith-dev
 Architecture: any
@@ -403,26 +340,13 @@ Section: libdevel
 Depends: ${misc:Depends}
  , libcodeblocks0 (= ${binary:Version})
  , wxsmith-headers (= ${source:Version})
-Replaces: libwxsmithlib0-dev
 Description: wxSmith development files (libraries)
  Code::Blocks is the open-source, cross-platform Integrated Development
  Environment (IDE).
  It is based on a self-developed plugin framework allowing unlimited
  extensibility. Most of its functionality is already provided by plugins.
- Plugins included in the base package are:
-    * Compiler front end to many free compilers
-    * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
-    * Source formatter (based on AStyle)
-    * Wizard to create new C++ classes
-    * Clangd_Client / symbols-browser
-    * Default MIME handler
-    * Wizard to create new Code::Blocks plugins
-    * To-do list
-    * Extensible wizard based on scripts
-    * Auto save (saves your work in the unfortunate case of a crash)
-    * Occurrences highlighter
-    * Open files list
+ Items included in this package are:
+    * libwxsmithlib.so
  .
  This package contains the development libraries for wxSmith, the codeblocks
  RAD GUI editing tool.
@@ -436,20 +360,8 @@ Description: wxSmith development files (headers)
  Environment (IDE).
  It is based on a self-developed plugin framework allowing unlimited
  extensibility. Most of its functionality is already provided by plugins.
- Plugins included in the base package are:
-    * Compiler front end to many free compilers
-    * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
-    * Source formatter (based on AStyle)
-    * Wizard to create new C++ classes
-    * Clangd_Client / symbols-browser
-    * Default MIME handler
-    * Wizard to create new Code::Blocks plugins
-    * To-do list
-    * Extensible wizard based on scripts
-    * Auto save (saves your work in the unfortunate case of a crash)
-    * Occurrences highlighter
-    * Open files list
+ Items included in this package are:
+    * usr/include/wxsmith/* files
  .
  This package contains the development headers for wxsmith , the codeblocks
  RAD GUI editing tool.

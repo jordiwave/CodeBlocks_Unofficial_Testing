@@ -181,6 +181,7 @@ fi
 %{plugindir}/libclangd_client.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
+%{plugindir}/libdebugger_dap.so
 %{plugindir}/libdefaultmimehandler.so
 %{plugindir}/libDisplayEvents.so
 %{plugindir}/liboccurrenceshighlighting.so
@@ -210,6 +211,7 @@ fi
 %{pkgdatadir}/classwizard.zip
 %{pkgdatadir}/compiler.zip
 %{pkgdatadir}/debugger.zip
+%{pkgdatadir}/debugger_dap.zip
 %{pkgdatadir}/defaultmimehandler.zip
 %{pkgdatadir}/DisplayEvents.zip
 %{pkgdatadir}/manager_resources.zip

@@ -65,7 +65,6 @@
                 checkMessage="You have other optimizations or debugging settings that are not good for LLDB."
 				supersedes="-s -gline-tables-only"/>
     </Category>
-
     <Option name="Target x86 (32bit)"
             option="-m32"
             additionalLibs="-m32"
