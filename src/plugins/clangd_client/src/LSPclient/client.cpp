@@ -3106,7 +3106,12 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
     }
 
     //-didChangeEvent.text = edText;
+#if 1
+    const wxScopedCharBuffer edTestBuffer = edText.ToUTF8();
+    didChangeEvent.text = std::string(edTestBuffer.data()); //(ollydbg 2022/07/22) https://forums.codeblocks.org/index.php/topic,24357.msg170611.html#msg170611
+#else
     didChangeEvent.text = edText.ToStdString(wxConvUTF8); //(ollydbg 2022/07/22) https://forums.codeblocks.org/index.php/topic,24357.msg170611.html#msg170611
+#endif
     std::vector<TextDocumentContentChangeEvent> tdcce{didChangeEvent};
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     // **debugging**

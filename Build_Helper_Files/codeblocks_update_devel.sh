@@ -533,8 +533,14 @@ echo
 
 read -r -p 'Would you like to run Code::Blocks? ( type "y" for yes or "n" for no ): '
 if [ "${REPLY}" == 'y' ] || [ "${REPLY}" == 'Y' ]; then
-    export LD_LIBRARY_PATH=${CB_DEVEL_DIR}
-    xfce4-terminal -e "${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}"
+    if [ "${OSDetected}" == "Linux" ] ; then 
+        export LD_LIBRARY_PATH=${CB_DEVEL_DIR}
+        xfce4-terminal -e "${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}"
+    else
+        if [ "${OSDetected}" == "Windows" ] ; then 
+            ${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}
+        fi
+    fi
 fi
 
 cd ${InitialDir}

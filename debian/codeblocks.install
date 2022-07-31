@@ -16,4 +16,3 @@ usr/lib/codeblocks/plugins/libprojectsimporter.so
 usr/lib/codeblocks/plugins/libscriptedwizard.so
 usr/lib/codeblocks/plugins/libtodo.so
 ../lintian/codeblocks  usr/share/lintian/overrides
-
