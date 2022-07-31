@@ -706,7 +706,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent & event)
     if (locker_result != wxMUTEX_NO_ERROR)
     {
         // lock failed, do not block the UI thread, verify tries, call back when idle
-        if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))
+        if (GetParseManager()->GetIdleCallbackHandler()->IncrQCallbackOk(lockFuncLine))
         {
             GetParseManager()->GetIdleCallbackHandler()->QueueCallback(this, &ClassBrowser::OnTreeItemDoubleClick, event);
         }
@@ -718,7 +718,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent & event)
     else /*lock succeeded*/
     {
         s_TokenTreeMutex_Owner = wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__); /*record owner*/
-        GetParseManager()->GetIdleCallbackHandler()->ClearDebugCallback(lockFuncLine);
+        GetParseManager()->GetIdleCallbackHandler()->ClearQCallbackPosn(lockFuncLine);
     }
 
     /// From here, Unlock the TokenTree before any returns !!!
@@ -986,7 +986,7 @@ bool ClassBrowser::GetTokenTreeLock(void (T::*method)(T1 x1), P1 event)
     if (locker_result != wxMUTEX_NO_ERROR)
     {
         // lock failed, do not block the UI thread, insead, do call back when idle
-        if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine)) //verify max tries
+        if (GetParseManager()->GetIdleCallbackHandler()->IncrQCallbackOk(lockFuncLine)) //verify max tries
         {
             GetParseManager()->GetIdleCallbackHandler()->QueueCallback(this, method, event);
         }
@@ -996,7 +996,7 @@ bool ClassBrowser::GetTokenTreeLock(void (T::*method)(T1 x1), P1 event)
     else /*lock succeeded*/
     {
         s_TokenTreeMutex_Owner = wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__); /*record owner*/
-        GetParseManager()->GetIdleCallbackHandler()->ClearDebugCallback(lockFuncLine);
+        GetParseManager()->GetIdleCallbackHandler()->ClearQCallbackPosn(lockFuncLine);
     }
 
     return true;

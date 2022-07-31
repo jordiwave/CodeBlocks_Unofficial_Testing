@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 68 $
- * $Id: Version.h 68 2022-07-18 19:45:22Z pecanh $
+ * $Revision: 70 $
+ * $Id: Version.h 70 2022-07-30 19:32:46Z pecanh $
  * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/Version.h $
  */
 
@@ -25,7 +25,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.31 2022/07/16")
+#define VERSION wxT("0.2.32 2022/07/30")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -56,7 +56,37 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
-//0.2.31    Commit 2022/07/18 rev 68
+//0.2.32    Commit 2022/07/30 rev 70
+//          2022/07/30
+//          Guard all clangd response functions with check for app or plugin shutting down (GetIsShuttingDown())
+//          2022/07/29
+//          Don't yield() in ShutdownLSPclient() if app is shutting down. It causes OnIdle()'s to be called.
+//          Guard all OnIdle() functions with a check for shutdown.
+//          2022/07/28
+//          Reworked :OnLSP_RenameResponse() to fix column offsets when multiple changes in a single line.
+//          2022/07/27
+//          Fix incorrect refactor/renaming. ref: https://forums.codeblocks.org/index.php?topic=24357.msg170620#msg170620
+//              clangd response positions need adjustment after the first change on a line.
+//          Applied (with modifications) Ticket #56	Warning for wxFileName::Normalize() is deprecated
+//          Fixed: Ticket #5 MacOS with r69 crashes on C::B exit
+//          Retested fix for 54	File is not parsed yet.
+//          2022/07/25
+//          Reworked sanity checks for OnGoToDecl/Impl, GoToFunction, and FindReferences to output status msgs.
+//              eg: isEditor{Initialize,Open,Parsing,Parsed,HasDocSymbols} before processing requests.
+//              ref: ClgdCompletion::VerifyEditorParsed()
+//          Reworked sanity checks for SemanticTokens response; ref:Parser::LSP_ParseSemanticTokens().
+//          2022/07/22
+//          Applied ollydbg client.cpp DidChange() fix "didChangeEvent.text = edText.ToStdString(wxConvUTF8);"
+//              //(ollydbg 2022/07/22) https://forums.codeblocks.org/index.php/topic,24357.msg170611.html#msg170611
+//          2022/07/20
+//          In OnPluginAttached(), if clangd_client has just been enabled and loaded,
+//              we need to invoke OnAppStartupDone() in order to initialize it.
+//          When the old CodeCompletion Dll is missing but Config says it's enabled
+//              clangd_client should behave like CodeCompletion is disabled. Thanks AndrewCo.
+//          2022/07/19 Apply AndrewCo OnAppStartup() Ticket 53 to auto-detect clangd.
+//          2022/07/18 Commit rev 69 add missing file ClgdCCToken.h
+//
+//0.2.31    Commit 2022/07/18 rev 68/69
 //          2022/07/16
 //          Parser::OnLSP_BatchTimer(): stop all background parsing when debugger is active (code rework).
 //              to see if it solves "Invalid AST" notifications after using the debugger.
@@ -80,6 +110,7 @@ class AppVersion
 //          2022/07/7
 //          More santity checks for GetDocumentation() popup
 //          Commited ccmanager fix to CodeBlocks repo to fix ignored completion requests.
+//
 //0.2.30    Commit 2022/06/30 rev 67
 //          2022/06/29
 //          Cut the chaff from hover response in Parser::OnLSP_HoverResponse()
@@ -104,6 +135,7 @@ class AppVersion
 //          Eliminate remaining non-utf8 with <string>.Replace() (in completion responses)
 //          Bad utf8 bytes are \xE2\x80\xA6 withing empty "()" function/method argements
 //          Bad utf8 bytes are "\xE2\x86\x92" clobbering "Type:" in hover responses.
+//
 //0.2.29
 //          2022/06/17 Commit 2022/06/18 rev 66
 //          Produce a simplified Documentation popup until I can understand what doxygen_parser is doing.

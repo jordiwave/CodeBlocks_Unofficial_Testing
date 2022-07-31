@@ -220,12 +220,19 @@ class IdleCallbackHandler: public wxEvtHandler
 {
     private:
         std::deque<AsyncMethodCallEvent *> m_AsyncMethodCallQueue;
+        bool m_PluginIsShuttingDown = false;
 
         // ----------------------------------------------------------------------------
         void OnIdle(wxIdleEvent & event)
         // ----------------------------------------------------------------------------
         {
             event.Skip();
+
+            if (Manager::IsAppShuttingDown() or m_PluginIsShuttingDown)       //(ph 2022/07/27)
+            {
+                ClearIdleCallbacks();
+                return;
+            }
 
             //while (GetIdleCallbackQueue()->size())
             if (GetIdleCallbackQueue()->size())
@@ -240,6 +247,11 @@ class IdleCallbackHandler: public wxEvtHandler
         }
 
     public:
+
+        void SetPluginIsShuttingDown()
+        {
+            m_PluginIsShuttingDown = true;
+        }
 
         // Verify that an event handler is still in the chain of event handlers
         wxEvtHandler * FindEventHandler(wxEvtHandler * pEvtHdlr)
@@ -376,26 +388,38 @@ class IdleCallbackHandler: public wxEvtHandler
             m_AsyncMethodCallQueue.push_back(pCallBackEvent);
         }
 
-        std::map<wxString, int>m_DebugCallback;
-        //Eg., IncrDebugCallback(wxString::Format("%s_%d", __FUNCTION__, __LINE__);
-        bool IncrDebugCallbackOk(wxString funcLine)
+        // ----------------------------------------------------------------------------
+        // Map keeps count of repetitive callback requests for a particular function and line.
+        // ----------------------------------------------------------------------------
+        std::map<wxString, int>m_QCallbackPosn;
+        //Eg., IncrQCallbackOk(wxString::Format("%s_%d", __FUNCTION__, __LINE__);
+        bool IncrQCallbackOk(wxString funcLine)
         {
-            m_DebugCallback[funcLine] = m_DebugCallback[funcLine]++;
+            m_QCallbackPosn[funcLine] = m_QCallbackPosn[funcLine]++;
 
-            if (m_DebugCallback[funcLine] > 8)
+            if (m_QCallbackPosn[funcLine] > 8)
             {
-                wxString msg = wxString::Format("%s Lock Failure count exceeded.", funcLine);
+                wxString msg = wxString::Format("%s Callback Failure, count exceeded.", funcLine);
                 Manager::Get()->GetLogManager()->DebugLogError(msg);
 #if defined(cbDEBUG)
-                cbMessageBox(msg, "Error: IdleCallback/Lock Failure");
+                cbMessageBox(msg, "Error: IdleCallback or Lock Failure");
 #endif
             }
 
-            return m_DebugCallback[funcLine] < 8;
+            return m_QCallbackPosn[funcLine] < 8;
         }
-        int ClearDebugCallback(wxString funcLine)
+        int ClearQCallbackPosn(wxString funcLine)
         {
-            return m_DebugCallback[funcLine] = 0;
+            return m_QCallbackPosn[funcLine] = 0;
+        }
+        int GetQCallbackCount(wxString funcLine)
+        {
+            if (m_QCallbackPosn.count(funcLine))
+            {
+                return m_QCallbackPosn[funcLine];
+            }
+
+            return 0;
         }
 
 };

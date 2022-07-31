@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 68 $
- * $Id: parser.cpp 68 2022-07-18 19:45:22Z pecanh $
+ * $Revision: 70 $
+ * $Id: parser.cpp 70 2022-07-30 19:32:46Z pecanh $
  * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parser/parser.cpp $
  */
 
@@ -502,16 +502,6 @@ bool Parser::IsOkToUpdateClassBrowserView()
 void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
 // ----------------------------------------------------------------------------
 {
-    wxEventType type = event.GetEventType();
-
-    if (
-        (type == cbEVT_APP_START_SHUTDOWN) ||
-        (type == cbEVT_APP_DEACTIVATED)
-    )
-    {
-        return;
-    }
-
     CCLogger * pLogMgr =  CCLogger::Get();
     // Validate that this parser is associated with a project
     cbProject * pProject = m_ParsersProject;
@@ -524,7 +514,9 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
     /// Do Not free the input pJson pointer, it will be freed on return to caller CodeCompletion::LSP_Event()
     json * pJson = (json *)event.GetClientData();
 
+    // ----------------------------------------------------------------------------
     // queue a copy of input json data. then queue a callback for OnIdle() which will have a nullptr for json ptr
+    // ----------------------------------------------------------------------------
     if (pJson)
     {
         //LSP_ParserDocumentSymbolsQueue is in anonymous namespace above
@@ -611,7 +603,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
 
             // When here: the event is already an idle callback, we can just reuse it.
             // Queue this call to the the idle time callback queue.
-            if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine)) //verify max retries
+            if (GetParseManager()->GetIdleCallbackHandler()->IncrQCallbackOk(lockFuncLine)) //verify max retries
             {
                 GetIdleCallbackHandler()->QueueCallback(this, &Parser::LSP_ParseDocumentSymbols, event);
             }
@@ -623,7 +615,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
         {
             //now have the lock
             s_TokenTreeMutex_Owner = wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__); /*record owner*/
-            GetParseManager()->GetIdleCallbackHandler()->ClearDebugCallback(lockFuncLine);
+            GetParseManager()->GetIdleCallbackHandler()->ClearQCallbackPosn(lockFuncLine);
 
             if (PauseParsingExists(__FUNCTION__))
             {
@@ -665,6 +657,8 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
 
         if (fileIdx)
         {
+            wxString msg = wxString::Format("%s: Removing tokens for %s", __FUNCTION__, filename);
+            pLogMgr->DebugLog(msg);
             m_TokenTree->RemoveFile(fileIdx);
         }
 
@@ -679,6 +673,8 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
         if (parse_rc)
         {
             m_TokenTree->FlagFileAsParsed(filename);
+            wxString msg = wxString::Format("%s: Added tokens for %s", __FUNCTION__, filename);
+            pLogMgr->DebugLog(msg);
         }
 
         if (pLSP_SymbolsParser)
@@ -721,6 +717,27 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
         size_t durationMillis = m_pParseManager->GetDurationMilliSeconds(startMillis);
         // **debugging** CCLogger::Get()->DebugLog(wxString::Format("%s() processed %s (%zu msec)", __FUNCTION__, wxFileName(filename).GetFullName(), durationMillis));
         wxUnusedVar(durationMillis);
+        // Say we've stowed the tree symbols (only for an active editors)
+        EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+        EditorBase * pEditorBase = pEdMgr->GetEditor(filename);
+        cbEditor * pEditor = nullptr;
+
+        if (pEditorBase)
+        {
+            pEditor = pEdMgr->GetBuiltinEditor(pEditorBase);
+        }
+
+        if (pEditor)
+        {
+            pClient->SetLSP_EditorHasSymbols(pEditor, true);
+
+            // Ask for SemanticTokens usable by CodeCompletion since there are no local variables
+            // in the document/sysmbols response. (only if Document popup is option is checked)
+            if (pEditor and (pEditor == pEdMgr->GetActiveEditor()))
+            {
+                RequestSemanticTokens(pEditor);
+            }
+        }//endif pEditor
     }//while entries in queue
 
     return;
@@ -851,7 +868,22 @@ void Parser::LSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
     //        wxString msg = pLSP_SymbolsParser->m_SemanticTokensTypes[ii];
     //        if (1) asm("int3"); /*trap*/
     //    }
-    // **Sanity check**
+    // **Sanity checks**
+    ProcessLanguageClient * pClient = GetLSPClient();
+    bool isEditorInitialized  = pClient ? pClient->GetLSP_Initialized(pProject) : false;     //(ph 2022/07/23)
+    bool isEditorOpen         = isEditorInitialized ? pClient->GetLSP_EditorIsOpen(pEditor) : false;
+    bool isFileParsing        = pClient ? pClient->IsServerFilesParsing(pEditor->GetFilename()) : false;
+    bool isEditorParsed       = isEditorOpen ? pClient->GetLSP_IsEditorParsed(pEditor) : false;
+    bool hasDocSymbols        = pClient ? pClient->GetLSP_EditorHasSymbols(pEditor) : false;
+    // assure the editor is not re-parsing while processing these SemanticTokens
+    bool isEditorQuiet = isEditorInitialized and isEditorOpen and isEditorParsed and hasDocSymbols;
+    isEditorQuiet = isEditorQuiet and (not isFileParsing);
+
+    if (not isEditorQuiet)
+    {
+        return;
+    }
+
     int fileIdx = m_TokenTree->GetFileIndex(filename);
 
     if (not fileIdx)
@@ -890,7 +922,7 @@ void Parser::RemoveFile(const wxString & filename)
     {
         // lock failed, do not block the UI thread, call back when idle
         // Parser* pParser = static_cast<Parser*>(m_Parser);
-        if (GetParseManager()->GetIdleCallbackHandler()->IncrDebugCallbackOk(lockFuncLine))
+        if (GetParseManager()->GetIdleCallbackHandler()->IncrQCallbackOk(lockFuncLine))
         {
             GetIdleCallbackHandler()->QueueCallback(this, &Parser::RemoveFile, filename);
         }
@@ -900,7 +932,7 @@ void Parser::RemoveFile(const wxString & filename)
     else /*lock succeeded*/
     {
         s_TokenTreeMutex_Owner = wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__); /*record owner*/
-        GetParseManager()->GetIdleCallbackHandler()->ClearDebugCallback(lockFuncLine);
+        GetParseManager()->GetIdleCallbackHandler()->ClearQCallbackPosn(lockFuncLine);
     }
 
     const size_t fileIdx = m_TokenTree->InsertFileOrGetIndex(filename);
@@ -1267,6 +1299,11 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     // textDocument/publishDiagnostics
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     CCLogger * pLogMgr = CCLogger::Get();
     EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
     cbEditor * pActiveEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -1750,6 +1787,11 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
 void Parser::OnLSP_ReferencesResponse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------
     // textDocument references event
     // ----------------------------------------------------
@@ -2128,6 +2170,11 @@ bool Parser::FindDuplicateEntry(wxArrayString * pArray, wxString fullPath, wxStr
 void Parser::OnLSP_DeclDefResponse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------------------------------
     // textDocument/declaration textDocument/definition event
     // ----------------------------------------------------------------------------
@@ -2286,6 +2333,11 @@ void Parser::OnLSP_RequestedSymbolsResponse(wxCommandEvent & event) //(ph 2021/0
 // ----------------------------------------------------------------------------
 {
     // This is a callback after requesting textDocument/Symbol (request done in OnLSP_DiagnosticsResponse)
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------------------------------
     ///  GetClientData() contains ptr to json object
     ///  DONT free it! The return to OnLSP_Event() will free it as a unique_ptr
@@ -2345,7 +2397,8 @@ void Parser::OnLSP_RequestedSymbolsResponse(wxCommandEvent & event) //(ph 2021/0
     wxCommandEvent symEvent(wxEVT_COMMAND_MENU_SELECTED, XRCID("textDocument/documentSymbol"));
     symEvent.SetString(uriFilename);
     symEvent.SetClientData(pJson);
-    LSP_ParseDocumentSymbols(symEvent); //Call directly
+    //This places the event onto the idle process queue
+    LSP_ParseDocumentSymbols(symEvent); //This places the event onto the idle process queue
 
     if (not pEditor)    //Background parsing response for file not open in an editor
     {
@@ -2357,14 +2410,6 @@ void Parser::OnLSP_RequestedSymbolsResponse(wxCommandEvent & event) //(ph 2021/0
     // Didnt we already remove the file in publishDiagnostics response event?
     // But just in case we didnt get here from there...
     pClient->LSP_RemoveFromServerFilesParsing(uriFilename);
-
-    // Ask for SemanticTokens usable by CodeCompletion since there are no local variables
-    // in the document/sysmbols response. (only if Document popup is option is checked)
-    if (pEditor and (pEditor == pEdMgr->GetActiveEditor()))
-    {
-        RequestSemanticTokens(pEditor);
-    }
-
     return;
 }
 // ----------------------------------------------------------------------------
@@ -2401,6 +2446,11 @@ void Parser::RequestSemanticTokens(cbEditor * pEditor)
 void Parser::OnLSP_RequestedSemanticTokensResponse(wxCommandEvent & event) //(ph 2021/03/12)
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // This is a callback after requesting textDocument/Symbol (request done at end of OnLSP_RequestedSymbolsResponse() )
     // Currently, we allow SemanticTokens for the BuiltinActiveEditor only,
     // ----------------------------------------------------------------------------
@@ -2532,6 +2582,11 @@ int Parser::FindSemanticTokenEntryFromCompletion(cbCodeCompletionPlugin::CCToken
 void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<ClgdCCToken> & v_CompletionTokens)
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------
     // textDocument/completion event
     // ----------------------------------------------------
@@ -2776,6 +2831,11 @@ wxString Parser::GetCompletionPopupDocumentation(const ClgdCCToken & token)
 void Parser::OnLSP_CompletionPopupHoverResponse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // receives hover response issued for Documentation popup info //(ph 2022/06/14)
     // ----------------------------------------------------
     // textDocument hover event
@@ -2872,6 +2932,11 @@ void Parser::OnLSP_CompletionPopupHoverResponse(wxCommandEvent & event)
 void Parser::OnLSP_HoverResponse(wxCommandEvent & event, std::vector<ClgdCCToken> & v_HoverTokens, int n_HoverLastPosition)
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------
     // textDocument hover event
     // ----------------------------------------------------
@@ -3004,6 +3069,11 @@ void Parser::OnLSP_HoverResponse(wxCommandEvent & event, std::vector<ClgdCCToken
 void Parser::OnLSP_SignatureHelpResponse(wxCommandEvent & event, std::vector<cbCodeCompletionPlugin::CCCallTip> & v_SignatureTokens, int n_HoverLastPosition)
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------
     // textDocument/signatureHelp event
     // ----------------------------------------------------
@@ -3118,6 +3188,11 @@ void Parser::OnLSP_SignatureHelpResponse(wxCommandEvent & event, std::vector<cbC
 void Parser::OnLSP_RenameResponse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------
     // textDocument/rename event
     // ----------------------------------------------------
@@ -3174,12 +3249,19 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent & event)
         const wxString editorFile = pEditor->GetFilename();
         wxFileName fn(editorFile);
         const wxString editorBasePath(fn.GetPath());
-        wxString newText;
-        int rangeStartLine;
-        // **Debugging**
-        // int rangeEndLine ;
-        // int rangeStartCol;
-        // int rangeEndCol ;
+        wxString prevNewText;
+        int prevRangeStartLine = 0;
+        int prevRangeEndLine   = 0;
+        wxUnusedVar(prevRangeEndLine);
+        int prevRangeStartCol  = 0;
+        wxUnusedVar(prevRangeStartCol);
+        int prevRangeEndCol    = 0;
+        wxUnusedVar(prevRangeEndCol);
+        wxString curNewText;
+        int curRangeStartLine = -1;
+        int curRangeEndLine   = -1 ;
+        int curRangeStartCol  = -1;
+        int curRangeEndCol    = -1 ;
 
         try
         {
@@ -3192,8 +3274,8 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent & event)
             {
                 wxString URI = item.first;
                 json fileChanges = item.second;
-                wxFileName curFn = fileUtils.FilePathFromURI(URI);  //(ph 2021/12/21)
-                wxString absFilename = curFn.GetFullPath();
+                wxFileName curFilename = fileUtils.FilePathFromURI(URI);  //(ph 2021/12/21)
+                wxString absFilename = curFilename.GetFullPath();
 
                 if (not wxFileExists(absFilename))
                 {
@@ -3219,38 +3301,48 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent & event)
                 control = ed->GetControl();
                 control->BeginUndoAction();
                 size_t fileChangeCount = fileChanges.size();
+                wxString symbolToChange = GetParseManager()->GetRenameSymbolToChange();
+                int adjustment = 0;
 
                 for (size_t ii = 0; ii < fileChangeCount; ++ii)
                 {
-                    newText = fileChanges[ii].at("newText").get<std::string>();
-                    rangeStartLine = fileChanges[ii].at("range").at("start").at("line").get<int>();
-                    // **Debugging** rangeEndLine = fileChanges[ii].at("range").at("end").at("line").get<int>();
-                    // **Debugging** rangeStartCol = fileChanges[ii].at("range").at("start").at("character").get<int>();
-                    // **Debugging** rangeEndCol = fileChanges[ii].at("range").at("end").at("character").get<int>();
-                    curFn.MakeRelativeTo(editorBasePath);
-                    // 2) Make the change to the file
-                    // The following does not work well when there are two or more occurances of the original data on the same line.
-                    // Changing the first occurance will shift the line data, invalidating the clangd range data
-                    // for subsequent occurances.
-                    // Example: if (( token == '/n') or (token == '\n'))
-                    //      changing 'token" to 'm_token" will result in
-                    //      if (( m_token == '/n') orm_tokentoken == '\n'))
-                    //    int pos = control->PositionFromLine(rangeStartLine) + rangeStartCol;
-                    //    control->SetTargetStart(pos);
-                    //    control->SetTargetEnd(control->PositionFromLine(rangeEndLine) + rangeEndCol);
-                    //    control->ReplaceTarget(newText);
-                    int pos = control->PositionFromLine(rangeStartLine);  //begining of line
-                    int lth = control->LineLength(rangeStartLine);
-                    control->SetTargetStart(pos);       // set search to start of line
-                    control->SetTargetEnd(pos + lth - 1); // set search to end of line
+                    // save the previous changes in case multiple changes on a line
+                    prevNewText         = curNewText;
+                    prevRangeStartLine  = curRangeStartLine;
+                    prevRangeEndLine    = curRangeEndLine;
+                    prevRangeStartCol   = curRangeStartCol;
+                    prevRangeEndCol     = curRangeEndCol;
+                    curNewText = fileChanges[ii].at("newText").get<std::string>();
+                    curRangeStartLine = fileChanges[ii].at("range").at("start").at("line").get<int>();
+                    curRangeEndLine = fileChanges[ii].at("range").at("end").at("line").get<int>();
+                    curRangeStartCol = fileChanges[ii].at("range").at("start").at("character").get<int>();
+                    curRangeEndCol = fileChanges[ii].at("range").at("end").at("character").get<int>();
+                    curFilename.MakeRelativeTo(editorBasePath);
+                    int linePosn = control->PositionFromLine(curRangeStartLine);  //begining of line
+                    int colPosn  = linePosn + curRangeStartCol;
+                    //int lineLth  = control->LineLength(curRangeStartLine);        // end of line
+                    int pos = colPosn;
+
+                    if (curRangeStartLine == prevRangeStartLine)
+                    {
+                        // adjust next change posn when same line being changed multiple times
+                        adjustment += (curNewText.Length() - symbolToChange.Length());
+                        pos += adjustment; //new posn of target
+                    }
+                    else
+                    {
+                        adjustment = 0;
+                    }
+
+                    control->SetTargetStart(pos);
+                    control->SetTargetEnd(pos + symbolToChange.Length());
                     // symboToChange was saved during the initial request dialog CodeCompletion::OnRenameSymbols()
-                    wxString symbolToChange = GetParseManager()->GetRenameSymbolToChange();
                     control->SetSearchFlags(wxSCI_FIND_MATCHCASE | wxSCI_FIND_WHOLEWORD | wxSCI_FIND_WORDSTART);
                     int tgtStart = control->SearchInTarget(symbolToChange);
 
                     if (tgtStart > -1)
                     {
-                        control->ReplaceTarget(newText);
+                        control->ReplaceTarget(curNewText);
                     }
                 }//endfor file changes
 
@@ -3269,6 +3361,11 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent & event)
 void Parser::OnLSP_GoToPrevFunctionResponse(wxCommandEvent & event) //response from LSPserver
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------------------------------
     // textDocument/DocumentSymbol event
     // ----------------------------------------------------------------------------
@@ -3341,6 +3438,11 @@ void Parser::OnLSP_GoToPrevFunctionResponse(wxCommandEvent & event) //response f
 void Parser::OnLSP_GoToNextFunctionResponse(wxCommandEvent & event) //response from LSPserver
 // ----------------------------------------------------------------------------
 {
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     // ----------------------------------------------------------------------------
     // textDocument/DocumentSymbol event
     // ----------------------------------------------------------------------------
@@ -3413,11 +3515,16 @@ void Parser::OnLSP_GoToNextFunctionResponse(wxCommandEvent & event) //response f
 void Parser::OnLSP_GoToFunctionResponse(wxCommandEvent & event) //unused
 // ----------------------------------------------------------------------------
 {
-    // currently unused. Using the older CC method to go to function instead.
+    // currently UNUSED. Using the older CC method to go to function instead.
     // viz., CodeCompletion::OnGotoFunction() using the GoToFunctionDlg dialog
     // ----------------------------------------------------------------------------
     // textDocument/DocumentSymbol event
     // ----------------------------------------------------------------------------
+    if (GetIsShuttingDown())
+    {
+        return;
+    }
+
     if (event.GetString().StartsWith("textDocument/documentSymbol"))
         try
         {

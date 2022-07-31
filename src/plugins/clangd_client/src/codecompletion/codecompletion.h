@@ -249,7 +249,7 @@ class ClgdCompletion : public cbCodeCompletionPlugin
 
         // event handlers for the standard events sent from sdk core
         /** SDK event when application has started up */
-        void OnAppDoneStartup(CodeBlocksEvent & event);
+        void OnAppStartupDone(CodeBlocksEvent & event);
         /** SDK workspace related events */
         void OnWorkspaceChanged(CodeBlocksEvent & event);
         void OnWorkspaceClosingBegin(CodeBlocksEvent & event);
@@ -721,6 +721,41 @@ class ClgdCompletion : public cbCodeCompletionPlugin
                 return false;
             }
 
+            //-if (pClient->GetLSP_IsEditorParsed(pEd)) //(ph 2022/07/23)
+            //-    return true;
+            return true;
+        }
+
+        // ---------------------------------------------------------
+        bool GetLSP_IsEditorParsed(cbEditor * pEd)      //(ph 2022/07/23)
+        // ---------------------------------------------------------
+        {
+            ProjectFile * pPrjFile = pEd->GetProjectFile();
+
+            if (not pPrjFile)
+            {
+                return false;
+            }
+
+            cbProject * pProject = pPrjFile->GetParentProject();
+
+            if (not pProject)
+            {
+                return false;
+            }
+
+            ProcessLanguageClient * pClient = GetLSPclient(pProject);
+
+            if (not pClient)
+            {
+                return false;
+            }
+
+            if (not pClient->GetLSP_Initialized(pProject))
+            {
+                return false;
+            }
+
             if (pClient->GetLSP_IsEditorParsed(pEd))
             {
                 return true;
@@ -728,21 +763,26 @@ class ClgdCompletion : public cbCodeCompletionPlugin
 
             return false;
         }
+
         void OnLSP_Event(wxCommandEvent & event);
         void OnLSP_ProcessTerminated(wxCommandEvent & event);
         void OnIdle(wxIdleEvent & event);
         void OnPluginAttached(CodeBlocksEvent & event);
+        void OnPluginLoadingComplete(CodeBlocksEvent & event);
 
 
         // Handle responses from LSPserver
         void OnLSP_ProjectFileAdded(cbProject * pProject, wxString filename);
 
-        wxString GetLineTextFromFile(const wxString & file, const int lineNum); //(ph 2020/10/26)
         bool DoLockClangd_CacheAccess(cbProject * pcbProject);
         bool DoUnlockClangd_CacheAccess(cbProject * pcbProject);   //(ph 2021/03/13)
         void ShutdownLSPclient(cbProject * pProject);
         void CleanUpLSPLogs();
         void CleanOutClangdTempFiles();
+        wxString GetLineTextFromFile(const wxString & file, const int lineNum); //(ph 2020/10/26)
+        wxString VerifyEditorParsed(cbEditor * pEd);     //(ph 2022/07/25)
+        wxString VerifyEditorHasSymbols(cbEditor * pEd); //(ph 2022/07/26)
+
         IdleCallbackHandler * GetIdleCallbackHandler(cbProject * pProjectParm = nullptr)
         {
             //-cbProject* pProject = pProjectParm;
@@ -794,6 +834,9 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         bool m_CC_initDeferred = true;
         // Set to true when the old CodeCompletion plugin is enabled
         bool m_OldCC_enabled = true;
+        // Initial condition of Clangd_Client at ctor (enabled/disabled);
+        bool m_ClgdClientStartupStatusEnabled = false;
+
         // ----------------------------------------------------------------------------
         bool SetClangdClient_Disabled()
         // ----------------------------------------------------------------------------

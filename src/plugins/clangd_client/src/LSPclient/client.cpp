@@ -788,6 +788,12 @@ void ProcessLanguageClient::OnClangd_stdout(wxThreadEvent & event)
         return;
     }
 
+    // Ignore any clangd data when app is shutting down. //(ph 2022/07/29)
+    if (Manager::IsAppShuttingDown())
+    {
+        return;
+    }
+
     // Append clangd incomming response data to buffer;
     std::string * pRawOutput = event.GetPayload<std::string *>();
 
@@ -877,6 +883,11 @@ void ProcessLanguageClient::OnLSP_Idle(wxIdleEvent & event)
 // ----------------------------------------------------------------------------
 {
     event.Skip(); //always event.Skip() to allow others use of idle events
+
+    if (Manager::IsAppShuttingDown())
+    {
+        return;    //(ph 2022/07/29)
+    }
 
     // ----------------------------------------------------------------------------
     // Invoke any queued client call backs
@@ -2013,6 +2024,9 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor * pcbEd)
     LSP_AddToServerFilesParsing(pcbEd->GetFilename());
     SetLSP_EditorIsOpen(pcbEd, true);
     SetLastLSP_Request(infilename, "textDocument/didOpen");
+    SetLSP_EditorHasSymbols(pcbEd, false);
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    pLogMgr->DebugLog(wxString::Format("%s: %s", __FUNCTION__, infilename));
     return true;
 }//end LSP_DidOpen() cbEditor version
 // ----------------------------------------------------------------------------
@@ -2119,6 +2133,8 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject * pProject)
 
     LSP_AddToServerFilesParsing(filename);
     SetLastLSP_Request(infilename, "textDocument/didOpen");
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    pLogMgr->DebugLog(wxString::Format("%s: %s", __FUNCTION__, infilename));
 
     if (pCtrl)
     {
@@ -2177,6 +2193,7 @@ void ProcessLanguageClient::LSP_DidClose(cbEditor * pcbEd)
     SetLSP_EditorIsParsed(pcbEd, false);
     SetLSP_EditorIsOpen(pcbEd, false);
     SetLSP_EditorRemove(pcbEd);
+    SetLSP_EditorHasSymbols(pcbEd, false);
     SetLastLSP_Request(infilename, "textDocument/didClose");
     return ;
 }
@@ -2235,6 +2252,7 @@ void ProcessLanguageClient::LSP_DidClose(wxString filename, cbProject * pProject
         SetLSP_EditorIsParsed(pcbEd, false); //(ph 2021/11/10)
         SetLSP_EditorIsOpen(pcbEd, false);
         SetLSP_EditorRemove(pcbEd);
+        SetLSP_EditorHasSymbols(pcbEd, false);
     }
 
     return ;
@@ -2717,6 +2735,7 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t rrid)
     }
 
     SetLastLSP_Request(pEd->GetFilename(), "textDocument/documentSymbol");
+    SetLSP_EditorHasSymbols(pEd, false);
     return ;
 }//end LSP_RequestSymbols()
 // ----------------------------------------------------------------------------
@@ -2784,7 +2803,6 @@ void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject * pP
         cbMessageBox(errMsg);
     }
 
-    //-SetLSP_EditorRequest(pEd, "textDocument/documentSymbol", 0);
     SetLastLSP_Request(filename, "textDocument/documentSymbol");
     return ;
 }//end LSP_RequestSymbols()
@@ -3025,7 +3043,7 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed.\n%s"), pEd->GetFilename(), __FUNCTION__));
         return;
     }
 
@@ -3087,7 +3105,8 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
         didChangeEvent.range = range;
     }
 
-    didChangeEvent.text = edText;
+    //-didChangeEvent.text = edText;
+    didChangeEvent.text = edText.ToStdString(wxConvUTF8); //(ollydbg 2022/07/22) https://forums.codeblocks.org/index.php/topic,24357.msg170611.html#msg170611
     std::vector<TextDocumentContentChangeEvent> tdcce{didChangeEvent};
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     // **debugging**
@@ -3110,9 +3129,9 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
 
     SetLSP_EditorModified(pEd, false);
     SetLastLSP_Request(pEd->GetFilename(), "textDocument/didChange");
-    //clangd seems to allow completions to work w/o waiting for didChange //(ph 2021/02/9)v
+    //clangd seems to allow completions to work w/o waiting for didChange
     SetDidChangeTimeBusy(0); //clangd seems to allow completions to work w/o waiting
-    // Don't do this, there's no response from a didChange to clear this:
+    // Don't do this, there's no response from a didChange() to clear this:
     //- LSP_AddToServerFilesParsing(pEd->GetFilename() );
     return;
 }//end LSP_DidChange()

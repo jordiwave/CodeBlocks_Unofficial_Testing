@@ -229,6 +229,22 @@ class Parser : public ParserBase
             return GetParseManager()->GetIdleCallbackHandler();
         }
 
+        bool GetIsShuttingDown()                                    //(ph 2022/07/30)
+        {
+            ParseManager * pParseMgr = GetParseManager();
+
+            if (not pParseMgr)
+            {
+                return true;
+            }
+
+            if (pParseMgr->GetPluginIsShuttingDown())
+            {
+                return true;
+            }
+
+            return false;
+        }
         void RequestSemanticTokens(cbEditor * pEditor);
 
         //(ph 2021/10/23)

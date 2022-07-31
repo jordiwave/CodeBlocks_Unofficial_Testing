@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 68 $
- * $Id: parsemanager.cpp 68 2022-07-18 19:45:22Z pecanh $
+ * $Revision: 70 $
+ * $Id: parsemanager.cpp 70 2022-07-30 19:32:46Z pecanh $
  * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parsemanager.cpp $
  */
 
@@ -3042,11 +3042,12 @@ const wxArrayString & ParseManager::GetGCCCompilerDirs(const wxString & cpp_path
             start = true;
         }
 
-        wxFileName fname(path, wxEmptyString);
-        fname.Normalize(wxPATH_NORM_ENV_VARS | wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_CASE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
+        wxFileName fname(path, wxString());
+        //-fname.Normalize(); //Ticket #56 deprecated for wx3.2.0
+        fname.Normalize(wxPathNormalize::wxPATH_NORM_ALL);
         fname.SetVolume(fname.GetVolume().MakeUpper());
 
-        if (!fname.DirExists())
+        if (not fname.DirExists())
         {
             break;
         }

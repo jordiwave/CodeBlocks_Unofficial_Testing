@@ -662,8 +662,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
 #define EDITOR_STATUS_CARET_POSITION 1  //eg., 1234
 #define EDITOR_STATUS_READY 2           //Is parsed
 #define EDITOR_STATUS_MODIFIED 3        //Is modified
-        typedef std::tuple<bool, int, bool, bool> LSP_EditorStatusTuple; //fileOpenInServer, editorPosn, editor is ready, editor is modified
-        const LSP_EditorStatusTuple emptyEditorStatus = LSP_EditorStatusTuple(false, 0, false, false);
+#define EDITOR_STATUS_HAS_SYMBOLS 4     // document symbols responded
+        typedef std::tuple<bool, int, bool, bool, bool> LSP_EditorStatusTuple; //fileOpenInServer, editorPosn, editor is ready, editor is modified, docSymbols received
+        const LSP_EditorStatusTuple emptyEditorStatus = LSP_EditorStatusTuple(false, 0, false, false, false);
         std::map<cbEditor *, LSP_EditorStatusTuple> m_LSP_EditorStatusMap;
 
         // ----------------------------------------------------------------------------
@@ -842,6 +843,47 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
 
             return false;
         }
+        //(ph 2022/07/24)
+        // ----------------------------------------------------------------------------
+        bool GetLSP_EditorHasSymbols(cbEditor * pEditor)
+        // ----------------------------------------------------------------------------
+        {
+#if defined(cbDEBUG)
+            cbAssertNonFatal(pEditor && "null pEditor");
+#endif
+
+            if (not pEditor)
+            {
+                return false;
+            }
+
+            LSP_EditorStatusTuple edStatus = GetLSP_EditorStatus(pEditor);
+
+            if (std::get<EDITOR_STATUS_HAS_SYMBOLS>(edStatus) == true)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        // ----------------------------------------------------------------------------
+        void SetLSP_EditorHasSymbols(cbEditor * pEditor, bool trueOrFalse)
+        // ----------------------------------------------------------------------------
+        {
+#if defined(cbDEBUG)
+            cbAssertNonFatal(pEditor && "null pEditor");
+#endif
+
+            if (not pEditor)
+            {
+                return;
+            }
+
+            LSP_EditorStatusTuple edStatus = GetLSP_EditorStatus(pEditor);
+            std::get<EDITOR_STATUS_HAS_SYMBOLS>(edStatus) = trueOrFalse;
+            SetLSP_EditorStatus(pEditor, edStatus);
+        }
+
         // ------------------------------------------------------------------------
         //Client callbacks             //(ph 2021/02/9)
         // ------------------------------------------------------------------------

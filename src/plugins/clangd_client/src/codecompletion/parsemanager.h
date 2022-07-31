@@ -390,6 +390,26 @@ class ParseManager : public wxEvtHandler, private ParseManagerBase
             return pParser == m_pProxyParser;
         }
 
+        bool GetPluginIsShuttingDown()
+        {
+            if (Manager::IsAppShuttingDown() or m_PluginIsShuttingDown)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        void SetPluginIsShuttingDown()
+        {
+            m_PluginIsShuttingDown = true;
+
+            if (GetIdleCallbackHandler())
+            {
+                GetIdleCallbackHandler()->SetPluginIsShuttingDown();
+            }
+        }
+
+
     protected:
         /** When a Parser is created, we need a full parsing stage including:
          * 1, parse the priority header files firstly.
@@ -673,6 +693,7 @@ class ParseManager : public wxEvtHandler, private ParseManagerBase
         // List of ProjectFiles* added to the ProxyProject
         std::vector<ProjectFile *> ProxyProjectFiles;
 
+        bool m_PluginIsShuttingDown = false;
 };
 
 #endif // ParseManager_H
