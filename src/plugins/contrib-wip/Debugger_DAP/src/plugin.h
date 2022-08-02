@@ -240,7 +240,6 @@ class Debugger_DAP : public cbDebuggerPlugin
         long m_dapPid;
         std::vector<wxString> m_DAP_DebuggeeStartCMD;
         dap::Process * m_DAPTerminalProcess = nullptr;
-        int m_frame_id = wxNOT_FOUND;
 
         enum eDAPState
         {
@@ -299,6 +298,127 @@ class Debugger_DAP : public cbDebuggerPlugin
         void OnBreakpointEvent(DAPEvent & event);
         void OnCcontinuedEvent(DAPEvent & event);
         void OnDebugPYWaitingForServerEvent(DAPEvent & event);
+
+
+        // DAP Capabilities
+        // Configured for a default of false and updated in the DAP debugger capability response message
+
+        // The debug adapter supports the 'configurationDone' request.
+        bool supportsConfigurationDoneRequest = false;
+
+        // The debug adapter supports function breakpoints.
+        bool supportsFunctionBreakpoints = false;
+
+        // The debug adapter supports conditional breakpoints.
+        bool supportsConditionalBreakpoints = false;
+
+        // The debug adapter supports breakpoints that break execution after a specified number of hits.
+        bool supportsHitConditionalBreakpoints = false;
+
+        // The debug adapter supports a (side effect free) evaluate request for data hovers.
+        bool supportsEvaluateForHovers = false;
+
+        // The debug adapter supports stepping back via the 'stepBack' and 'reverseContinue' requests.
+        bool supportsStepBack = false;
+
+        // The debug adapter supports setting a variable to a value.
+        bool supportsSetVariable = false;
+
+        // The debug adapter supports restarting a frame.
+        bool supportsRestartFrame = false;
+
+        // The debug adapter supports the 'gotoTargets' request.
+        bool supportsGotoTargetsRequest = false;
+
+        // The debug adapter supports the 'stepInTargets' request.
+        bool supportsStepInTargetsRequest = false;
+
+        // The debug adapter supports the 'completions' request.
+        bool supportsCompletionsRequest = false;
+
+        // The debug adapter supports the 'modules' request.
+        bool supportsModulesRequest = false;
+
+        // The debug adapter supports the 'restart' request. In this case a client should not implement 'restart' by terminating and relaunching the adapter but by calling the RestartRequest.
+        bool supportsRestartRequest = false;
+
+        // The debug adapter supports 'exceptionOptions' on the setExceptionBreakpoints request.
+        bool supportsExceptionOptions = false;
+
+        // The debug adapter supports a 'format' attribute on the stackTraceRequest, variablesRequest, and evaluateRequest.
+        bool supportsValueFormattingOptions = false;
+
+        // The debug adapter supports the 'exceptionInfo' request.
+        bool supportsExceptionInfoRequest = false;
+
+        // The debug adapter supports the 'terminateDebuggee' attribute on the 'disconnect' request.
+        bool supportTerminateDebuggee = false;
+
+        // The debug adapter supports the `suspendDebuggee` attribute on the `disconnect` request.
+        bool supportSuspendDebuggee = false;
+
+        // The debug adapter supports the delayed loading of parts of the stack, which requires that both the 'startFrame' and 'levels' arguments and an std::optional 'totalFrames' result of the 'StackTrace' request are supported.
+        bool supportsDelayedStackTraceLoading = false;
+
+        // The debug adapter supports the 'loadedSources' request.
+        bool supportsLoadedSourcesRequest = false;
+
+        // The debug adapter supports logpoints by interpreting the 'logMessage' attribute of the SourceBreakpoint.
+        bool supportsLogPoints = false;
+
+        // The debug adapter supports the 'terminateThreads' request.
+        bool supportsTerminateThreadsRequest = false;
+
+        // The debug adapter supports the 'setExpression' request.
+        bool supportsSetExpression = false;
+
+        // The debug adapter supports the 'terminate' request.
+        bool supportsTerminateRequest = false;
+
+        // The debug adapter supports data breakpoints.
+        bool supportsDataBreakpoints = false;
+
+        // The debug adapter supports the 'readMemory' request.
+        bool supportsReadMemoryRequest = false;
+
+        // The debug adapter supports the `writeMemory` request.
+        bool supportsWriteMemoryRequest = false;
+
+        // The debug adapter supports the 'disassemble' request.
+        bool supportsDisassembleRequest = false;
+
+        // The debug adapter supports the 'cancel' request.
+        bool supportsCancelRequest = false;
+
+        // The debug adapter supports the 'breakpointLocations' request.
+        bool supportsBreakpointLocationsRequest = false;
+
+        // The debug adapter supports the 'clipboard' context value in the 'evaluate' request.
+        bool supportsClipboardContext = false;
+
+        // The debug adapter supports stepping granularities (argument 'granularity') for the stepping requests.
+        bool supportsSteppingGranularity = false;
+
+        // The debug adapter supports adding breakpoints based on instruction references.
+        bool supportsInstructionBreakpoints = false;
+
+        // The debug adapter supports 'filterOptions' as an argument on the 'setExceptionBreakpoints' request.
+        bool supportsExceptionFilterOptions = false;
+
+        // The debug adapter supports the `singleThread` property on the execution requests (`continue`, `next`, `stepIn`, `stepOut`, `reverseContinue`, `stepBack`).
+        bool supportsSingleThreadExecutionRequests = false;
+
+        // Available exception filter options for the 'setExceptionBreakpoints' request.
+        std::vector<dap::ExceptionBreakpointsFilter> vExceptionBreakpointFilters;
+
+        // The set of additional module information exposed by the debug adapter.
+        std::vector<dap::ColumnDescriptor> vAdditionalModuleColumns;
+
+        // Checksum algorithms supported by the debug adapter.
+        std::vector<dap::ChecksumAlgorithm> vSupportedChecksumAlgorithms;
+
+        // The set of characters that should trigger completion in a REPL. If not specified, the UI should assume the '.' character.
+        std::vector<wxString> vCompletionTriggerCharacters;
 };
 
 #endif // _DEBUGGER_DAP_PLUGIN_H_

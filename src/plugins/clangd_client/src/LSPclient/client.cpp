@@ -3106,13 +3106,13 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
     }
 
     //-didChangeEvent.text = edText;
-#if 1
-    const wxScopedCharBuffer edTestBuffer = edText.ToUTF8();
-    didChangeEvent.text = std::string(edTestBuffer.data()); //(ollydbg 2022/07/22) https://forums.codeblocks.org/index.php/topic,24357.msg170611.html#msg170611
-#else
+#if wxCHECK_VERSION(3,1,5) //3.1.5 or higher
     didChangeEvent.text = edText.ToStdString(wxConvUTF8); //(ollydbg 2022/07/22) https://forums.codeblocks.org/index.php/topic,24357.msg170611.html#msg170611
+#else
+    const wxScopedCharBuffer edTestBuffer = edText.ToUTF8(); //(AndrewCo 2022/07/31) https://sourceforge.net/p/cb-clangd-client/discussion/general/thread/dd87cbec03/
+    didChangeEvent.text = std::string(edTestBuffer.data());
 #endif
-    std::vector<TextDocumentContentChangeEvent> tdcce{didChangeEvent};
+    std::vector<TextDocumentContentChangeEvent> tdcce {didChangeEvent};
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     // **debugging**
     //    writeClientLog(wxString::Format("DidChange: lineStrt[%d] colStrt[%d] lineEnd[%d] colEnd[%d] textLth[%d] text[%s]\n",

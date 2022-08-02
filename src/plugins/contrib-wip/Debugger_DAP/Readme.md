@@ -19,14 +19,13 @@ If you fix any outstanding issue please fork this repo and create a pull request
 
 ### High Priority
 
-1. Resolve intermittent debugger and compiler plugin loading issues
+1. Resolve intermittent compiler plugin loading issues
 2. Use in anger to fix C::B issue(s) on MacOS. In other words use it in the real world.
-3. Add missing features in the table below to make debugging better in the real world environment.
 
 ### Medium Priority
 
-1. Add missing features in the table below.
-3. When time permits re-test all items!!!! 
+1. Add missing features in the table below to make debugging better in the real world environment.
+2. When time permits re-test all items!!!! 
 
 ### Low Priority / Future Work
 
@@ -38,11 +37,11 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |                   Item                                      |   Date    |   Result   |
 |-------------------------------------------------------------|-----------|------------|
 | **Stepping**                                                |           |            |
-|   * Start/Continue       (F8)                               |  26-Jun   |   Pass     |
+|   * Start/Continue       (F8)                               |   2-Aug   |   Pass     |
 |   * Break debugger                                          |           |            |
-|   * Stop debugger        (Shift-F8)                         |  26-Jun   |   Pass     |
+|   * Stop debugger        (Shift-F8)                         |   2-Aug   |   Pass     |
 |   * Run to cursor        (F4)                               |           |            |
-|   * Next line            (F7)                               |  26-Jun   |   Pass     |
+|   * Next line            (F7)                               |   2-Aug   |   Pass     |
 |   * Step Into            (Shift-F7)                         |           |            |
 |   * Step out             (Ctrl-F7)                          |           |            |
 |      * Display the return value of a function               |           |            |
@@ -56,9 +55,9 @@ If you fix any outstanding issue please fork this repo and create a pull request
 | **Watches**                                                 |           |            |
 |   * watches dialog shows function args and local vars       |           |            |
 |   * Add watch before starting the debugger                  |           |            |
-|   * Add watch after starting the debugger                   |           |            |
-|   * Simple data types                                       |           |            |
-|   * Simple structure                                        |           |            |
+|   * Add watch after starting the debugger                   |   2-Aug   |   Pass     |
+|   * Simple data types                                       |   2-Aug   |   Pass     |
+|   * Simple structure                                        |   2-Aug   |   Pass     |
 |   * Array of simple structures                              |           |            |
 |   * Complex structures                                      |           |            |
 |   * Can expand cbProject complex structures                 |           |            |
@@ -70,11 +69,11 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |                                                             |           |            |
 | **Breakpoints**                                             |           |            |
 |   * Add line break point before starting the debugger       |  20-Jul   |    Pass    |
-|   * Add line break point after the starting the debugger    |  20-Jul   |    Pass    |
+|   * Add line break point after the starting the debugger    |   2-Aug   |   Pass     |
 |   * Debug menu option to Toggle line break point (F5)       |           |            |
 |   * Debug menu option to Remove all breakpoints             |           |            |
 |   * Disable/Enable line break point via pop up menu         |           |            |
-|   * Remove line break point                                 |  20-Jul   |    Pass    |
+|   * Remove line break point                                 |   2-Aug   |   Pass     |
 |   * Edit line break point                                   |           |            |
 |     * ignore count before break                             |           |            |
 |     * break when expression is true                         |           |            |
@@ -88,7 +87,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Linux Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
 |   * MacOS Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
 |   * Windows Clang64 catches exceptions and shows call stack |   6-Jul   |   Pass     |
-|   * Windows MinGW64 catches exceptions and shows call stack |   8-Jul   | Fail-LibGCC|
+|   * Windows MinGW64 catches exceptions and shows call stack |   2-Aug   |   Pass     |
 |                                                             |           |            |
 | **Data Breakpoints**                                        |           |            |
 |   * Display data breakpoints in break point dialog          |           |            |
@@ -111,7 +110,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * CPU register dialog cleared on exit                     |           |            |
 |                                                             |           |            |
 | **Debug show Call Stack**                                   |           |            |
-|   * Show call stack dialog                                  |           |            |
+|   * Show call stack dialog                                  |   2-Aug   |   Pass     |
 |   * Close call stack dialog                                 |           |            |
 |   * Double click on entry should open and go to the line    |           |            |
 |   * Call stack dialog cleared on last project close         |           |            |
@@ -158,18 +157,18 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Data used by Plugin                                     |           |            |
 |                                                             |           |            |
 | **DAP Debugger configuration dialog**                       |           |            |
-|   * Show debugger options dialog                            |  19-Jul   |   Pass     |
-|   * Close debugger options dialog                           |  19-Jul   |   Pass     |
-|   * Auto detected lldb-vscode exe                           |  19-Jul   |   Pass     |
-|   * Default port # configured                               |  19-Jul   |   Pass     |
-|   * Executable path save/loaded/used                        |           |            |
-|   * Arguments save/loaded/used                              |           |            |
-|   * Arguments used in starting debugger                     |           |            |
-|   * Debugger init commands save/loaded/used                 |           |            |
+|   * Show debugger options dialog                            |   2-Aug   |   Pass     |
+|   * Close debugger options dialog                           |   2-Aug   |   Pass     |
+|   * Auto detected lldb-vscode exe                           |   2-Aug   |   Pass     |
+|   * Default port # configured                               |   2-Aug   |   Pass     |
+|   * Executable path save/loaded/used                        |   2-Aug   |   Pass     |
+|   * Arguments save/loaded/used                              |   2-Aug   |   Pass     |
+|   * Arguments used in starting debugger                     |   2-Aug   |   Pass     |
 |   * Disable startup scripts checkbox save/loaded/used       |           |            |
 |   * Watch function arguments checkbox save/loaded/used      |           |            |
 |   * Watch local variables checkbox save/loaded/used         |           |            |
-|   * Catch C++ exceptions checkbox save/loaded/used          |           |            |
+|   * Catch C++ exceptions checkbox save/loaded/used          |   2-Aug   |   Pass     |
+|   * Catch C++ throw checkbox save/loaded/used               |   2-Aug   |   Pass     |
 |   * Evaluate expression under cursor cbox save/loaded/used  |           |            |
 |   * Add other projects paths... checkbox save/loaded/used   |           |            |
 |   * Do not run the debugee checkbox save/loaded/used        |           |            |
@@ -182,10 +181,10 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Ensure TCP debugging works                              |           |            |
 |                                                             |           |            |
 | **Operaiting System**                                       |           |            |
-|   * Works on Windows                                        |  26-Jun   |   Pass     |
+|   * Works on Windows                                        |   2-Aug   |   Pass     |
 |   * Works on Linux                                          |   6-Jul   |   Pass     |
 |   * Works on MacOS                                          |   8-Jul   |   Pass     |
-|   * Builds on Windows via workspace                         |  26-Jun   |   Pass     |
+|   * Builds on Windows via workspace                         |   2-Aug   |   Pass     |
 |   * Builds on Windows via MSYS2 makefile                    |           |            |
 |   * Builds on Linux via workspace                           |   6-Jul   |   Pass     |
 |   * Builds on Linux via makefile                            |   6-Jul   |   Pass     |
@@ -196,7 +195,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Create and test DAP cbplugin for MacOS                  |   8-Jul   |   Pass     |
 |                                                             |           |            |
 
-The table above was updated on 20-Jul-2022.
+The table above was updated on 2-Aug-2022.
 
 NOTES:
  "PASS"     - initial testing showed the item worked as expected, but changes since may have broken it... Please raise an issue if you find it broken.

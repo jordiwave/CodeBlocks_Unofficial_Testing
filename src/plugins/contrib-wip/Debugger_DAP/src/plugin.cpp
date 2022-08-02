@@ -40,6 +40,7 @@
 #include "dlg_WatchEdit.h"
 #include "debugger_logger.h"
 #include "plugin.h"
+#include "dap.hpp"
 
 //XML file root tag for data
 static const char * XML_CFG_ROOT_TAG = "Debugger_layout_file";
@@ -763,7 +764,6 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     m_dapClient.SetTransport(transport);
     // This part is done in mode **sync**
     DAPDebuggerState = eDAPState::Running;
-    m_frame_id = wxNOT_FOUND;
     // Create the DAP debuggee command line including any parameters
     Compiler * compiler;
     ProjectBuildTarget * target;
@@ -2134,7 +2134,6 @@ void Debugger_DAP::DAPDebuggerResetData()
     DAPDebuggerState = eDAPState::NotConnected;
     m_timer_poll_debugger.Stop();
     m_map_filebreakpoints.clear();
-    m_frame_id = wxNOT_FOUND;
     m_dapClient.Reset();
     m_map_filebreakpoints.clear();
     m_current_frame.Reset();
@@ -2901,14 +2900,44 @@ void Debugger_DAP::OnInitializedEvent(DAPEvent & event)
         m_dapClient.SetFunctionBreakpoints({ { "main" } });
     }
 
+    // Check for exception handling
+    bool bExceptionCatch =  GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::ExceptionCatch);
+    bool bExceptionThrow =  GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::ExceptionThrow);
+
+    if (bExceptionCatch  || bExceptionThrow)
+    {
+        std::vector<wxString> vExceptionFilters;
+
+        // Available exception filter options for the 'setExceptionBreakpoints' request.
+        for (std::vector<dap::ExceptionBreakpointsFilter>::iterator it = vExceptionBreakpointFilters.begin(); it != vExceptionBreakpointFilters.end(); ++it)
+        {
+            if (
+                ((*it).filter.IsSameAs("cpp_catch", false) && bExceptionCatch) ||
+                ((*it).filter.IsSameAs("cpp_throw", false) && bExceptionThrow)
+            )
+            {
+                vExceptionFilters.push_back((*it).filter);
+            }
+        }
+
+        if (vExceptionFilters.size() > 0)
+        {
+            m_dapClient.SetExceptionBreakpoints(vExceptionFilters);
+        }
+    }
+
     // Let DAP server know that we have completed the configuration required
     m_dapClient.ConfigurationDone();
 }
 
-#define SHOW_RESPONSE_DATA(msg, data)                       \
-    m_pLogger->LogDAPMsgType("", -1,            \
-                             wxString::Format(msg, data),                \
-                             dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+#define SHOW_RESPONSE_DATA(msg, OptType, variable)                          \
+    if (OptType.has_value())                                    \
+    {                                                           \
+        m_pLogger->LogDAPMsgType("", -1,                        \
+                                 wxString::Format(msg, OptType.value() ?"True":"False"), \
+                                 dbg_DAP::LogPaneLogger::LineType::UserDisplay);         \
+        variable =  OptType.value();                            \
+    }
 
 /// DAP server sent `initialize` reponse to our `initialize` message
 void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
@@ -2921,29 +2950,78 @@ void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
         if (response_data->success)
         {
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Got OnInitialize Response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-            //            SHOW_RESPONSE_DATA(_("seq %d"), response_data->seq);
-            //            SHOW_RESPONSE_DATA(_("request_seq %d"), response_data->request_seq);
-            //        SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"),               response_data->body->supportTerminateDebuggee?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsCompletionsRequest: %s"),             response_data->body->supportsCompletionsRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsConditionalBreakpoints: %s"),         response_data->body->supportsConditionalBreakpoints?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsConfigurationDoneRequest: %s"),       response_data->body->supportsConfigurationDoneRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsDelayedStackTraceLoading: %s"),       response_data->body->supportsDelayedStackTraceLoading?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsEvaluateForHovers: %s"),              response_data->body->supportsEvaluateForHovers?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsExceptionInfoRequest: %s"),           response_data->body->supportsExceptionInfoRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsExceptionOptions: %s"),               response_data->body->supportsExceptionOptions?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsFunctionBreakpoints: %s"),            response_data->body->supportsFunctionBreakpoints?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsGotoTargetsRequest: %s"),             response_data->body->supportsGotoTargetsRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsHitConditionalBreakpoints: %s"),      response_data->body->supportsHitConditionalBreakpoints?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsLoadedSourcesRequest: %s"),           response_data->body->supportsLoadedSourcesRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsModulesRequest: %s"),                 response_data->body->supportsModulesRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsProgressReporting: %s"),              response_data->body->supportsProgressReporting?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsRestartFrame: %s"),                   response_data->body->supportsRestartFrame?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsRestartRequest: %s"),                 response_data->body->supportsRestartRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsRunInTerminalRequest: %s"),           response_data->body->supportsRunInTerminalRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsSetVariable: %s"),                    response_data->body->supportsSetVariable?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsStepBack: %s"),                       response_data->body->supportsStepBack?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsStepInTargetsRequest: %s"),           response_data->body->supportsStepInTargetsRequest?"True":"False: %s"),
-            //        SHOW_RESPONSE_DATA(_("supportsValueFormattingOptions: %s"),         response_data->body->supportsValueFormattingOptions?"True":"False: %s"),
+            SHOW_RESPONSE_DATA(_("supportsBreakpointLocationsRequest: %s"), response_data->capabilities.supportsBreakpointLocationsRequest, supportsBreakpointLocationsRequest);
+            SHOW_RESPONSE_DATA(_("supportsCancelRequest: %s"), response_data->capabilities.supportsCancelRequest, supportsCancelRequest);
+            SHOW_RESPONSE_DATA(_("supportsClipboardContext: %s"), response_data->capabilities.supportsClipboardContext, supportsClipboardContext);
+            SHOW_RESPONSE_DATA(_("supportsCompletionsRequest: %s"), response_data->capabilities.supportsCompletionsRequest, supportsCompletionsRequest);
+            SHOW_RESPONSE_DATA(_("supportsConditionalBreakpoints: %s"), response_data->capabilities.supportsConditionalBreakpoints, supportsConditionalBreakpoints);
+            SHOW_RESPONSE_DATA(_("supportsConfigurationDoneRequest: %s"), response_data->capabilities.supportsConfigurationDoneRequest, supportsConfigurationDoneRequest);
+            SHOW_RESPONSE_DATA(_("supportsDataBreakpoints: %s"), response_data->capabilities.supportsDataBreakpoints, supportsDataBreakpoints);
+            SHOW_RESPONSE_DATA(_("supportsDelayedStackTraceLoading: %s"), response_data->capabilities.supportsDelayedStackTraceLoading, supportsDelayedStackTraceLoading);
+            SHOW_RESPONSE_DATA(_("supportsDisassembleRequest: %s"), response_data->capabilities.supportsDisassembleRequest, supportsDisassembleRequest);
+            SHOW_RESPONSE_DATA(_("supportsEvaluateForHovers: %s"), response_data->capabilities.supportsEvaluateForHovers, supportsEvaluateForHovers);
+            SHOW_RESPONSE_DATA(_("supportsExceptionFilterOptions: %s"), response_data->capabilities.supportsExceptionFilterOptions, supportsExceptionFilterOptions);
+            SHOW_RESPONSE_DATA(_("supportsExceptionInfoRequest: %s"), response_data->capabilities.supportsExceptionInfoRequest, supportsExceptionInfoRequest);
+            SHOW_RESPONSE_DATA(_("supportsExceptionOptions: %s"), response_data->capabilities.supportsExceptionOptions, supportsExceptionOptions);
+            SHOW_RESPONSE_DATA(_("supportsFunctionBreakpoints: %s"), response_data->capabilities.supportsFunctionBreakpoints, supportsFunctionBreakpoints);
+            SHOW_RESPONSE_DATA(_("supportsGotoTargetsRequest: %s"), response_data->capabilities.supportsGotoTargetsRequest, supportsGotoTargetsRequest);
+            SHOW_RESPONSE_DATA(_("supportsHitConditionalBreakpoints: %s"), response_data->capabilities.supportsHitConditionalBreakpoints, supportsHitConditionalBreakpoints);
+            SHOW_RESPONSE_DATA(_("supportsInstructionBreakpoints: %s"), response_data->capabilities.supportsInstructionBreakpoints, supportsInstructionBreakpoints);
+            SHOW_RESPONSE_DATA(_("supportsLoadedSourcesRequest: %s"), response_data->capabilities.supportsLoadedSourcesRequest, supportsLoadedSourcesRequest);
+            SHOW_RESPONSE_DATA(_("supportsLogPoints: %s"), response_data->capabilities.supportsLogPoints, supportsLogPoints);
+            SHOW_RESPONSE_DATA(_("supportsModulesRequest: %s"), response_data->capabilities.supportsModulesRequest, supportsModulesRequest);
+            SHOW_RESPONSE_DATA(_("supportsReadMemoryRequest: %s"), response_data->capabilities.supportsReadMemoryRequest, supportsReadMemoryRequest);
+            SHOW_RESPONSE_DATA(_("supportsRestartFrame: %s"), response_data->capabilities.supportsRestartFrame, supportsRestartFrame);
+            SHOW_RESPONSE_DATA(_("supportsRestartRequest: %s"), response_data->capabilities.supportsRestartRequest, supportsRestartRequest);
+            SHOW_RESPONSE_DATA(_("supportsSetExpression: %s"), response_data->capabilities.supportsSetExpression, supportsSetExpression);
+            SHOW_RESPONSE_DATA(_("supportsSetVariable: %s"), response_data->capabilities.supportsSetVariable, supportsSetVariable);
+            SHOW_RESPONSE_DATA(_("supportsSingleThreadExecutionRequests: %s"), response_data->capabilities.supportsSingleThreadExecutionRequests, supportsSingleThreadExecutionRequests);
+            SHOW_RESPONSE_DATA(_("supportsStepBack: %s"), response_data->capabilities.supportsStepBack, supportsStepBack);
+            SHOW_RESPONSE_DATA(_("supportsStepInTargetsRequest: %s"), response_data->capabilities.supportsStepInTargetsRequest, supportsStepInTargetsRequest);
+            SHOW_RESPONSE_DATA(_("supportsSteppingGranularity: %s"), response_data->capabilities.supportsSteppingGranularity, supportsSteppingGranularity);
+            SHOW_RESPONSE_DATA(_("supportsTerminateRequest: %s"), response_data->capabilities.supportsTerminateRequest, supportsTerminateRequest);
+            SHOW_RESPONSE_DATA(_("supportsTerminateThreadsRequest: %s"), response_data->capabilities.supportsTerminateThreadsRequest, supportsTerminateThreadsRequest);
+            SHOW_RESPONSE_DATA(_("supportSuspendDebuggee: %s"), response_data->capabilities.supportSuspendDebuggee, supportSuspendDebuggee);
+            SHOW_RESPONSE_DATA(_("supportsValueFormattingOptions: %s"), response_data->capabilities.supportsValueFormattingOptions, supportsValueFormattingOptions);
+            SHOW_RESPONSE_DATA(_("supportsWriteMemoryRequest: %s"), response_data->capabilities.supportsWriteMemoryRequest, supportsWriteMemoryRequest);
+            SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"), response_data->capabilities.supportTerminateDebuggee, supportTerminateDebuggee);
+
+            if (response_data->capabilities.exceptionBreakpointFilters.has_value())
+            {
+                // Available exception filter options for the 'setExceptionBreakpoints' request.
+                vExceptionBreakpointFilters = response_data->capabilities.exceptionBreakpointFilters.value();
+
+                for (std::vector<dap::ExceptionBreakpointsFilter>::iterator it = vExceptionBreakpointFilters.begin(); it != vExceptionBreakpointFilters.end(); ++it)
+                {
+                    if ((*it).default_value.has_value())
+                    {
+                        m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("exceptionBreakpointFilters - filter:\"%s\"  label:\"%s\" value:%s"), (*it).filter, (*it).label, (*it).default_value.value() ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+                    }
+                    else
+                    {
+                        m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("exceptionBreakpointFilters - filter:\"%s\"  label:\"%s\" value:missing"), (*it).filter, (*it).label), dbg_DAP::LogPaneLogger::LineType::Error);
+                    }
+                }
+            }
+
+            if (response_data->capabilities.completionTriggerCharacters.has_value())
+            {
+                // The set of characters that should trigger completion in a REPL. If not specified, the UI should assume the '.' character.
+                vCompletionTriggerCharacters = response_data->capabilities.completionTriggerCharacters.value();
+
+                for (std::vector<wxString>::iterator it = vCompletionTriggerCharacters.begin(); it != vCompletionTriggerCharacters.end(); ++it)
+                {
+                    m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("completionTriggerCharacters - %s"), *it), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+                }
+            }
+
+            if (response_data->capabilities.additionalModuleColumns.has_value())
+            {
+                // The set of additional module information exposed by the debug adapter.
+                vAdditionalModuleColumns = response_data->capabilities.additionalModuleColumns.value();
+                m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("additionalModuleColumns - future display data ")), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+            }
+
             m_dapClient.Launch(std::move(m_DAP_DebuggeeStartCMD));
         }
         else
@@ -3094,25 +3172,9 @@ void Debugger_DAP::OnStackTrace(DAPEvent & event)
     if (stack_trace_data)
     {
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received stack trace event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-
-        if (!stack_trace_data->stackFrames.empty())
-        {
-            m_frame_id = stack_trace_data->stackFrames[0].id;
-            wxString fileName = stack_trace_data->stackFrames[0].source.path;
-
-            if (!fileName.IsEmpty())
-            {
-                int lineNumber = stack_trace_data->stackFrames[0].line;
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("SyncEditor: %s %d"), fileName, lineNumber), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-                SyncEditor(fileName, lineNumber, true);
-            }
-
-            // request the scopes for the first stack
-            m_dapClient.GetScopes(stack_trace_data->stackFrames[0].id);
-        }
-
-        m_backtrace.clear();
         int stackID = 0;
+        bool bFileFound = false;
+        m_backtrace.clear();
 
         for (const auto & stack : stack_trace_data->stackFrames)
         {
@@ -3127,6 +3189,23 @@ void Debugger_DAP::OnStackTrace(DAPEvent & event)
                                                      ),
                                      dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 #endif
+            wxString sFileName = stack.source.path;
+
+            if (!sFileName.IsEmpty() && !bFileFound)
+            {
+                wxFileName fnFileName(sFileName);
+
+                if (fnFileName.Exists())
+                {
+                    bFileFound = true;
+                    int lineNumber = stack.line;
+                    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("SyncEditor: %s %d"), sFileName, lineNumber), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+                    SyncEditor(sFileName, lineNumber, true);
+                    // request the scopes for the first stack
+                    m_dapClient.GetScopes(stack.id);
+                }
+            }
+
             cbStackFrame s;
             s.SetNumber(stackID++);
             s.SetFile(stack.source.path, wxString::Format("%d", stack.line));

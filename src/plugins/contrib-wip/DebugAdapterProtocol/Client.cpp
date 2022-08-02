@@ -388,43 +388,48 @@ void dap::Client::OnMessage(Json json)
                                     SendDAPEvent(wxEVT_DAP_SET_FUNCTION_BREAKPOINT_RESPONSE, new dap::SetFunctionBreakpointsResponse, json);
                                 }
                                 else
-                                    if (as_response->command == "setBreakpoints")
+                                    if (as_response->command == "setExceptionBreakpoints")
                                     {
-                                        auto ptr = new dap::SetBreakpointsResponse;
-
-                                        if (!m_source_breakpoints_queue.empty())
-                                        {
-                                            ptr->originSource = m_source_breakpoints_queue.front();
-                                            m_source_breakpoints_queue.erase(m_source_breakpoints_queue.begin());
-                                        }
-
-                                        SendDAPEvent(wxEVT_DAP_SET_SOURCE_BREAKPOINT_RESPONSE, ptr, json);
+                                        SendDAPEvent(wxEVT_DAP_SET_EXCEPTION_BREAKPOINT_RESPONSE, new dap::SetExceptionBreakpointsResponse, json);
                                     }
                                     else
-                                        if (as_response->command == "configurationDone")
+                                        if (as_response->command == "setBreakpoints")
                                         {
-                                            SendDAPEvent(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE, new dap::ConfigurationDoneResponse, json);
+                                            auto ptr = new dap::SetBreakpointsResponse;
+
+                                            if (!m_source_breakpoints_queue.empty())
+                                            {
+                                                ptr->originSource = m_source_breakpoints_queue.front();
+                                                m_source_breakpoints_queue.erase(m_source_breakpoints_queue.begin());
+                                            }
+
+                                            SendDAPEvent(wxEVT_DAP_SET_SOURCE_BREAKPOINT_RESPONSE, ptr, json);
                                         }
                                         else
-                                            if (as_response->command == "launch")
+                                            if (as_response->command == "configurationDone")
                                             {
-                                                SendDAPEvent(wxEVT_DAP_LAUNCH_RESPONSE, new dap::LaunchResponse, json);
+                                                SendDAPEvent(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE, new dap::ConfigurationDoneResponse, json);
                                             }
                                             else
-                                                if (as_response->command == "threads")
+                                                if (as_response->command == "launch")
                                                 {
-                                                    SendDAPEvent(wxEVT_DAP_THREADS_RESPONSE, new dap::ThreadsResponse, json);
+                                                    SendDAPEvent(wxEVT_DAP_LAUNCH_RESPONSE, new dap::LaunchResponse, json);
                                                 }
                                                 else
-                                                    if (as_response->command == "source")
+                                                    if (as_response->command == "threads")
                                                     {
-                                                        HandleSourceResponse(json);
+                                                        SendDAPEvent(wxEVT_DAP_THREADS_RESPONSE, new dap::ThreadsResponse, json);
                                                     }
                                                     else
-                                                        if (as_response->command == "evaluate")
+                                                        if (as_response->command == "source")
                                                         {
-                                                            HandleEvaluateResponse(json);
+                                                            HandleSourceResponse(json);
                                                         }
+                                                        else
+                                                            if (as_response->command == "evaluate")
+                                                            {
+                                                                HandleEvaluateResponse(json);
+                                                            }
         }
         else
             if (as_request)
@@ -618,6 +623,14 @@ void dap::Client::Continue(int threadId, bool all_threads)
     ContinueRequest req = MakeRequest<ContinueRequest>();
     req.arguments.threadId = threadId == wxNOT_FOUND ? GetActiveThreadId() : threadId;
     req.arguments.singleThread = !all_threads || (req.arguments.threadId == wxNOT_FOUND);
+    SendRequest(req);
+}
+
+void dap::Client::SetExceptionBreakpoints(const std::vector<wxString> & exceptionFilters)
+{
+    // place breakpoint based on function name
+    SetExceptionBreakpointsRequest req = MakeRequest<SetExceptionBreakpointsRequest>();
+    req.arguments.filters = exceptionFilters;
     SendRequest(req);
 }
 

@@ -213,7 +213,14 @@ void LogPaneLogger::LogDAPMsgType(wxString const & functionName, int const iLine
         m_dbgDAP->Log(msgPrefix, msgLogLevel);
     }
 
-    m_dbgDAP->Log(wxString::Format("%c%-8s%c <%42s(L%6d)> %s", msgDeliminators[0], msgType, msgDeliminators[1], classAndFunctionName, iLineNumber, logMsg), msgLogLevel);
+    if (iLineNumber == -1)
+    {
+        m_dbgDAP->Log(wxString::Format("                                                               %s", logMsg), msgLogLevel);
+    }
+    else
+    {
+        m_dbgDAP->Log(wxString::Format("%c%-8s%c <%42s(L%6d)> %s", msgDeliminators[0], msgType, msgDeliminators[1], classAndFunctionName, iLineNumber, logMsg), msgLogLevel);
+    }
 
     if (!msgAppend.empty())
     {

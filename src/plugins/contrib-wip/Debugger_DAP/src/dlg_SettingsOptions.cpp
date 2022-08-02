@@ -110,7 +110,8 @@ wxPanel * DebuggerConfiguration::MakePanel(wxWindow * parent)
     XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->ChangeValue(GetInitialCommands());
     XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->SetMinSize(wxSize(-1, 75));;
     XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->SetValue(GetFlag(WatchFuncLocalsArgs));
-    XRCCTRL(*panel, "chkCatchExceptions",       wxCheckBox)->SetValue(GetFlag(CatchExceptions));
+    XRCCTRL(*panel, "chkExceptionCatch",        wxCheckBox)->SetValue(GetFlag(ExceptionCatch));
+    XRCCTRL(*panel, "chkExceptionThrow",        wxCheckBox)->SetValue(GetFlag(ExceptionThrow));
     XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->SetValue(GetFlag(EvalExpression));
     XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->SetValue(GetFlag(AddOtherProjectDirs));
     XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->SetValue(GetFlag(DoNotRun));
@@ -128,7 +129,8 @@ bool DebuggerConfiguration::SaveChanges(wxPanel * panel)
     m_config.Write("python_home_env",       XRCCTRL(*panel, "txtPythonHome",            wxTextCtrl)->GetValue());
     m_config.Write("init_commands",         XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->GetValue());
     m_config.Write("watch_locals_and_args", XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->GetValue());
-    m_config.Write("catch_exceptions",      XRCCTRL(*panel, "chkCatchExceptions",       wxCheckBox)->GetValue());
+    m_config.Write("exception_catch",       XRCCTRL(*panel, "chkExceptionCatch",        wxCheckBox)->GetValue());
+    m_config.Write("exception_throw",       XRCCTRL(*panel, "chkExceptionThrow",        wxCheckBox)->GetValue());
     m_config.Write("eval_tooltip",          XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->GetValue());
     m_config.Write("add_other_search_dirs", XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->GetValue());
     m_config.Write("do_not_run_debuggee",   XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->GetValue());
@@ -147,8 +149,11 @@ bool DebuggerConfiguration::GetFlag(Flags flag)
         case WatchFuncLocalsArgs:
             return m_config.ReadBool("watch_locals_and_args", true);
 
-        case CatchExceptions:
-            return m_config.ReadBool("catch_exceptions", true);
+        case ExceptionCatch:
+            return m_config.ReadBool("exception_catch", true);
+
+        case ExceptionThrow:
+            return m_config.ReadBool("exception_throw", true);
 
         case EvalExpression:
             return m_config.ReadBool("eval_tooltip", false);
@@ -180,8 +185,12 @@ void DebuggerConfiguration::SetFlag(Flags flag, bool value)
             m_config.Write("watch_locals_and_args", value);
             break;
 
-        case CatchExceptions:
-            m_config.Write("catch_exceptions", value);
+        case ExceptionCatch:
+            m_config.Write("exception_catch", value);
+            break;
+
+        case ExceptionThrow:
+            m_config.Write("exception_throw", value);
             break;
 
         case EvalExpression:

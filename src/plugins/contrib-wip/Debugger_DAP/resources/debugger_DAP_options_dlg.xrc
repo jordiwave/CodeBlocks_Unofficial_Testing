@@ -106,9 +106,16 @@
 						<flag>wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
-						<object class="wxCheckBox" name="chkCatchExceptions">
-							<label>Catch C++ exceptions</label>
-							<enabled>0</enabled>
+						<object class="wxCheckBox" name="chkExceptionCatch">
+							<label>Enable exception C++ catch</label>
+							<checked>1</checked>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkExceptionThrow">
+							<label>Enable exception C++ throw</label>
+							<checked>1</checked>
 						</object>
 						<flag>wxALL|wxEXPAND</flag>
 					</object>
@@ -152,6 +159,7 @@
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkRunDAPServer">
 							<label>Run DAP server</label>
+							<checked>1</checked>
 						</object>
 						<flag>wxALL|wxEXPAND</flag>
 					</object>

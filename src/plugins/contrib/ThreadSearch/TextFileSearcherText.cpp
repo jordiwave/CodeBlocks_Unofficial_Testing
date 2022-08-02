@@ -10,6 +10,7 @@
 
 #include "TextFileSearcherText.h"
 
+#include <wx/wxcrt.h>
 
 TextFileSearcherText::TextFileSearcherText(const wxString & searchText, bool matchCase, bool matchWordBegin,
                                            bool matchWord)
@@ -56,9 +57,9 @@ bool TextFileSearcherText::MatchLine(std::vector<int> * outMatchedPositions,
         if ((m_MatchWordBegin || m_MatchWord) && pos > 0)
         {
             // Try to see if this is the start of the word.
-            const char prevChar = line.GetChar(pos - 1);
+            const wxUniChar prevChar = line.GetChar(pos - 1);
 
-            if (isalnum(prevChar) || prevChar == '_')
+            if (wxIsalnum(prevChar) || prevChar == '_')
             {
                 start++;
                 continue;
@@ -68,9 +69,9 @@ bool TextFileSearcherText::MatchLine(std::vector<int> * outMatchedPositions,
         if (m_MatchWord && (pos + m_SearchText.length() < line.length()))
         {
             // Try to see if this is the end of the word.
-            const char nextChar = line.GetChar(pos + m_SearchText.length());
+            const wxUniChar nextChar = line.GetChar(pos + m_SearchText.length());
 
-            if (isalnum(nextChar) || nextChar == '_')
+            if (wxIsalnum(nextChar) || nextChar == '_')
             {
                 start++;
                 continue;

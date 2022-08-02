@@ -25,7 +25,8 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
         enum Flags
         {
             WatchFuncLocalsArgs,
-            CatchExceptions,
+            ExceptionCatch,
+            ExceptionThrow,
             EvalExpression,
             AddOtherProjectDirs,
             DoNotRun,
@@ -41,7 +42,6 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
         wxString GetDAPPythonHomeEnvSetting();
         wxString GetDisassemblyFlavorCommand();
         wxString GetInitialCommands();
-
 };
 
 } // namespace dbg_DAP

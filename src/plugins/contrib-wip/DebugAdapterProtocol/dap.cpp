@@ -18,12 +18,13 @@
 #define GET_PROP(prop, Type) prop = json[#prop].Get##Type()
 #define ADD_BODY() Json body = json.AddObject("body")
 #define ADD_BODY_PROP(prop) body.Add(#prop, prop)
-
 #define ADD_ARRAY(Parent, Name) Json arr = Parent.AddArray(Name);
-
 #define READ_BODY() Json body = json["body"]
-
 #define GET_BODY_PROP(prop, Type) prop = body[#prop].Get##Type()
+#define CAPABILITIES_BODY_PROCESS(Type, sType)  \
+    if(body[sType].IsOK()) {                    \
+        Type = body[sType].GetBool(false);      \
+    }
 
 namespace dap
 {
@@ -36,6 +37,7 @@ void Initialize()
     REGISTER_CLASS(LaunchRequest);
     REGISTER_CLASS(DisconnectRequest);
     REGISTER_CLASS(SetBreakpointsRequest);
+    REGISTER_CLASS(SetExceptionBreakpointsRequest);
     REGISTER_CLASS(SetFunctionBreakpointsRequest);
     REGISTER_CLASS(ContinueRequest);
     REGISTER_CLASS(NextRequest);
@@ -67,6 +69,7 @@ void Initialize()
     REGISTER_CLASS(DisconnectResponse);
     REGISTER_CLASS(BreakpointLocationsResponse);
     REGISTER_CLASS(SetBreakpointsResponse);
+    REGISTER_CLASS(SetExceptionBreakpointsResponse);
     REGISTER_CLASS(SetFunctionBreakpointsResponse);
     REGISTER_CLASS(ContinueResponse);
     REGISTER_CLASS(NextResponse);
@@ -591,6 +594,7 @@ void InitializeRequest::From(const Json & json)
     Request::From(json);
     arguments.From(json["arguments"]);
 }
+
 // ----------------------------------------
 // ----------------------------------------
 // ----------------------------------------
@@ -604,6 +608,102 @@ Json InitializeResponse::To() const
 void InitializeResponse::From(const Json & json)
 {
     Response::From(json);
+
+    if (json["body"].IsOK())
+    {
+        Json body = json["body"];
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsBreakpointLocationsRequest, "supportsBreakpointLocationsRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsCancelRequest, "supportsCancelRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsClipboardContext, "supportsClipboardContext")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsCompletionsRequest, "supportsCompletionsRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsConditionalBreakpoints, "supportsConditionalBreakpoints")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsConfigurationDoneRequest, "supportsConfigurationDoneRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsDataBreakpoints, "supportsDataBreakpoints")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsDelayedStackTraceLoading, "supportsDelayedStackTraceLoading")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsDisassembleRequest, "supportsDisassembleRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsEvaluateForHovers, "supportsEvaluateForHovers")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsExceptionFilterOptions, "supportsExceptionFilterOptions")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsExceptionInfoRequest, "supportsExceptionInfoRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsExceptionOptions, "supportsExceptionOptions")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsFunctionBreakpoints, "supportsFunctionBreakpoints")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsGotoTargetsRequest, "supportsGotoTargetsRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsHitConditionalBreakpoints, "supportsHitConditionalBreakpoints")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsInstructionBreakpoints, "supportsInstructionBreakpoints")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsLoadedSourcesRequest, "supportsLoadedSourcesRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsLogPoints, "supportsLogPoints")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsModulesRequest, "supportsModulesRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsReadMemoryRequest, "supportsReadMemoryRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsRestartFrame, "supportsRestartFrame")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsRestartRequest, "supportsRestartRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsSetExpression, "supportsSetExpression")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsSetVariable, "supportsSetVariable")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsSingleThreadExecutionRequests, "supportsSingleThreadExecutionRequests")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsStepBack, "supportsStepBack")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsStepInTargetsRequest, "supportsStepInTargetsRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsSteppingGranularity, "supportsSteppingGranularity")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsTerminateRequest, "supportsTerminateRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsTerminateThreadsRequest, "supportsTerminateThreadsRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportSuspendDebuggee, "supportSuspendDebuggee")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsValueFormattingOptions, "supportsValueFormattingOptions")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportsWriteMemoryRequest, "supportsWriteMemoryRequest")
+        CAPABILITIES_BODY_PROCESS(capabilities.supportTerminateDebuggee, "supportTerminateDebuggee")
+
+        if (body["exceptionBreakpointFilters"].IsOK())
+        {
+            // std::optional<std::vector<ExceptionBreakpointsFilter>> exceptionBreakpointFilters;
+            Json arr = body["exceptionBreakpointFilters"];
+            size_t size = arr.GetCount();
+            std::vector<ExceptionBreakpointsFilter> vFilters;
+            vFilters.clear();
+            vFilters.reserve(size);
+
+            for (size_t i = 0; i < size; ++i)
+            {
+                ExceptionBreakpointsFilter filter;
+                filter.From(arr[i]);
+                vFilters.push_back(filter);
+            }
+
+            capabilities.exceptionBreakpointFilters.emplace(vFilters);
+        }
+
+        if (body["completionTriggerCharacters"].IsOK())
+        {
+            // std::optional<std::vector<wxString>> completionTriggerCharacters;
+            Json arr = body["completionTriggerCharacters"];
+            size_t size = arr.GetCount();
+            std::vector<wxString> vTriggerChars;
+            vTriggerChars.clear();
+            vTriggerChars.reserve(size);
+
+            for (size_t i = 0; i < size; ++i)
+            {
+                wxString str = arr[i].GetString();
+                vTriggerChars.push_back(str);
+            }
+
+            capabilities.completionTriggerCharacters.emplace(vTriggerChars);
+        }
+
+        if (body["additionalModuleColumns"].IsOK())
+        {
+            // std::optional<std::vector<ColumnDescriptor>> additionalModuleColumns;
+            Json arr = body["additionalModuleColumns"];
+            size_t size = arr.GetCount();
+            std::vector<ColumnDescriptor> vColumnDescriptor;
+            vColumnDescriptor.clear();
+            vColumnDescriptor.reserve(size);
+
+            for (size_t i = 0; i < size; ++i)
+            {
+                ColumnDescriptor columnDesc;
+                columnDesc.From(arr[i]);
+                vColumnDescriptor.push_back(columnDesc);
+            }
+
+            capabilities.additionalModuleColumns.emplace(vColumnDescriptor);
+        }
+    }
 }
 
 // ----------------------------------------
@@ -888,6 +988,68 @@ void BreakpointLocation::From(const Json & json)
 // ----------------------------------------
 // ----------------------------------------
 
+Json ExceptionBreakpointsFilter::To() const
+{
+    Json json = Json::CreateObject();
+    json.Add("filter", filter);
+    json.Add("label", label);
+    return json;
+}
+
+void ExceptionBreakpointsFilter::From(const Json & json)
+{
+    filter = json["filter"].GetString();
+    label = json["label"].GetString();
+
+    if (json["description"].IsOK())
+    {
+        description = json["description"].GetString();
+    }
+
+    if (json["default"].IsOK())
+    {
+        default_value = json["default"].GetBool();
+    }
+    else
+    {
+        // If not specified a value `false` is assumed.
+        // So set it to false here
+        default_value = false;
+    }
+
+    if (json["supportsCondition"].IsOK())
+    {
+        supportsCondition = json["supportsCondition"].GetBool();
+    }
+
+    if (json["conditionDescription"].IsOK())
+    {
+        conditionDescription = json["conditionDescription"].GetString();
+    }
+}
+
+// ----------------------------------------
+// ----------------------------------------
+// ----------------------------------------
+
+Json ColumnDescriptor::To() const
+{
+    Json json = Json::CreateObject();
+    json.Add("attributeName", attributeName);
+    json.Add("label", label);
+    return json;
+}
+
+void ColumnDescriptor::From(const Json & json)
+{
+    attributeName = json["attributeName"].GetString();
+    label = json["label"].GetString();
+}
+
+// ----------------------------------------
+// ----------------------------------------
+// ----------------------------------------
+
 Json Thread::To() const
 {
     Json json = Json::CreateObject();
@@ -1050,6 +1212,49 @@ Json SetBreakpointsRequest::To() const
 }
 
 void SetBreakpointsRequest::From(const Json & json)
+{
+    REQUEST_FROM();
+    READ_OBJ(arguments);
+}
+
+// ----------------------------------------
+// ----------------------------------------
+// ----------------------------------------
+
+Json SetExceptionBreakpointsArguments::To() const
+{
+    Json json = Json::CreateObject();
+    Json arr = json.AddArray("filters");
+
+    for (const auto & str : filters)
+    {
+        arr.Add(str);
+    }
+
+    return json;
+}
+
+void SetExceptionBreakpointsArguments::From(const Json & json)
+{
+    filters.clear();
+    Json arr = json["filters"];
+    int size = arr.GetCount();
+
+    for (int i = 0; i < size; ++i)
+    {
+        wxString str = arr[i].ToString();
+        filters.push_back(str);
+    }
+}
+
+Json SetExceptionBreakpointsRequest::To() const
+{
+    REQUEST_TO();
+    ADD_OBJ(arguments);
+    return json;
+}
+
+void SetExceptionBreakpointsRequest::From(const Json & json)
 {
     REQUEST_FROM();
     READ_OBJ(arguments);
