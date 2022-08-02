@@ -471,18 +471,10 @@ void Debugger_DAP::CleanupWhenProjectClosed(cbProject * project)
         SaveStateToFile(project);
     }
 
-    // the same for remote debugging
-    // GetRemoteDebuggingMap(event.GetProject()).clear();
-    dbg_DAP::DAPBreakpointsContainer::iterator bpIT = std::remove_if(m_breakpoints.begin(), m_breakpoints.end(), BreakpointMatchProject(project));
-
-    if (bpIT != m_breakpoints.end())
-    {
-        m_breakpoints.erase(bpIT, m_breakpoints.end());
-        cbBreakpointsDlg * dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-        dlg->Reload();
-    }
-
+    m_breakpoints.clear();
     m_map_filebreakpoints.clear();
+    cbBreakpointsDlg * dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
+    dlg->Reload();
 
     for (dbg_DAP::DAPWatchesContainer::iterator it = m_watches.begin(); it != m_watches.end();)
     {
@@ -883,20 +875,19 @@ void Debugger_DAP::NextInstruction()
 
 void Debugger_DAP::StepIntoInstruction()
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Debugger_DAP::StepIn", dbg_DAP::LogPaneLogger::LineType::Command);
-    m_dapClient.StepIn();
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Functionality not supported yet!", dbg_DAP::LogPaneLogger::LineType::Command);
+    //m_dapClient.StepIn();
 }
 
 void Debugger_DAP::Step()
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Step", dbg_DAP::LogPaneLogger::LineType::Command);
-    // m_dapClient.Next();
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "", dbg_DAP::LogPaneLogger::LineType::Error);
+    m_dapClient.StepIn();
 }
 
 void Debugger_DAP::StepOut()
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Debugger_DAP::StepOut", dbg_DAP::LogPaneLogger::LineType::Command);
+    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "", dbg_DAP::LogPaneLogger::LineType::Command);
     m_dapClient.StepOut();
 }
 
@@ -1064,13 +1055,11 @@ void Debugger_DAP::UpdateMapFileBreakPoints(const wxString & filename, cb::share
     else
     {
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints does not include filename %s"), filename), dbg_DAP::LogPaneLogger::LineType::Debug);
-        std::vector<dap::SourceBreakpoint> vlines;
-        dbg_DAP::DAPBreakpointsContainer filebreakpoints = (*mapit).second;
         bool bFoundLine = false;
         int lineBP = bp->GetLine();
         dbg_DAP::DAPBreakpointsContainer::iterator itFBrk;
 
-        for (itFBrk = filebreakpoints.begin(); itFBrk != filebreakpoints.end(); ++itFBrk)
+        for (itFBrk = (*mapit).second.begin(); itFBrk != (*mapit).second.end(); ++itFBrk)
         {
             if ((*itFBrk)->GetLine() == lineBP)
             {
@@ -1089,8 +1078,16 @@ void Debugger_DAP::UpdateMapFileBreakPoints(const wxString & filename, cb::share
             {
                 if ((*mapit).second.size() == 1)
                 {
-                    m_map_filebreakpoints.erase(mapit);
-                    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints erase filename %s bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
+                    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints erase filename %s ,  BP %s Line %d bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
+
+                    if (m_map_filebreakpoints.size() == 1)
+                    {
+                        m_map_filebreakpoints.clear();
+                    }
+                    else
+                    {
+                        m_map_filebreakpoints.erase(mapit);
+                    }
                 }
                 else
                 {
@@ -1118,17 +1115,21 @@ void Debugger_DAP::UpdateDAPSetBreakpointsByFileName(const wxString & filename)
 {
     if (IsRunning())
     {
-        std::map<wxString, dbg_DAP::DAPBreakpointsContainer>::iterator mapit;
-        wxString sLineInfo = wxEmptyString;
-        mapit = m_map_filebreakpoints.find(filename);
         std::vector<dap::SourceBreakpoint> vlines;
-        dbg_DAP::DAPBreakpointsContainer filebreakpoints = mapit->second;
+        wxString sLineInfo = wxEmptyString;
 
-        for (dbg_DAP::DAPBreakpointsContainer::iterator it = filebreakpoints.begin(); it != filebreakpoints.end(); ++it)
+        if (m_map_filebreakpoints.size() > 0)
         {
-            int line = static_cast<int>((*it)->GetLine());
-            sLineInfo.Append(wxString::Format("%d ", line));
-            vlines.push_back({ line, wxEmptyString });
+            std::map<wxString, dbg_DAP::DAPBreakpointsContainer>::iterator mapit;
+            mapit = m_map_filebreakpoints.find(filename);
+            dbg_DAP::DAPBreakpointsContainer filebreakpoints = mapit->second;
+
+            for (dbg_DAP::DAPBreakpointsContainer::iterator it = filebreakpoints.begin(); it != filebreakpoints.end(); ++it)
+            {
+                int line = static_cast<int>((*it)->GetLine());
+                sLineInfo.Append(wxString::Format("%d ", line));
+                vlines.push_back({ line, wxEmptyString });
+            }
         }
 
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", filename, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
@@ -1160,8 +1161,8 @@ cb::shared_ptr<cbBreakpoint> Debugger_DAP::UpdateOrAddBreakpoint(const wxString 
     }
 
     cb::shared_ptr<dbg_DAP::DAPBreakpoint> newDAPBreakpoint(new dbg_DAP::DAPBreakpoint(project, m_pLogger, filename, line, id));
-    m_breakpoints.push_back(newDAPBreakpoint);
     UpdateMapFileBreakPoints(filename, newDAPBreakpoint, true);
+    m_breakpoints.push_back(newDAPBreakpoint);
     UpdateDAPSetBreakpointsByFileName(filename);
     return newDAPBreakpoint;
 }
@@ -1213,9 +1214,18 @@ void Debugger_DAP::DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
                 return;
         }
 
-        m_breakpoints.erase(it);
         wxString brkFileName = bp->GetLocation();
         UpdateMapFileBreakPoints(brkFileName, (*it), false);
+
+        if (m_breakpoints.size() == 1)
+        {
+            m_breakpoints.clear(); // Delete after you have finished using *it
+        }
+        else
+        {
+            m_breakpoints.erase(it); // Delete after you have finished using *it
+        }
+
         UpdateDAPSetBreakpointsByFileName(brkFileName);
     }
 
@@ -1569,7 +1579,14 @@ void Debugger_DAP::DeleteWatch(cb::shared_ptr<cbWatch> watch)
         }
     }
 
-    m_watches.erase(it);
+    if (m_watches.size() == 1)
+    {
+        m_watches.clear();
+    }
+    else
+    {
+        m_watches.erase(it);
+    }
 }
 
 bool Debugger_DAP::HasWatch(cb::shared_ptr<cbWatch> watch)
@@ -2133,9 +2150,9 @@ void Debugger_DAP::DAPDebuggerResetData()
 {
     DAPDebuggerState = eDAPState::NotConnected;
     m_timer_poll_debugger.Stop();
+    m_breakpoints.clear();
     m_map_filebreakpoints.clear();
     m_dapClient.Reset();
-    m_map_filebreakpoints.clear();
     m_current_frame.Reset();
 
     if (m_dapPid != 0)
@@ -3291,7 +3308,7 @@ void Debugger_DAP::OnBreakpointDataSet(DAPEvent & event)
         {
             dbg_DAP::LogPaneLogger::LineType logType = dbg_DAP::LogPaneLogger::LineType::UserDisplay;
 
-            if ((bp.line == -1) || (bp.verified == false))
+            if ((bp.line == -1) || !bp.verified || bp.source.path.IsEmpty())
             {
                 logType = dbg_DAP::LogPaneLogger::LineType::Error;
             }
@@ -3301,11 +3318,8 @@ void Debugger_DAP::OnBreakpointDataSet(DAPEvent & event)
                                      wxString::Format(_("ID %d , Verified: %s , File: %s , Line: %d, Message: %s"), bp.id, bp.verified ? "True" : "False", bp.source.path, bp.line, bp.message),
                                      logType
                                     );
-        }
 
-        for (const auto & bp : resp->breakpoints)
-        {
-            if ((bp.line != -1) && bp.verified)
+            if ((bp.line != -1) && bp.verified && !bp.source.path.IsEmpty())
             {
                 UpdateOrAddBreakpoint(bp.source.path, bp.line, bp.id);
             }

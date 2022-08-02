@@ -42,8 +42,8 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Stop debugger        (Shift-F8)                         |   2-Aug   |   Pass     |
 |   * Run to cursor        (F4)                               |           |            |
 |   * Next line            (F7)                               |   2-Aug   |   Pass     |
-|   * Step Into            (Shift-F7)                         |           |            |
-|   * Step out             (Ctrl-F7)                          |           |            |
+|   * Step Into            (Shift-F7)                         |   2-Aug   |   Pass     |
+|   * Step out             (Ctrl-F7)                          |   2-Aug   |   Pass     |
 |      * Display the return value of a function               |           |            |
 |   * Next instruction     (Alt-F7)                           |           |            |
 |   * Step into instruction(ALT-Shift-F7)                     |           |            |
@@ -51,6 +51,28 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Notification that the debugging has ended               |           |            |
 |   * Skipping over functions                                 |           |            |
 |   * Skipping over files                                     |           |            |
+|                                                             |           |            |
+| **Breakpoints**                                             |           |            |
+|   * Add line break point before starting the debugger       |   2-Aug   |   Pass     |
+|   * Add line break point after the starting the debugger    |   2-Aug   |   Pass     |
+|   * Debug menu option to Toggle line break point (F5)       |   2-Aug   |   CRASH    |
+|   * Debug menu option to Remove all breakpoints             |           |            |
+|   * Disable/Enable line break point via pop up menu         |           |            |
+|   * Remove line break point                                 |   2-Aug   |   Pass     |
+|   * Edit line break point                                   |           |            |
+|     * ignore count before break                             |           |            |
+|     * break when expression is true                         |           |            |
+|   * Break points still there after exit                     |           |            |
+|   * Break points data saved on project close                |  27-Jun   |    Pass    |
+|   * Break points removed after closing the project          |           |            |
+|   * Break points removed after changing debugger            |           |            |
+|   * Break points created on project open                    |           |            |
+|                                                             |           |            |
+| **Exception Handling**                                      |           |            |
+|   * Linux Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
+|   * MacOS Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
+|   * Windows Clang64 catches exceptions and shows call stack |   6-Jul   |   Pass     |
+|   * Windows MinGW64 catches exceptions and shows call stack |   2-Aug   |   Pass     |
 |                                                             |           |            |
 | **Watches**                                                 |           |            |
 |   * watches dialog shows function args and local vars       |           |            |
@@ -66,28 +88,6 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Watches removed after closing the project               |           |            |
 |   * Watches removed after changing debugger                 |           |            |
 |   * Watches created on project open                         |           |            |
-|                                                             |           |            |
-| **Breakpoints**                                             |           |            |
-|   * Add line break point before starting the debugger       |  20-Jul   |    Pass    |
-|   * Add line break point after the starting the debugger    |   2-Aug   |   Pass     |
-|   * Debug menu option to Toggle line break point (F5)       |           |            |
-|   * Debug menu option to Remove all breakpoints             |           |            |
-|   * Disable/Enable line break point via pop up menu         |           |            |
-|   * Remove line break point                                 |   2-Aug   |   Pass     |
-|   * Edit line break point                                   |           |            |
-|     * ignore count before break                             |           |            |
-|     * break when expression is true                         |           |            |
-|   * Break points still there after exit                     |           |            |
-|   * Break points data saved on project close                |  27-Jun   |    Pass    |
-|   * Break points removed after closing the project          |           |            |
-|   * Break points removed after changing debugger            |           |            |
-|   * Break points created on project open                    |  19-Jul   |    Fail    |
-|                                                             |           |            |
-| **Exception Handling**                                      |           |            |
-|   * Linux Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
-|   * MacOS Debugger catches exceptions and shows call stack  |   6-Jul   |   Pass     |
-|   * Windows Clang64 catches exceptions and shows call stack |   6-Jul   |   Pass     |
-|   * Windows MinGW64 catches exceptions and shows call stack |   2-Aug   |   Pass     |
 |                                                             |           |            |
 | **Data Breakpoints**                                        |           |            |
 |   * Display data breakpoints in break point dialog          |           |            |
