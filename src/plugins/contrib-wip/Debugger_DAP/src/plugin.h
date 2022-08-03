@@ -178,18 +178,6 @@ class Debugger_DAP : public cbDebuggerPlugin
         virtual bool CompilerFinished(bool compilerFailed, StartType startType);
 
     public:
-        void UpdateWhenStopped();
-        void UpdateOnFrameChanged(bool wait);
-        //        dbg_DAP::DAPCurrentFrame & GetDAPCurrentFrame()
-        //        {
-        //            return m_current_frame;
-        //        }
-        //
-        //        dbg_DAP::DAPExecutor & GetDAPExecutor()
-        //        {
-        //            return m_executor;
-        //        }
-
         dbg_DAP::LogPaneLogger * GetDAPLogger()
         {
             return m_pLogger;
@@ -216,6 +204,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         bool SaveStateToFile(cbProject * prj);
         bool LoadStateFromFile(cbProject * prj);
         void DoWatches();
+        void UpdateDebugDialogs(bool bClearAllData);
 
     private:
         wxTimer m_timer_poll_debugger;
@@ -269,7 +258,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         std::vector<dap::Variable> m_stackdapvariables;
 
         // misc
-        void DAPDebuggerResetData();
+        void DAPDebuggerResetData(bool bClearAllData);
         void OnProcessBreakpointData(const wxString & brkDescription);
 
         /// Dap events

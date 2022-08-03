@@ -53,17 +53,17 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Skipping over files                                     |           |            |
 |                                                             |           |            |
 | **Breakpoints**                                             |           |            |
-|   * Add line break point before starting the debugger       |   2-Aug   |   Pass     |
+|   * Add line break point before starting the debugger       |   3-Aug   |   Pass     |
 |   * Add line break point after the starting the debugger    |   2-Aug   |   Pass     |
-|   * Debug menu option to Toggle line break point (F5)       |   2-Aug   |   CRASH    |
-|   * Debug menu option to Remove all breakpoints             |           |            |
-|   * Disable/Enable line break point via pop up menu         |           |            |
-|   * Remove line break point                                 |   2-Aug   |   Pass     |
+|   * Debug menu option to Toggle line break point (F5)       |   2-Aug   |   Pass     |
+|   * Debug menu option to Remove all breakpoints             |   2-Aug   |   Pass     |
+|   * Disable/Enable line break point via pop up menu         |   3-Aug   |   Pass     |
+|   * Remove line break point                                 |   3-Aug   |   Pass     |
 |   * Edit line break point                                   |           |            |
 |     * ignore count before break                             |           |            |
 |     * break when expression is true                         |           |            |
 |   * Break points still there after exit                     |           |            |
-|   * Break points data saved on project close                |  27-Jun   |    Pass    |
+|   * Break points data saved on project close                |           |            |
 |   * Break points removed after closing the project          |           |            |
 |   * Break points removed after changing debugger            |           |            |
 |   * Break points created on project open                    |           |            |
@@ -75,18 +75,18 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Windows MinGW64 catches exceptions and shows call stack |   2-Aug   |   Pass     |
 |                                                             |           |            |
 | **Watches**                                                 |           |            |
-|   * watches dialog shows function args and local vars       |           |            |
-|   * Add watch before starting the debugger                  |           |            |
+|   * watches dialog shows function args and local vars       |           |  ?Future?  |
+|   * Add watch before starting the debugger                  |   3-Aug   |    N/A     |
 |   * Add watch after starting the debugger                   |   2-Aug   |   Pass     |
 |   * Simple data types                                       |   2-Aug   |   Pass     |
 |   * Simple structure                                        |   2-Aug   |   Pass     |
-|   * Array of simple structures                              |           |            |
-|   * Complex structures                                      |           |            |
-|   * Can expand cbProject complex structures                 |           |            |
-|   * Edit watches                                            |           |            |
+|   * Array of simple structures                              |   3-Aug   |   Fail     |
+|   * Complex structures                                      |           |  ?Fail?    |
+|   * Can expand cbProject complex structures                 |           |  ?Fail?    |
+|   * Edit watches                                            |           |  Future    |
+|   * Watches removed after closing the project               |   3-Aug   |   Pass     |
+|   * Watches removed after changing debugger                 |   3-Aug   |   Fail     |
 |   * Watches data saved on project close                     |           |            |
-|   * Watches removed after closing the project               |           |            |
-|   * Watches removed after changing debugger                 |           |            |
 |   * Watches created on project open                         |           |            |
 |                                                             |           |            |
 | **Data Breakpoints**                                        |           |            |
@@ -111,9 +111,10 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |                                                             |           |            |
 | **Debug show Call Stack**                                   |           |            |
 |   * Show call stack dialog                                  |   2-Aug   |   Pass     |
-|   * Close call stack dialog                                 |           |            |
-|   * Double click on entry should open and go to the line    |           |            |
-|   * Call stack dialog cleared on last project close         |           |            |
+|   * Close call stack dialog                                 |   3-Aug   |   Pass     |
+|   * Double click on entry should open and go to the line    |   3-Aug   |   Pass     |
+|   * Call stack dialog cleared on stopping debugging         |   3-Aug   |   Pass     |
+|   * Call stack dialog cleared on last project close         |   3-Aug   |   Pass     |
 |                                                             |           |            |
 | **Debug show Disassembly**                                  |           |            |
 |   * Show disassembly dialog                                 |           |            |
@@ -147,7 +148,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Memory view watches created on project open             |           |            |
 |                                                             |           |            |
 | **Show tty for console projects**                           |           |            |
-|   * Show console on console app                             |  26-Jun   |   Pass     |
+|   * Show console on console app                             |   3-Aug   |   Pass     |
 |   * Do NOT show console on GUI app                          |           |            |
 |                                                             |           |            |
 | **Projects - debugger options dialog**                      |           |            |

@@ -8,40 +8,60 @@ setlocal
 set BUILD_BITS=%1
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay
 if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-if exist "..\..\src\devel3*_32" set BUILD_BITS=32
-if exist "..\..\src\devel3*_64" set BUILD_BITS=64
-if exist "..\src\devel3*_32" set BUILD_BITS=32
-if exist "..\src\devel3*_64" set BUILD_BITS=64
-if exist "src\devel3*_32" set BUILD_BITS=32
-if exist "src\devel3*_64" set BUILD_BITS=64
-if "%BUILD_BITS%" == "32" goto BuildBits_Okay
-if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-set BUILD_BITS=64
+call :FIND_OUTPUT_DIR ..\..\src 32
+call :FIND_OUTPUT_DIR ..\..\src 64
+call :FIND_OUTPUT_DIR ..\src 32
+call :FIND_OUTPUT_DIR ..\src 64
+call :FIND_OUTPUT_DIR src 32
+call :FIND_OUTPUT_DIR src 64
+if "%BUILD_BITS%" == ""  goto NoOutputDirectoryFound
+if "%CB_OUTPUT_DIR%" == "" goto NoOutputDirectoryFound
+if "%WX_DIR_VERSION%" == "" goto NoOutputDirectoryFound
+goto BuildBits_Okay
+
+:FIND_OUTPUT_DIR 
+    SET OUTPUT_OR=
+    if "%BUILD_BITS%" == "" SET OUTPUT_OR=Yes
+    if "%CB_OUTPUT_DIR%" == "" SET OUTPUT_OR=Yes
+    if "%OUTPUT_OR%" == "Yes" (
+        if exist "%1\output31_%2" (
+            set BUILD_BITS=%2
+            set WX_DIR_VERSION=31
+            set CB_OUTPUT_DIR=%1\output31_%2
+        ) else if exist "%1\output32_%2" (
+            set BUILD_BITS=%2
+            set WX_DIR_VERSION=32
+            set CB_OUTPUT_DIR=%1\output32_%2
+        )
+    )    
+    SET OUTPUT_OR=
+    EXIT /B
 
 :BuildBits_Okay
-if "%WX_DIR_VERSION%" == "" (
-    if "%2" == "" (
-        if not "%WX_DIR_VERSION%" == "" goto WX_DIR_VERSION_Okay
-        if exist "..\..\src\devel31*" set WX_DIR_VERSION=31
-        if exist "..\..\src\devel32*" set WX_DIR_VERSION=32
-        if exist "..\src\devel31*" set WX_DIR_VERSION=31
-        if exist "..\src\devel32*" set WX_DIR_VERSION=32
-        if exist "src\devel31*" set WX_DIR_VERSION=31
-        if exist "src\devel32*" set WX_DIR_VERSION=32
-    ) else (
-        set WX_DIR_VERSION=%2
-    )
-)
-if "%WX_DIR_VERSION%" == "" goto WXVersionError
+CALL :NORMALIZEPATH %CB_OUTPUT_DIR%
+SET CB_OUTPUT_DIR=%RETVAL%
 
-:start
-if NOT exist "..\..\windows_installer\Build_NSIS_%BUILD_BITS%bit.bat" goto NoWindowsInstallerBatchFileFound
-if not exist "..\..\src\output%WX_DIR_VERSION%_%BUILD_BITS%" goto NoOutputDirectoryFound
+CALL :NORMALIZEPATH "..\..\windows_installer\Build_NSIS.bat"
+SET NSIS_BAT_FILE=%RETVAL%
 
+if not exist "%NSIS_BAT_FILE%" goto NoWindowsInstallerBatchFileFound
+if not exist "%CB_OUTPUT_DIR%" goto NoOutputDirectoryFound
 
 cd ..\..\windows_installer
-@echo call Build_NSIS_%BUILD_BITS%bit.bat %WX_DIR_VERSION%
-call Build_NSIS_%BUILD_BITS%bit.bat %WX_DIR_VERSION%
+@echo Create debug installer by 'call %NSIS_BAT_FILE% Debug'
+@call %NSIS_BAT_FILE% Debug
+
+@cd /d %CurrentDir%
+set GCC_STRIP=C:\msys64\mingw%BUILD_BITS%\bin\strip.exe
+if exist %GCC_STRIP% (
+    @echo "Stripping exe and DLL fles in %CB_OUTPUT_DIR%"
+    @for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.exe" /b/s" 2^>nul`) do @%GCC_STRIP% %%a  > nul
+    @for /f "usebackq delims=^=^" %%a in (`"dir "%CB_OUTPUT_DIR%\*.dll" /b/s" 2^>nul`) do @%GCC_STRIP% %%a  > nul
+) else goto NoStripExeFound
+
+cd ..\..\windows_installer
+@echo Create release installer by 'call %NSIS_BAT_FILE% Release'
+@call %NSIS_BAT_FILE% Release
 @goto Finish
 
 :NoWindowsInstallerBatchFileFound
@@ -50,7 +70,7 @@ call Build_NSIS_%BUILD_BITS%bit.bat %WX_DIR_VERSION%
 @echo ^+-------------------------------------------------------------------------------------^+
 @echo ^|                                                                                     ^|
 @echo ^| Error: Could not find following NSIS installer batch file:                          ^|
-@echo ^|             ..\..\windows_installer\Build_NSIS_%BUILD_BITS%bit.bat         ^|
+@echo ^|             ..\..\windows_installer\Build_NSIS.bat         ^|
 @echo ^|                                                                                     ^|
 @echo ^|  Please fix the error and try again.                                                ^|
 @echo ^|                                                                                     ^|
@@ -75,25 +95,27 @@ call Build_NSIS_%BUILD_BITS%bit.bat %WX_DIR_VERSION%
 @set RETURN_ERROR_LEVEL=2
 @goto Finish
 
-:WXVersionError
+
+:NoStripExeFound
 @echo.
 @echo ^+------------------------------------------------------^+
 @echo ^|                                                      ^|
-@echo ^| Error: NO wxWidget version found.                    ^|
+@echo ^| Error: NO %GCC_STRIP% found.                    ^|
 @echo ^|                                                      ^|
-@echo ^| Please run again with the second parameter being     ^|
-@echo ^|   the wxWidget version like 31 or 32                  ^|
+@echo ^| Please fix and run again ^|
 @echo ^|                                                      ^|
 @echo ^+------------------------------------------------------^+
 @echo.
 @echo.
-@set RETURN_ERROR_LEVEL=3
+@set RETURN_ERROR_LEVEL=4
 @goto Finish
 
 
 :NoOutputDirectoryFound
 @echo.
 @echo.
+if "%WX_DIR_VERSION%" == "" set WX_DIR_VERSION=??
+if "%BUILD_BITS%" == "" set BUILD_BITS=??
 @echo ^+-------------------------------------------------------------------------------------^+
 @echo ^|                                                                                     ^|
 @echo ^| Error: Could not find following CodeBlocks output directory:                        ^|
@@ -104,9 +126,28 @@ call Build_NSIS_%BUILD_BITS%bit.bat %WX_DIR_VERSION%
 @echo ^+-------------------------------------------------------------------------------------^+
 @echo.
 @echo.
-@set RETURN_ERROR_LEVEL=4
+@set RETURN_ERROR_LEVEL=5
 @goto Finish
 
+:NoOutputDirDebugFound 
+@echo.
+@echo.
+@echo ^+-------------------------------------------------------------------------------------^+
+@echo ^|                                                                                     ^|
+@echo ^| Error: Could not find following CodeBlocks output directory:                        ^|
+@echo ^|           %CB_OUTPUT_DIR_DEBUG%                                            ^|
+@echo ^|                                                                                     ^|
+@echo ^|                 Please fix the error and try again.                                 ^|
+@echo ^|                                                                                     ^|
+@echo ^+-------------------------------------------------------------------------------------^+
+@echo.
+@echo.
+@set RETURN_ERROR_LEVEL=6
+@goto Finish
+
+:NORMALIZEPATH
+    SET RETVAL=%~f1
+    EXIT /B
 
 :Finish
 @cd /d %CurrentDir%
