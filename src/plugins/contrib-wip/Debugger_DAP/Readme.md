@@ -75,7 +75,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Windows MinGW64 catches exceptions and shows call stack |   2-Aug   |   Pass     |
 |                                                             |           |            |
 | **Watches**                                                 |           |            |
-|   * watches dialog shows function args and local vars       |           |  ?Future?  |
+|   * watches dialog shows function args and local vars       |           |            |
 |   * Add watch before starting the debugger                  |   3-Aug   |    N/A     |
 |   * Add watch after starting the debugger                   |   2-Aug   |   Pass     |
 |   * Simple data types                                       |   2-Aug   |   Pass     |
@@ -83,7 +83,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Array of simple structures                              |   3-Aug   |   Fail     |
 |   * Complex structures                                      |           |  ?Fail?    |
 |   * Can expand cbProject complex structures                 |           |  ?Fail?    |
-|   * Edit watches                                            |           |  Future    |
+|   * Edit watches                                            |           |            |
 |   * Watches removed after closing the project               |   3-Aug   |   Pass     |
 |   * Watches removed after changing debugger                 |   3-Aug   |   Fail     |
 |   * Watches data saved on project close                     |           |            |

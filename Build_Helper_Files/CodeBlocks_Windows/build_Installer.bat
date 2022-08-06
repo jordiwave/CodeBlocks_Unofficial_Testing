@@ -1,13 +1,22 @@
-@echo off
+@echo on
+
+@rem ----------------------------------------------------------------------
+@rem Parameter 1 is either 32 or 64 for build type for 32 or 64 bits
+@rem Parameter 2 is the WxWidget version 31 or 32
+@rem ----------------------------------------------------------------------
 
 @REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
 setlocal
 
 @SET CurrentDir="%CD%"
 
-set BUILD_BITS=%1
-if "%BUILD_BITS%" == "32" goto BuildBits_Okay
-if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+if not "%1" == "" if "%2" == "" (
+    set BUILD_BITS=%1
+    set WX_DIR_VERSION=%2
+    set CB_OUTPUT_DIR=%1\output31_%2
+    goto BuildBits_Okay
+)    
+
 call :FIND_OUTPUT_DIR ..\..\src 32
 call :FIND_OUTPUT_DIR ..\..\src 64
 call :FIND_OUTPUT_DIR ..\src 32

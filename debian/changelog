@@ -1,9 +1,10 @@
-codeblocks (22.07.31) experimental; urgency=low
+codeblocks (22.08.03) experimental; urgency=low
 
   * C::B SVN Release 12856
   * A bunch of changes not in SF
+  * DAP Debugger Plugin - Enables debugging via LLDB on MAC
 
- -- CB Team  <info@codeblocks.org>  Sun, 31 Jul 2022 00:00:00 +1000
+ -- CB Team  <info@codeblocks.org>  Wed, 03 Aug 2022 00:00:00 +1000
 
 codeblocks (20.03.01) released; urgency=low
 
@@ -91,5 +92,5 @@ codeblocks (20.03.01) released; urgency=low
   * Sun Aug 13 2006 Dan Horak <dan[at]danny.cz> 1.0-0.2.20060812svn2840
   * Tue Aug 08 2006 Dan Horak <dan[at]danny.cz> 1.0-0.1.2824svn
 
- -- CB Team  <info@codeblocks.org>  Sat, 23 Apr 2022 00:00:00 +1000
+ -- CB Team  <info@codeblocks.org>  Thu, 20 Feb 2020 00:00:00 +1000
 

@@ -199,7 +199,6 @@ if "%SpawnBuild%" == "True" goto UpdateFinish
 if /I "%UserInput%" NEQ "Y" goto UpdateFinish
 @echo.
 @echo Running "call Windows_Ouput_Create.bat %BUILD_BITS% %GCC_ROOT%"
-dir Windows_Ouput_Create.bat
 call Windows_Ouput_Create.bat %BUILD_BITS% %GCC_ROOT% > nul
 @echo.
 @echo.

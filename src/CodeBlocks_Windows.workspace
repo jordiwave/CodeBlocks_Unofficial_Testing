@@ -179,13 +179,13 @@
 		<Project filename="plugins/contrib-wip/cbMemoryView/cbMemoryView_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
+		<Project filename="plugins/contrib-wip/ProjectExporter/ProjectExporter_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
 		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
-		<Project filename="plugins/contrib-wip/DebugAdapterProtocol_CliDemo/dbgcli_codeblocks_demo_Windows.cbp">
-			<Depends filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
-		</Project>
 		<Project filename="plugins/contrib-wip/Debugger_DAP/Debugger_DAP_Windows.cbp">
 			<Depends filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
 		</Project>

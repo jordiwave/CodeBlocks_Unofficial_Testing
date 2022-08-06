@@ -181,7 +181,7 @@
 				<Option external_deps="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.a" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--personality=debuging --multiple-instance" />
+				<Option parameters="--personality=debuging --multiple-instance --no-dde --verbose --debug-log" />
 				<Compiler>
 					<Add option="-DEXPORT_LIB" />
 					<Add option="-DWXMAKINGDLL_SCI" />

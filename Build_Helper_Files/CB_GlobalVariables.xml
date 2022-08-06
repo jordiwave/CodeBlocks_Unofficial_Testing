@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocksGlobalVariableExportConfig version="1">
 <!-- ====================================================================================== -->
+	<default>
+		<wxwidgets>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.1.5_win64</BASE>
+			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
+			<LIB>$(#WXWIDGETS)\lib</LIB>
+			<WX_CFG>&quot;&quot;</WX_CFG>
+			<WX_VERSION>31</WX_VERSION>
+			<WX_SUFFIX>u</WX_SUFFIX>
+		</wxwidgets>
+		<discount>
+			<BASE>D:\Andrew_Development\Libraries\discount_win64</BASE>
+			<INCLUDE>$(#DISCOUNT)</INCLUDE>
+			<LIB>$(#DISCOUNT)</LIB>
+		</discount>
+		<cb_build>
+			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental_GCC\src</BASE>
+			<INCLUDE>$(#CB_BUILD)\include</INCLUDE>
+			<CFLAGS>-g -O0 -ggdb</CFLAGS>
+			<OSBITS>64</OSBITS>
+			<C_STD>c90</C_STD>
+			<CPP_STD>gnu++17</CPP_STD>
+		</cb_build>
+		<boost>
+			<BASE>D:\Andrew_Development\Libraries\boost</BASE>
+			<INCLUDE>$(#BOOST)</INCLUDE>
+		</boost>
+	</default>
+<!-- ====================================================================================== -->
 	<cb_win32>
 		<cb_build>
-			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental\src</BASE>
+			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental_GCC\src</BASE>
 			<INCLUDE>$(#CB_BUILD)\include</INCLUDE>
 			<CFLAGS>-g -O0 -ggdb</CFLAGS>
 			<OSBITS>32</OSBITS>
@@ -44,7 +72,7 @@
 			<LIB>$(#DISCOUNT)</LIB>
 		</discount>
 		<cb_build>
-			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental\src</BASE>
+			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental_GCC\src</BASE>
 			<INCLUDE>$(#CB_BUILD)\include</INCLUDE>
 			<CFLAGS>-g -O0 -ggdb</CFLAGS>
 			<OSBITS>64</OSBITS>
@@ -101,13 +129,5 @@
 		</wxwidgets>
 	</cb_macos>
 <!-- ====================================================================================== -->
-<!-- ====================================================================================== -->
-	<cb_win64>
-		<cppdap>
-			<BASE>D:\Andrew_Development\Libraries\DebuggerApplication_Protocol_cppdap</BASE>
-			<INCLUDE>$(#CPPDAP)/include</INCLUDE>
-			<LIB>$(#CPPDAP)/build</LIB>
-		</cppdap>
-	</cb_win64>
 <!-- ====================================================================================== -->
 </CodeBlocksGlobalVariableExportConfig>

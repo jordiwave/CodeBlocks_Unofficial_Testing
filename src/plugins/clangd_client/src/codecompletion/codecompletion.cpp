@@ -4851,7 +4851,6 @@ void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
                 pEd->SetProjectFile(pProjectFile);
             }
 
-            cbAssert(GetLSPclient(pEd)); //id no client, we've done something wrong.
             GetLSPclient(pEd)->LSP_DidOpen(pEd);
         }//endif parse non-ActiveProject editor
     }//endif not projectManager busy
