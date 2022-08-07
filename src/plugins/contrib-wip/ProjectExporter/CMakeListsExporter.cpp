@@ -8,19 +8,453 @@
 #include "logmanager.h"
 #include "manager.h"
 #include "macrosmanager.h"
-#include <tinyxml.h>
+#include "uservarmanager.h"
+#include "tinyxml.h"
 
 // ProjectExporter include files
 #include "CMakeListsExporter.h"
 
 CMakeListsExporter::CMakeListsExporter()
 {
+    // Does not support C::B ${variable}. Supports $(variable)
+    //  m_RE_Unix.Compile("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[\\)} /\\\\]?)", wxRE_EXTENDED | wxRE_NEWLINE);
+    m_RE_Unix.Compile("([^$]|^)(\\$[(]?(#?[A-Za-z_0-9.]+)[\\) /\\\\]?)", wxRE_EXTENDED | wxRE_NEWLINE);
+    // MSDOS %VARIABLE%
+    m_RE_DOS.Compile("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)", wxRE_EXTENDED | wxRE_NEWLINE);
     //ctor
 }
 
 CMakeListsExporter::~CMakeListsExporter()
 {
     //dtor
+}
+
+void CMakeListsExporter::ExpandMacros(wxString & buffer, bool subrequest)
+{
+    if (buffer.IsEmpty())
+    {
+        return;
+    }
+
+    if (buffer.IsSameAs("\"\"") || buffer.IsSameAs("''"))
+    {
+        buffer.Clear();
+        return;
+    }
+
+    static const wxString delim("$%[");
+
+    if (buffer.find_first_of(delim) == wxString::npos)
+    {
+        return;
+    }
+
+    // See macromanager.cpp MacrosManager::ReplaceMacros function for where this code was taken from
+    static const wxString const_COIN("COIN");
+    static const wxString const_RANDOM("RANDOM");
+    static const wxString toNativePath("$TO_NATIVE_PATH{");
+    static const wxString toUnixPath("$TO_UNIX_PATH{");
+    static const wxString toWindowsPath("$TO_WINDOWS_PATH{");
+    wxString search;
+    wxString replace;
+    UserVariableManager * pUsrVarMan = Manager::Get()->GetUserVariableManager();
+    MacrosManager * macroMan = Manager::Get()->GetMacrosManager();
+    const MacrosMap & Macros = macroMan->GetMacros();
+
+    while (m_RE_Unix.Matches(buffer))
+    {
+        replace.Empty();
+        search = m_RE_Unix.GetMatch(buffer, 2);
+        wxString var = m_RE_Unix.GetMatch(buffer, 3).Upper();
+
+        if (var.GetChar(0) == '#')
+        {
+            replace = UnixFilename(pUsrVarMan->Replace(var));
+        }
+        else
+        {
+            if (var.compare(const_COIN) == 0)
+            {
+                replace.assign(1u, (rand() & 1) ? '1' : '0');
+            }
+            else
+                if (var.compare(const_RANDOM) == 0)
+                {
+                    replace = wxString::Format("%d", rand() & 0xffff);
+                }
+                else
+                {
+                    if (!Macros.empty())
+                    {
+                        MacrosMap::const_iterator it;
+
+                        if ((it = Macros.find(var)) != Macros.end())
+                        {
+                            replace = it->second;
+                        }
+                    }
+                }
+        }
+
+        const wxChar l = search.Last(); // make non-braced variables work
+
+        if (l == '/' || l == '\\' || l == '$' || l == ' ')
+        {
+            replace.append(l);
+        }
+
+        if (replace.IsEmpty())
+        {
+            wxGetEnv(var, &replace);
+        }
+
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+        {
+            buffer.Replace(search, "", false);
+        }
+        else
+        {
+            buffer.Replace(search, replace, false);
+        }
+    }
+
+    while (m_RE_DOS.Matches(buffer))
+    {
+        replace.Empty();
+        search = m_RE_DOS.GetMatch(buffer, 2);
+        wxString var = m_RE_DOS.GetMatch(buffer, 3).Upper();
+
+        if (var.GetChar(0) == '#')
+        {
+            replace = UnixFilename(pUsrVarMan->Replace(var));
+        }
+        else
+        {
+            if (var.compare(const_COIN) == 0)
+            {
+                replace.assign(1u, (rand() & 1) ? '1' : '0');
+            }
+            else
+                if (var.compare(const_RANDOM) == 0)
+                {
+                    replace = wxString::Format("%d", rand() & 0xffff);
+                }
+                else
+                {
+                    if (!Macros.empty())
+                    {
+                        MacrosMap::const_iterator it;
+
+                        if ((it = Macros.find(var)) != Macros.end())
+                        {
+                            replace = it->second;
+                        }
+                    }
+                }
+        }
+
+        if (replace.IsEmpty())
+        {
+            wxGetEnv(var, &replace);
+        }
+
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+        {
+            buffer.Replace(search, "", false);
+        }
+        else
+        {
+            buffer.Replace(search, replace, false);
+        }
+    }
+
+    if (!subrequest)
+    {
+        buffer.Replace("%%", "%");
+        buffer.Replace("$$", "$");
+    }
+}
+
+void CMakeListsExporter::ConvertMacros(wxString & buffer, bool subrequest)
+{
+    if (buffer.IsEmpty())
+    {
+        return;
+    }
+
+    if (buffer.IsSameAs("\"\"") || buffer.IsSameAs("''"))
+    {
+        buffer.Clear();
+        return;
+    }
+
+    static const wxString delim("$%[");
+
+    if (buffer.find_first_of(delim) == wxString::npos)
+    {
+        return;
+    }
+
+    // See macromanager.cpp MacrosManager::ReplaceMacros function for where this code was taken from
+    static const wxString const_COIN("COIN");
+    static const wxString const_RANDOM("RANDOM");
+    static const wxString toNativePath("$TO_NATIVE_PATH{");
+    static const wxString toUnixPath("$TO_UNIX_PATH{");
+    static const wxString toWindowsPath("$TO_WINDOWS_PATH{");
+    wxString search;
+    wxString replace;
+    // UserVariableManager* pUsrVarMan = Manager::Get()->GetUserVariableManager();
+    MacrosManager * macroMan = Manager::Get()->GetMacrosManager();
+    const MacrosMap & Macros = macroMan->GetMacros();
+
+    while (m_RE_Unix.Matches(buffer))
+    {
+        replace.Empty();
+        search = m_RE_Unix.GetMatch(buffer, 2);
+        wxString var = m_RE_Unix.GetMatch(buffer, 3).Upper();
+
+        if (var.GetChar(0) == '#')
+        {
+            replace = var.Upper();
+
+            if (replace.Find('.') == wxNOT_FOUND)
+            {
+                replace.Append(".BASE");
+            }
+
+            replace.Prepend("${GCV_");
+            replace.Replace("#", "");
+            replace.Replace(".", "_");
+            replace.Append("}");
+        }
+        else
+        {
+            if (var.compare(const_COIN) == 0)
+            {
+                replace.assign(1u, (rand() & 1) ? '1' : '0');
+            }
+            else
+                if (var.compare(const_RANDOM) == 0)
+                {
+                    replace = wxString::Format("%d", rand() & 0xffff);
+                }
+                else
+                {
+                    if (!Macros.empty())
+                    {
+                        MacrosMap::const_iterator it;
+
+                        if ((it = Macros.find(var)) != Macros.end())
+                        {
+                            replace = it->second;
+                        }
+                    }
+                }
+        }
+
+        const wxChar l = search.Last(); // make non-braced variables work
+
+        if (l == '/' || l == '\\' || l == '$' || l == ' ')
+        {
+            replace.append(l);
+        }
+
+        if (replace.IsEmpty())
+        {
+            wxGetEnv(var, &replace);
+        }
+
+        if (!replace.IsEmpty())
+        {
+            if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+            {
+                buffer.Replace(search, "", false);
+            }
+            else
+            {
+                buffer.Replace(search, replace, false);
+            }
+        }
+    }
+
+    while (m_RE_DOS.Matches(buffer))
+    {
+        replace.Empty();
+        search = m_RE_DOS.GetMatch(buffer, 2);
+        wxString var = m_RE_DOS.GetMatch(buffer, 3).Upper();
+
+        if (var.GetChar(0) == '#')
+        {
+            replace = var.Upper();
+
+            if (replace.Find('.') == wxNOT_FOUND)
+            {
+                replace.Append(".BASE");
+            }
+
+            replace.Prepend("${GCV_");
+            replace.Replace("#", "");
+            replace.Replace(".", "_");
+            replace.Append("}");
+        }
+        else
+        {
+            if (var.compare(const_COIN) == 0)
+            {
+                replace.assign(1u, (rand() & 1) ? '1' : '0');
+            }
+            else
+                if (var.compare(const_RANDOM) == 0)
+                {
+                    replace = wxString::Format("%d", rand() & 0xffff);
+                }
+                else
+                {
+                    if (!Macros.empty())
+                    {
+                        MacrosMap::const_iterator it;
+
+                        if ((it = Macros.find(var)) != Macros.end())
+                        {
+                            replace = it->second;
+                        }
+                    }
+                }
+        }
+
+        if (replace.IsEmpty())
+        {
+            wxGetEnv(var, &replace);
+        }
+
+        if (!replace.IsEmpty())
+        {
+            if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+            {
+                buffer.Replace(search, "", false);
+            }
+            else
+            {
+                buffer.Replace(search, replace, false);
+            }
+        }
+    }
+
+    if (!subrequest)
+    {
+        buffer.Replace("%%", "%");
+        buffer.Replace("$$", "$");
+    }
+}
+
+void CMakeListsExporter::ExportGlobalVariableSets(ExportMode eMode)
+{
+    const wxChar * EOL = wxTextFile::GetEOL();
+    ConfigManager * pCfgMan = Manager::Get()->GetConfigManager("gcv");
+
+    if (pCfgMan)
+    {
+        const wxString defSet(pCfgMan->Read("/active"));
+
+        if (eMode == ExportMode::GVS_EXPORT_DEFAULT_ONLY)
+        {
+            m_content.append(wxString::Format("# Global Variables for %s set.%s", defSet, EOL));
+        }
+        else
+        {
+            m_content.append(wxString::Format("# Global Variables, default set is:%s%s", defSet, EOL));
+        }
+
+        m_content.append(EOL);
+        wxString value;
+        const wxString cSets("/sets/");
+        wxArrayString sets = pCfgMan->EnumerateSubPaths(cSets);
+        sets.Sort();
+
+        for (const wxString & sCurrentSet : sets)
+        {
+            wxArrayString vars = pCfgMan->EnumerateSubPaths(cSets + sCurrentSet + "/");
+            vars.Sort();
+
+            for (const wxString & sCurrentVar : vars)
+            {
+                wxString path(cSets + sCurrentSet + '/' + sCurrentVar + '/');
+                wxArrayString knownMembers = pCfgMan->EnumerateKeys(path);
+
+                if (defSet.IsSameAs(sCurrentSet, false))
+                {
+                    if (eMode != ExportMode::GVS_EXPORT_NON_DEFAULT)
+                    {
+                        for (unsigned int i = 0; i < knownMembers.GetCount(); ++i)
+                        {
+                            value = pCfgMan->Read(path + knownMembers[i]);
+                            ConvertMacros(value);
+                            m_content.append(wxString::Format("set( GCV_%s_%s \"%s\")%s", sCurrentVar.Upper(), knownMembers[i].Upper(), value, EOL));
+                        }
+
+                        if (eMode == ExportMode::GVS_EXPORT_ALL)
+                        {
+                            m_content.append(EOL);
+                        }
+                    }
+                }
+                else
+                {
+                    if (eMode != ExportMode::GVS_EXPORT_DEFAULT_ONLY)
+                    {
+                        for (unsigned int i = 0; i < knownMembers.GetCount(); ++i)
+                        {
+                            value = pCfgMan->Read(path + knownMembers[i]);
+                            ConvertMacros(value);
+                            m_content.append(wxString::Format("# %s.%s.%s: %s%s", sCurrentSet, sCurrentVar, knownMembers[i], value, EOL));
+                        }
+
+                        m_content.append(EOL);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        m_content.append(wxString::Format("# No Global Variables found!%s", EOL));
+    }
+
+    m_content.append(EOL);
+}
+
+void CMakeListsExporter::ExportMacros()
+{
+    const wxChar * EOL = wxTextFile::GetEOL();
+    MacrosManager * macroMan = Manager::Get()->GetMacrosManager();
+
+    if (macroMan)
+    {
+        const MacrosMap & Macros = macroMan->GetMacros();
+
+        if (Macros.empty())
+        {
+            m_content.append(wxString::Format("# No Macros found!%s", EOL));
+        }
+        else
+        {
+            m_content.append(wxString::Format("# Macros:%s", EOL));
+            // MacrosMap uses a hash as key, to get sorted macros we need to copy them to a non-hashed map
+            std::map <wxString, wxString> NewMap;
+
+            for (MacrosMap::const_iterator it = Macros.begin(); it != Macros.end(); ++it)
+            {
+                NewMap[it->first] = it->second;
+            }
+
+            for (decltype(NewMap)::value_type & Item : NewMap)
+            {
+                m_content.append(wxString::Format("#        %s: %s%s", Item.first,  Item.second, EOL));
+            }
+        }
+    }
+
+    m_content.append(EOL);
 }
 
 wxString CMakeListsExporter::ValidateFilename(const wxString & iFileName)
@@ -104,11 +538,11 @@ wxString CMakeListsExporter::GetHumanReadableOptionRelation(ProjectBuildTarget *
 
 void CMakeListsExporter::RunExport()
 {
+    m_content = wxEmptyString;
     FileManager * fileMgr = Manager::Get()->GetFileManager();
     LogManager * logMgr = Manager::Get()->GetLogManager();
     wxString tmpStringA, tmpStringB, tmpStringC;
     wxArrayString tmpArrayA, tmpArrayB, tmpArrayC;
-    wxString m_content;
     const wxChar * EOL = wxTextFile::GetEOL();
     ProjectsArray * arr = Manager::Get()->GetProjectManager()->GetProjects();
 
@@ -187,6 +621,12 @@ void CMakeListsExporter::RunExport()
             m_content.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_content.append(EOL);
             // ====================================================================================
+            // Global variables - GVS_EXPORT_DEFAULT_ONLY
+            ExportGlobalVariableSets(ExportMode::GVS_EXPORT_DEFAULT_ONLY);
+            // ====================================================================================
+            m_content.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+            m_content.append(EOL);
+            // ====================================================================================
             // Compiler search directories
             tmpArrayA = AppendOptionsArray(project->GetIncludeDirs(), buildTarget->GetIncludeDirs(), buildTarget->GetOptionRelation(ortIncludeDirs));
             tmpStringA.Clear();
@@ -225,7 +665,14 @@ void CMakeListsExporter::RunExport()
             if (!tmpStringA.IsEmpty())
             {
                 m_content.append(wxString::Format("# Compiler flags:%s", EOL));
-                m_content.append(wxString::Format("set( CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringA, EOL));
+                wxString tmpStringCVT = tmpStringA.Clone();
+                ConvertMacros(tmpStringCVT);
+                m_content.append(wxString::Format("set( CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringCVT, EOL));
+                // Uncomment for debugging:
+                // m_content.append(wxString::Format("# set( CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringA, EOL));
+                // tmpStringCVT = tmpStringA.Clone();
+                // ExpandMacros(tmpStringCVT);
+                // m_content.append(wxString::Format("# set( CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringCVT, EOL));
                 m_content.append(EOL);
             }
 
@@ -256,7 +703,7 @@ void CMakeListsExporter::RunExport()
                 m_content.append(EOL);
             }
 
-            // ==============================================================================================================================================================
+            // ====================================================================================
             // Linker options
             tmpArrayA = AppendOptionsArray(project->GetLinkerOptions(), buildTarget->GetLinkerOptions(), buildTarget->GetOptionRelation(ortLinkerOptions));
             tmpStringA.Clear();
@@ -418,9 +865,10 @@ void CMakeListsExporter::RunExport()
                 {
                     m_content.append(wxString::Format("# %s%s", tmpArrayA[j], EOL));
                 }
+
+                m_content.append(EOL);
             }
 
-            m_content.append(EOL);
             // ====================================================================================
             // After build commands
             tmpArrayA = buildTarget->GetCommandsAfterBuild();
@@ -433,6 +881,8 @@ void CMakeListsExporter::RunExport()
                 {
                     m_content.append(wxString::Format("# %s%s", tmpArrayA[j], EOL));
                 }
+
+                m_content.append(EOL);
             }
 
             tmpArrayA = project->GetCommandsAfterBuild();
@@ -445,8 +895,23 @@ void CMakeListsExporter::RunExport()
                 {
                     m_content.append(wxString::Format("# %s%s", tmpArrayA[j], EOL));
                 }
+
+                m_content.append(EOL);
             }
 
+            // ====================================================================================
+            m_content.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+            m_content.append(EOL);
+            // ====================================================================================
+            // Global variables - GVS_EXPORT_NON_DEFAULT
+            ExportGlobalVariableSets(ExportMode::GVS_EXPORT_NON_DEFAULT);
+            // ====================================================================================
+            m_content.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+            m_content.append(EOL);
+            // ====================================================================================
+            // Macros
+            ExportMacros();
+            // ====================================================================================
             //output file
             wxFileName wxfProjectFileName(project->GetFilename());
             wxString wxsFileName = ValidateFilename(wxString::Format("%sCMakeLists_%s_%s_%s.txt", wxfProjectFileName.GetPathWithSep(), wxfProjectFileName.GetName(), projectTitle, targetTitle));
@@ -454,4 +919,6 @@ void CMakeListsExporter::RunExport()
             logMgr->DebugLog(wxString::Format("Exported file: %s", wxsFileName));
         }
     }
+
+    m_content = wxEmptyString;
 }
