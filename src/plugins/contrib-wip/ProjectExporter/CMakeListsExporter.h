@@ -26,16 +26,16 @@ class CMakeListsExporter : public ExporterBase
             GVS_EXPORT_NON_DEFAULT
         };
 
-        void ExpandMacros(wxString& buffer, bool subrequest = false);
-        void ConvertMacros(wxString& buffer, bool subrequest = false);
+        void ExpandMacros(wxString & buffer, bool subrequest = false);
+        void ConvertMacros(wxString & buffer, bool subrequest = false);
         void ExportGlobalVariableSets(ExportMode eMode);
         void ExportMacros();
 
-        wxString ValidateFilename(const wxString& iFileName);
-        wxString GetHumanReadableOptionRelation(ProjectBuildTarget* buildTarget, OptionsRelationType type);
+        wxString ValidateFilename(const wxString & iFileName);
+        wxString GetHumanReadableOptionRelation(ProjectBuildTarget * buildTarget, OptionsRelationType type);
 
-        wxString        m_content;
-        wxArrayString   m_options;
+        wxString        m_ContentCMakeListTarget;
+        wxString        m_ContentCMakeListGlobalVariables;
         wxRegEx         m_RE_Unix;
         wxRegEx         m_RE_DOS;
 
