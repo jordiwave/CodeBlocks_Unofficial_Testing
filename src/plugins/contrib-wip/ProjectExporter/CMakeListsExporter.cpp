@@ -1,6 +1,7 @@
 // System include files
 #include <wx/filename.h>
 #include <wx/textfile.h>
+#include <wx/filefn.h>
 
 // CB include files
 #include <sdk.h> // Code::Blocks SDK
@@ -345,7 +346,6 @@ void CMakeListsExporter::ConvertMacros(wxString & buffer)
 
 void CMakeListsExporter::ExportGlobalVariableSets(ExportMode eMode)
 {
-    const wxChar * EOL = wxTextFile::GetEOL();
     ConfigManager * pCfgMan = Manager::Get()->GetConfigManager("gcv");
 
     if (pCfgMan)
@@ -421,7 +421,6 @@ void CMakeListsExporter::ExportGlobalVariableSets(ExportMode eMode)
 
 void CMakeListsExporter::ExportMacros()
 {
-    const wxChar * EOL = wxTextFile::GetEOL();
     MacrosManager * macroMan = Manager::Get()->GetMacrosManager();
 
     if (macroMan)
@@ -451,6 +450,68 @@ void CMakeListsExporter::ExportMacros()
     }
 
     m_ContentCMakeListGlobalVariables.append(EOL);
+}
+
+void CMakeListsExporter::ExportGlobalVariables()
+{
+    m_ContentCMakeListGlobalVariables  = wxEmptyString;
+    m_sGlobalVariableFileName = wxEmptyString;
+    cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+
+    if (pWorkspace)
+    {
+        FileManager * fileMgr = Manager::Get()->GetFileManager();
+        LogManager * logMgr = Manager::Get()->GetLogManager();
+        // ====================================================================================
+        // Global variables - GVS_EXPORT_DEFAULT_ONLY
+        ExportGlobalVariableSets(ExportMode::GVS_EXPORT_DEFAULT_ONLY);
+        // ====================================================================================
+        m_ContentCMakeListGlobalVariables.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+        m_ContentCMakeListGlobalVariables.append(EOL);
+        // ====================================================================================
+        // Global variables - GVS_EXPORT_NON_DEFAULT
+        ExportGlobalVariableSets(ExportMode::GVS_EXPORT_NON_DEFAULT);
+        // ====================================================================================
+        m_ContentCMakeListGlobalVariables.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+        m_ContentCMakeListGlobalVariables.append(EOL);
+        // ====================================================================================
+        // Macros
+        ExportMacros();
+        // ====================================================================================
+        // Save the global variables to a file
+        wxString wxsFileName = wxEmptyString;
+        const wxString sGlobalVariableFileName("CMakeLists_GlobalVariablesCodeBlocks_Windows.txt");
+        cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+
+        if (pWorkspace && pWorkspace->IsOK())
+        {
+            wxFileName wxfWorkspaceFileName(pWorkspace->GetFilename());
+            wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfWorkspaceFileName.GetPathWithSep(), sGlobalVariableFileName));
+        }
+        else
+        {
+            cbProject * project = Manager::Get()->GetProjectManager()->GetProjects()->Item(0);
+
+            if (project)
+            {
+                wxFileName wxfProjectFileName(project->GetFilename());
+                wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfProjectFileName.GetPathWithSep(), sGlobalVariableFileName));
+            }
+        }
+
+        if (!wxsFileName.IsEmpty())
+        {
+            fileMgr->Save(wxsFileName, m_ContentCMakeListGlobalVariables, wxFONTENCODING_SYSTEM, true, true);
+            logMgr->DebugLog(wxString::Format("Exported file: %s", wxsFileName));
+            m_sGlobalVariableFileName = wxsFileName.Clone();
+        }
+        else
+        {
+            logMgr->DebugLogError(wxString::Format("Could not export the global variables!!!"));
+        }
+    }
+
+    m_ContentCMakeListGlobalVariables = wxEmptyString;
 }
 
 wxString CMakeListsExporter::ValidateFilename(const wxString & iFileName)
@@ -501,15 +562,56 @@ wxString CMakeListsExporter::GetHumanReadableOptionRelation(ProjectBuildTarget *
     return result;
 }
 
+wxString CMakeListsExporter::GetTargetRootDirectory(ProjectBuildTarget * buildTarget, wxString & wsRelTargetRootDirectory)
+{
+    wxFileName wxfTargetFileName;
+    FilesList & filesList = buildTarget->GetFilesList();
+
+    for (FilesList::iterator j = filesList.begin(); j != filesList.end(); j++)
+    {
+        ProjectFile * pf = *j;
+        wxString cfn(pf->relativeFilename);
+
+        if (cfn.Right(4) == ".cpp" || cfn.Right(2) == ".c" || cfn.Right(3) == ".cc" || cfn.Right(4) == ".cxx")
+        {
+            if (pf->compile)
+            {
+                if (!wxfTargetFileName.Exists())
+                {
+                    wsRelTargetRootDirectory = cfn.Clone();
+                    wxfTargetFileName.Assign(cfn);
+                }
+                else
+                {
+                    wxFileName wxfSrcFile(cfn);
+
+                    if (wxfSrcFile.GetDirCount() < wxfTargetFileName.GetDirCount())
+                    {
+                        wsRelTargetRootDirectory = cfn.Clone();
+                        wxfTargetFileName.Assign(cfn);
+                    }
+                }
+            }
+        }
+    }
+
+    return wxfTargetFileName.GetFullPath();
+}
+
 void CMakeListsExporter::RunExport()
 {
+    ExportGlobalVariables();
+
+    if (m_sGlobalVariableFileName.IsEmpty())
+    {
+        return;
+    }
+
     m_ContentCMakeListTarget = wxEmptyString;
     FileManager * fileMgr = Manager::Get()->GetFileManager();
     LogManager * logMgr = Manager::Get()->GetLogManager();
     wxString tmpStringA, tmpStringB, tmpStringC;
     wxArrayString tmpArrayA, tmpArrayB, tmpArrayC;
-    const wxChar * EOL = wxTextFile::GetEOL();
-    const wxString sGlobalVariableFileName("CMakeLists_GlobalVariablesCodeBlocks_Windows.txt");
     ProjectsArray * arr = Manager::Get()->GetProjectManager()->GetProjects();
 
     for (unsigned int i = 0; i < arr->GetCount(); ++i)
@@ -576,6 +678,9 @@ void CMakeListsExporter::RunExport()
                     break;
             }
 
+            wxString wsRelTargetRootDirectory;
+            wxString sTargetRootDir = GetTargetRootDirectory(buildTarget, wsRelTargetRootDirectory);
+            m_ContentCMakeListTarget.append(wxString::Format("# Target detected root directory:  %s (%s)%s", sTargetRootDir, wsRelTargetRootDirectory, EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Target Options:%s", EOL));
             m_ContentCMakeListTarget.append(wxString::Format("#                 projectCompilerOptionsRelation: %s%s",     GetHumanReadableOptionRelation(buildTarget, ortCompilerOptions), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("#                 projectLinkerOptionsRelation: %s%s",       GetHumanReadableOptionRelation(buildTarget, ortLinkerOptions), EOL));
@@ -586,8 +691,16 @@ void CMakeListsExporter::RunExport()
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-            m_ContentCMakeListTarget.append(wxString::Format("# Include global variable definitions:%s", EOL));
-            m_ContentCMakeListTarget.append(wxString::Format("include(%s)%s", sGlobalVariableFileName, EOL));
+            // ====================================================================================
+            m_ContentCMakeListTarget.append(wxString::Format("# Include global variable definition file:%s", EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("include(%s)%s", UnixFilename(m_sGlobalVariableFileName, wxPATH_UNIX), EOL));
+            m_ContentCMakeListTarget.append(EOL);
+            // ====================================================================================
+            m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+            m_ContentCMakeListTarget.append(EOL);
+            // ====================================================================================
+            m_ContentCMakeListTarget.append(wxString::Format("# Include CMakePrintHelpers module:%s", EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("include(CMakePrintHelpers)%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
@@ -621,100 +734,28 @@ void CMakeListsExporter::RunExport()
             {
                 if ((tmpArrayA[j].Left(2) == "-D") || (tmpArrayA[j].Left(2) == "/D"))
                 {
-                    tmpStringB += wxString::Format("add_definitions(%s)%s", tmpArrayA[j], EOL);
+                    wxString tmpStringCVT = tmpArrayA[j].Clone();
+                    ConvertMacros(tmpStringCVT);
+                    tmpStringB += wxString::Format("add_definitions(%s)%s", tmpStringCVT, EOL);
                 }
                 else
                 {
-                    tmpStringA += wxString::Format("%s%s                      ", tmpArrayA[j], EOL);
+                    wxString tmpStringCVT = tmpArrayA[j].Clone();
+                    ConvertMacros(tmpStringCVT);
+                    tmpStringA += wxString::Format("set( CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringCVT, EOL);
                 }
             }
 
             if (!tmpStringA.IsEmpty())
             {
                 m_ContentCMakeListTarget.append(wxString::Format("# Compiler flags:%s", EOL));
-                wxString tmpStringCVT = tmpStringA.Clone();
-                ConvertMacros(tmpStringCVT);
-                m_ContentCMakeListTarget.append(wxString::Format("set( CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringCVT, EOL));
-                // Uncomment for debugging:
-                // m_ContentCMakeListTarget.append(wxString::Format("# set( CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringA, EOL));
-                // tmpStringCVT = tmpStringA.Clone();
-                // ExpandMacros(tmpStringCVT);
-                // m_ContentCMakeListTarget.append(wxString::Format("# set( CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringCVT, EOL));
-                m_ContentCMakeListTarget.append(EOL);
+                m_ContentCMakeListTarget.append(wxString::Format("%s%s", tmpStringA, EOL));
             }
 
             if (!tmpStringB.IsEmpty())
             {
                 m_ContentCMakeListTarget.append(wxString::Format("# Compiler Definitions:%s", EOL));
-                tmpStringB.Replace("/", "\\");
-                ConvertMacros(tmpStringB);
                 m_ContentCMakeListTarget.append(wxString::Format("%s%s", tmpStringB, EOL));
-            }
-
-            // ====================================================================================
-            m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
-            m_ContentCMakeListTarget.append(EOL);
-            // ====================================================================================
-            // Linker search directories
-            tmpArrayA = AppendOptionsArray(project->GetLibDirs(), buildTarget->GetLibDirs(), buildTarget->GetOptionRelation(ortLibDirs));
-
-            if (!tmpArrayA.IsEmpty())
-            {
-                m_ContentCMakeListTarget.append(wxString::Format("# Linker search paths:%s", EOL));
-                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_DIR_LIST)%s", EOL));
-
-                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
-                {
-                    tmpStringA = tmpArrayA[j].Clone();
-                    ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_DIR_LIST \"${LINKER_DIR_LIST} %s\")%s", tmpStringA, EOL));
-                }
-
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(%s ${LINKER_DIR_LIST})%s", targetTitle, EOL));
-                m_ContentCMakeListTarget.append(EOL);
-                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_DIR_LIST)%s", EOL));
-                m_ContentCMakeListTarget.append(EOL);
-            }
-
-            // ====================================================================================
-            // Linker options
-            tmpArrayA = AppendOptionsArray(project->GetLinkerOptions(), buildTarget->GetLinkerOptions(), buildTarget->GetOptionRelation(ortLinkerOptions));
-
-            if (!tmpArrayA.IsEmpty())
-            {
-                m_ContentCMakeListTarget.append(wxString::Format("# Linker options:%s", EOL));
-                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_OPTIONS_LIST)%s", EOL));
-
-                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
-                {
-                    tmpStringA = tmpArrayA[j].Clone();
-                    ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_OPTIONS_LIST \"${LINKER_OPTIONS_LIST} %s\")%s", tmpStringA, EOL));
-                }
-
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_options(%s PRIVATE ${LINKER_OPTIONS_LIST})%s", targetTitle, EOL));
-                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_OPTIONS_LIST)%s", EOL));
-                m_ContentCMakeListTarget.append(EOL);
-            }
-
-            tmpArrayA = AppendOptionsArray(project->GetLinkLibs(), buildTarget->GetLinkLibs(), buildTarget->GetOptionRelation(ortLibDirs));
-
-            if (!tmpArrayA.IsEmpty())
-            {
-                m_ContentCMakeListTarget.append(wxString::Format("# Linker libraries to include:%s", EOL));
-                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
-
-                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
-                {
-                    tmpStringA = tmpArrayA[j].Clone();
-                    ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_LIBRARIES_LIST \"${LINKER_LIBRARIES_LIST} %s\")%s", tmpStringA, EOL));
-                }
-
-                ConvertMacros(tmpStringA);
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(%s ${LINKER_LIBRARIES_LIST})%s", targetTitle,  EOL));
-                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
-                m_ContentCMakeListTarget.append(EOL);
             }
 
             // ====================================================================================
@@ -755,6 +796,7 @@ void CMakeListsExporter::RunExport()
 
             if (!tmpArraySrc.IsEmpty())
             {
+                bool bIsFirstEntry = true;
                 tmpArraySrc.Sort();
                 m_ContentCMakeListTarget.append(wxString::Format("# Source files to compile:%s", EOL));
                 m_ContentCMakeListTarget.append(wxString::Format("unset(SOURCE_FILES)%s", EOL));
@@ -764,7 +806,16 @@ void CMakeListsExporter::RunExport()
                     tmpStringA = tmpArraySrc[j];
                     tmpStringA.Replace("/", "\\");
                     ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES \"${SOURCE_FILES} %s\")%s", tmpStringA, EOL));
+
+                    if (bIsFirstEntry)
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES \"%s\")%s", tmpStringA, EOL));
+                        bIsFirstEntry = false;
+                    }
+                    else
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES ${SOURCE_FILES} \"%s\")%s", tmpStringA, EOL));
+                    }
                 }
 
                 m_ContentCMakeListTarget.append(EOL);
@@ -783,7 +834,7 @@ void CMakeListsExporter::RunExport()
 
                     if ((buildTarget->GetTargetType() == ttStaticLib) || (buildTarget->GetTargetType() == ttDynamicLib))
                     {
-                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES \"${SOURCE_FILES} %s\")%s", tmpStringA, EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES ${SOURCE_FILES} \"%s\")%s", tmpStringA, EOL));
                     }
                     else
                     {
@@ -794,9 +845,142 @@ void CMakeListsExporter::RunExport()
                 m_ContentCMakeListTarget.append(EOL);
             }
 
-            m_ContentCMakeListTarget.append(wxString::Format("add_library(%s ${SOURCE_FILES})%s", targetTitle, EOL));
+            // ====================================================================================
+            // Target Output Type with source fikes
+            switch (buildTarget->GetTargetType())
+            {
+                case ttExecutable:
+                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttExecutable%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(${PROJECT_NAME} ${SOURCE_FILES})%s", EOL));
+                    break;
+
+                case ttConsoleOnly:
+                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttConsoleOnly%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(${PROJECT_NAME} ${SOURCE_FILES})%s", EOL));
+                    break;
+
+                case ttStaticLib:
+                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttStaticLib%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})%s", EOL));
+                    break;
+
+                case ttDynamicLib:
+                    if (buildTarget->GetCreateStaticLib() || buildTarget->GetCreateDefFile())
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - DLL%s", EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})%s", EOL));
+                    }
+                    else
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - module%s",  EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})%s", EOL));
+                    }
+
+                    break;
+
+                default:
+                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: unrecognized target type%s", EOL));
+                    Manager::Get()->GetLogManager()->LogError("Warning: \"" + targetTitle + "\" is of an unrecognized target type; skipping...");
+                    break;
+            }
+
             m_ContentCMakeListTarget.append(wxString::Format("unset(SOURCE_FILES)%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
+            // ====================================================================================
+            m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+            m_ContentCMakeListTarget.append(EOL);
+            // ====================================================================================
+            // Linker search directories
+            tmpArrayA = AppendOptionsArray(project->GetLibDirs(), buildTarget->GetLibDirs(), buildTarget->GetOptionRelation(ortLibDirs));
+
+            if (!tmpArrayA.IsEmpty())
+            {
+                bool bIsFirstEntry = true;
+                m_ContentCMakeListTarget.append(wxString::Format("# Linker search paths:%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_DIR_LIST)%s", EOL));
+
+                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
+                {
+                    tmpStringA = tmpArrayA[j].Clone();
+                    ConvertMacros(tmpStringA);
+
+                    if (bIsFirstEntry)
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_DIR_LIST \"%s\")%s", tmpStringA, EOL));
+                        bIsFirstEntry = false;
+                    }
+                    else
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_DIR_LIST ${LINKER_DIR_LIST} \"%s\")%s", tmpStringA, EOL));
+                    }
+                }
+
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(${PROJECT_NAME} PRIVATE ${LINKER_DIR_LIST})%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_DIR_LIST)%s", EOL));
+                m_ContentCMakeListTarget.append(EOL);
+            }
+
+            // ====================================================================================
+            // Linker options
+            tmpArrayA = AppendOptionsArray(project->GetLinkerOptions(), buildTarget->GetLinkerOptions(), buildTarget->GetOptionRelation(ortLinkerOptions));
+
+            if (!tmpArrayA.IsEmpty())
+            {
+                bool bIsFirstEntry = true;
+                m_ContentCMakeListTarget.append(wxString::Format("# Linker options:%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_OPTIONS_LIST)%s", EOL));
+
+                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
+                {
+                    tmpStringA = tmpArrayA[j].Clone();
+                    ConvertMacros(tmpStringA);
+
+                    if (bIsFirstEntry)
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_OPTIONS_LIST \"%s\")%s", tmpStringA, EOL));
+                        bIsFirstEntry = false;
+                    }
+                    else
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_OPTIONS_LIST ${LINKER_OPTIONS_LIST} \"%s\")%s", tmpStringA, EOL));
+                    }
+                }
+
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_options(${PROJECT_NAME} PRIVATE ${LINKER_OPTIONS_LIST})%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_OPTIONS_LIST)%s", EOL));
+                m_ContentCMakeListTarget.append(EOL);
+            }
+
+            tmpArrayA = AppendOptionsArray(project->GetLinkLibs(), buildTarget->GetLinkLibs(), buildTarget->GetOptionRelation(ortLibDirs));
+
+            if (!tmpArrayA.IsEmpty())
+            {
+                bool bIsFirstEntry = true;
+                m_ContentCMakeListTarget.append(wxString::Format("# Linker libraries to include:%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
+
+                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
+                {
+                    tmpStringA = tmpArrayA[j].Clone();
+                    ConvertMacros(tmpStringA);
+
+                    if (bIsFirstEntry)
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_LIBRARIES_LIST \"%s\")%s", tmpStringA, EOL));
+                        bIsFirstEntry = false;
+                    }
+                    else
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_LIBRARIES_LIST ${LINKER_LIBRARIES_LIST} \"%s\")%s", tmpStringA, EOL));
+                    }
+                }
+
+                ConvertMacros(tmpStringA);
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(${PROJECT_NAME} ${LINKER_LIBRARIES_LIST})%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
+                m_ContentCMakeListTarget.append(EOL);
+            }
+
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
@@ -816,7 +1000,7 @@ void CMakeListsExporter::RunExport()
                     tmpStringA = tmpArrayRes[j];
                     tmpStringA.Replace("/", "\\");
                     ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("    add_library(%s \"%s\")%s", targetTitle, tmpStringA, EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("    add_library(${PROJECT_NAME} \"%s\")%s", tmpStringA, EOL));
                 }
 
                 m_ContentCMakeListTarget.append(EOL);
@@ -842,48 +1026,6 @@ void CMakeListsExporter::RunExport()
             }
 
             // ====================================================================================
-            m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
-            m_ContentCMakeListTarget.append(EOL);
-
-            // ====================================================================================
-            // Target Output Type
-            switch (buildTarget->GetTargetType())
-            {
-                case ttExecutable:
-                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttExecutable%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(%s)%s", targetTitle, EOL));
-                    break;
-
-                case ttConsoleOnly:
-                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttConsoleOnly%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(%s)%s", targetTitle, EOL));
-                    break;
-
-                case ttStaticLib:
-                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttStaticLib%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("add_library(%s STATIC)%s", targetTitle, EOL));
-                    break;
-
-                case ttDynamicLib:
-                    if (buildTarget->GetCreateStaticLib() || buildTarget->GetCreateDefFile())
-                    {
-                        m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - DLL%s", EOL));
-                        m_ContentCMakeListTarget.append(wxString::Format("add_library(%s SHARED)%s", targetTitle,  EOL));
-                    }
-                    else
-                    {
-                        m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - module%s",  EOL));
-                        m_ContentCMakeListTarget.append(wxString::Format("add_library(%s SHARED)%s", targetTitle, EOL));
-                    }
-
-                    break;
-
-                default:
-                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: unrecognized target type%s", EOL));
-                    Manager::Get()->GetLogManager()->LogError("Warning: \"" + targetTitle + "\" is of an unrecognized target type; skipping...");
-                    break;
-            }
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
@@ -957,6 +1099,35 @@ void CMakeListsExporter::RunExport()
             m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
             //output file
+            wxFileName wxfTargetFileName(sTargetRootDir);
+
+            if (wxfTargetFileName.DirExists())
+            {
+                wxfTargetFileName.SetFullName("CMakeLists.txt");
+                wxString wsFullFileName(wxfTargetFileName.GetFullPath());
+
+                if (wxfTargetFileName.FileExists())
+                {
+                    logMgr->DebugLogError(wxString::Format("Deleting file: %s!!!", wsFullFileName));
+                    ::wxRemoveFile(wxfTargetFileName.GetFullPath());
+
+                    if (wxfTargetFileName.FileExists())
+                    {
+                        logMgr->DebugLogError(wxString::Format("File still exists: %s!!!", wsFullFileName));
+                    }
+                }
+
+                if (!wxfTargetFileName.FileExists())
+                {
+                    fileMgr->Save(wsFullFileName, m_ContentCMakeListTarget, wxFONTENCODING_SYSTEM, true, true);
+                    logMgr->DebugLog(wxString::Format("Exported file: %s", wsFullFileName));
+                }
+            }
+            else
+            {
+                logMgr->DebugLogError(wxString::Format("Could not save CMakeLists.txt in the missing directory: %s!!!", wxfTargetFileName.GetFullPath()));
+            }
+
             wxFileName wxfProjectFileName(project->GetFilename());
             wxString wxsFileName = ValidateFilename(wxString::Format("%sCMakeLists_%s_%s_%s.txt", wxfProjectFileName.GetPathWithSep(), wxfProjectFileName.GetName(), projectTitle, targetTitle));
             fileMgr->Save(wxsFileName, m_ContentCMakeListTarget, wxFONTENCODING_SYSTEM, true, true);
@@ -964,58 +1135,5 @@ void CMakeListsExporter::RunExport()
         }
     }
 
-    m_ContentCMakeListGlobalVariables = wxEmptyString;
-    cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
-
-    if (pWorkspace)
-    {
-        // ====================================================================================
-        // Global variables - GVS_EXPORT_DEFAULT_ONLY
-        ExportGlobalVariableSets(ExportMode::GVS_EXPORT_DEFAULT_ONLY);
-        // ====================================================================================
-        m_ContentCMakeListGlobalVariables.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
-        m_ContentCMakeListGlobalVariables.append(EOL);
-        // ====================================================================================
-        // Global variables - GVS_EXPORT_NON_DEFAULT
-        ExportGlobalVariableSets(ExportMode::GVS_EXPORT_NON_DEFAULT);
-        // ====================================================================================
-        m_ContentCMakeListGlobalVariables.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
-        m_ContentCMakeListGlobalVariables.append(EOL);
-        // ====================================================================================
-        // Macros
-        ExportMacros();
-        // ====================================================================================
-        // Save the global variables to a file
-        wxString wxsFileName = wxEmptyString;
-        cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
-
-        if (pWorkspace && pWorkspace->IsOK())
-        {
-            wxFileName wxfWorkspaceFileName(pWorkspace->GetFilename());
-            wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfWorkspaceFileName.GetPathWithSep(), sGlobalVariableFileName));
-        }
-        else
-        {
-            cbProject * project = Manager::Get()->GetProjectManager()->GetProjects()->Item(0);
-
-            if (project)
-            {
-                wxFileName wxfProjectFileName(project->GetFilename());
-                wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfProjectFileName.GetPathWithSep(), sGlobalVariableFileName));
-            }
-        }
-
-        if (!wxsFileName.IsEmpty())
-        {
-            fileMgr->Save(wxsFileName, m_ContentCMakeListGlobalVariables, wxFONTENCODING_SYSTEM, true, true);
-            logMgr->DebugLog(wxString::Format("Exported file: %s", wxsFileName));
-        }
-        else
-        {
-            logMgr->DebugLogError(wxString::Format("Could not export the global variables!!!"));
-        }
-    }
-
-    m_ContentCMakeListGlobalVariables = wxEmptyString;
     m_ContentCMakeListTarget = wxEmptyString;
 }

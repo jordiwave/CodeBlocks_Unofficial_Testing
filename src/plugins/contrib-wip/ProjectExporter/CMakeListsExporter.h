@@ -3,6 +3,7 @@
 
 // System include files
 #include <wx/regex.h>
+#include <wx/textfile.h>
 
 // ProjectExporter include files
 #include "ExporterBase.h"
@@ -30,15 +31,18 @@ class CMakeListsExporter : public ExporterBase
         void ConvertMacros(wxString & buffer);
         void ExportGlobalVariableSets(ExportMode eMode);
         void ExportMacros();
+        void ExportGlobalVariables();
+        wxString GetTargetRootDirectory(ProjectBuildTarget * buildTarget, wxString & wsRelTargetRootDirectory);
 
         wxString ValidateFilename(const wxString & iFileName);
         wxString GetHumanReadableOptionRelation(ProjectBuildTarget * buildTarget, OptionsRelationType type);
 
+        const wxChar * EOL = wxTextFile::GetEOL();
         wxString        m_ContentCMakeListTarget;
         wxString        m_ContentCMakeListGlobalVariables;
+        wxString        m_sGlobalVariableFileName;
         wxRegEx         m_RE_Unix;
         wxRegEx         m_RE_DOS;
-
 };
 
 #endif // __CMAKELISTSEXPORTER_H__
