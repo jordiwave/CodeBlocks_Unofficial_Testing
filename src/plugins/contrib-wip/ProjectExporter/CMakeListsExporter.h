@@ -26,8 +26,8 @@ class CMakeListsExporter : public ExporterBase
             GVS_EXPORT_NON_DEFAULT
         };
 
-        void ExpandMacros(wxString & buffer, bool subrequest = false);
-        void ConvertMacros(wxString & buffer, bool subrequest = false);
+        void ExpandMacros(wxString & buffer);
+        void ConvertMacros(wxString & buffer);
         void ExportGlobalVariableSets(ExportMode eMode);
         void ExportMacros();
 

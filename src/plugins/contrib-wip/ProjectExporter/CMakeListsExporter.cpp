@@ -18,19 +18,16 @@
 CMakeListsExporter::CMakeListsExporter()
 {
     // Does not support C::B ${variable}. Supports $(variable)
-    //  m_RE_Unix.Compile("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[\\)} /\\\\]?)", wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_Unix.Compile("([^$]|^)(\\$[(]?(#?[A-Za-z_0-9.]+)[\\) /\\\\]?)", wxRE_EXTENDED | wxRE_NEWLINE);
     // MSDOS %VARIABLE%
     m_RE_DOS.Compile("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)", wxRE_EXTENDED | wxRE_NEWLINE);
-    //ctor
 }
 
 CMakeListsExporter::~CMakeListsExporter()
 {
-    //dtor
 }
 
-void CMakeListsExporter::ExpandMacros(wxString & buffer, bool subrequest)
+void CMakeListsExporter::ExpandMacros(wxString & buffer)
 {
     if (buffer.IsEmpty())
     {
@@ -45,138 +42,133 @@ void CMakeListsExporter::ExpandMacros(wxString & buffer, bool subrequest)
 
     static const wxString delim("$%[");
 
-    if (buffer.find_first_of(delim) == wxString::npos)
+    if (buffer.find_first_of(delim) != wxString::npos)
     {
-        return;
-    }
+        // See macromanager.cpp MacrosManager::ReplaceMacros function for where this code was taken from
+        static const wxString const_COIN("COIN");
+        static const wxString const_RANDOM("RANDOM");
+        static const wxString toNativePath("$TO_NATIVE_PATH{");
+        static const wxString toUnixPath("$TO_UNIX_PATH{");
+        static const wxString toWindowsPath("$TO_WINDOWS_PATH{");
+        wxString search;
+        wxString replace;
+        UserVariableManager * pUsrVarMan = Manager::Get()->GetUserVariableManager();
+        MacrosManager * macroMan = Manager::Get()->GetMacrosManager();
+        const MacrosMap & Macros = macroMan->GetMacros();
 
-    // See macromanager.cpp MacrosManager::ReplaceMacros function for where this code was taken from
-    static const wxString const_COIN("COIN");
-    static const wxString const_RANDOM("RANDOM");
-    static const wxString toNativePath("$TO_NATIVE_PATH{");
-    static const wxString toUnixPath("$TO_UNIX_PATH{");
-    static const wxString toWindowsPath("$TO_WINDOWS_PATH{");
-    wxString search;
-    wxString replace;
-    UserVariableManager * pUsrVarMan = Manager::Get()->GetUserVariableManager();
-    MacrosManager * macroMan = Manager::Get()->GetMacrosManager();
-    const MacrosMap & Macros = macroMan->GetMacros();
-
-    while (m_RE_Unix.Matches(buffer))
-    {
-        replace.Empty();
-        search = m_RE_Unix.GetMatch(buffer, 2);
-        wxString var = m_RE_Unix.GetMatch(buffer, 3).Upper();
-
-        if (var.GetChar(0) == '#')
+        while (m_RE_Unix.Matches(buffer))
         {
-            replace = UnixFilename(pUsrVarMan->Replace(var));
-        }
-        else
-        {
-            if (var.compare(const_COIN) == 0)
+            replace.Empty();
+            search = m_RE_Unix.GetMatch(buffer, 2);
+            wxString var = m_RE_Unix.GetMatch(buffer, 3).Upper();
+
+            if (var.GetChar(0) == '#')
             {
-                replace.assign(1u, (rand() & 1) ? '1' : '0');
+                replace = UnixFilename(pUsrVarMan->Replace(var));
             }
             else
-                if (var.compare(const_RANDOM) == 0)
+            {
+                if (var.compare(const_COIN) == 0)
                 {
-                    replace = wxString::Format("%d", rand() & 0xffff);
+                    replace.assign(1u, (rand() & 1) ? '1' : '0');
                 }
                 else
-                {
-                    if (!Macros.empty())
+                    if (var.compare(const_RANDOM) == 0)
                     {
-                        MacrosMap::const_iterator it;
-
-                        if ((it = Macros.find(var)) != Macros.end())
+                        replace = wxString::Format("%d", rand() & 0xffff);
+                    }
+                    else
+                    {
+                        if (!Macros.empty())
                         {
-                            replace = it->second;
+                            MacrosMap::const_iterator it;
+
+                            if ((it = Macros.find(var)) != Macros.end())
+                            {
+                                replace = it->second;
+                            }
                         }
                     }
-                }
-        }
+            }
 
-        const wxChar l = search.Last(); // make non-braced variables work
+            const wxChar l = search.Last(); // make non-braced variables work
 
-        if (l == '/' || l == '\\' || l == '$' || l == ' ')
-        {
-            replace.append(l);
-        }
-
-        if (replace.IsEmpty())
-        {
-            wxGetEnv(var, &replace);
-        }
-
-        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
-        {
-            buffer.Replace(search, "", false);
-        }
-        else
-        {
-            buffer.Replace(search, replace, false);
-        }
-    }
-
-    while (m_RE_DOS.Matches(buffer))
-    {
-        replace.Empty();
-        search = m_RE_DOS.GetMatch(buffer, 2);
-        wxString var = m_RE_DOS.GetMatch(buffer, 3).Upper();
-
-        if (var.GetChar(0) == '#')
-        {
-            replace = UnixFilename(pUsrVarMan->Replace(var));
-        }
-        else
-        {
-            if (var.compare(const_COIN) == 0)
+            if (l == '/' || l == '\\' || l == '$' || l == ' ')
             {
-                replace.assign(1u, (rand() & 1) ? '1' : '0');
+                replace.append(l);
+            }
+
+            if (replace.IsEmpty())
+            {
+                wxGetEnv(var, &replace);
+            }
+
+            if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+            {
+                buffer.Replace(search, "", false);
             }
             else
-                if (var.compare(const_RANDOM) == 0)
+            {
+                buffer.Replace(search, replace, false);
+            }
+        }
+
+        while (m_RE_DOS.Matches(buffer))
+        {
+            replace.Empty();
+            search = m_RE_DOS.GetMatch(buffer, 2);
+            wxString var = m_RE_DOS.GetMatch(buffer, 3).Upper();
+
+            if (var.GetChar(0) == '#')
+            {
+                replace = UnixFilename(pUsrVarMan->Replace(var));
+            }
+            else
+            {
+                if (var.compare(const_COIN) == 0)
                 {
-                    replace = wxString::Format("%d", rand() & 0xffff);
+                    replace.assign(1u, (rand() & 1) ? '1' : '0');
                 }
                 else
-                {
-                    if (!Macros.empty())
+                    if (var.compare(const_RANDOM) == 0)
                     {
-                        MacrosMap::const_iterator it;
-
-                        if ((it = Macros.find(var)) != Macros.end())
+                        replace = wxString::Format("%d", rand() & 0xffff);
+                    }
+                    else
+                    {
+                        if (!Macros.empty())
                         {
-                            replace = it->second;
+                            MacrosMap::const_iterator it;
+
+                            if ((it = Macros.find(var)) != Macros.end())
+                            {
+                                replace = it->second;
+                            }
                         }
                     }
-                }
-        }
+            }
 
-        if (replace.IsEmpty())
-        {
-            wxGetEnv(var, &replace);
-        }
+            if (replace.IsEmpty())
+            {
+                wxGetEnv(var, &replace);
+            }
 
-        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
-        {
-            buffer.Replace(search, "", false);
-        }
-        else
-        {
-            buffer.Replace(search, replace, false);
+            if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+            {
+                buffer.Replace(search, "", false);
+            }
+            else
+            {
+                buffer.Replace(search, replace, false);
+            }
         }
     }
 
-    if (!subrequest)
-    {
-        buffer.Replace("%%", "%");
-        buffer.Replace("$$", "$");
-    }
+    buffer.Replace("%%", "%");
+    buffer.Replace("$$", "$");
 }
 
-void CMakeListsExporter::ConvertMacros(wxString & buffer, bool subrequest)
+void CMakeListsExporter::ConvertMacros(wxString & buffer)
 {
     if (buffer.IsEmpty())
     {
@@ -191,168 +183,164 @@ void CMakeListsExporter::ConvertMacros(wxString & buffer, bool subrequest)
 
     static const wxString delim("$%[");
 
-    if (buffer.find_first_of(delim) == wxString::npos)
+    if (buffer.find_first_of(delim) != wxString::npos)
     {
-        return;
-    }
+        // See macromanager.cpp MacrosManager::ReplaceMacros function for where this code was taken from
+        static const wxString const_COIN("COIN");
+        static const wxString const_RANDOM("RANDOM");
+        static const wxString toNativePath("$TO_NATIVE_PATH{");
+        static const wxString toUnixPath("$TO_UNIX_PATH{");
+        static const wxString toWindowsPath("$TO_WINDOWS_PATH{");
+        wxString search;
+        wxString replace;
+        // UserVariableManager* pUsrVarMan = Manager::Get()->GetUserVariableManager();
+        MacrosManager * macroMan = Manager::Get()->GetMacrosManager();
+        const MacrosMap & Macros = macroMan->GetMacros();
 
-    // See macromanager.cpp MacrosManager::ReplaceMacros function for where this code was taken from
-    static const wxString const_COIN("COIN");
-    static const wxString const_RANDOM("RANDOM");
-    static const wxString toNativePath("$TO_NATIVE_PATH{");
-    static const wxString toUnixPath("$TO_UNIX_PATH{");
-    static const wxString toWindowsPath("$TO_WINDOWS_PATH{");
-    wxString search;
-    wxString replace;
-    // UserVariableManager* pUsrVarMan = Manager::Get()->GetUserVariableManager();
-    MacrosManager * macroMan = Manager::Get()->GetMacrosManager();
-    const MacrosMap & Macros = macroMan->GetMacros();
-
-    while (m_RE_Unix.Matches(buffer))
-    {
-        replace.Empty();
-        search = m_RE_Unix.GetMatch(buffer, 2);
-        wxString var = m_RE_Unix.GetMatch(buffer, 3).Upper();
-
-        if (var.GetChar(0) == '#')
+        while (m_RE_Unix.Matches(buffer))
         {
-            replace = var.Upper();
+            replace.Empty();
+            search = m_RE_Unix.GetMatch(buffer, 2);
+            wxString var = m_RE_Unix.GetMatch(buffer, 3).Upper();
 
-            if (replace.Find('.') == wxNOT_FOUND)
+            if (var.GetChar(0) == '#')
             {
-                replace.Append(".BASE");
-            }
+                replace = var.Upper();
 
-            replace.Prepend("${GCV_");
-            replace.Replace("#", "");
-            replace.Replace(".", "_");
-            replace.Append("}");
-        }
-        else
-        {
-            if (var.compare(const_COIN) == 0)
-            {
-                replace.assign(1u, (rand() & 1) ? '1' : '0');
+                if (replace.Find('.') == wxNOT_FOUND)
+                {
+                    replace.Append(".BASE");
+                }
+
+                replace.Prepend("${GCV_");
+                replace.Replace("#", "");
+                replace.Replace(".", "_");
+                replace.Append("}");
             }
             else
-                if (var.compare(const_RANDOM) == 0)
+            {
+                if (var.compare(const_COIN) == 0)
                 {
-                    replace = wxString::Format("%d", rand() & 0xffff);
+                    replace.assign(1u, (rand() & 1) ? '1' : '0');
+                }
+                else
+                    if (var.compare(const_RANDOM) == 0)
+                    {
+                        replace = wxString::Format("%d", rand() & 0xffff);
+                    }
+                    else
+                    {
+                        if (!Macros.empty())
+                        {
+                            MacrosMap::const_iterator it;
+
+                            if ((it = Macros.find(var)) != Macros.end())
+                            {
+                                replace = it->second;
+                            }
+                        }
+                    }
+            }
+
+            const wxChar l = search.Last(); // make non-braced variables work
+
+            if (l == '/' || l == '\\' || l == '$' || l == ' ')
+            {
+                replace.append(l);
+            }
+
+            if (replace.IsEmpty() && search.StartsWith("$("))
+            {
+                replace = var.Upper();
+
+                if (replace.Find('.') == wxNOT_FOUND)
+                {
+                    replace.Append(".BASE");
+                }
+
+                replace.Prepend("${GCV_");
+                replace.Replace("#", "");
+                replace.Replace("(", "");
+                replace.Replace(")", "");
+                replace.Replace(".", "_");
+                replace.Append("}");
+            }
+
+            if (!replace.IsEmpty())
+            {
+                if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+                {
+                    buffer.Replace(search, "", false);
                 }
                 else
                 {
-                    if (!Macros.empty())
-                    {
-                        MacrosMap::const_iterator it;
+                    buffer.Replace(search, replace, false);
+                }
+            }
+        }
 
-                        if ((it = Macros.find(var)) != Macros.end())
+        while (m_RE_DOS.Matches(buffer))
+        {
+            replace.Empty();
+            search = m_RE_DOS.GetMatch(buffer, 2);
+            wxString var = m_RE_DOS.GetMatch(buffer, 3).Upper();
+
+            if (var.GetChar(0) == '#')
+            {
+                replace = var.Upper();
+
+                if (replace.Find('.') == wxNOT_FOUND)
+                {
+                    replace.Append(".BASE");
+                }
+
+                replace.Prepend("${GCV_");
+                replace.Replace("#", "");
+                replace.Replace(".", "_");
+                replace.Append("}");
+            }
+            else
+            {
+                if (var.compare(const_COIN) == 0)
+                {
+                    replace.assign(1u, (rand() & 1) ? '1' : '0');
+                }
+                else
+                    if (var.compare(const_RANDOM) == 0)
+                    {
+                        replace = wxString::Format("%d", rand() & 0xffff);
+                    }
+                    else
+                    {
+                        if (!Macros.empty())
                         {
-                            replace = it->second;
+                            MacrosMap::const_iterator it;
+
+                            if ((it = Macros.find(var)) != Macros.end())
+                            {
+                                replace = it->second;
+                            }
                         }
                     }
-                }
-        }
-
-        const wxChar l = search.Last(); // make non-braced variables work
-
-        if (l == '/' || l == '\\' || l == '$' || l == ' ')
-        {
-            replace.append(l);
-        }
-
-        if (replace.IsEmpty() && search.StartsWith("$("))
-        {
-            replace = var.Upper();
-
-            if (replace.Find('.') == wxNOT_FOUND)
-            {
-                replace.Append(".BASE");
             }
 
-            replace.Prepend("${GCV_");
-            replace.Replace("#", "");
-            replace.Replace("(", "");
-            replace.Replace(")", "");
-            replace.Replace(".", "_");
-            replace.Append("}");
-        }
-
-        if (!replace.IsEmpty())
-        {
-            if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+            if (!replace.IsEmpty())
             {
-                buffer.Replace(search, "", false);
-            }
-            else
-            {
-                buffer.Replace(search, replace, false);
-            }
-        }
-    }
-
-    while (m_RE_DOS.Matches(buffer))
-    {
-        replace.Empty();
-        search = m_RE_DOS.GetMatch(buffer, 2);
-        wxString var = m_RE_DOS.GetMatch(buffer, 3).Upper();
-
-        if (var.GetChar(0) == '#')
-        {
-            replace = var.Upper();
-
-            if (replace.Find('.') == wxNOT_FOUND)
-            {
-                replace.Append(".BASE");
-            }
-
-            replace.Prepend("${GCV_");
-            replace.Replace("#", "");
-            replace.Replace(".", "_");
-            replace.Append("}");
-        }
-        else
-        {
-            if (var.compare(const_COIN) == 0)
-            {
-                replace.assign(1u, (rand() & 1) ? '1' : '0');
-            }
-            else
-                if (var.compare(const_RANDOM) == 0)
+                if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
                 {
-                    replace = wxString::Format("%d", rand() & 0xffff);
+                    buffer.Replace(search, "", false);
                 }
                 else
                 {
-                    if (!Macros.empty())
-                    {
-                        MacrosMap::const_iterator it;
-
-                        if ((it = Macros.find(var)) != Macros.end())
-                        {
-                            replace = it->second;
-                        }
-                    }
+                    buffer.Replace(search, replace, false);
                 }
-        }
-
-        if (!replace.IsEmpty())
-        {
-            if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
-            {
-                buffer.Replace(search, "", false);
-            }
-            else
-            {
-                buffer.Replace(search, replace, false);
             }
         }
     }
 
-    if (!subrequest)
-    {
-        buffer.Replace("%%", "%");
-        buffer.Replace("$$", "$");
-    }
+    buffer.Replace("%%", "%");
+    buffer.Replace("$$", "$");
+    buffer.Replace("\\", "/");
 }
 
 void CMakeListsExporter::ExportGlobalVariableSets(ExportMode eMode)
@@ -521,6 +509,7 @@ void CMakeListsExporter::RunExport()
     wxString tmpStringA, tmpStringB, tmpStringC;
     wxArrayString tmpArrayA, tmpArrayB, tmpArrayC;
     const wxChar * EOL = wxTextFile::GetEOL();
+    const wxString sGlobalVariableFileName("CMakeLists_GlobalVariablesCodeBlocks_Windows.txt");
     ProjectsArray * arr = Manager::Get()->GetProjectManager()->GetProjects();
 
     for (unsigned int i = 0; i < arr->GetCount(); ++i)
@@ -597,6 +586,12 @@ void CMakeListsExporter::RunExport()
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
+            m_ContentCMakeListTarget.append(wxString::Format("# Include global variable definitions:%s", EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("include(%s)%s", sGlobalVariableFileName, EOL));
+            m_ContentCMakeListTarget.append(EOL);
+            // ====================================================================================
+            m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+            m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
             // Compiler search directories
             tmpArrayA = AppendOptionsArray(project->GetIncludeDirs(), buildTarget->GetIncludeDirs(), buildTarget->GetOptionRelation(ortIncludeDirs));
@@ -662,52 +657,63 @@ void CMakeListsExporter::RunExport()
             // ====================================================================================
             // Linker search directories
             tmpArrayA = AppendOptionsArray(project->GetLibDirs(), buildTarget->GetLibDirs(), buildTarget->GetOptionRelation(ortLibDirs));
-            tmpStringA.Clear();
 
-            for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
-            {
-                tmpStringA += wxString::Format("\"%s\"%s                        ", tmpArrayA[j], EOL);
-            }
-
-            if (!tmpStringA.IsEmpty())
+            if (!tmpArrayA.IsEmpty())
             {
                 m_ContentCMakeListTarget.append(wxString::Format("# Linker search paths:%s", EOL));
-                ConvertMacros(tmpStringA);
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(%s)%s", tmpStringA, EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_DIR_LIST)%s", EOL));
+
+                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
+                {
+                    tmpStringA = tmpArrayA[j].Clone();
+                    ConvertMacros(tmpStringA);
+                    m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_DIR_LIST \"${LINKER_DIR_LIST} %s\")%s", tmpStringA, EOL));
+                }
+
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(%s ${LINKER_DIR_LIST})%s", targetTitle, EOL));
+                m_ContentCMakeListTarget.append(EOL);
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_DIR_LIST)%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
 
             // ====================================================================================
             // Linker options
             tmpArrayA = AppendOptionsArray(project->GetLinkerOptions(), buildTarget->GetLinkerOptions(), buildTarget->GetOptionRelation(ortLinkerOptions));
-            tmpStringA.Clear();
 
-            for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
-            {
-                tmpStringA += wxString::Format("%s%s                    ", tmpArrayA[j], EOL);
-            }
-
-            if (!tmpStringA.IsEmpty())
+            if (!tmpArrayA.IsEmpty())
             {
                 m_ContentCMakeListTarget.append(wxString::Format("# Linker options:%s", EOL));
-                ConvertMacros(tmpStringA);
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_options(%s)%s", tmpStringA, EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_OPTIONS_LIST)%s", EOL));
+
+                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
+                {
+                    tmpStringA = tmpArrayA[j].Clone();
+                    ConvertMacros(tmpStringA);
+                    m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_OPTIONS_LIST \"${LINKER_OPTIONS_LIST} %s\")%s", tmpStringA, EOL));
+                }
+
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_options(%s PRIVATE ${LINKER_OPTIONS_LIST})%s", targetTitle, EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_OPTIONS_LIST)%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
 
             tmpArrayA = AppendOptionsArray(project->GetLinkLibs(), buildTarget->GetLinkLibs(), buildTarget->GetOptionRelation(ortLibDirs));
-            tmpStringA.Clear();
 
-            for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
-            {
-                tmpStringA += wxString::Format("\"%s\"%s                      ", tmpArrayA[j], EOL);
-            }
-
-            if (!tmpStringA.IsEmpty())
+            if (!tmpArrayA.IsEmpty())
             {
                 m_ContentCMakeListTarget.append(wxString::Format("# Linker libraries to include:%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
+
+                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
+                {
+                    tmpStringA = tmpArrayA[j].Clone();
+                    ConvertMacros(tmpStringA);
+                    m_ContentCMakeListTarget.append(wxString::Format("set( LINKER_LIBRARIES_LIST \"${LINKER_LIBRARIES_LIST} %s\")%s", tmpStringA, EOL));
+                }
+
                 ConvertMacros(tmpStringA);
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(%s)%s", tmpStringA, EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(%s ${LINKER_LIBRARIES_LIST})%s", targetTitle,  EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
 
@@ -751,17 +757,52 @@ void CMakeListsExporter::RunExport()
             {
                 tmpArraySrc.Sort();
                 m_ContentCMakeListTarget.append(wxString::Format("# Source files to compile:%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("unset(SOURCE_FILES)%s", EOL));
 
                 for (unsigned int j = 0; j < tmpArraySrc.GetCount(); j++)
                 {
                     tmpStringA = tmpArraySrc[j];
                     tmpStringA.Replace("/", "\\");
                     ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("add_library(\"%s\")%s", tmpStringA, EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES \"${SOURCE_FILES} %s\")%s", tmpStringA, EOL));
                 }
 
                 m_ContentCMakeListTarget.append(EOL);
             }
+
+            if (!tmpArrayhdr.IsEmpty())
+            {
+                tmpArrayhdr.Sort();
+                m_ContentCMakeListTarget.append(wxString::Format("# Header files :%s", EOL));
+
+                for (unsigned int j = 0; j < tmpArrayhdr.GetCount(); j++)
+                {
+                    tmpStringA = tmpArrayhdr[j];
+                    tmpStringA.Replace("/", "\\");
+                    ConvertMacros(tmpStringA);
+
+                    if ((buildTarget->GetTargetType() == ttStaticLib) || (buildTarget->GetTargetType() == ttDynamicLib))
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES \"${SOURCE_FILES} %s\")%s", tmpStringA, EOL));
+                    }
+                    else
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("# \"%s\"%s", tmpStringA, EOL));
+                    }
+                }
+
+                m_ContentCMakeListTarget.append(EOL);
+            }
+
+            m_ContentCMakeListTarget.append(wxString::Format("add_library(%s ${SOURCE_FILES})%s", targetTitle, EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("unset(SOURCE_FILES)%s", EOL));
+            m_ContentCMakeListTarget.append(EOL);
+            // ====================================================================================
+            m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+            m_ContentCMakeListTarget.append(EOL);
+
+            // ====================================================================================
+            // Resource file(s)
 
             if (!tmpArrayRes.IsEmpty())
             {
@@ -775,7 +816,7 @@ void CMakeListsExporter::RunExport()
                     tmpStringA = tmpArrayRes[j];
                     tmpStringA.Replace("/", "\\");
                     ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("    add_library(\"%s\")%s", tmpStringA, EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("    add_library(%s \"%s\")%s", targetTitle, tmpStringA, EOL));
                 }
 
                 m_ContentCMakeListTarget.append(EOL);
@@ -800,23 +841,47 @@ void CMakeListsExporter::RunExport()
                 m_ContentCMakeListTarget.append(EOL);
             }
 
+            // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
 
-            if (!tmpArrayhdr.IsEmpty())
+            // ====================================================================================
+            // Target Output Type
+            switch (buildTarget->GetTargetType())
             {
-                tmpArrayhdr.Sort();
-                m_ContentCMakeListTarget.append(wxString::Format("# Header file :%s", EOL));
+                case ttExecutable:
+                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttExecutable%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(%s)%s", targetTitle, EOL));
+                    break;
 
-                for (unsigned int j = 0; j < tmpArrayhdr.GetCount(); j++)
-                {
-                    tmpStringA = tmpArrayhdr[j];
-                    tmpStringA.Replace("/", "\\");
-                    //ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("# \"%s\"%s", tmpStringA, EOL));
-                }
+                case ttConsoleOnly:
+                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttConsoleOnly%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(%s)%s", targetTitle, EOL));
+                    break;
 
-                m_ContentCMakeListTarget.append(EOL);
+                case ttStaticLib:
+                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttStaticLib%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_library(%s STATIC)%s", targetTitle, EOL));
+                    break;
+
+                case ttDynamicLib:
+                    if (buildTarget->GetCreateStaticLib() || buildTarget->GetCreateDefFile())
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - DLL%s", EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("add_library(%s SHARED)%s", targetTitle,  EOL));
+                    }
+                    else
+                    {
+                        m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - module%s",  EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("add_library(%s SHARED)%s", targetTitle, EOL));
+                    }
+
+                    break;
+
+                default:
+                    m_ContentCMakeListTarget.append(wxString::Format("# Target type: unrecognized target type%s", EOL));
+                    Manager::Get()->GetLogManager()->LogError("Warning: \"" + targetTitle + "\" is of an unrecognized target type; skipping...");
+                    break;
             }
 
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
@@ -927,7 +992,7 @@ void CMakeListsExporter::RunExport()
         if (pWorkspace && pWorkspace->IsOK())
         {
             wxFileName wxfWorkspaceFileName(pWorkspace->GetFilename());
-            wxsFileName = ValidateFilename(wxString::Format("%sCMakeLists_GlobalVariables%s.txt", wxfWorkspaceFileName.GetPathWithSep(), wxfWorkspaceFileName.GetName(), wxFILE_SEP_PATH));
+            wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfWorkspaceFileName.GetPathWithSep(), sGlobalVariableFileName));
         }
         else
         {
@@ -936,7 +1001,7 @@ void CMakeListsExporter::RunExport()
             if (project)
             {
                 wxFileName wxfProjectFileName(project->GetFilename());
-                wxsFileName = ValidateFilename(wxString::Format("%sCMakeLists_GlobalVariables%s.txt", wxfProjectFileName.GetPathWithSep(), wxfProjectFileName.GetName(), wxFILE_SEP_PATH));
+                wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfProjectFileName.GetPathWithSep(), sGlobalVariableFileName));
             }
         }
 
@@ -947,7 +1012,7 @@ void CMakeListsExporter::RunExport()
         }
         else
         {
-            logMgr->DebugLogError(wxString::Format("Coudl nto export the global variables!!!"));
+            logMgr->DebugLogError(wxString::Format("Could not export the global variables!!!"));
         }
     }
 
