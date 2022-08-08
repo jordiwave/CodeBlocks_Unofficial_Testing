@@ -578,7 +578,6 @@ wxString CMakeListsExporter::GetTargetRootDirectory(ProjectBuildTarget * buildTa
             {
                 if (!wxfTargetFileName.Exists())
                 {
-                    wsRelTargetRootDirectory = cfn.Clone();
                     wxfTargetFileName.Assign(cfn);
                 }
                 else
@@ -587,7 +586,6 @@ wxString CMakeListsExporter::GetTargetRootDirectory(ProjectBuildTarget * buildTa
 
                     if (wxfSrcFile.GetDirCount() < wxfTargetFileName.GetDirCount())
                     {
-                        wsRelTargetRootDirectory = cfn.Clone();
                         wxfTargetFileName.Assign(cfn);
                     }
                 }
@@ -595,6 +593,7 @@ wxString CMakeListsExporter::GetTargetRootDirectory(ProjectBuildTarget * buildTa
         }
     }
 
+    wsRelTargetRootDirectory = wxfTargetFileName.GetPath();
     return wxfTargetFileName.GetFullPath();
 }
 
@@ -624,6 +623,7 @@ void CMakeListsExporter::RunExport()
         }
 
         wxString projectTitle = project->GetTitle();
+        wxString projectTopLevelPath = UnixFilename(project->GetCommonTopLevelPath(), wxPATH_UNIX);
 
         for (int i = 0; i < project->GetBuildTargetsCount(); i++)
         {
@@ -643,6 +643,7 @@ void CMakeListsExporter::RunExport()
             m_ContentCMakeListTarget.append(wxString::Format("# Output FileName: %s%s",  buildTarget->GetOutputFilename(), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Project Compiler: %s%s", project->GetCompilerID(), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Target Compiler:  %s%s", buildTarget->GetCompilerID(), EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("# Project CommonTopLevelPath:  %s%s", project->GetCommonTopLevelPath(), EOL));
 
             // ====================================================================================
             // Target Output Type
@@ -809,12 +810,12 @@ void CMakeListsExporter::RunExport()
 
                     if (bIsFirstEntry)
                     {
-                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES \"%s\")%s", tmpStringA, EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES \"%s%s\")%s", projectTopLevelPath, tmpStringA, EOL));
                         bIsFirstEntry = false;
                     }
                     else
                     {
-                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES ${SOURCE_FILES} \"%s\")%s", tmpStringA, EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES ${SOURCE_FILES} \"%s%s\")%s", projectTopLevelPath, tmpStringA, EOL));
                     }
                 }
 
@@ -834,11 +835,11 @@ void CMakeListsExporter::RunExport()
 
                     if ((buildTarget->GetTargetType() == ttStaticLib) || (buildTarget->GetTargetType() == ttDynamicLib))
                     {
-                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES ${SOURCE_FILES} \"%s\")%s", tmpStringA, EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("set( SOURCE_FILES ${SOURCE_FILES} \"%s%s\")%s", projectTopLevelPath, tmpStringA, EOL));
                     }
                     else
                     {
-                        m_ContentCMakeListTarget.append(wxString::Format("# \"%s\"%s", tmpStringA, EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("# \"%s%s\"%s", projectTopLevelPath, tmpStringA, EOL));
                     }
                 }
 
@@ -1128,10 +1129,10 @@ void CMakeListsExporter::RunExport()
                 logMgr->DebugLogError(wxString::Format("Could not save CMakeLists.txt in the missing directory: %s!!!", wxfTargetFileName.GetFullPath()));
             }
 
-            wxFileName wxfProjectFileName(project->GetFilename());
-            wxString wxsFileName = ValidateFilename(wxString::Format("%sCMakeLists_%s_%s_%s.txt", wxfProjectFileName.GetPathWithSep(), wxfProjectFileName.GetName(), projectTitle, targetTitle));
-            fileMgr->Save(wxsFileName, m_ContentCMakeListTarget, wxFONTENCODING_SYSTEM, true, true);
-            logMgr->DebugLog(wxString::Format("Exported file: %s", wxsFileName));
+            //            wxFileName wxfProjectFileName(project->GetFilename());
+            //            wxString wxsFileName = ValidateFilename(wxString::Format("%sCMakeLists_%s_%s_%s.txt", wxfProjectFileName.GetPathWithSep(), wxfProjectFileName.GetName(), projectTitle, targetTitle));
+            //            fileMgr->Save(wxsFileName, m_ContentCMakeListTarget, wxFONTENCODING_SYSTEM, true, true);
+            //            logMgr->DebugLog(wxString::Format("Exported file: %s", wxsFileName));
         }
     }
 
