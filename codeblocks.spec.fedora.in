@@ -178,7 +178,6 @@ fi
 %{plugindir}/libautosave.so
 %{plugindir}/libclangd_client.so
 %{plugindir}/libclasswizard.so
-%{plugindir}/libclangd_client.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
 %{plugindir}/libdebugger_dap.so

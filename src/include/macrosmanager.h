@@ -36,11 +36,10 @@ class DLLIMPORT MacrosManager : public Mgr<MacrosManager>
         void RecalcVars(const cbProject * project, EditorBase * editor, const ProjectBuildTarget * target);
         void ClearProjectKeys();
         void Reset();
-        const MacrosMap & GetMacros()
+        const MacrosMap & GetMacros() const
         {
-            return m_Macros;    /* intended for creation of detailed build environment reports attachable to build logs */
+            return m_Macros;
         }
-
     protected:
         const ProjectBuildTarget * m_LastTarget;
         const cbProject  *  m_LastProject;

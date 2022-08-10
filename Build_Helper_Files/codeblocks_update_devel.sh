@@ -125,7 +125,13 @@ CB_SRC=${CB_ROOT}/src
 # Check BUILD_BITS for validity
 # ----------------------------------------------------------------------------
 
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel30 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; fi
+
 DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel3*_32 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; fi
+
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel30 2>/dev/null | wc -l 2>/dev/null)
 if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; fi
 
 DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel3*_64 2>/dev/null | wc -l 2>/dev/null)
@@ -151,6 +157,9 @@ fi
 # -----------------------------------------------------------------------------
 
 echo "---------------------------------------"
+DEVEL_DIR_COUNT_30=$(ls -1q ${CB_SRC}/devel30 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT_30} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel30 ; fi
+
 DEVEL_DIR_COUNT_30=$(ls -1q ${CB_SRC}/devel30_* 2>/dev/null | wc -l 2>/dev/null)
 if [ ${DEVEL_DIR_COUNT_30} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel30_${BUILD_BITS} ; fi
 
@@ -195,29 +204,57 @@ echo "+-------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
 #case "$(OSDetected)" in
 #  Windows*)
-if { !  {
-            [ -f "${CB_DEVEL_DIR}/codeblocks${EXEEXT}" ]                        &&
-            [ -f "${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}" ]                    &&
-            {
-                [ -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}" ] ||
-                [ -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}" ]
+if { [ -d "${CB_DEVEL_DIR}/bin" ] && [ -d "${CB_DEVEL_DIR}/lib" ] 
+} then
+    if { !  {
+                [ -f "${CB_DEVEL_DIR}/bin/codeblocks${EXEEXT}" ]                        &&
+                [ -f "${CB_DEVEL_DIR}/lib/libcodeblocks.${LIBEXT}" ]                    &&
+                {
+                    [ -f "${CB_DEVEL_DIR}/lib/codeblocks/plugins/todo.${LIBEXT}" ] ||
+                    [ -f "${CB_DEVEL_DIR}/lib/codeblocks/plugins/libtodo.${LIBEXT}" ]
+                }
             }
-        }
-   } then
-    echo "|                                                                                                 |"
-    echo "|             +--------------------------------------------------------------------+              |"
-    echo "|             | Error: Code::Blocks make error was detected.                       |              |"
-    echo "|             |        Please fix the error and try again.                         |              |"
-    [ ! -f "${CB_DEVEL_DIR}/codeblocks${EXEEXT}" ]                     && echo "|             |        Missing src/devel31_${BUILD_BITS}/codeblocks${EXEEXT}!                          |              |"
-    [ ! -f "${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}" ]                 && echo "|             |        Missing src/devel31_${BUILD_BITS}/libcodeblocks.${LIBEXT}!                 |              |"
-#    [ ! -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}" ] && echo "|             |        Missing src/devel31_${BUILD_BITS}/share/codeblocks/plugins/todo.${LIBEXT}! |              |"
-    [ ! -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}" ] && echo "|             |        Missing src/devel31_${BUILD_BITS}/share/codeblocks/plugins/libtodo.${LIBEXT}! |              |"
-    echo "|             +--------------------------------------------------------------------+              |"
-    echo "|                                                                                                 |"
-    echo "+-------------------------------------------------------------------------------------------------+"
-    echo
-    cd ${InitialDir}
-    exit 5
+       } then
+        echo "|                                                                                                 |"
+        echo "|             +--------------------------------------------------------------------+              |"
+        echo "|             | Error: Code::Blocks make error was detected.                       |              |"
+        echo "|             |        Please fix the error and try again.                         |              |"
+        [ ! -f "${CB_DEVEL_DIR}/bin/codeblocks${EXEEXT}" ]                     && echo "|             |        Missing ${CB_DEVEL_DIR}/bin/codeblocks${EXEEXT}!                          |              |"
+        [ ! -f "${CB_DEVEL_DIR}/lib/libcodeblocks.${LIBEXT}" ]                 && echo "|             |        Missing ${CB_DEVEL_DIR}/lib/libcodeblocks.${LIBEXT}!                 |              |"
+        [ ! -f "${CB_DEVEL_DIR}/lib/codeblocks/plugins/todo.${LIBEXT}" ]       && echo "|             |        Missing ${CB_DEVEL_DIR}/lib/codeblocks/plugins/todo.${LIBEXT}! |              |"
+        [ ! -f "${CB_DEVEL_DIR}/lib/codeblocks/plugins/libtodo.${LIBEXT}" ]    && echo "|             |        Missing ${CB_DEVEL_DIR}/lib/codeblocks/plugins/libtodo.${LIBEXT}! |              |"
+        echo "|             +--------------------------------------------------------------------+              |"
+        echo "|                                                                                                 |"
+        echo "+-------------------------------------------------------------------------------------------------+"
+        echo
+        cd ${InitialDir}
+        exit 5
+    fi
+else
+    if { !  {
+                [ -f "${CB_DEVEL_DIR}/codeblocks${EXEEXT}" ]                        &&
+                [ -f "${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}" ]                    &&
+                {
+                    [ -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}" ] ||
+                    [ -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}" ]
+                }
+            }
+       } then
+        echo "|                                                                                                 |"
+        echo "|             +--------------------------------------------------------------------+              |"
+        echo "|             | Error: Code::Blocks make error was detected.                       |              |"
+        echo "|             |        Please fix the error and try again.                         |              |"
+        [ ! -f "${CB_DEVEL_DIR}/codeblocks${EXEEXT}" ]                     && echo "|             |        Missing ${CB_DEVEL_DIR}/codeblocks${EXEEXT}!                          |              |"
+        [ ! -f "${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}" ]                 && echo "|             |        Missing ${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}!                 |              |"
+        [ ! -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}" ] && echo "|             |        Missing ${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}! |              |"
+        [ ! -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}" ] && echo "|             |        Missing ${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}! |              |"
+        echo "|             +--------------------------------------------------------------------+              |"
+        echo "|                                                                                                 |"
+        echo "+-------------------------------------------------------------------------------------------------+"
+        echo
+        cd ${InitialDir}
+        exit 5
+    fi
 fi
 
 # ----------------------------------------------------------------------------
@@ -468,7 +505,7 @@ else
         images/56x56/*.png \
         images/64x64/*.png \
         > /dev/null
-    cd ${CB_ROOT}/src/plugins/clangd_client/src/resources
+    cd ${CB_ROOT}/src/plugins/contrib/clangd_client/src/resources
     ${ZIPCMD} -0 -qu ${CB_DEVEL_RESDIR}/clangd_client.zip \
         images/16x16/*.png \
         images/20x20/*.png \

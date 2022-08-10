@@ -6,6 +6,8 @@
 setlocal
 
 @SET CurrentDir="%CD%"
+del /Q ZZ*.txt
+
 if exist ..\..\..\bootstrap cd ..\..\..
 if exist ..\..\bootstrap cd ..\..
 if exist ..\bootstrap cd ..
@@ -71,11 +73,11 @@ if exist "missing"                  del /Q "missing"
 if exist "revision.m4"              del /Q "revision.m4"
 if exist "wxwin.m4"                 del /Q "wxwin.m4"
 if exist "zmake.m4"                 del /Q "zmake.m4"
-if exist ".\src\include\config.h"    del /Q ".\src\include\config.h"
-if exist ".\src\include\config.h.in" del /Q ".\src\include\config.h.in"
+if exist ".\src\include\config.h"   del /Q ".\src\include\config.h"
+if exist ".\src\include\config.h.in"  del /Q ".\src\include\config.h.in"
 if exist ".\src\include\config.h.in~" del /Q ".\src\include\config.h.in~"
-if exist ".\src\include\stamp-h1"    del /Q ".\src\include\stamp-h1"
-if exist ".\src\src\codeblocks"      del /Q ".\src\src\codeblocks"
+if exist ".\src\include\stamp-h1"     del /Q ".\src\include\stamp-h1"
+if exist ".\src\src\codeblocks"       del /Q ".\src\src\codeblocks"
 
 
 for /f "usebackq delims=^=^" %%a in (`"dir "auto_revision.exe"      /b/s" 2^>nul`) do del /Q "%%a"

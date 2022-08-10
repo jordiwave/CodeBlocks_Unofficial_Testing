@@ -27,6 +27,14 @@
 			<BASE>D:\Andrew_Development\Libraries\boost</BASE>
 			<INCLUDE>$(#BOOST)</INCLUDE>
 		</boost>
+		<wx31_64>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.1.7_win64</BASE>
+			<INCLUDE>$(#WX31_64)\include</INCLUDE>
+			<LIB>$(#WX31_64)\lib</LIB>
+		</wx31_64>
+		<cb_release_type>
+			<BASE>-g -O0 -ggdb</BASE>
+		</cb_release_type>
 	</default>
 <!-- ====================================================================================== -->
 	<cb_win32>
@@ -116,6 +124,7 @@
 			<OSBITS>64</OSBITS>
 			<C_STD>c90</C_STD>
 			<CPP_STD>gnu++17</CPP_STD>
+			<PKG_CONFIG_GDK>gdk-3.0</PKG_CONFIG_GDK>
 			<PKG_CONFIG_GLIB>glib-2.0</PKG_CONFIG_GLIB>
 		</cb_build>
 		<wxwidgets>

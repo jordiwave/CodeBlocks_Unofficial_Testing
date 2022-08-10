@@ -112,7 +112,6 @@ Most of its functionality is already provided by plugins.
     * Debugger front end for DAP (LLDB client and other DAP clients)
     * Source formatter (based on AStyle)
     * Wizard to create new C++ classes
-    * Clangd_Client / symbols-browser
     * Default MIME handler
     * Wizard to create new Code::Blocks plugins
     * To-do list
@@ -153,6 +152,7 @@ plugins. These are:
  * Autoversioning
  * BrowseTracker
  * Cccc
+ * Clangd_Client / symbols-browser
  * Code profiler (based on gprof)
  * Code statistics (SLOCs etc)
  * Codesnippets
@@ -286,7 +286,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libautosave.so
 %{plugindir}/libclangd_client.so
 %{plugindir}/libclasswizard.so
-%{plugindir}/libclangd_client.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
 %{plugindir}/libdebugger_dap.so
@@ -332,7 +331,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/start_here.zip
 %{pkgdatadir}/todo.zip
 %{pkgdatadir}/tips.txt
-%{pkgdatadir}/clangd_client.zip
 %{pkgdatadir}/cbDiff.zip
 
 %files libs

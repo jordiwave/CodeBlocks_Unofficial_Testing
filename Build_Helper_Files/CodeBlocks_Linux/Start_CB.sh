@@ -25,6 +25,9 @@ if [ ! -f "bootstrap" ]; then
 fi
 
 
+if [ -d "${PWD}/src/devel30" ]; then
+    CB_DEV_DIR=${PWD}/src/devel30
+fi
 if [ -d "${PWD}/src/devel30_64" ]; then
     CB_DEV_DIR=${PWD}/src/devel30_64
 fi
@@ -52,22 +55,26 @@ fi
 if [ -f "${CB_DEV_DIR}/bin/codeblocks" ]; then
     CB_EXE_DIR=${CB_DEV_DIR}/bin
     CB_EXE_NAME=codeblocks
+    CB_PREFIX=${CB_DEV_DIR}
 fi    
 
 if [ -f "${CB_DEV_DIR}/codeblocks" ]; then
     CB_EXE_DIR=${CB_DEV_DIR}
     CB_EXE_NAME=codeblocks
+    CB_PREFIX=${CB_DEV_DIR}
 fi    
 
 if [ -f "${CB_DEV_DIR}/CodeBlocks" ]; then
     CB_EXE_DIR=${CB_DEV_DIR}
     CB_EXE_NAME=CodeBlocks
+    CB_PREFIX=${CB_DEV_DIR}
 fi 
 
 CB_ROOT_DIR=${PWD}
 echo CB_DEV_DIR: ${CB_DEV_DIR}
 echo CB_EXE_DIR: ${CB_EXE_DIR}
 echo CB_EXE_NAME: ${CB_EXE_NAME}
+echo CB_PREFIX: ${CB_PREFIX}
 
 if [ "${CB_EXE_DIR}"  == "" ]; then
     echo Could not find codeblock exe file in the ${CB_DEV_DIR} directory
@@ -76,9 +83,9 @@ if [ "${CB_EXE_DIR}"  == "" ]; then
 fi
 
 cd ${CB_EXE_DIR}
-#CB_EXE_PARMS="--verbose --debug-log --application-log --multiple-instance --personality=debuging --prefix=${PWD}"
+#CB_EXE_PARMS="--verbose --debug-log --application-log --multiple-instance --personality=debuging --prefix=${CB_PREFIX}"
 #CB_EXE_PARMS=--prefix=${PWD}/share/${CB_EXE_NAME}
-CB_EXE_PARMS="--verbose --debug-log --multiple-instance --personality=debuging"
+CB_EXE_PARMS="--verbose --debug-log --multiple-instance --personality=debuging --prefix=${CB_PREFIX}"
 
 echo "export LD_LIBRARY_PATH=${CB_EXE_DIR}"
 echo "Runing: ./${CB_EXE_NAME} ${CB_EXE_PARMS}"

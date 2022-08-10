@@ -2,11 +2,11 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code Snippets Windows" />
-		<Option default_target="Plugin - Win32" />
+		<Option title="CodeSnippets Windows" />
+		<Option default_target="CodeSnippets_Plugin" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Plugin - Win32">
+			<Target title="CodeSnippets_Plugin">
 				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\codesnippets\plugin" />
@@ -17,11 +17,13 @@
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add before="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip" />
+					<Add before="cmd /c if not exist $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/codesnippets mkdir $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/codesnippets" />
 
+					<!-- Create codesnippets.zip -->
+					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip" />
 					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip resources\manifest.xml" />
 
-					<Add after="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets" />
+					<!-- copy PNG files  -->
 					<Add after="cmd /c copy .\resources\*.png $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets\ > nul" />
 
 					<Mode after="always" />
@@ -29,7 +31,7 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="Plugin - Win32;" />
+			<Add alias="All" targets="CodeSnippets_Plugin" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -84,12 +86,12 @@
 		<Unit filename="resources\category.png" />
 		<Unit filename="resources\findf.png" />
 		<Unit filename="resources\findfdisabled.png" />
-		<Unit filename="resources\options.png" />
-		<Unit filename="resources\optionsdisabled.png" />
-		<Unit filename="resources\manifest.xml" />
 		<Unit filename="resources\manifest.rc" >
 			<Option compilerVar="WINDRES" />
 		</Unit>
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\options.png" />
+		<Unit filename="resources\optionsdisabled.png" />
 		<Unit filename="resources\snippet.png" />
 		<Unit filename="resources\stop.png" />
 		<Unit filename="resources\stopdisabled.png" />
@@ -109,10 +111,6 @@
 		<Unit filename="snippetsimages.h" />
 		<Unit filename="version.cpp" />
 		<Unit filename="version.h" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

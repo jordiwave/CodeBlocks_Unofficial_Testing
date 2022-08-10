@@ -6,7 +6,6 @@ usr/lib/codeblocks/plugins/libabbreviations.so
 usr/lib/codeblocks/plugins/libAstyle.so
 usr/lib/codeblocks/plugins/libautosave.so
 usr/lib/codeblocks/plugins/libclasswizard.so
-usr/lib/codeblocks/plugins/libclangd_client.so
 usr/lib/codeblocks/plugins/libcompiler.so
 usr/lib/codeblocks/plugins/libdebugger.so
 usr/lib/codeblocks/plugins/libdefaultmimehandler.so

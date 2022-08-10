@@ -36,6 +36,9 @@
 		<Project filename="plugins/contrib/Cccc/Cccc_MacOS.cbp">
 			<Depends filename="CodeBlocks_MacOS.cbp" />
 		</Project>
+		<Project filename="plugins/contrib/clangd_client/Clangd_Client_MacOS.cbp">
+			<Depends filename="CodeBlocks_MacOS.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/codesnippets/codesnippets_MacOS.cbp">
 			<Depends filename="CodeBlocks_MacOS.cbp" />
 		</Project>

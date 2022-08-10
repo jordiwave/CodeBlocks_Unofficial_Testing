@@ -156,17 +156,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-AC_MSG_CHECKING(whether to build the clangd client plugin)
-clangdclient_default="yes"
-AC_ARG_ENABLE(clangd-client, [AC_HELP_STRING([--enable-clangd-client], [build the clangd client plugin (default YES)])],,
-                       enable_clangdclient=$clangdclient_default)
-AM_CONDITIONAL([BUILD_CLANGDCLIENT], [test "x$enable_clangdclient" = "xyes"])
-if test "x$enable_clangdclient" = "xyes"; then
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-
 AC_MSG_CHECKING(whether to build the class wizard plugin)
 cw_default="yes"
 AC_ARG_ENABLE(class-wizard, [AC_HELP_STRING([--enable-class-wizard], [build the class wizard plugin (default YES)])],,
@@ -397,6 +386,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_BROWSETRACKER], [false])
 	AM_CONDITIONAL([BUILD_BYOGAMES], [false])
 	AM_CONDITIONAL([BUILD_CBKODERS], [false])
+	AM_CONDITIONAL([BUILD_CLANGDCLIENT], [false])
 	AM_CONDITIONAL([BUILD_CODESNIPPETS], [false])
 	AM_CONDITIONAL([BUILD_CODESTAT], [false])
 	AM_CONDITIONAL([BUILD_COPYSTRINGS], [false])
@@ -440,6 +430,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_BROWSETRACKER], [true])
 	AM_CONDITIONAL([BUILD_BYOGAMES], [true])
 	AM_CONDITIONAL([BUILD_CBKODERS], [true])
+	AM_CONDITIONAL([BUILD_CLANGDCLIENT], [true])
 	AM_CONDITIONAL([BUILD_CODESNIPPETS], [true])
 	AM_CONDITIONAL([BUILD_CODESTAT], [true])
 	AM_CONDITIONAL([BUILD_COPYSTRINGS], [true])
@@ -514,6 +505,9 @@ do
 		;;
 	cbkoders)
 		AM_CONDITIONAL([BUILD_CBKODERS], [true])
+		;;
+	ClangdClient)
+		AM_CONDITIONAL([BUILD_CLANGDCLIENT], [true])
 		;;
 	codesnippets)
 		AM_CONDITIONAL([BUILD_CODESNIPPETS], [true])
@@ -634,6 +628,9 @@ do
 		;;
 	-cbkoders)
 		AM_CONDITIONAL([BUILD_CBKODERS], [false])
+		;;
+	-ClangdClient)
+		AM_CONDITIONAL([BUILD_CLANGDCLIENT], [false])
 		;;
 	-codesnippets)
 		AM_CONDITIONAL([BUILD_CODESNIPPETS], [false])
@@ -759,6 +756,7 @@ AC_SUBST(BUILD_BROWSETRACKER)
 AC_SUBST(BUILD_BYOGAMES)
 AC_SUBST(BUILD_CBKODERS)
 AC_SUBST(BUILD_CCCC)
+AC_SUBST(BUILD_CLANGDCLIENT)
 AC_SUBST(BUILD_CODESNIPPETS)
 AC_SUBST(BUILD_CODESTAT)
 AC_SUBST(BUILD_COPYSTRINGS)
