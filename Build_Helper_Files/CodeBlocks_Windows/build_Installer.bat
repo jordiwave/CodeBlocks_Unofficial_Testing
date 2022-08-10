@@ -1,4 +1,4 @@
-@echo on
+@echo off
 
 @rem ----------------------------------------------------------------------
 @rem Parameter 1 is either 32 or 64 for build type for 32 or 64 bits
