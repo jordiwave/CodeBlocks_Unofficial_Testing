@@ -137,6 +137,9 @@ if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; CB_DEVEL_DIR=${CB_SRC}/d
 
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel31 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; CB_DEVEL_DIR=${CB_SRC}/devel31 ; fi
+
 DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel31_32 2>/dev/null | wc -l 2>/dev/null)
 if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; CB_DEVEL_DIR=${CB_SRC}/devel31_32 ; fi
 
@@ -144,6 +147,9 @@ DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel31_64 2>/dev/null | wc -l 2>/dev/null)
 if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; CB_DEVEL_DIR=${CB_SRC}/devel31_64 ; fi
 
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel32 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; CB_DEVEL_DIR=${CB_SRC}/devel32 ; fi
 
 DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel32_32 2>/dev/null | wc -l 2>/dev/null)
 if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; CB_DEVEL_DIR=${CB_SRC}/devel32_32 ; fi

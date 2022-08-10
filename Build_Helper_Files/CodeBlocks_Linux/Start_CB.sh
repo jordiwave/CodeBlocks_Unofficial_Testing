@@ -82,15 +82,22 @@ if [ "${CB_EXE_DIR}"  == "" ]; then
     exit 4
 fi
 
+if [ -f "${CB_PREFIX}/lib/codeblocks/plugins/libcompiler.so" ]; then
+    echo "export LD_LIBRARY_PATH=${CB_PREFIX}/lib"
+    export LD_LIBRARY_PATH=${CB_PREFIX}/lib
+else
+    echo "export LD_LIBRARY_PATH=${CB_PREFIX}"
+    export LD_LIBRARY_PATH=${CB_PREFIX}
+fi 
+
+
 cd ${CB_EXE_DIR}
 #CB_EXE_PARMS="--verbose --debug-log --application-log --multiple-instance --personality=debuging --prefix=${CB_PREFIX}"
 #CB_EXE_PARMS=--prefix=${PWD}/share/${CB_EXE_NAME}
 CB_EXE_PARMS="--verbose --debug-log --multiple-instance --personality=debuging --prefix=${CB_PREFIX}"
 
-echo "export LD_LIBRARY_PATH=${CB_EXE_DIR}"
 echo "Runing: ./${CB_EXE_NAME} ${CB_EXE_PARMS}"
 
-export LD_LIBRARY_PATH=${CB_EXE_DIR}
 ./${CB_EXE_NAME} ${CB_EXE_PARMS}
 
 cd ${CurrentDir}

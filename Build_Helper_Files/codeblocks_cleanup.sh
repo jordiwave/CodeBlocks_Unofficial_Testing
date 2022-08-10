@@ -30,7 +30,7 @@ if [ ! -f "bootstrap" ]; then
     fi
 fi
 
-DEB_COUNT=$(ls -1q ../*.deb | wc -l)
+DEB_COUNT=$(ls -1q ../*.deb 2>/dev/null | wc -l 2>/dev/null)
 if [[ ${LIB_SO_COUNT} -gt 0 ]] ; then
     PreviousDir=${PWD}
     cd ..
