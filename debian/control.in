@@ -154,6 +154,7 @@ Description: contrib plugins for Code::Blocks IDE
     * MouseSap
     * NassiShneiderman
     * Profiler (based on gprof)
+    * Project Exporter
     * ProjectOptionsManipulator
     * Regular expression testbed
     * Reopen last closed editor(s) via menu or hotkey

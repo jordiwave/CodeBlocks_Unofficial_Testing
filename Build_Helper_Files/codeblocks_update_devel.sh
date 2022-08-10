@@ -7,13 +7,14 @@
 #                                                                                       #
 # --------------------------------------------------------------------------------------#
 #                                                                                       #
-#     This bash script builds CodeBlocks on either :                                    #
+#    This bash script updates the CodeBlocks devel3x_64 directory on:                   #
 #           - Windows using MSYS2 Mingw64                                               #
 #           - Linux                                                                     #
+#           - MACOS
 #                                                                                       #
 # --------------------------------------------------------------------------------------#
 
-if [ "$(id -u)" == "0" ]; then
+if [ "$(id -u)" eq "0" ]; then
     echo "You are root. Please run again as a normal user!!!"
     exit 1
 fi
@@ -26,7 +27,6 @@ InitialDir=${PWD}
 # -------------------------------------------------------------------------------------------------
 
 if [ "${GITHUB_ACTIONS}" != "true" ] ; then
-    reset
     # The following is to enable sending the output of this script to the terminal and to the 
     # file specified:
     exec > >(tee -i codeBlocks_Update_Dev.log) 2>&1
@@ -39,12 +39,13 @@ case "$(uname)" in
   Darwin*)
     OSDetected="OSX"
     EXEEXT=""
-    LIBEXT="dylib"    
+    LIBEXT="dylib"
     ;;
   Linux*)
     OSDetected="Linux"
     EXEEXT=""
-    LIBEXT="so"    ;;
+    LIBEXT="so"
+    ;;
   MINGW* | msys* | cygwin* | WindowsNT)
     OSDetected="Windows"
     EXEEXT=".exe"
@@ -96,7 +97,7 @@ echo "|                                                                         
 echo "|                           Updating C::B directory build files.                                  |"
 echo "|                                                                                                 |"
 echo "|    Detected OS:                        ${OSDetected}                                            |"
-
+echo "|    uname:                              $(uname)                                            |"
 
 # ----------------------------------------------------------------------------
 # Check where we are running from and go to the C::B source root directory 
@@ -126,54 +127,37 @@ CB_SRC=${CB_ROOT}/src
 # ----------------------------------------------------------------------------
 
 DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel30 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; fi
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; CB_DEVEL_DIR=${CB_SRC}/devel30 ; fi
 
-DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel3*_32 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel30_32 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; CB_DEVEL_DIR=${CB_SRC}/devel30_32 ; fi
 
-DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel30 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel30_64 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; CB_DEVEL_DIR=${CB_SRC}/devel30_64 ; fi
 
-DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel3*_64 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; fi
-unset DEVEL_DIR_COUNT
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-if [ "${BUILD_BITS}" == "" ] ; then
-    echo "+-------------------------------------------------------------------------------------------------+"
-    echo "|                                                                                                 |"
-    echo "|             +------------------------------------------------------+                            |"
-    echo "|             | Error: Cannot find build type \"32\" or \"64\".      |                            |"
-    echo "|             |        Cannot find src\devel31_32 or src\devel31_64  |                            |"
-    echo "|             |        Please run again with a parameter             |                            |"
-    echo "|             +------------------------------------------------------+                            |"
-    echo "|                                                                                                 |"
-    echo "+-------------------------------------------------------------------------------------------------+"
-    echo
-    echo BUILD_BITS:${BUILD_BITS}
-    cd ${InitialDir}
-    exit 4
-fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel31_32 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; CB_DEVEL_DIR=${CB_SRC}/devel31_32 ; fi
 
-# -----------------------------------------------------------------------------
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel31_64 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; CB_DEVEL_DIR=${CB_SRC}/devel31_64 ; fi
 
-echo "---------------------------------------"
-DEVEL_DIR_COUNT_30=$(ls -1q ${CB_SRC}/devel30 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT_30} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel30 ; fi
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-DEVEL_DIR_COUNT_30=$(ls -1q ${CB_SRC}/devel30_* 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT_30} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel30_${BUILD_BITS} ; fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel32_32 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=32 ; CB_DEVEL_DIR=${CB_SRC}/devel32_32 ; fi
 
-DEVEL_DIR_COUNT_31=$(ls -1q ${CB_SRC}/devel31_* 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT_31} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel31_${BUILD_BITS} ; fi
+DEVEL_DIR_COUNT=$(ls -1q ${CB_SRC}/devel32_64 2>/dev/null | wc -l 2>/dev/null)
+if [ ${DEVEL_DIR_COUNT} -gt 0 ] ; then  BUILD_BITS=64 ; CB_DEVEL_DIR=${CB_SRC}/devel32_64 ; fi
 
-DEVEL_DIR_COUNT_32=$(ls -1q ${CB_SRC}/devel32_* 2>/dev/null | wc -l 2>/dev/null)
-if [ ${DEVEL_DIR_COUNT_32} -gt 0 ] ; then  CB_DEVEL_DIR=${CB_SRC}/devel32_${BUILD_BITS} ; fi
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 if [ "${CB_DEVEL_DIR}" == "" ] ; then
     echo "+-------------------------------------------------------------------------------------------------+"
     echo "|                                                                                                 |"
     echo "|        +-------------------------------------------------------------+                          |"
-    echo "|        | Error: Cannot find src\devel3x* directory, where x in 0,1,2 |                          |"
+    echo "|        | Error: Cannot find src\devel3x  directory, where x in 0,1,2 |                          |"
     echo "|        |        Please fix and try again                             |                          |"
     echo "|        +-------------------------------------------------------------+                          |"
     echo "|                                                                                                 |"
@@ -297,7 +281,6 @@ fi
 
 echo "+-------------------------------------------------------------------------------------------------+"
 
-
 # -------------------------------------------------------------------------------------------
 # Copy the compiler DLL and wxWidget DLL's into the src/devel31_${BUILD_BITS} (32 or 64) directory
 # -------------------------------------------------------------------------------------------
@@ -346,7 +329,7 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # Rename DLL files if built with MSYS 2 using bootstrap/configure/make/make install process
     # ------------------------------------------------------------------------------------------
     count=$(ls -1 ${CB_DEVEL_DIR}/share/codeblocks/plugins/*.dll 2>/dev/null | wc -l)
-    if [ $count == 0 ] ; then
+    if [ $count -eq 0 ] ; then
         echo "|                                                                                                 |"
         echo "|             +-----------------------------------------------------------+                       |"
         echo "|             | Error: Code::Blocks Plugin DLL files not found in:        |                       |"
@@ -568,17 +551,24 @@ echo "|                                                                         
 echo "+-------------------------------------------------------------------------------------------------+"
 echo
 
-read -r -p 'Would you like to run Code::Blocks? ( type "y" for yes or "n" for no ): '
-if [ "${REPLY}" == 'y' ] || [ "${REPLY}" == 'Y' ]; then
-    if [ "${OSDetected}" == "Linux" ] ; then 
-        export LD_LIBRARY_PATH=${CB_DEVEL_DIR}
-        xfce4-terminal -e "${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}"
-    else
-        if [ "${OSDetected}" == "Windows" ] ; then 
-            ${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}
-        fi
-    fi
-fi
-
 cd ${InitialDir}
 
+read -r -p 'Would you like to run Code::Blocks? ( type "y" for yes or "n" for no ): '
+if [ "${REPLY}" == 'y' ] || [ "${REPLY}" == 'Y' ]; then
+    case ${OSDetected} in
+        OSX)
+            ./StartCB_Devel.sh
+            ;;
+        Linux)
+            ./Start_CB.sh
+            ;;
+        Windows)
+            ${CB_DEVEL_DIR}/codeblocks${EXEEXT} -v --prefix ${CB_DEVEL_DIR}
+            ;;
+        *)
+            echo "Unknown OSDetected: ${OSDetected}"
+            exit 0
+        ;;
+esac
+
+fi

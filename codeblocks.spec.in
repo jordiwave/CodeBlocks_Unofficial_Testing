@@ -176,6 +176,7 @@ plugins. These are:
  * Library finder
  * MouseSap
  * NassiShneiderman
+ * Project Exporter
  * Regular expression testbed
  * Reopen last closed editor(s) via menu or hotkey
  * Rndgen
@@ -284,7 +285,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libabbreviations.so
 %{plugindir}/libAstyle.so
 %{plugindir}/libautosave.so
-%{plugindir}/libclangd_client.so
 %{plugindir}/libclasswizard.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
@@ -315,7 +315,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/Astyle.zip
 %{pkgdatadir}/abbreviations.zip
 %{pkgdatadir}/autosave.zip
-%{pkgdatadir}/clangd_client.zip
 %{pkgdatadir}/classwizard.zip
 %{pkgdatadir}/compiler.zip
 %{pkgdatadir}/debugger.zip
@@ -344,6 +343,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libBrowseTracker.so
 %{plugindir}/libbyogames.so
 %{plugindir}/libCccc.so
+%{plugindir}/libclangd_client.so
 %{plugindir}/libCppCheck.so
 %{plugindir}/libSmartIndent*.so
 %{plugindir}/libcb_koders.so
@@ -371,6 +371,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libSpellChecker.so
 %endif
 %{plugindir}/libProfiler.so
+%{plugindir}/libclangd_client.so
 %{plugindir}/libProjectOptionsManipulator.so
 %{plugindir}/libRegExTestbed.so
 %{plugindir}/libSymTab.so
@@ -388,6 +389,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/BrowseTracker.zip
 %{pkgdatadir}/byogames.zip
 %{pkgdatadir}/Cccc.zip
+%{pkgdatadir}/clangd_client.zip
 %{pkgdatadir}/CppCheck.zip
 %{pkgdatadir}/SmartIndent*.zip
 %{pkgdatadir}/cb_koders.zip
@@ -416,6 +418,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/SpellChecker.zip
 %endif
 %{pkgdatadir}/Profiler.zip
+%{pkgdatadir}/ProjectExporter.zip
 %{pkgdatadir}/ProjectOptionsManipulator.zip
 %{pkgdatadir}/RegExTestbed.zip
 %{pkgdatadir}/rndgen.zip

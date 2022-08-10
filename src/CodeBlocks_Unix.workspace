@@ -127,6 +127,9 @@
 		<Project filename="plugins/contrib/profiler/CBProfiler_Unix.cbp">
 			<Depends filename="CodeBlocks_Unix.cbp" />
 		</Project>
+		<Project filename="plugins/contrib/ProjectExporter/ProjectExporter_Unix.cbp">
+			<Depends filename="CodeBlocks_Unix.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/ProjectOptionsManipulator/ProjectOptionsManipulator_Unix.cbp">
 			<Depends filename="CodeBlocks_Unix.cbp" />
 		</Project>

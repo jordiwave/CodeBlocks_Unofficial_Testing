@@ -115,7 +115,9 @@ ifdef([PKG_CHECK_MODULES],[],[
 
 PKG_PROG_PKG_CONFIG
 
-PKG_CHECK_MODULES([TINYXML], [tinyxml], [HAVE_TINYXML=yes], [HAVE_TINYXML=no])
+# CHECK DOES NOT WORK ON MACOS IN SCRIPT FILE... SO HARD CODE!!!! 
+# PKG_CHECK_MODULES([TINYXML], [tinyxml < 2], [HAVE_TINYXML=yes], [HAVE_TINYXML=no])
+HAVE_TINYXML=no
 AM_CONDITIONAL([HAVE_TINYXML], [test "$HAVE_TINYXML" = yes])
 
 dnl Darwin -> .dylib  Linux -> .so
@@ -472,6 +474,7 @@ AC_CONFIG_FILES([Makefile
     src/plugins/contrib/NassiShneiderman/Makefile
     src/plugins/contrib/profiler/Makefile
     src/plugins/contrib/profiler/resources/Makefile
+    src/plugins/contrib/ProjectExporter/Makefile
     src/plugins/contrib/ProjectOptionsManipulator/Makefile
     src/plugins/contrib/regex_testbed/Makefile
     src/plugins/contrib/ReopenEditor/Makefile

@@ -121,6 +121,9 @@
 		<Project filename="plugins/contrib/profiler/cbprofiler_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
+		<Project filename="plugins/contrib/ProjectExporter/ProjectExporter_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/ProjectOptionsManipulator/ProjectOptionsManipulator_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
@@ -180,9 +183,6 @@
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/cbMemoryView/cbMemoryView_Windows.cbp">
-			<Depends filename="CodeBlocks_Windows.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/ProjectExporter/ProjectExporter_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows.cbp">

@@ -403,6 +403,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_LIBFINDER], [false])
 	AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [false])
 	AM_CONDITIONAL([BUILD_PROFILER], [false])
+	AM_CONDITIONAL([BUILD_PROJECTEXPORTER], [false])
 	AM_CONDITIONAL([BUILD_PROJECTOPTIONSMANIPULATOR], [false])
 	AM_CONDITIONAL([BUILD_REGEX], [false])
 	AM_CONDITIONAL([BUILD_REOPENEDITOR], [false])
@@ -446,6 +447,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_KEYBINDER], [true])
 	AM_CONDITIONAL([BUILD_LIBFINDER], [true])
 	AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [true])
+	AM_CONDITIONAL([BUILD_PROJECTEXPORTER], [true])
 	AM_CONDITIONAL([BUILD_PROJECTOPTIONSMANIPULATOR], [true])
 	AM_CONDITIONAL([BUILD_PROFILER], [true])
 	AM_CONDITIONAL([BUILD_REGEX], [true])
@@ -480,10 +482,10 @@ AC_ARG_WITH(contrib-plugins,
   [                        "all,-help" or "yes,-help" compiles all contrib plugins except the help plugin ]
   [                        "none", "no", "--without-contrib-plugins" or skipping the parameter at all, ]
   [                        compiles none of the contrib-plugins ]
-  [                        Plugin names are: AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, cbkoders, codesnippets, ]
+  [                        Plugin names are: AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, cbkoders, ClangdClient, codesnippets, ]
   [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, exporter, ]
   [                        		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, ]
-  [                        		     NassiShneiderman, ProjectOptionsManipulator, profiler, regex, ReopenEditor, rndgen, smartindent, spellchecker, ]
+  [                        		     NassiShneiderman, ProjectExporter, ProjectOptionsManipulator, profiler, regex, ReopenEditor, rndgen, smartindent, spellchecker, ]
   [                        		     symtab, ThreadSearch, ToolsPlus, Valgrind, wxcontrib, wxsmith, wxsmithcontrib, wxsmithaui ],
   plugins="$withval", plugins="none")
 
@@ -553,6 +555,9 @@ do
 		;;
 	NassiShneiderman)
 		AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [true])
+		;;
+	ProjectExporter)
+		AM_CONDITIONAL([BUILD_PROJECTEXPORTER], [true])
 		;;
 	ProjectOptionsManipulator)
 		AM_CONDITIONAL([BUILD_PROJECTOPTIONSMANIPULATOR], [true])
@@ -676,6 +681,12 @@ do
 		;;
 	-NassiShneiderman)
 		AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [false])
+		;;
+	-ProjectExporter)
+		AM_CONDITIONAL([BUILD_PROJECTEXPORTER], [false])
+		;;
+	-ProjectOptionsManipulator)
+		AM_CONDITIONAL([BUILD_PROJECTOPTIONSMANIPULATOR], [false])
 		;;
 	-profiler)
 		AM_CONDITIONAL([BUILD_PROFILER], [false])
