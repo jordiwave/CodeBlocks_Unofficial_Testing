@@ -186,11 +186,11 @@ If you fix any outstanding issue please fork this repo and create a pull request
 |   * Works on Linux                                          |   6-Jul   |   Pass     |
 |   * Works on MacOS                                          |   8-Jul   |   Pass     |
 |   * Builds on Windows via workspace                         |   2-Aug   |   Pass     |
-|   * Builds on Windows via MSYS2 makefile                    |           |            |
+|   * Builds on Windows via MSYS2 bootstrap/configure/make    |           |            |
 |   * Builds on Linux via workspace                           |   6-Jul   |   Pass     |
-|   * Builds on Linux via makefile                            |   6-Jul   |   Pass     |
+|   * Builds on Linux via bootstrap/configure/make            |   6-Jul   |   Pass     |
 |   * Builds on MacOS via workspace                           |   8-Jul   |   Pass     |
-|   * Builds on MacOS via makefile                            |   8-Jul   |   Pass     |
+|   * Builds on MacOS via bootstrap/configure/make            |   8-Jul   |   Pass     |
 |   * Create and test DAP cbplugin for Windows                |   6-Jul   |   Pass     |
 |   * Create and test DAP cbplugin for Linux                  |   6-Jul   |   Pass     |
 |   * Create and test DAP cbplugin for MacOS                  |   8-Jul   |   Pass     |

@@ -626,11 +626,11 @@ void CMakeListsExporter::RunExport()
                 continue;
             }
 
-            wxString targetTitle = buildTarget->GetTitle();
+            wxString targetTitle = ValidateFilename(buildTarget->GetTitle());
             m_ContentCMakeListTarget.Clear();
             m_ContentCMakeListTarget.append(wxString::Format("cmake_minimum_required(VERSION 3.15) %s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-            m_ContentCMakeListTarget.append(wxString::Format("project(%s)%s", targetTitle, EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("project(\"%s\")%s", targetTitle, EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Target Title: %s%s", targetTitle, EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Output FileName: %s%s",  buildTarget->GetOutputFilename(), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Project Compiler: %s%s", project->GetCompilerID(), EOL));

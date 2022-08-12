@@ -29,7 +29,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-DEXPORT_LIB" />
-					<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml2" />
+					<Add directory="$(#CB_BUILD)\base\tinyxml2" />
 				</Compiler>
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
@@ -743,6 +743,9 @@
 		<Unit filename="base\tinyxml2\tinyxml2.cpp">
 			<Option target="tinyXML2" />
 		</Unit>
+		<Unit filename="base\tinyxml2\tinyxml2.h">
+			<Option target="tinyXML2" />
+		</Unit>
 		<Unit filename="build_tools\autorevision\autorevision.cpp">
 			<Option target="AutoRevision" />
 		</Unit>
@@ -1091,9 +1094,6 @@
 		</Unit>
 		<Unit filename="include\tinyxml\tinyxml.h">
 			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="include\tinyxml2\tinyxml.h">
-			<Option target="tinyXML2" />
 		</Unit>
 		<Unit filename="include\toolsmanager.h">
 			<Option target="sdk" />
