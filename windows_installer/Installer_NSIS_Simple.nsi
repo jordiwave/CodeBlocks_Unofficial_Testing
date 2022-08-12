@@ -1,7 +1,3 @@
-# Debugging:
-#!define BUILD_TYPE 64
-#!define NIGHTLY_BUILD_SVN 12846_EXPERIMENTAL_PLUS
-
 ###########################################################################################
 # The installer is divided into 5 main sections (section groups):                         #
 # "Default"           -> includes C::B core and core plugins                              #
@@ -93,7 +89,7 @@ Unicode True
     !undef NIGHTLY_BUILD_SVN
   !endif
 !else
-  !define NIGHTLY_BUILD_SVN 12846_EXPERIMENTAL_PLUS
+  !define NIGHTLY_BUILD_SVN 12860_EXPERIMENTAL_PLUS
 !endif
 
 # Possibly required to adjust manually:
@@ -164,7 +160,7 @@ BrandingText "Code::Blocks"
 #       DATE Defines      #
 ###########################
 # Get Current Date into CURRENT_DATESTAMP variable
-!define /date CURRENT_DATESTAMP "%d%b%Y"
+!define /date FILE_CURRENT_DATESTAMP "%d%b%Y-%H%M%S"
 !define /date CURRENT_DATE_YEAR "%Y"
 !define /date CURRENT_DATE_YEAR_NO_CENTURY "%y"
 !define /date CURRENT_DATE_MONTH "%m"
@@ -187,7 +183,7 @@ BrandingText "Code::Blocks"
 
 # Installer attributes (usually these do not change)
 # Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
-OutFile           CodeBlocks-${VERSION}-${BUILD_TYPE}bit-wx${WX_DIR_VERSION}-setup-${CURRENT_DATESTAMP}-NSIS.exe
+OutFile           CodeBlocks-${VERSION}-${BUILD_TYPE}bit-wx${WX_DIR_VERSION}-setup-${FILE_CURRENT_DATESTAMP}-NSIS.exe
 Caption           "Code::Blocks ${VERSION} ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0 Installation"
 CRCCheck          on
 XPStyle           on
@@ -325,8 +321,12 @@ ${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND    "${CB_BASE}${CB_PLUGINS}\CBTorto
 ${!defineifexist} CBINNO_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbInno.dll"
 ${!defineifexist} CBNSIS_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbNSIS.dll"
 ${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   "${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll"
+${!defineifexist} DEBUGGER_DAP_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\debugger_dap.dll"
+${!defineifexist} PROJECT_EXPORTER_PLUGIN_FOUND "${CB_BASE}${CB_PLUGINS}\ProjectExporter.dll"
+
 ${!defineifexist} PRETTYPRINTERS_FOUND          "${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py"
 ${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      "${CB_BASE}\libcodeblocks.dll"
+${!defineifexist} DEBUGGER_WXDAP_DLL_FOUND      "${CB_BASE}\debugger_wxdap.dll"
 
 # Reserved Files
 ${!defineifexist} RESERVE_UNICODE_FOUND         "${NSISDIR}\Plugins\unicode\AdvSplash.dll"
@@ -455,6 +455,11 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             # ClangD for use with ClangD_Client core plugin
             File ${CB_BASE}\clangd.exe
 !endif
+!ifdef DEBUGGER_WXDAP_DLL_FOUND        
+            # wxWidget Debugger Adapter Protocol generic DLL
+            File ${CB_BASE}\debugger_wxdap.dll
+!endif
+
             # ----------------------- NEW OUTPUT PATH -----------------------
 !ifdef PRETTYPRINTERS_FOUND
             SetOutPath $INSTDIR${CB_GDB_PRETTYPRINTERS}
@@ -1171,6 +1176,18 @@ SectionGroup "!Default install" SECGRP_DEFAULT
         SectionEnd
 !endif
 
+!ifdef PROJECT_EXPORTER_PLUGIN_FOUND
+        Section "Project Exporter plugin" SEC_PROJECT_EXPORTER
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\ProjectExporter.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\ProjectExporter.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "Project Exporter plugin" 1
+        SectionEnd
+!endif
+
 !ifdef DISPLAYEVENTS_PLUGIN_FOUND
         Section "Display Events plugin" SEC_DISPLAYEVENTS_PLUGIN
             SectionIn 1 2
@@ -1208,14 +1225,14 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 !endif
 
 !ifdef CBMEMORYVIEW_PLUGIN_FOUND
-        Section "cbMemoryView plugin" SEC_CBMEMORYVIEW_PLUGIN
+        Section "Debugger MemoryView plugin" SEC_CBMEMORYVIEW_PLUGIN
             SectionIn 1 2
             SetOutPath $INSTDIR${CB_SHARE_CB}
             SetOverwrite on
             File ${CB_BASE}${CB_SHARE_CB}\cbMemoryView.zip
             SetOutPath $INSTDIR${CB_PLUGINS}
             File ${CB_BASE}${CB_PLUGINS}\cbMemoryView.dll
-            WriteRegStr HKCU "${REGKEY}\Components" "cbMemoryView plugin" 1
+            WriteRegStr HKCU "${REGKEY}\Components" "Debugger MemoryView plugin" 1
         SectionEnd
 !endif
 
@@ -1298,6 +1315,18 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             SetOutPath $INSTDIR${CB_PLUGINS}
             File ${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll
             WriteRegStr HKCU "${REGKEY}\Components" "debugger_gdbmi plugin" 1
+        SectionEnd
+!endif
+
+!ifdef DEBUGGER_DAP_PLUGIN_FOUND
+        Section "debugger_dap plugin" SEC_DEBUGGER_DAP_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\debugger_dap.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\debugger_dap.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "debugger_dap plugin" 1
         SectionEnd
 !endif
 
@@ -2453,6 +2482,14 @@ Section "-un.Clangd Client plugin" UNSEC_CLANGD_CLIENT
 SectionEnd
 !endif
 
+!ifdef PROJECT_EXPORTER_PLUGIN_FOUND
+Section "-un.Project Exporter plugin" UNSEC_PROJECT_EXPORTER
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\ProjectExporter.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\ProjectExporter.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "Project Exporter plugin"
+SectionEnd
+!endif
+
 !ifdef DISPLAYEVENTS_PLUGIN_FOUND
 Section "-un.Display Eventst plugin" UNSEC_DISPLAYEVENTS_PLUGIN
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\DisplayEvents.dll
@@ -2478,10 +2515,10 @@ SectionEnd
 !endif
 
 !ifdef CBMEMORYVIEW_PLUGIN_FOUND
-Section "-un.cbMemoryView plugin" UNSEC_CBMEMORYVIEW_PLUGIN
+Section "-un.Debugger MemoryView plugin" UNSEC_CBMEMORYVIEW_PLUGIN
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cbMemoryView.dll
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cbMemoryView.zip
-    DeleteRegValue HKCU "${REGKEY}\Components" "cbMemoryView plugin"
+    DeleteRegValue HKCU "${REGKEY}\Components" "Debugger MemoryView plugin"
 SectionEnd
 !endif
 
@@ -2538,6 +2575,14 @@ Section "-un.debugger_gdbmi plugin" UNSEC_DEBUGGER_GDBMI_PLUGIN
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\debugger_gdbmi.dll
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\debugger_gdbmi.zip
     DeleteRegValue HKCU "${REGKEY}\Components" "debugger_gdbmi plugin"
+SectionEnd
+!endif
+
+!ifdef DEBUGGER_DAP_PLUGIN_FOUND
+Section "-un.debugger_dap plugin" UNSEC_DEBUGGER_DAP_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\debugger_dap.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\debugger_dap.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "debugger_dap plugin"
 SectionEnd
 !endif
 
@@ -3104,6 +3149,10 @@ Section "-un.Core Files (required)" UNSEC_CORE
     # ClangD for use with ClangD_Cleint core plugin
     Delete /REBOOTOK $INSTDIR\clangd.exe
 !endif
+!ifdef DEBUGGER_WXDAP_DLL_FOUND        
+    # wxWidget Debugger Adapter Protocol generic DLL
+    Delete /REBOOTOK $INSTDIR\debugger_wxdap.dll
+!endif
 
     # WGET
     Delete /REBOOTOK $INSTDIR\wget.exe
@@ -3474,6 +3523,9 @@ CheckUserTypeDone:
 !ifdef CLANGD_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "Clangd Client plugin"               ${UNSEC_CLANGD_CLIENT}
 !endif
+!ifdef PROJECT_EXPORTER_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "Project Exporter plugin"            ${UNSEC_PROJECT_EXPORTER}
+!endif
 !ifdef DISPLAYEVENTS_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "Display Events plugin"              ${UNSEC_DISPLAYEVENTS_PLUGIN}
 !endif
@@ -3484,7 +3536,7 @@ CheckUserTypeDone:
     !insertmacro SELECT_UNSECTION "cbMarkdown plugin"                  ${UNSEC_CBMARKDOWN_PLUGIN}
 !endif
 !ifdef CBMEMORYVIEW_PLUGIN_FOUND
-    !insertmacro SELECT_UNSECTION "cbMemoryView plugin"                ${UNSEC_CBMEMORYVIEW_PLUGIN}
+    !insertmacro SELECT_UNSECTION "Debugger MemoryView plugin"         ${UNSEC_CBMEMORYVIEW_PLUGIN}
 !endif
 !ifdef CBSYSTEMVIEW_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "cbSystemView plugin"                ${UNSEC_CBSYSTEMVIEW_PLUGIN}
@@ -3506,6 +3558,9 @@ CheckUserTypeDone:
 !endif
 !ifdef DEBUGGER_GDBMI_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "debugger_gdbmi plugin"               ${UNSEC_DEBUGGER_GDBMI_PLUGIN}
+!endif
+!ifdef DEBUGGER_DAP_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "debugger_dap plugin"               ${UNSEC_DEBUGGER_DAP_PLUGIN}
 !endif
     !insertmacro SELECT_UNSECTION "headerguard plugin"                  ${UNSEC_HEADERGUARD_PLUGIN}
     !insertmacro SELECT_UNSECTION "loghacker plugin"                    ${UNSEC_LOGHACKER_PLUGIN}
@@ -3596,6 +3651,9 @@ FunctionEnd
 !ifdef CLANGD_PLUGIN_FOUND
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLANGD_CLIENT}          "Provides a ClangD client  browser for your projects and code-completion inside the editor. Currently only C++."
 !endif
+!ifdef PROJECT_EXPORTER_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PROJECT_EXPORTER}       "Provides a Project Exporter to a number of other formats."
+!endif
 !ifdef DISPLAYEVENTS_PLUGIN_FOUND
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DISPLAYEVENTS_PLUGIN}   "Provides a C::B developer display event in the log."
 !endif
@@ -3606,13 +3664,13 @@ FunctionEnd
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBMARKDOWN_PLUGIN}      "cbMarkdown plugin"
 !endif
 !ifdef CBMEMORYVIEW_PLUGIN_FOUND
-    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBMEMORYVIEW_PLUGIN}    "cbMemoryView plugin"
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBMEMORYVIEW_PLUGIN}    "Debugger MemoryView plugin"
 !endif
 !ifdef CBSYSTEMVIEW_PLUGIN_FOUND
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBSYSTEMVIEW_PLUGIN}    "cbSystemView plugin"
 !endif
 !ifdef CBDIFF_PLUGIN_FOUND
-    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBDIFF_PLUGIN}          "cbDiff plugin"
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBDIFF_PLUGIN}          "Diff plugin"
 !endif
 !ifdef GITBLOCKS_PLUGIN_FOUND
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GITBLOCKS_PLUGIN}       "GitBlocks plugin"
@@ -3628,6 +3686,9 @@ FunctionEnd
 !endif
 !ifdef DEBUGGER_GDBMI_PLUGIN_FOUND
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER_GDBMI_PLUGIN}  "debugger_gdbmi plugin"
+!endif
+!ifdef DEBUGGER_DAP_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER_DAP_PLUGIN}    "debugger_dap plugin"
 !endif
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HEADERGUARD_PLUGIN}  "headerguard plugin"
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LOGHACKER_PLUGIN}    "loghacker plugin"

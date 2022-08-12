@@ -3,25 +3,27 @@
 @REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
 setlocal
 SET CurrentDir="%CD%"
-@rem set WXWIDGET_VERSION=3.1.7
-@rem set WX_DIR_VERSION=31
-set WXWIDGET_VERSION=3.2.0
-set WX_DIR_VERSION=32
 
 for /f "tokens=4-7 delims=[.] " %%i in ('ver') do (if %%i==Version (set WIN_Version=%%j.%%k) else (set WIN_Version=%%i.%%j))
 
-set BUILD_BITS=%1
+if exist "..\..\src\devel31_32" call :CONFIGURE_WX31_32_VARS
+if exist "..\..\src\devel32_32" call :CONFIGURE_WX32_32_VARS
+if exist "..\..\src\devel31_64" call :CONFIGURE_WX31_64_VARS
+if exist "..\..\src\devel32_64" call :CONFIGURE_WX32_64_VARS
+
+if exist "..\src\devel31_32" call :CONFIGURE_WX31_32_VARS
+if exist "..\src\devel32_32" call :CONFIGURE_WX32_32_VARS
+if exist "..\src\devel31_64" call :CONFIGURE_WX31_64_VARS
+if exist "..\src\devel32_64" call :CONFIGURE_WX32_64_VARS
+
+if exist "src\devel31_32" call :CONFIGURE_WX31_32_VARS
+if exist "src\devel32_32" call :CONFIGURE_WX32_32_VARS
+if exist "src\devel31_64" call :CONFIGURE_WX31_64_VARS
+if exist "src\devel32_64" call :CONFIGURE_WX32_64_VARS
+
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay
 if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-if exist "..\..\src\devel3*_32" set BUILD_BITS=32
-if exist "..\..\src\devel3*_64" set BUILD_BITS=64
-if exist "..\src\devel3*_32" set BUILD_BITS=32
-if exist "..\src\devel3*_64" set BUILD_BITS=64
-if exist "src\devel3*_32" set BUILD_BITS=32
-if exist "src\devel3*_64" set BUILD_BITS=64
-if "%BUILD_BITS%" == "32" goto BuildBits_Okay
-if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-set BUILD_BITS=64
+goto WXDetectError
 
 :BuildBits_Okay
 set BUILD_DEV_OUTPUT_DIR=devel%WX_DIR_VERSION%_%BUILD_BITS%
@@ -103,12 +105,12 @@ if exist "%fnameDLL:~3%" del "%fnameDLL:~3%"
 ren "%fnameDLL%" "%fnameDLL:~3%"
 goto :eof
 
-:BuildBitError
+:WXDetectError
 @echo.
-@echo ^+------------------------------------------------------^+
-@echo ^| Error: NO Windows '32' or '64' parameter specified.  ^|
-@echo ^|        Please run again with a parameter             ^|
-@echo ^+------------------------------------------------------^+
+@echo ^+---------------------------------------------------------------------^+
+@echo ^| Error: Cannot detected src\devel3x_32 or src\devel3x_64 directory.  ^|
+@echo ^|                 Please fix and try again                            ^|
+@echo ^+---------------------------------------------------------------------^+
 @echo.
 @echo.
 @set RETURN_ERROR_LEVEL=1
@@ -142,12 +144,37 @@ goto Finish
 @echo.
 @echo.
 @echo ^+------------------------------------------------------------------------------------------------------------^+
-@echo ^|     Error: NO WXWIN "%WXWIN%" sub directory found  ^|
+@echo ^|     Error: NO WXWIN "%WXWIN%" sub directory found                                                                 ^|
+@echo ^+  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -^|
+@echo ^|  BUILD_BITS=%BUILD_BITS%                                                                                             ^|
+@echo ^|  WXWIDGET_VERSION=%WXWIDGET_VERSION%                                                                                    ^|
+@echo ^|  WX_DIR_VERSION=%WX_DIR_VERSION%                                                                                         ^|
 @echo ^+------------------------------------------------------------------------------------------------------------^+
 @echo. 
 @echo.
 @set RETURN_ERROR_LEVEL=4
 goto Finish
+
+:CONFIGURE_WX31_32_VARS
+    set BUILD_BITS=32
+    set WXWIDGET_VERSION=3.1.7
+    set WX_DIR_VERSION=31
+    EXIT /B
+:CONFIGURE_WX31_64_VARS
+    set BUILD_BITS=64
+    set WXWIDGET_VERSION=3.1.7
+    set WX_DIR_VERSION=31
+    EXIT /B
+:CONFIGURE_WX32_32_VARS
+    set BUILD_BITS=32
+    set WXWIDGET_VERSION=3.2.0
+    set WX_DIR_VERSION=32
+    EXIT /B
+:CONFIGURE_WX32_64_VARS
+    set BUILD_BITS=64
+    set WXWIDGET_VERSION=3.2.0
+    set WX_DIR_VERSION=32
+    EXIT /B
 
 :NORMALIZEPATH
     SET RETVAL=%~f1

@@ -91,10 +91,10 @@ class ProjectExporter : public cbPlugin
         virtual void OnRelease(bool appShutDown);
 
     private:
-        void RunExportAutotools();
-        void RunExportBakefile();
-        void RunExportPremake();
-        void RunExportCMake();
+        void RunExportAutotools(wxCommandEvent & event);
+        void RunExportBakefile(wxCommandEvent & event);
+        void RunExportPremake(wxCommandEvent & event);
+        void RunExportCMake(wxCommandEvent & event);
 
         /** @brief Check whether a project is open.
           *

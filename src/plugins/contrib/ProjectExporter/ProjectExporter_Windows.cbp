@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="ProjectExporter Windows" />
+		<Option title="ProjectExporter" />
 		<Option platforms="Windows;" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
@@ -16,25 +16,35 @@
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<!-- Create output directory -->
-					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
-					<Mode before="always" />
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="if [ -f  $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ProjectExporter.zip ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ProjectExporter.zip; fi;" />
-					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ProjectExporter.zip manifest.xml PremakeDlg.xrc" />
+					<!-- Create plugin zip file  -->
+					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\ProjectExporter.zip del  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\ProjectExporter.zip" />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\ProjectExporter.zip manifest.xml PremakeDlg.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="ProjectExporter;" />
+			<Add alias="All" targets="ProjectExporter" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="-fPIC" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --cflags`" />
+			<Add option="-pipe" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-mthreads" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-m$(#CB_BUILD.OSBITS)" />
+			<Add option="-fno-keep-inline-dllexport" />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
@@ -42,14 +52,21 @@
 			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,aui,propgrid`" />
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-Wl,--no-undefined" />
+			<Add option="-mthreads" />
+			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add library="codeblocks" />
+			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
 			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 			<Add library="ole32" />
 			<Add library="uuid" />
 			<Add library="rpcrt4" />
-			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="AutotoolsExporter.cpp" />
 		<Unit filename="AutotoolsExporter.h" />

@@ -24,7 +24,7 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="ProjectExporter;" />
+			<Add alias="All" targets="ProjectExporter" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -35,6 +35,7 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
 			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
+			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks" />

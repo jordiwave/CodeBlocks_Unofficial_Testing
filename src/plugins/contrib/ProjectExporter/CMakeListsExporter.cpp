@@ -480,10 +480,10 @@ void CMakeListsExporter::ExportGlobalVariables()
         // ====================================================================================
         // Save the global variables to a file
         wxString wxsFileName = wxEmptyString;
-        const wxString sGlobalVariableFileName("CMakeLists_GlobalVariablesCodeBlocks_Windows.txt");
-        cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+        wxString wxsWorkspaceTitle = pWorkspace->GetTitle();
+        const wxString sGlobalVariableFileName(ValidateFilename(wxString::Format("CMakeLists_GlobalVariables_%s.txt", wxsWorkspaceTitle)));
 
-        if (pWorkspace && pWorkspace->IsOK())
+        if (pWorkspace->IsOK())
         {
             wxFileName wxfWorkspaceFileName(pWorkspace->GetFilename());
             wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfWorkspaceFileName.GetPathWithSep(), sGlobalVariableFileName));
@@ -562,38 +562,28 @@ wxString CMakeListsExporter::GetHumanReadableOptionRelation(ProjectBuildTarget *
     return result;
 }
 
-wxString CMakeListsExporter::GetTargetRootDirectory(ProjectBuildTarget * buildTarget, wxString & wsRelTargetRootDirectory)
+wxString CMakeListsExporter::GetTargetRootDirectory(ProjectBuildTarget * buildTarget)
 {
     wxFileName wxfTargetFileName;
     FilesList & filesList = buildTarget->GetFilesList();
 
-    for (FilesList::iterator j = filesList.begin(); j != filesList.end(); j++)
+    for (FilesList::iterator it = filesList.begin(); it != filesList.end(); it++)
     {
-        ProjectFile * pf = *j;
-        wxString cfn(pf->relativeFilename);
+        ProjectFile * pf = *it;
+        wxString filename = pf->file.GetFullPath();
+        FileType fileType = FileTypeOf(filename);
 
-        if (cfn.Right(4) == ".cpp" || cfn.Right(2) == ".c" || cfn.Right(3) == ".cc" || cfn.Right(4) == ".cxx")
+        if (pf->compile && (fileType == ftSource))
         {
-            if (pf->compile)
-            {
-                if (!wxfTargetFileName.Exists())
-                {
-                    wxfTargetFileName.Assign(cfn);
-                }
-                else
-                {
-                    wxFileName wxfSrcFile(cfn);
+            wxFileName wxFN(filename);
 
-                    if (wxfSrcFile.GetDirCount() < wxfTargetFileName.GetDirCount())
-                    {
-                        wxfTargetFileName.Assign(cfn);
-                    }
-                }
+            if (!wxfTargetFileName.Exists() || (wxFN.GetDirCount() < wxfTargetFileName.GetDirCount()))
+            {
+                wxfTargetFileName = wxFN;
             }
         }
     }
 
-    wsRelTargetRootDirectory = wxfTargetFileName.GetPath();
     return wxfTargetFileName.GetFullPath();
 }
 
@@ -606,16 +596,18 @@ void CMakeListsExporter::RunExport()
         return;
     }
 
-    m_ContentCMakeListTarget = wxEmptyString;
+    m_ContentCMakeListTopLevel.Clear();
+    m_ContentCMakeListTarget.Clear();
     FileManager * fileMgr = Manager::Get()->GetFileManager();
     LogManager * logMgr = Manager::Get()->GetLogManager();
+    int iProjectCountSaved = 0;
     wxString tmpStringA, tmpStringB, tmpStringC;
     wxArrayString tmpArrayA, tmpArrayB, tmpArrayC;
-    ProjectsArray * arr = Manager::Get()->GetProjectManager()->GetProjects();
+    ProjectsArray * prjArr = Manager::Get()->GetProjectManager()->GetProjects();
 
-    for (unsigned int i = 0; i < arr->GetCount(); ++i)
+    for (unsigned int i = 0; i < prjArr->GetCount(); ++i)
     {
-        cbProject * project = arr->Item(i);
+        cbProject * project = prjArr->Item(i);
 
         if (!project)
         {
@@ -679,9 +671,8 @@ void CMakeListsExporter::RunExport()
                     break;
             }
 
-            wxString wsRelTargetRootDirectory;
-            wxString sTargetRootDir = GetTargetRootDirectory(buildTarget, wsRelTargetRootDirectory);
-            m_ContentCMakeListTarget.append(wxString::Format("# Target detected root directory:  %s (%s)%s", sTargetRootDir, wsRelTargetRootDirectory, EOL));
+            wxString sTargetRootDir = GetTargetRootDirectory(buildTarget);
+            m_ContentCMakeListTarget.append(wxString::Format("# Target detected root directory:  %s%s", sTargetRootDir, EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Target Options:%s", EOL));
             m_ContentCMakeListTarget.append(wxString::Format("#                 projectCompilerOptionsRelation: %s%s",     GetHumanReadableOptionRelation(buildTarget, ortCompilerOptions), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("#                 projectLinkerOptionsRelation: %s%s",       GetHumanReadableOptionRelation(buildTarget, ortLinkerOptions), EOL));
@@ -847,7 +838,45 @@ void CMakeListsExporter::RunExport()
             }
 
             // ====================================================================================
-            // Target Output Type with source fikes
+            // Resource file(s)
+
+            if (!tmpArrayRes.IsEmpty())
+            {
+                tmpArrayRes.Sort();
+                tmpStringC.Replace("/", "\\");
+                m_ContentCMakeListTarget.append(wxString::Format("if (MINGW)%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("    # Windows Resource file:%s", EOL));
+
+                for (unsigned int j = 0; j < tmpArrayRes.GetCount(); j++)
+                {
+                    tmpStringA = tmpArrayRes[j];
+                    tmpStringA.Replace("/", "\\");
+                    ConvertMacros(tmpStringA);
+                    m_ContentCMakeListTarget.append(wxString::Format("    set( SOURCE_FILES ${SOURCE_FILES} \"%s%s\")%s", projectTopLevelPath, tmpStringA, EOL));
+                }
+
+                wxArrayString tmpArrayRI = AppendOptionsArray(project->GetResourceIncludeDirs(), buildTarget->GetResourceIncludeDirs(), buildTarget->GetOptionRelation(ortResDirs));
+                wxString tmpStringRI;
+
+                for (unsigned int j = 0; j < tmpArrayRI.GetCount(); j++)
+                {
+                    tmpStringRI += tmpArrayRI[j];
+                }
+
+                if (!tmpStringRI.IsEmpty())
+                {
+                    m_ContentCMakeListTarget.append(wxString::Format("    # Resource include directories:%s", EOL));
+                    tmpStringRI.Replace("/", "\\");
+                    ConvertMacros(tmpStringRI);
+                    m_ContentCMakeListTarget.append(wxString::Format("    set (CMAKE_RC_FLAGS \"${CMAKE_RC_FLAGS} ${WX_RC_FLAGS} %s\")%s", tmpStringRI, EOL));
+                }
+
+                m_ContentCMakeListTarget.append(wxString::Format("endif() %s", EOL));
+                m_ContentCMakeListTarget.append(EOL);
+            }
+
+            // ====================================================================================
+            // Target Output Type with source files
             switch (buildTarget->GetTargetType())
             {
                 case ttExecutable:
@@ -985,47 +1014,6 @@ void CMakeListsExporter::RunExport()
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
-            // ====================================================================================
-            // Resource file(s)
-
-            if (!tmpArrayRes.IsEmpty())
-            {
-                tmpArrayRes.Sort();
-                tmpStringC.Replace("/", "\\");
-                m_ContentCMakeListTarget.append(wxString::Format("if (MINGW)%s", EOL));
-                m_ContentCMakeListTarget.append(wxString::Format("    # Windows Resource file:%s", EOL));
-
-                for (unsigned int j = 0; j < tmpArrayRes.GetCount(); j++)
-                {
-                    tmpStringA = tmpArrayRes[j];
-                    tmpStringA.Replace("/", "\\");
-                    ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("    add_library(${PROJECT_NAME} \"%s\")%s", tmpStringA, EOL));
-                }
-
-                m_ContentCMakeListTarget.append(EOL);
-                wxArrayString tmpArrayRI = AppendOptionsArray(project->GetResourceIncludeDirs(), buildTarget->GetResourceIncludeDirs(), buildTarget->GetOptionRelation(ortResDirs));
-                wxString tmpStringRI;
-
-                for (unsigned int j = 0; j < tmpArrayRI.GetCount(); j++)
-                {
-                    tmpStringRI += tmpArrayRI[j];
-                }
-
-                if (!tmpStringRI.IsEmpty())
-                {
-                    m_ContentCMakeListTarget.append(EOL);
-                    m_ContentCMakeListTarget.append(wxString::Format("    # Resource include directories:%s", EOL));
-                    tmpStringRI.Replace("/", "\\");
-                    ConvertMacros(tmpStringRI);
-                    m_ContentCMakeListTarget.append(wxString::Format("    set (CMAKE_RC_FLAGS \"${CMAKE_RC_FLAGS} ${WX_RC_FLAGS} %s\")%s", tmpStringRI, EOL));
-                }
-
-                m_ContentCMakeListTarget.append(wxString::Format("endif() %s", EOL));
-                m_ContentCMakeListTarget.append(EOL);
-            }
-
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
@@ -1099,7 +1087,7 @@ void CMakeListsExporter::RunExport()
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
-            //output file
+            //output target file
             wxFileName wxfTargetFileName(sTargetRootDir);
 
             if (wxfTargetFileName.DirExists())
@@ -1122,19 +1110,122 @@ void CMakeListsExporter::RunExport()
                 {
                     fileMgr->Save(wsFullFileName, m_ContentCMakeListTarget, wxFONTENCODING_SYSTEM, true, true);
                     logMgr->DebugLog(wxString::Format("Exported file: %s", wsFullFileName));
+                    iProjectCountSaved++;
+                    m_ContentCMakeListTopLevel.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+                    m_ContentCMakeListTopLevel.append(wxString::Format("# project: %s , CMakeLists.txt: %s%s", targetTitle,  wsFullFileName, EOL));
+                    wxString tmpString(wxfTargetFileName.GetPath());
+                    ConvertMacros(tmpString);
+                    m_ContentCMakeListTopLevel.append(wxString::Format("add_subdirectory(\"%s\")%s", tmpString, EOL));
                 }
             }
             else
             {
                 logMgr->DebugLogError(wxString::Format("Could not save CMakeLists.txt in the missing directory: %s!!!", wxfTargetFileName.GetFullPath()));
             }
+        }
 
-            //            wxFileName wxfProjectFileName(project->GetFilename());
-            //            wxString wxsFileName = ValidateFilename(wxString::Format("%sCMakeLists_%s_%s_%s.txt", wxfProjectFileName.GetPathWithSep(), wxfProjectFileName.GetName(), projectTitle, targetTitle));
-            //            fileMgr->Save(wxsFileName, m_ContentCMakeListTarget, wxFONTENCODING_SYSTEM, true, true);
-            //            logMgr->DebugLog(wxString::Format("Exported file: %s", wxsFileName));
+        m_ContentCMakeListTopLevel.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
+    }
+
+    if (iProjectCountSaved > 1)
+    {
+        cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+
+        if (pWorkspace)
+        {
+            wxString Title = pWorkspace->GetTitle();
+            // If only have one project then hopefully it was not loaded via a workspace
+            ProjectsArray * prjArr = Manager::Get()->GetProjectManager()->GetProjects();
+
+            if (prjArr->GetCount() == 1)
+            {
+                cbProject * project = prjArr->Item(0);
+
+                if (project)
+                {
+                    Title = project->GetTitle();
+                }
+            }
+
+            wxString wxsWorkspaceTitle = ValidateFilename(Title);
+            wxString sCMakeListTopLevel("cmake_minimum_required(VERSION 3.15)");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("#################################################################################################################################################################");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("##                                                                                                                                                              #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("## CMake top level file                                                                                                                                         #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("## Typical usage will be (build in release mode):                                                                                                               #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("##                                                                                                                                                              #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("## > mkdir build                                                                                                                                                #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("## > cd build                                                                                                                                                   #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("## > cmake -G \"Unix Makefile\" ..                                                                                                                              #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("## > make -jN                                                                                                                                                   #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("##                                                                                                                                                              #");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("#################################################################################################################################################################");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("if (NOT CMAKE_VERSION VERSION_LESS 3.1) # THIS MUST STAY AT THE TOP OF THE FILE");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("    cmake_policy(VERSION 3.1) # Doing this prevents multiple, very verbose warnings about policy CMP0053 not being set");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("endif()");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("#############################################");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("## Name top level project");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append("#############################################");
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append(wxString::Format("project(\"%s\")", wxsWorkspaceTitle));
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel.append(EOL);
+            sCMakeListTopLevel = wxString::Format("%s%s%s", sCMakeListTopLevel, EOL, m_ContentCMakeListTopLevel);
+            // ====================================================================================
+            // Save the top level CMakeLists file
+            wxString wxsFileName = wxEmptyString;
+            const wxString sGlobalVariableFileName("CMakeLists.txt");
+            cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+
+            if (pWorkspace && pWorkspace->IsOK())
+            {
+                wxFileName wxfWorkspaceFileName(pWorkspace->GetFilename());
+                wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfWorkspaceFileName.GetPathWithSep(), sGlobalVariableFileName));
+            }
+            else
+            {
+                cbProject * project = Manager::Get()->GetProjectManager()->GetProjects()->Item(0);
+
+                if (project)
+                {
+                    wxFileName wxfProjectFileName(project->GetFilename());
+                    wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfProjectFileName.GetPathWithSep(), sGlobalVariableFileName));
+                }
+            }
+
+            if (!wxsFileName.IsEmpty())
+            {
+                fileMgr->Save(wxsFileName, sCMakeListTopLevel, wxFONTENCODING_SYSTEM, true, true);
+                logMgr->DebugLog(wxString::Format("Exported file: %s", wxsFileName));
+                m_sGlobalVariableFileName = wxsFileName.Clone();
+            }
+            else
+            {
+                logMgr->DebugLogError(wxString::Format("Could not export the global variables!!!"));
+            }
         }
     }
 
-    m_ContentCMakeListTarget = wxEmptyString;
+    m_ContentCMakeListTarget.Clear();
+    m_ContentCMakeListTopLevel.Clear();
 }

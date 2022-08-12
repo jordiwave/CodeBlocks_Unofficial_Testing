@@ -32,7 +32,7 @@ class CMakeListsExporter : public ExporterBase
         void ExportGlobalVariableSets(ExportMode eMode);
         void ExportMacros();
         void ExportGlobalVariables();
-        wxString GetTargetRootDirectory(ProjectBuildTarget * buildTarget, wxString & wsRelTargetRootDirectory);
+        wxString GetTargetRootDirectory(ProjectBuildTarget * buildTarget);
 
         wxString ValidateFilename(const wxString & iFileName);
         wxString GetHumanReadableOptionRelation(ProjectBuildTarget * buildTarget, OptionsRelationType type);
@@ -41,6 +41,7 @@ class CMakeListsExporter : public ExporterBase
         wxString        m_ContentCMakeListTarget;
         wxString        m_ContentCMakeListGlobalVariables;
         wxString        m_sGlobalVariableFileName;
+        wxString    m_ContentCMakeListTopLevel;
         wxRegEx         m_RE_Unix;
         wxRegEx         m_RE_DOS;
 };

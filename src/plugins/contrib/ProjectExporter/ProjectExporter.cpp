@@ -86,38 +86,38 @@ void ProjectExporter::OnStartupDone(CodeBlocksEvent & event)
 {
     wxMenu * submenu = Manager::Get()->GetAppFrame()->GetMenuBar()->GetMenu(0);
 
-    if (submenu->FindItem("E&xport project") != wxNOT_FOUND)
+    if (submenu->FindItem(_("E&xport project")) != wxNOT_FOUND)
     {
         return;
     }
 
-    wxMenu * SubmenuExportProject = new wxMenu; //wxMenuItem(submenu, ID_Menu_ExportProject, _("E&xport project..."), _("Export active project as Premake script."));
-    wxMenuItem * MenuItemExportAutotools = new wxMenuItem(SubmenuExportProject, ID_Menu_AutotoolsExport, "&Autotools build system", "Set up an Autotools build system for the active project");
-    wxMenuItem * MenuItemExportBakefile = new wxMenuItem(SubmenuExportProject, ID_Menu_BakefileExport, "&Bakefile", "Export active project as a Bakefile");
-    wxMenuItem * MenuItemExportPremake = new wxMenuItem(SubmenuExportProject, ID_Menu_PremakeExport, "&Premake script...", "Export active project as a Premake4 script");
-    wxMenuItem * MenuItemExportCMake = new wxMenuItem(SubmenuExportProject, ID_Menu_CMakeExport, "C&MakeLists.txt (WIP)...", "Export active project to a simple CMakeLists.txt file");
+    wxMenu * SubmenuExportProject = new wxMenu;
+    wxMenuItem * MenuItemExportAutotools = new wxMenuItem(SubmenuExportProject, ID_Menu_AutotoolsExport, _("&Autotools build system"), _("Set up an Autotools build system for the active project"));
+    wxMenuItem * MenuItemExportBakefile = new wxMenuItem(SubmenuExportProject, ID_Menu_BakefileExport, _("&Bakefile"), _("Export active project as a Bakefile"));
+    wxMenuItem * MenuItemExportPremake = new wxMenuItem(SubmenuExportProject, ID_Menu_PremakeExport, _("&Premake script..."), _("Export active project as a Premake4 script"));
+    wxMenuItem * MenuItemExportCMake = new wxMenuItem(SubmenuExportProject, ID_Menu_CMakeExport, _("C&MakeLists.txt (WIP)..."), _("Export active project to a simple CMakeLists.txt file"));
     SubmenuExportProject->Append(MenuItemExportAutotools);
     SubmenuExportProject->Append(MenuItemExportBakefile);
     SubmenuExportProject->Append(MenuItemExportPremake);
     SubmenuExportProject->Append(MenuItemExportCMake);
-    int idx = submenu->GetMenuItems().IndexOf(submenu->FindItem(submenu->FindItem("&Import project")));
+    int idx = submenu->GetMenuItems().IndexOf(submenu->FindItem(submenu->FindItem(_("&Import project"))));
 
     if (idx == wxNOT_FOUND)
     {
-        idx = submenu->GetMenuItems().IndexOf(submenu->FindItem(submenu->FindItem("R&ecent files")));
+        idx = submenu->GetMenuItems().IndexOf(submenu->FindItem(submenu->FindItem(_("R&ecent files"))));
 
         if (idx++ == wxNOT_FOUND)
         {
             idx = 7;
         }
 
-        submenu->Insert(++idx, ID_Menu_ExportProject, "E&xport project", SubmenuExportProject);
+        submenu->Insert(++idx, ID_Menu_ExportProject, _("E&xport project"), SubmenuExportProject);
         //submenu->(++idx, SubmenuExportProject);
         submenu->InsertSeparator(++idx);
     }
     else
     {
-        submenu->Insert(++idx, ID_Menu_ExportProject, "E&xport project", SubmenuExportProject);
+        submenu->Insert(++idx, ID_Menu_ExportProject, _("E&xport project"), SubmenuExportProject);
         //submenu->Insert(++idx, SubmenuExportProject);
     }
 
@@ -125,39 +125,53 @@ void ProjectExporter::OnStartupDone(CodeBlocksEvent & event)
     MenuItemExportBakefile->Enable(IsProjectOpen());
     MenuItemExportPremake->Enable(IsProjectOpen());
     MenuItemExportCMake->Enable(IsProjectOpen());
-    Connect(ID_Menu_AutotoolsExport, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&ProjectExporter::RunExportAutotools);
-    Connect(ID_Menu_BakefileExport,  wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&ProjectExporter::RunExportBakefile);
-    Connect(ID_Menu_PremakeExport,   wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&ProjectExporter::RunExportPremake);
-    Connect(ID_Menu_CMakeExport,     wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&ProjectExporter::RunExportCMake);
+#if 0
+    Connect(ID_Menu_AutotoolsExport, wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportAutotools);
+    Connect(ID_Menu_BakefileExport,  wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportBakefile);
+    Connect(ID_Menu_PremakeExport,   wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportPremake);
+    Connect(ID_Menu_CMakeExport,     wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportCMake);
+#else
+    Bind(wxEVT_MENU, &ProjectExporter::RunExportAutotools, this, ID_Menu_AutotoolsExport);
+    Bind(wxEVT_MENU, &ProjectExporter::RunExportBakefile, this, ID_Menu_BakefileExport);
+    Bind(wxEVT_MENU, &ProjectExporter::RunExportPremake,  this, ID_Menu_PremakeExport);
+    Bind(wxEVT_MENU, &ProjectExporter::RunExportCMake,    this, ID_Menu_CMakeExport);
+#endif
 }
 
-void ProjectExporter::RunExportAutotools()
+void ProjectExporter::RunExportAutotools(wxCommandEvent & event)
 {
     AutotoolsExporter * exportObjectTmp = new AutotoolsExporter();
     exportObjectTmp->RunExport();
-    Manager::Get()->GetLogManager()->Log("Autotools build system created");
+    Manager::Get()->GetLogManager()->Log(_("Autotools build system created"));
 }
 
-void ProjectExporter::RunExportBakefile()
+void ProjectExporter::RunExportBakefile(wxCommandEvent & event)
 {
     BakefileExporter * exportObjectTmp = new BakefileExporter();
     exportObjectTmp->RunExport();
-    Manager::Get()->GetLogManager()->Log("Bakefile exported");
+    Manager::Get()->GetLogManager()->Log(_("Bakefile exported"));
 }
 
-void ProjectExporter::RunExportPremake()
+void ProjectExporter::RunExportPremake(wxCommandEvent & event)
 {
     PremakeDlg SettingsDialog(Manager::Get()->GetAppWindow());
-    SettingsDialog.ShowModal();
-    Manager::Get()->GetLogManager()->Log("Premake script exported");
+
+    if (SettingsDialog.ShowModal() == wxID_OK)
+    {
+        Manager::Get()->GetLogManager()->Log(_("Premake script exported"));
+    }
+    else
+    {
+        Manager::Get()->GetLogManager()->Log(_("Premake export canceled"));
+    }
 }
 
-void ProjectExporter::RunExportCMake()
+void ProjectExporter::RunExportCMake(wxCommandEvent & event)
 {
-    Manager::Get()->GetLogManager()->Log("RunExportCMake started");
+    Manager::Get()->GetLogManager()->Log(_("RunExportCMake started"));
     CMakeListsExporter * exportObjectTmp = new CMakeListsExporter();
     exportObjectTmp->RunExport();
-    Manager::Get()->GetLogManager()->Log("RunExportCMake started completed");
+    Manager::Get()->GetLogManager()->Log(_("RunExportCMake completed"));
 }
 
 bool ProjectExporter::IsProjectOpen() const
@@ -176,7 +190,7 @@ void ProjectExporter::OnProjectClose(CodeBlocksEvent & event)
 {
     wxMenu * submenu = Manager::Get()->GetAppFrame()->GetMenuBar()->GetMenu(0);
 
-    if (submenu->FindItem("E&xport project") == wxNOT_FOUND)
+    if (submenu->FindItem(_("E&xport project")) == wxNOT_FOUND)
     {
         OnStartupDone(event);
     }
@@ -191,7 +205,7 @@ void ProjectExporter::OnProjectOpen(CodeBlocksEvent & event)
 {
     wxMenu * submenu = Manager::Get()->GetAppFrame()->GetMenuBar()->GetMenu(0);
 
-    if (submenu->FindItem("E&xport project") == wxNOT_FOUND)
+    if (submenu->FindItem(_("E&xport project")) == wxNOT_FOUND)
     {
         OnStartupDone(event);
     }
@@ -206,7 +220,7 @@ void ProjectExporter::OnProjectActivate(CodeBlocksEvent & event)
 {
     wxMenu * submenu = Manager::Get()->GetAppFrame()->GetMenuBar()->GetMenu(0);
 
-    if (submenu->FindItem("E&xport project") == wxNOT_FOUND)
+    if (submenu->FindItem(_("E&xport project")) == wxNOT_FOUND)
     {
         OnStartupDone(event);
     }
@@ -221,7 +235,7 @@ void ProjectExporter::OnMenuCreateEnd(CodeBlocksEvent & event)
 {
     wxMenu * submenu = Manager::Get()->GetAppFrame()->GetMenuBar()->GetMenu(0);
 
-    if (submenu->FindItem("E&xport project") == wxNOT_FOUND)
+    if (submenu->FindItem(_("E&xport project")) == wxNOT_FOUND)
     {
         OnStartupDone(event);
     }

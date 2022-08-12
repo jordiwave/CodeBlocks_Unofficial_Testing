@@ -494,18 +494,22 @@ else
         images/56x56/*.png \
         images/64x64/*.png \
         > /dev/null
-    cd ${CB_ROOT}/src/plugins/contrib/clangd_client/src/resources
-    ${ZIPCMD} -0 -qu ${CB_DEVEL_RESDIR}/clangd_client.zip \
-        images/16x16/*.png \
-        images/20x20/*.png \
-        images/24x24/*.png \
-        images/28x28/*.png \
-        images/32x32/*.png \
-        images/40x40/*.png \
-        images/48x48/*.png \
-        images/56x56/*.png \
-        images/64x64/*.png \
-        > /dev/null
+
+    if [ -d ${CB_ROOT}/src/plugins/contrib/clangd_client ] ; then 
+        cd ${CB_ROOT}/src/plugins/contrib/clangd_client/src/resources
+        ${ZIPCMD} -0 -qu ${CB_DEVEL_RESDIR}/clangd_client.zip \
+            images/16x16/*.png \
+            images/20x20/*.png \
+            images/24x24/*.png \
+            images/28x28/*.png \
+            images/32x32/*.png \
+            images/40x40/*.png \
+            images/48x48/*.png \
+            images/56x56/*.png \
+            images/64x64/*.png \
+            > /dev/null
+    fi
+
     cd ${CB_ROOT}/src/plugins/abbreviations/resources
     ${ZIPCMD} -0 -qu ${CB_DEVEL_RESDIR}/abbreviations.zip \
         images/16x16/*.png \
