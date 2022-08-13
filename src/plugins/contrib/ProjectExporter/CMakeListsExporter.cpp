@@ -858,20 +858,22 @@ void CMakeListsExporter::RunExport()
                     m_ContentCMakeListTarget.append(wxString::Format("    set( SOURCE_FILES ${SOURCE_FILES} \"%s%s\")%s", projectTopLevelPath, tmpStringA, EOL));
                 }
 
+                m_ContentCMakeListTarget.append(wxString::Format("    # Setup initial resource flags:%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("    set (CMAKE_RC_FLAGS \"${CMAKE_RC_FLAGS} ${WX_RC_FLAGS}\")%s", EOL));
+
                 wxArrayString tmpArrayRI = AppendOptionsArray(project->GetResourceIncludeDirs(), buildTarget->GetResourceIncludeDirs(), buildTarget->GetOptionRelation(ortResDirs));
-                wxString tmpStringRI;
 
-                for (unsigned int j = 0; j < tmpArrayRI.GetCount(); j++)
+                if (tmpArrayRI.GetCount() > 0)
                 {
-                    tmpStringRI += tmpArrayRI[j];
-                }
-
-                if (!tmpStringRI.IsEmpty())
-                {
-                    m_ContentCMakeListTarget.append(wxString::Format("    # Resource include directories:%s", EOL));
+                    wxString tmpStringRI;
+                    for (unsigned int j = 0; j < tmpArrayRI.GetCount(); j++)
+                    {
+                        tmpStringRI += tmpArrayRI[j];
+                    }
+                    m_ContentCMakeListTarget.append(wxString::Format("    # Update resource flags to include directories:%s", EOL));
                     tmpStringRI.Replace("/", "\\");
                     ConvertMacros(tmpStringRI);
-                    m_ContentCMakeListTarget.append(wxString::Format("    set (CMAKE_RC_FLAGS \"${CMAKE_RC_FLAGS} ${WX_RC_FLAGS} %s\")%s", tmpStringRI, EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("    set (CMAKE_RC_FLAGS \"${CMAKE_RC_FLAGS} -I %s\")%s", tmpStringRI, EOL));
                 }
 
                 m_ContentCMakeListTarget.append(wxString::Format("endif() %s", EOL));

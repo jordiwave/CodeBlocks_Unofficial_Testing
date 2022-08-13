@@ -110,7 +110,7 @@ Currently, the ProjectExporter plugin generates all of the basic components, dra
 
 ### CMakeFileLists.txt Items
 
-* For a multi target project/workspace currently no top level CMakeLists.txt is generated that build's all of the target's.
+* Add support for the Compiler, Linker, Include , Libs & Options relation order between target and project.
 * Need to be able to build the C::B main workspace with no manual file changes before the export is deemed usable!!!
 
 ## References

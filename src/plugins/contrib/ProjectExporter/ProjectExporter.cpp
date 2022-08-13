@@ -125,6 +125,7 @@ void ProjectExporter::OnStartupDone(CodeBlocksEvent & event)
     MenuItemExportBakefile->Enable(IsProjectOpen());
     MenuItemExportPremake->Enable(IsProjectOpen());
     MenuItemExportCMake->Enable(IsProjectOpen());
+
     Connect(ID_Menu_AutotoolsExport, wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportAutotools);
     Connect(ID_Menu_BakefileExport,  wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportBakefile);
     Connect(ID_Menu_PremakeExport,   wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportPremake);

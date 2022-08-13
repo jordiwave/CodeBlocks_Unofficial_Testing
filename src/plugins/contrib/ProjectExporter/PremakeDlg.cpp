@@ -40,17 +40,14 @@ PremakeDlg::~PremakeDlg()
     //*)
 }
 
-
 void PremakeDlg::OnButtonExportClick(wxCommandEvent & event)
 {
     PremakeExporter * ExportObject = new PremakeExporter();
     ExportObject->RunExport(CheckBoxReplVars->IsChecked(), CheckBoxUpgr->IsChecked());
-    Manager::Get()->GetLogManager()->Log("Premake script exported");
     EndModal(wxID_OK);
 }
 
 void PremakeDlg::OnButtonCancelClick(wxCommandEvent & event)
 {
-    Manager::Get()->GetLogManager()->Log("Premake export canceled");
     EndModal(wxID_CANCEL);
 }
