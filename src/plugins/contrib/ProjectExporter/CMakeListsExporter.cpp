@@ -627,12 +627,15 @@ void CMakeListsExporter::RunExport()
             }
 
             wxString targetTitle = ValidateFilename(buildTarget->GetTitle());
+            wxString targetOutPutName = RemLib(wxFileName(buildTarget->GetOutputFilename()).GetName());
             m_ContentCMakeListTarget.Clear();
             m_ContentCMakeListTarget.append(wxString::Format("cmake_minimum_required(VERSION 3.15) %s", EOL));
             m_ContentCMakeListTarget.append(EOL);
             m_ContentCMakeListTarget.append(wxString::Format("project(\"%s\")%s", targetTitle, EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("set(PROJECT_OUTPUTNAME \"%s\")%s", targetOutPutName, EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Target Title: %s%s", targetTitle, EOL));
-            m_ContentCMakeListTarget.append(wxString::Format("# Output FileName: %s%s",  buildTarget->GetOutputFilename(), EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("# Target Output name : %s%s",  targetOutPutName, EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("# Target Output full path: %s%s",  buildTarget->GetOutputFilename(), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Project Compiler: %s%s", project->GetCompilerID(), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Target Compiler:  %s%s", buildTarget->GetCompilerID(), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("# Project CommonTopLevelPath:  %s%s", project->GetCommonTopLevelPath(), EOL));
@@ -881,36 +884,36 @@ void CMakeListsExporter::RunExport()
             {
                 case ttExecutable:
                     m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttExecutable%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(${PROJECT_NAME} ${SOURCE_FILES})%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(${PROJECT_OUTPUTNAME} ${SOURCE_FILES})%s", EOL));
                     break;
 
                 case ttConsoleOnly:
                     m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttConsoleOnly%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(${PROJECT_NAME} ${SOURCE_FILES})%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_executable(${PROJECT_OUTPUTNAME} ${SOURCE_FILES})%s", EOL));
                     break;
 
                 case ttStaticLib:
                     m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttStaticLib%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})%s", EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_OUTPUTNAME} STATIC ${SOURCE_FILES})%s", EOL));
                     break;
 
                 case ttDynamicLib:
                     if (buildTarget->GetCreateStaticLib() || buildTarget->GetCreateDefFile())
                     {
                         m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - DLL%s", EOL));
-                        m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})%s", EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_OUTPUTNAME} SHARED ${SOURCE_FILES})%s", EOL));
                     }
                     else
                     {
                         m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - module%s",  EOL));
-                        m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})%s", EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_OUTPUTNAME} SHARED ${SOURCE_FILES})%s", EOL));
                     }
 
                     break;
 
                 default:
                     m_ContentCMakeListTarget.append(wxString::Format("# Target type: unrecognized target type%s", EOL));
-                    Manager::Get()->GetLogManager()->LogError("Warning: \"" + targetTitle + "\" is of an unrecognized target type; skipping...");
+                    Manager::Get()->GetLogManager()->LogError("Warning: The target \"" + targetTitle + "\" has an un-recognized target type; skipping...");
                     break;
             }
 
@@ -945,7 +948,7 @@ void CMakeListsExporter::RunExport()
                     }
                 }
 
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(${PROJECT_NAME} PRIVATE ${LINKER_DIR_LIST})%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(${PROJECT_OUTPUTNAME} PRIVATE ${LINKER_DIR_LIST})%s", EOL));
                 m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_DIR_LIST)%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
@@ -976,7 +979,7 @@ void CMakeListsExporter::RunExport()
                     }
                 }
 
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_options(${PROJECT_NAME} PRIVATE ${LINKER_OPTIONS_LIST})%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_options(${PROJECT_OUTPUTNAME} PRIVATE ${LINKER_OPTIONS_LIST})%s", EOL));
                 m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_OPTIONS_LIST)%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
@@ -1006,14 +1009,11 @@ void CMakeListsExporter::RunExport()
                 }
 
                 ConvertMacros(tmpStringA);
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(${PROJECT_NAME} ${LINKER_LIBRARIES_LIST})%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(${PROJECT_OUTPUTNAME} ${LINKER_LIBRARIES_LIST})%s", EOL));
                 m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
 
-            // ====================================================================================
-            m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
-            m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
@@ -1083,6 +1083,7 @@ void CMakeListsExporter::RunExport()
                 m_ContentCMakeListTarget.append(EOL);
             }
 
+            m_ContentCMakeListTarget.append(wxString::Format("unset(PROJECT_OUTPUTNAME)%s", EOL));
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
