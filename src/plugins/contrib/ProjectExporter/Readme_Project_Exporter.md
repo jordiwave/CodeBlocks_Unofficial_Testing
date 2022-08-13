@@ -111,6 +111,7 @@ Currently, the ProjectExporter plugin generates all of the basic components, dra
 ### CMakeFileLists.txt Items
 
 * Add support for the Compiler, Linker, Include , Libs & Options relation order between target and project.
+* Add back in support for Windows comilation of rc files once compilation is fixed. Google "cmake windres CMAKE_RC_FLAGS" and read
 * Need to be able to build the C::B main workspace with no manual file changes before the export is deemed usable!!!
 
 ## References

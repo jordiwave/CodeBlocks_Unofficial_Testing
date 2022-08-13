@@ -30,7 +30,7 @@ class CMakeListsExporter : public ExporterBase
         void ExpandMacros(wxString & buffer);
         void ConvertMacros(wxString & buffer);
         void ExportGlobalVariableSets(ExportMode eMode);
-        void ExportMacros();
+        wxString ExportMacros(ProjectBuildTarget * buildTarget);
         void ExportGlobalVariables();
         wxString GetTargetRootDirectory(ProjectBuildTarget * buildTarget);
 
@@ -38,12 +38,12 @@ class CMakeListsExporter : public ExporterBase
         wxString GetHumanReadableOptionRelation(ProjectBuildTarget * buildTarget, OptionsRelationType type);
 
         const wxChar * EOL = wxTextFile::GetEOL();
-        wxString        m_ContentCMakeListTarget;
-        wxString        m_ContentCMakeListGlobalVariables;
-        wxString        m_sGlobalVariableFileName;
+        wxString    m_ContentCMakeListTarget;
+        wxString    m_ContentCMakeListGlobalVariables;
+        wxString    m_sGlobalVariableFileName;
         wxString    m_ContentCMakeListTopLevel;
-        wxRegEx         m_RE_Unix;
-        wxRegEx         m_RE_DOS;
+        wxRegEx     m_RE_Unix;
+        wxRegEx     m_RE_DOS;
 };
 
 #endif // __CMAKELISTSEXPORTER_H__
