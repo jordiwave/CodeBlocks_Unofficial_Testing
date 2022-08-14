@@ -90,6 +90,9 @@ Currently, the ProjectExporter plugin generates all of the basic components, dra
 
 ### Premake 4 script Items
 
+* Update to Premake5:
+    https://forums.codeblocks.org/index.php/topic,24581.msg167777.html#msg167777
+    https://github.com/arnholm/premake5cb
 * C language projects are detected, but Premake4 generated makefiles do not compile - Does anyone know why?  I looked at the makefiles and they looked like they should work.
 * Premake shows two messages:
 
