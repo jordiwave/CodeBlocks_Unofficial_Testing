@@ -7,6 +7,10 @@
 #include <wx/msgdlg.h>
 #include <wx/filefn.h>
 
+#if wxCHECK_VERSION(3, 1, 6)
+    #include <wx/dir.h>
+#endif
+
 #include <algorithm>
 #include <vector>
 
@@ -64,29 +68,69 @@ SpellCheckerStatusField::~SpellCheckerStatusField()
     Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnPressed));
 }
 
-static wxBitmap LoadImageInPath(const wxString & path, wxString fileName,
-                                const wxWindow & windowForScaling)
+#if wxCHECK_VERSION(3, 1, 6)
+static wxBitmapBundle LoadImageInPath(const wxString & path, wxString fileName, cb_unused const wxWindow & windowForScaling)
+{
+    wxString msg;
+    wxString dirName;
+    wxVector <wxBitmap> bitmaps;
+    // Some dictionaries are distributed with hyphens
+    wxString fixedFileName(fileName);
+    fixedFileName.Replace("-", "_");
+    wxDir dir(path);
+
+    if (!dir.IsOpened())
+    {
+        msg.Printf("Loading images: path '%s' not found!", path);
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return wxBitmapBundle();
+    }
+
+    // Scan path looking for "filename" in different sizes
+    for (bool cont = dir.GetFirst(&dirName, wxString(), wxDIR_DIRS); cont; cont = dir.GetNext(&dirName))
+    {
+        const wxString absoluteFileName(path + wxFILE_SEP_PATH + dirName + wxFILE_SEP_PATH + fixedFileName);
+        const wxBitmap bmp(cbLoadBitmap(absoluteFileName, wxBITMAP_TYPE_PNG));
+
+        if (bmp.IsOk())
+        {
+            bitmaps.push_back(bmp);
+        }
+    }
+
+    if (bitmaps.empty())
+    {
+        msg.Printf("Loading images: no images found in path '%s'!", path);
+    }
+    else
+    {
+        msg.Printf("Loading images: %lu were successfully loaded!", (unsigned long)bitmaps.size());
+    }
+
+    Manager::Get()->GetLogManager()->DebugLog(msg);
+    return wxBitmapBundle::FromBitmaps(bitmaps);
+}
+#else
+static wxBitmap LoadImageInPath(const wxString & path, wxString fileName, const wxWindow & windowForScaling)
 {
     const double actualScaleFactor = cbGetActualContentScaleFactor(windowForScaling);
     const int size = cbFindMinSize16to64(16 * actualScaleFactor);
-    const wxString sizePath = wxString::Format(wxT("%dx%d"), size, size);
-    wxString imgPath = path + wxFILE_SEP_PATH + sizePath + wxFILE_SEP_PATH;
+    const wxString sizePath = wxString::Format("%dx%d", size, size);
+    const wxString imgPath(path + wxFILE_SEP_PATH + sizePath + wxFILE_SEP_PATH);
     wxBitmap bmp = cbLoadBitmapScaled(imgPath + fileName, wxBITMAP_TYPE_PNG,
                                       cbGetContentScaleFactor(windowForScaling));
 
     if (bmp.IsOk())
     {
-        const wxString msg = wxString::Format(wxT("Loading image: '%s' succeeded!"),
-                                              (imgPath + fileName).wx_str());
+        const wxString msg(wxString::Format("Loading image: '%s' succeeded!", imgPath + fileName));
         Manager::Get()->GetLogManager()->DebugLog(msg);
         return bmp;
     }
 
     // some dictionaries are distributed with hyphens
-    wxString fileName2 = fileName;
-    fileName2.Replace(wxT("-"), wxT("_"));
-    const wxString msg1 = wxString::Format(wxT("Loading image: '%s' failed!"),
-                                           (imgPath + fileName).wx_str());
+    wxString fileName2(fileName);
+    fileName2.Replace("-", "_");
+    const wxString msg1(wxString::Format("Loading image: '%s' failed!", imgPath + fileName));
 
     if (fileName == fileName2)
     {
@@ -99,17 +143,16 @@ static wxBitmap LoadImageInPath(const wxString & path, wxString fileName,
 
     if (!bmp.IsOk())
     {
-        const wxString msg2 = wxString::Format(wxT("Loading image: '%s' failed!"),
-                                               (imgPath + fileName2).wx_str());
+        const wxString msg2(wxString::Format("Loading image: '%s' failed!", imgPath + fileName2));
         Manager::Get()->GetLogManager()->DebugLog(msg1);
         Manager::Get()->GetLogManager()->DebugLog(msg2);
     }
 
-    const wxString msg = wxString::Format(wxT("Loading image: '%s' succeeded!"),
-                                          (imgPath + fileName2).wx_str());
+    const wxString msg(wxString::Format("Loading image: '%s' succeeded!", imgPath + fileName2));
     Manager::Get()->GetLogManager()->DebugLog(msg);
     return bmp;
 }
+#endif
 
 void SpellCheckerStatusField::Update()
 {
@@ -130,7 +173,11 @@ void SpellCheckerStatusField::Update()
     m_text->SetLabel(name);
     wxString bmpPath(m_sccfg->GetRawBitmapPath());
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bmpPath);
+#if wxCHECK_VERSION(3, 1, 6)
+    wxBitmapBundle bm(LoadImageInPath(bmpPath, fileName, *this));
+#else
     wxBitmap bm(LoadImageInPath(bmpPath, fileName, *this));
+#endif
 
     // Not found?. If name.png is not found and name.length() == 2 try name_NAME.png
     if (!bm.IsOk())
@@ -162,7 +209,12 @@ void SpellCheckerStatusField::Update()
         }
         else
         {
+#if wxCHECK_VERSION(3, 1, 6)
+            const int height = GetSize().GetHeight() * cbGetActualContentScaleFactor(*this);
+            m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm, wxDefaultPosition, wxSize(height, height));
+#else
             m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm);
+#endif
             m_bitmap->Connect(wxEVT_LEFT_UP,
                               wxMouseEventHandler(SpellCheckerStatusField::OnPressed), nullptr,
                               this);
