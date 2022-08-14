@@ -427,10 +427,9 @@ wxString CMakeListsExporter::ExportMacros(ProjectBuildTarget * buildTarget)
 
     if (macroMan)
     {
-        const cbProject* project = buildTarget
-                                 ? buildTarget->GetParentProject()
-                                 : Manager::Get()->GetProjectManager()->GetActiveProject();
-
+        const cbProject * project = buildTarget
+                                    ? buildTarget->GetParentProject()
+                                    : Manager::Get()->GetProjectManager()->GetActiveProject();
         Manager::Get()->GetMacrosManager()->RecalcVars(project, nullptr, buildTarget);
         const MacrosMap & Macros = macroMan->GetMacros();
 
@@ -457,8 +456,7 @@ wxString CMakeListsExporter::ExportMacros(ProjectBuildTarget * buildTarget)
     }
 
     sMacroContentTarget.append(EOL);
-
-    return(sMacroContentTarget);
+    return (sMacroContentTarget);
 }
 
 void CMakeListsExporter::ExportGlobalVariables()
@@ -686,23 +684,16 @@ void CMakeListsExporter::RunExport()
             m_ContentCMakeListTarget.append(wxString::Format("#                 projectLibDirsRelation: %s%s",             GetHumanReadableOptionRelation(buildTarget, ortLibDirs), EOL));
             m_ContentCMakeListTarget.append(wxString::Format("#                 projectResourceIncludeDirsRelation: %s%s", GetHumanReadableOptionRelation(buildTarget, ortResDirs), EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# Include global variable definition file:%s", EOL));
             m_ContentCMakeListTarget.append(wxString::Format("include(%s)%s", UnixFilename(m_sGlobalVariableFileName, wxPATH_UNIX), EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
             // output target macro file
             wxFileName wxfTargetMacroFileName(sTargetRootDir);
@@ -729,10 +720,8 @@ void CMakeListsExporter::RunExport()
                     sMacroData.append(wxString::Format("cmake_minimum_required(VERSION 3.15) %s", EOL));
                     sMacroData.append(EOL);
                     sMacroData.append(ExportMacros(buildTarget));
-
                     fileMgr->Save(wsFullMacroFileName, sMacroData, wxFONTENCODING_SYSTEM, true, true);
                     logMgr->DebugLog(wxString::Format("Exported file: %s", wsFullMacroFileName));
-
                     m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
                     m_ContentCMakeListTarget.append(wxString::Format("# Include target macro definition file:%s", EOL));
                     m_ContentCMakeListTarget.append(wxString::Format("include(%s)%s", UnixFilename(wsFullMacroFileName, wxPATH_UNIX), EOL));
@@ -744,21 +733,15 @@ void CMakeListsExporter::RunExport()
             }
 
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# Include CMakePrintHelpers module:%s", EOL));
             m_ContentCMakeListTarget.append(wxString::Format("include(CMakePrintHelpers)%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
             // Compiler search directories
             tmpArrayA = AppendOptionsArray(project->GetIncludeDirs(), buildTarget->GetIncludeDirs(), buildTarget->GetOptionRelation(ortIncludeDirs));
@@ -857,9 +840,9 @@ void CMakeListsExporter::RunExport()
                 {
                     tmpStringA = tmpArraySrc[j];
                     ConvertMacros(tmpStringA);
-
                     m_ContentCMakeListTarget.append(wxString::Format("            \"%s%s\"%s", projectTopLevelPath, tmpStringA, EOL));
                 }
+
                 if (!tmpArrayhdr.IsEmpty())
                 {
                     m_ContentCMakeListTarget.append(EOL);
@@ -880,6 +863,7 @@ void CMakeListsExporter::RunExport()
                         }
                     }
                 }
+
                 m_ContentCMakeListTarget.append(wxString::Format("    )%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
@@ -887,8 +871,9 @@ void CMakeListsExporter::RunExport()
             // ====================================================================================
             // Resource file(s)
 #if 0
-BUILDING RESOURCES IS NOT FULLY WORKING, SO EXCLUDE FOR THE TIME BEING
-NEED TO FIX LATER
+            BUILDING RESOURCES IS NOT FULLY WORKING, SO EXCLUDE FOR THE TIME BEING
+            NEED TO FIX LATER
+
             if (!tmpArrayRes.IsEmpty())
             {
                 tmpArrayRes.Sort();
@@ -905,16 +890,17 @@ NEED TO FIX LATER
 
                 m_ContentCMakeListTarget.append(wxString::Format("    # Setup initial resource flags:%s", EOL));
                 m_ContentCMakeListTarget.append(wxString::Format("    set(CMAKE_RC_FLAGS \"${CMAKE_RC_FLAGS} ${WX_RC_FLAGS}\")%s", EOL));
-
                 wxArrayString tmpArrayRI = AppendOptionsArray(project->GetResourceIncludeDirs(), buildTarget->GetResourceIncludeDirs(), buildTarget->GetOptionRelation(ortResDirs));
 
                 if (tmpArrayRI.GetCount() > 0)
                 {
                     wxString tmpStringRI;
+
                     for (unsigned int j = 0; j < tmpArrayRI.GetCount(); j++)
                     {
                         tmpStringRI += tmpArrayRI[j];
                     }
+
                     m_ContentCMakeListTarget.append(wxString::Format("    # Update resource flags to include directories:%s", EOL));
                     tmpStringRI.Replace("/", "\\");
                     ConvertMacros(tmpStringRI);
@@ -924,37 +910,27 @@ NEED TO FIX LATER
                 m_ContentCMakeListTarget.append(wxString::Format("endif() %s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
+
 #endif
 
             // ====================================================================================
             // Target Output Type with source files
-            wxFileName wxfTargetOutputFileName(buildTarget->GetOutputFilename());
-            wxString wxsOutputDir(wxfTargetOutputFileName.GetPath());
-            ConvertMacros(wxsOutputDir);
             switch (buildTarget->GetTargetType())
             {
                 case ttExecutable:
                     m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttExecutable%s", EOL));
                     m_ContentCMakeListTarget.append(wxString::Format("add_executable(${PROJECT_OUTPUTNAME} ${SOURCE_FILES})%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("# Set the target output directory:%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY %s)%s",wxsOutputDir, EOL));
                     m_ContentCMakeListTarget.append(EOL);
                     break;
 
                 case ttConsoleOnly:
                     m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttConsoleOnly%s", EOL));
                     m_ContentCMakeListTarget.append(wxString::Format("add_executable(${PROJECT_OUTPUTNAME} ${SOURCE_FILES})%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("# Set the target output directory:%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY %s)%s",wxsOutputDir, EOL));
-                    m_ContentCMakeListTarget.append(EOL);
                     break;
 
                 case ttStaticLib:
                     m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttStaticLib%s", EOL));
                     m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_OUTPUTNAME} STATIC ${SOURCE_FILES})%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("# Set the target output directory:%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY %s)%s",wxsOutputDir, EOL));
-                    m_ContentCMakeListTarget.append(EOL);
                     break;
 
                 case ttDynamicLib:
@@ -966,11 +942,9 @@ NEED TO FIX LATER
                     else
                     {
                         m_ContentCMakeListTarget.append(wxString::Format("# Target type: ttDynamicLib - module%s",  EOL));
-                        m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_OUTPUTNAME} SHARED ${SOURCE_FILES})%s", EOL));
+                        m_ContentCMakeListTarget.append(wxString::Format("add_library(${PROJECT_OUTPUTNAME} MODULE ${SOURCE_FILES})%s", EOL));
                     }
-                    m_ContentCMakeListTarget.append(wxString::Format("# Set the target output directory:%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY  %s)%s",wxsOutputDir, EOL));
-                    m_ContentCMakeListTarget.append(EOL);
+
                     break;
 
                 default:
@@ -978,16 +952,20 @@ NEED TO FIX LATER
                     Manager::Get()->GetLogManager()->LogError("Warning: The target \"" + targetTitle + "\" has an un-recognized target type; skipping...");
                     break;
             }
+
+            m_ContentCMakeListTarget.append(EOL);
+            m_ContentCMakeListTarget.append(wxString::Format("# Set the target output directory:%s", EOL));
+            wxString wxsOutputDir = wxFileName(buildTarget->GetOutputFilename()).GetPath();
+            ConvertMacros(wxsOutputDir);
+            m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY  %s)%s", wxsOutputDir, EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY  %s)%s", wxsOutputDir, EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY  %s)%s", wxsOutputDir, EOL));
+            m_ContentCMakeListTarget.append(EOL);
             m_ContentCMakeListTarget.append(wxString::Format("unset(SOURCE_FILES)%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-            {
-            }
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
             // Linker options
             tmpArrayA = AppendOptionsArray(project->GetLinkerOptions(), buildTarget->GetLinkerOptions(), buildTarget->GetOptionRelation(ortLinkerOptions));
@@ -1026,7 +1004,7 @@ NEED TO FIX LATER
                 }
 
                 ConvertMacros(tmpStringA);
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(${PROJECT_OUTPUTNAME} ${LINKER_LIBRARIES_LIST})%s", EOL));
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(${PROJECT_OUTPUTNAME} PRIVATE ${LINKER_LIBRARIES_LIST})%s", EOL));
                 m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
@@ -1046,7 +1024,8 @@ NEED TO FIX LATER
                     ConvertMacros(tmpStringA);
                     m_ContentCMakeListTarget.append(wxString::Format("list(APPEND LINKER_DIR_LIST %s)%s", tmpStringA, EOL));
                 }
-                m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(${PROJECT_OUTPUTNAME} PRIVATE ${LINKER_DIR_LIST})%s", EOL));
+
+                m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(${PROJECT_OUTPUTNAME} PUBLIC ${LINKER_DIR_LIST})%s", EOL));
                 m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_DIR_LIST)%s", EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
@@ -1121,17 +1100,12 @@ NEED TO FIX LATER
             }
 
             m_ContentCMakeListTarget.append(wxString::Format("unset(PROJECT_OUTPUTNAME)%s", EOL));
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
             //output target file
             wxFileName wxfTargetFileName(sTargetRootDir);
