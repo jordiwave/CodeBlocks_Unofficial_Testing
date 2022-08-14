@@ -1,16 +1,16 @@
 #ifndef PREMAKE_EXPORTER_H
 #define PREMAKE_EXPORTER_H
 
-#include "ExporterBase.h"
+#include "../ExporterBase.h"
 
 
-class PremakeExporter : public ExporterBase
+class Premake4Exporter : public ExporterBase
 {
     public:
         /** Default constructor */
-        PremakeExporter();
+        Premake4Exporter();
         /** Default destructor */
-        virtual ~PremakeExporter();
+        virtual ~Premake4Exporter();
         void RunExport(bool EvaluateVars, bool UpgrTargs);
     protected:
     private:

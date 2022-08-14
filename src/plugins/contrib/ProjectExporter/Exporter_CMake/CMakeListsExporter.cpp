@@ -733,21 +733,15 @@ void CMakeListsExporter::RunExport()
             }
 
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# Include CMakePrintHelpers module:%s", EOL));
             m_ContentCMakeListTarget.append(wxString::Format("include(CMakePrintHelpers)%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
             // Compiler search directories
             tmpArrayA = AppendOptionsArray(project->GetIncludeDirs(), buildTarget->GetIncludeDirs(), buildTarget->GetOptionRelation(ortIncludeDirs));
@@ -801,10 +795,8 @@ void CMakeListsExporter::RunExport()
             }
 
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
             // Source code file list
             FilesList & filesList = buildTarget->GetFilesList();
@@ -971,12 +963,9 @@ void CMakeListsExporter::RunExport()
             m_ContentCMakeListTarget.append(EOL);
             m_ContentCMakeListTarget.append(wxString::Format("unset(SOURCE_FILES)%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
-
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
             // Linker options
             tmpArrayA = AppendOptionsArray(project->GetLinkerOptions(), buildTarget->GetLinkerOptions(), buildTarget->GetOptionRelation(ortLinkerOptions));

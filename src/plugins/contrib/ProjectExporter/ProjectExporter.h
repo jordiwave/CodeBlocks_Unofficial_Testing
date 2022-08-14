@@ -18,15 +18,24 @@
 #endif
 
 #include <cbplugin.h> // for "class cbPlugin"
+#include "Exporter_PreMake5/premake5cb.h"
 
-class ProjectExporter : public cbPlugin
+class ProjectExporter : public cbToolPlugin
 {
     public:
         /** Constructor. */
         ProjectExporter();
+
         /** Destructor. */
         virtual ~ProjectExporter();
 
+        /** @brief Execute the plugin.
+         *
+         * This is the only function needed by a cbToolPlugin.
+         * This will be called when the user selects the plugin from the "Plugins"
+         * menu.
+         */
+        int Execute();
 
         /** This method is called by Code::Blocks and is used by the plugin
           * to add any menu items it needs on Code::Blocks's menu bar.\n
@@ -93,8 +102,12 @@ class ProjectExporter : public cbPlugin
     private:
         void RunExportAutotools(wxCommandEvent & event);
         void RunExportBakefile(wxCommandEvent & event);
-        void RunExportPremake(wxCommandEvent & event);
+        void RunExportPremake4(wxCommandEvent & event);
+        void RunExportPremake5(wxCommandEvent & event);
         void RunExportCMake(wxCommandEvent & event);
+
+        premake5cb * pm5ExportClass;
+
 
         /** @brief Check whether a project is open.
           *

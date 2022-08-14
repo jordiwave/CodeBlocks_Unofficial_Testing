@@ -42,19 +42,33 @@
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,aui,propgrid`" />
 			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
-		<Unit filename="AutotoolsExporter.cpp" />
-		<Unit filename="AutotoolsExporter.h" />
-		<Unit filename="BakefileExporter.cpp" />
-		<Unit filename="BakefileExporter.h" />
-		<Unit filename="CMakeListsExporter.cpp" />
-		<Unit filename="CMakeListsExporter.h" />
+		<Unit filename="Exporter_Auto		<Unit filename="Exporter_AutoTools/AutotoolsExporter.cpp" />
+		<Unit filename="Exporter_AutoTools/AutotoolsExporter.h" />
+		<Unit filename="Exporter_BakeFile/BakefileExporter.cpp" />
+		<Unit filename="Exporter_BakeFile/BakefileExporter.h" />
+		<Unit filename="Exporter_CMake/CMakeListsExporter.cpp" />
+		<Unit filename="Exporter_CMake/CMakeListsExporter.h" />
+		<Unit filename="Exporter_PreMake4/Premake4Dlg.cpp" />
+		<Unit filename="Exporter_PreMake4/Premake4Dlg.h" />
+		<Unit filename="Exporter_PreMake4/Premake4Dlg.xrc" />
+		<Unit filename="Exporter_PreMake4/Premake4Exporter.cpp" />
+		<Unit filename="Exporter_PreMake4/Premake4Exporter.h" />
 		<Unit filename="ExporterBase.cpp" />
 		<Unit filename="ExporterBase.h" />
-		<Unit filename="PremakeDlg.cpp" />
-		<Unit filename="PremakeDlg.h" />
-		<Unit filename="PremakeDlg.xrc" />
-		<Unit filename="PremakeExporter.cpp" />
-		<Unit filename="PremakeExporter.h" />
+		<Unit filename="ProjectExporter.cpp" />
+		<Unit filename="ProjectExporter.h" />Tools/AutotoolsExporter.cpp" />
+		<Unit filename="Exporter_AutoTools/AutotoolsExporter.h" />
+		<Unit filename="Exporter_BakeFile/BakefileExporter.cpp" />
+		<Unit filename="Exporter_BakeFile/BakefileExporter.h" />
+		<Unit filename="Exporter_CMake/CMakeListsExporter.cpp" />
+		<Unit filename="Exporter_CMake/CMakeListsExporter.h" />
+		<Unit filename="Exporter_PreMake4/Premake4Dlg.cpp" />
+		<Unit filename="Exporter_PreMake4/Premake4Dlg.h" />
+		<Unit filename="Exporter_PreMake4/Premake4Dlg.xrc" />
+		<Unit filename="Exporter_PreMake4/Premake4Exporter.cpp" />
+		<Unit filename="Exporter_PreMake4/Premake4Exporter.h" />
+		<Unit filename="ExporterBase.cpp" />
+		<Unit filename="ExporterBase.h" />
 		<Unit filename="ProjectExporter.cpp" />
 		<Unit filename="ProjectExporter.h" />
 		<Unit filename="manifest.xml" />

@@ -43,9 +43,13 @@ Currently, the ProjectExporter plugin generates all of the basic components, dra
 |   * Can build simple exported project                       |           |            |
 |   * Export complex project                                  |           |            |
 |   * Can build complex exported project                      |           |            |
+|   * Export C::B project                                     |   Yes     |  14AUG2022 |
+|   * Can build C::B exported project                         |  Failed   |  14AUG2022 |
+|   * Export C::B workspace                                   |           |            |
+|   * Can build C::B exported workspace                       |           |            |
 |                                                             |           |            |
 | Build/Test                                                  |           |            |
-|   * Plugin loads, runs and works on Windows                 |           |            |
+|   * Plugin loads, runs and works on Windows                 |   Yes     |  14AUG2022 |
 |   * Plugin loads, runs and works on Linux                   |           |            |
 |   * Plugin loads, runs and works on MacOS                   |           |            |
 |   * Builds on Windows via workspace                         |           |            |
@@ -90,9 +94,6 @@ Currently, the ProjectExporter plugin generates all of the basic components, dra
 
 ### Premake 4 script Items
 
-* Update to Premake5:
-    https://forums.codeblocks.org/index.php/topic,24581.msg167777.html#msg167777
-    https://github.com/arnholm/premake5cb
 * C language projects are detected, but Premake4 generated makefiles do not compile - Does anyone know why?  I looked at the makefiles and they looked like they should work.
 * Premake shows two messages:
 
@@ -100,6 +101,12 @@ Currently, the ProjectExporter plugin generates all of the basic components, dra
     Premake script exported
     Premake script exported
     ~~~
+
+### Premake 5 script Items
+
+* WIP - Add Premake5:
+    https://forums.codeblocks.org/index.php/topic,24581.msg167777.html#msg167777
+    https://github.com/arnholm/premake5cb
 
 ### Bakefile  Items
 
@@ -113,9 +120,9 @@ Currently, the ProjectExporter plugin generates all of the basic components, dra
 
 ### CMakeFileLists.txt Items
 
-* Add support for the Compiler, Linker, Include , Libs & Options relation order between target and project.
-* Add back in support for Windows comilation of rc files once compilation is fixed. Google "cmake windres CMAKE_RC_FLAGS" and read
+* Issue with building codeblcoks.exe, but other targets before this build.
 * Need to be able to build the C::B main workspace with no manual file changes before the export is deemed usable!!!
+* Add back in support for Windows compilation of rc files once compilation is fixed. Google "cmake windres CMAKE_RC_FLAGS" and read
 
 ## References
 

@@ -7,20 +7,20 @@
 #include "macrosmanager.h"
 
 // ProjectExporter include files
-#include "PremakeExporter.h"
+#include "Premake4Exporter.h"
 
-PremakeExporter::PremakeExporter()
+Premake4Exporter::Premake4Exporter()
 {
     m_project = Manager::Get()->GetProjectManager()->GetActiveProject();
     m_content = "solution \"";
 }
 
-PremakeExporter::~PremakeExporter()
+Premake4Exporter::~Premake4Exporter()
 {
     //dtor
 }
 
-void PremakeExporter::RunExport(bool EvaluateVars, bool UpgrTargs)
+void Premake4Exporter::RunExport(bool EvaluateVars, bool UpgrTargs)
 {
     //output file
     wxString fn(m_project->GetBasePath());
@@ -47,7 +47,7 @@ void PremakeExporter::RunExport(bool EvaluateVars, bool UpgrTargs)
     Manager::Get()->GetFileManager()->Save(fn, m_content, wxFONTENCODING_SYSTEM, true, true);
 }
 
-wxString PremakeExporter::EmitFlags(const wxString & compilerID, const wxArrayString & compilerFlags)
+wxString Premake4Exporter::EmitFlags(const wxString & compilerID, const wxArrayString & compilerFlags)
 {
     wxString flags;
 
@@ -204,7 +204,7 @@ wxString PremakeExporter::EmitFlags(const wxString & compilerID, const wxArraySt
     return flags;
 }
 
-wxString PremakeExporter::EmitDefines(const wxArrayString & compilerFlags)
+wxString Premake4Exporter::EmitDefines(const wxArrayString & compilerFlags)
 {
     wxString defines;
 
@@ -233,7 +233,7 @@ wxString PremakeExporter::EmitDefines(const wxArrayString & compilerFlags)
     return defines;
 }
 
-wxString PremakeExporter::AddEscapes(const wxString & source)
+wxString Premake4Exporter::AddEscapes(const wxString & source)
 {
     wxString output = source;
     output.Replace("\\", "\\\\");
@@ -241,7 +241,7 @@ wxString PremakeExporter::AddEscapes(const wxString & source)
     return output;
 }
 
-wxString PremakeExporter::ReplVars(const wxString & source, bool repl)
+wxString Premake4Exporter::ReplVars(const wxString & source, bool repl)
 {
     if (repl)
     {
@@ -254,7 +254,7 @@ wxString PremakeExporter::ReplVars(const wxString & source, bool repl)
     }
 }
 
-void PremakeExporter::ExportStraight(bool EvaluateVars)
+void Premake4Exporter::ExportStraight(bool EvaluateVars)
 {
     //Write configurations
     m_content << m_project->GetBuildTarget(0)->GetTitle();
@@ -553,7 +553,7 @@ void PremakeExporter::ExportStraight(bool EvaluateVars)
     }
 }
 
-void PremakeExporter::ExportUpgrade(bool EvaluateVars)
+void Premake4Exporter::ExportUpgrade(bool EvaluateVars)
 {
     m_content << "default\" }";
     //Emit flags

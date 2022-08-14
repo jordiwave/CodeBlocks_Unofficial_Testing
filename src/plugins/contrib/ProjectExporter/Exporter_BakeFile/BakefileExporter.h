@@ -1,7 +1,7 @@
 #ifndef BAKEFILE_EXPORTER_H
 #define BAKEFILE_EXPORTER_H
 
-#include "ExporterBase.h"
+#include "../ExporterBase.h"
 
 
 class BakefileExporter : public ExporterBase

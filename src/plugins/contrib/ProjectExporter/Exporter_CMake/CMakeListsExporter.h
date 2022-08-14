@@ -6,7 +6,7 @@
 #include <wx/textfile.h>
 
 // ProjectExporter include files
-#include "ExporterBase.h"
+#include "../ExporterBase.h"
 
 class CMakeListsExporter : public ExporterBase
 {

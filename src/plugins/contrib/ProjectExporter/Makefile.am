@@ -64,26 +64,26 @@ libProjectExporter_la_LIBADD += \
 endif
 
 libProjectExporter_la_SOURCES = \
-			AutotoolsExporter.cpp \
-			BakefileExporter.cpp \
-			CMakeListsExporter.cpp \
+			Exporter_AutoTools/AutotoolsExporter.cpp \
+			Exporter_BakeFile/BakefileExporter.cpp \
+			Exporter_CMake/CMakeListsExporter.cpp \
+			Exporter_PreMake4/Premake4Dlg.cpp \
+			Exporter_PreMake4/Premake4Exporter.cpp \
 			ExporterBase.cpp \
-			PremakeDlg.cpp \
-			PremakeExporter.cpp \
 			ProjectExporter.cpp
 
 noinst_HEADERS = \
-			AutotoolsExporter.h \
-			BakefileExporter.h \
-			CMakeListsExporter.h \
+			Exporter_AutoTools/AutotoolsExporter.h \
+			Exporter_BakeFile/BakefileExporter.h \
+			Exporter_CMake/CMakeListsExporter.h \
+			Exporter_PreMake4/PremakeDlg.h \
+			Exporter_PreMake4/Premake4Exporter.h \
 			ExporterBase.h \
-			PremakeDlg.h \
-			PremakeExporter.h \
-			ProjectExporter.h
+			Project4Exporter.h
 
 resources_forZIP = \
 			manifest.xml \
-			PremakeDlg.xrc
+			Premake4Dlg.xrc
 
 EXTRA_DIST = \
 			$(resources_forZIP)
