@@ -260,7 +260,7 @@ class CCLogger
         if (locker_result != wxMUTEX_NO_ERROR)  \
         {   wxString err1st = wxString::Format("Owner: %s", M##_Owner); \
             wxString err; \
-            err.Printf(_T("Lock() failed in %s at %s:%d \n\t%s"), cbC2U(__FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(err1st).c_str()); \
+            err.Printf(_T("Lock() failed in %s at %s:%d \n\t%s"), __FUNCTION__, __FILE__, __LINE__, err1st); \
             CCLogger::Get()->DebugLogError(wxString("Lock error") + err);  \
         } \
         else /*lock succeeded, record new owner*/ \

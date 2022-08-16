@@ -98,10 +98,6 @@ cd /d %PrevDirectory%
 
 @rem ------------------------------------------------------------------------------------------
 
-:CopyMSYS2File
-if exist "%GCC_ROOT%\bin\%~1" copy /Y "%GCC_ROOT%\bin\%~1" %BUILD_DEV_OUTPUT_DIR% > nul
-EXIT /B
-
 :WXDetectError
     @echo.
     @echo ^+---------------------------------------------------------------------^+
@@ -176,6 +172,10 @@ EXIT /B
 :NORMALIZEPATH
     SET RETVAL=%~f1
     EXIT /B
+
+:CopyMSYS2File
+	if exist "%GCC_ROOT%\bin\%~1" copy /Y "%GCC_ROOT%\bin\%~1" %BUILD_DEV_OUTPUT_DIR% > nul
+	EXIT /B
 
 :Finish
 cd /d %CurrentDir%

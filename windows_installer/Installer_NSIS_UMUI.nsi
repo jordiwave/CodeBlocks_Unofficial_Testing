@@ -342,6 +342,8 @@ RequestExecutionLevel user
 !macroend
 !define !defineifexist "!insertmacro !defineifexist"
 
+${!defineifexist} WX_MONOLITHIC_BUILD           "${CB_BASE}\wxmsw*_gcc_cb.dll"
+
 ${!defineifexist} FORTRAN_PLUGIN_FOUND          "${CB_BASE}${CB_PLUGINS}\FortranProject.dll"
 ${!defineifexist} CBKODERS_PLUGIN_FOUND         "${CB_BASE}${CB_PLUGINS}\cb_koders.dll"
 ${!defineifexist} CLANGD_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\clangd_client.dll"
@@ -431,8 +433,23 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             Abort
         accessOK:
             SetOverwrite on
+!ifdef WX_MONOLITHIC_BUILD            
             File ${WX_BASE}\wxmsw*_gcc_cb.dll
             File ${WX_BASE}\wxmsw*_gl_gcc_cb.dll
+!else            
+            File ${WX_BASE}\libdeflate.dll
+            File ${WX_BASE}\libexpat-1.dll
+            File ${WX_BASE}\libjbig-0.dll
+            File ${WX_BASE}\libjpeg-8.dll
+            File ${WX_BASE}\libLerc.dll
+            File ${WX_BASE}\liblzma-5.dll
+            File ${WX_BASE}\libpng16-16.dll
+            File ${WX_BASE}\libtiff-5.dll
+            File ${WX_BASE}\libwebp-7.dll
+            File ${WX_BASE}\libzstd.dll
+            File ${WX_BASE}\wxbase*.dll
+            File ${WX_BASE}\wxmsw*.dll
+!endif            
             File ${CB_BASE}\Addr2LineUI.exe
             File ${CB_BASE}\cb_console_runner.exe
             File ${CB_BASE}\CbLauncher.exe
@@ -3237,8 +3254,23 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR\CbLauncher.exe
     Delete /REBOOTOK $INSTDIR\cb_console_runner.exe
     Delete /REBOOTOK $INSTDIR\Addr2LineUI.exe
+!ifdef WX_MONOLITHIC_BUILD            
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gl_gcc_cb.dll
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gcc_cb.dll
+!else            
+    Delete /REBOOTOK $INSTDIR\libdeflate.dll
+    Delete /REBOOTOK $INSTDIR\libexpat-1.dll
+    Delete /REBOOTOK $INSTDIR\libjbig-0.dll
+    Delete /REBOOTOK $INSTDIR\libjpeg-8.dll
+    Delete /REBOOTOK $INSTDIR\libLerc.dll
+    Delete /REBOOTOK $INSTDIR\liblzma-5.dll
+    Delete /REBOOTOK $INSTDIR\libpng16-16.dll
+    Delete /REBOOTOK $INSTDIR\libtiff-5.dll
+    Delete /REBOOTOK $INSTDIR\libwebp-7.dll
+    Delete /REBOOTOK $INSTDIR\libzstd.dll
+    Delete /REBOOTOK $INSTDIR\wxbase*.dll
+    Delete /REBOOTOK $INSTDIR\wxmsw*.dll
+!endif            
     # ---------------------------------------------------------------
     DeleteRegValue HKCU "${REGKEY}\Components" "Core Files (required)"
     
