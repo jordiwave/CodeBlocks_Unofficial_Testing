@@ -24,6 +24,8 @@ These are banked up waiting for the next nightly to be released:
 1. Build plugin using the SVN trunk source.
 2. Test plugin against SVN trunk C::B build.
 3. Fix bug reports....
+4. Test: https://forums.codeblocks.org/index.php/topic,25065.new.html#new
+
 
 ### Medium Priority
 

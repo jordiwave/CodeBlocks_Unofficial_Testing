@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="KeyBinder Windows" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="KeyBinder_Plugin">
+				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\keybinder.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\keybinder" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-Wno-unused-local-typedefs" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DwxUSE_UNICODE" />
+				</Compiler>
+				<Linker>
+					<Add option="-mthreads" />
+				</Linker>
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\keybinder.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="KeyBinder_Plugin;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
+			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="codeblocks" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
+			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+		</Linker>
+		<Unit filename="cJSON.cpp" />
+		<Unit filename="cJSON.h" />
+		<Unit filename="cbKeyConfigPanel.h" />
+		<Unit filename="cbKeyConfigPanel.cpp" />
+		<Unit filename="cbKeybinder.cpp" />
+		<Unit filename="cbKeybinder.h" />
+		<Unit filename="clKeyboardBindingConfig.cpp" />
+		<Unit filename="clKeyboardBindingConfig.h" />
+		<Unit filename="clKeyboardManager.cpp" />
+		<Unit filename="clKeyboardManager.h" />
+		<Unit filename="debugging.h" />
+		<Unit filename="json_node.cpp" />
+		<Unit filename="json_node.h" />
+		<Unit filename="Keybinder.cpp" />
+		<Unit filename="Keybinder.h" />
+		<Unit filename="macros.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="menuutils.cpp" />
+		<Unit filename="menuutils.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

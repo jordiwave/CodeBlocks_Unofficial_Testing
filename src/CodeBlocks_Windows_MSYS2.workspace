@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="CodeBlocks Workspace Windows MSYS2">
+		<Project filename="CodeBlocks_Windows_MSYS2.cbp" />
+		<Project filename="tools/Addr2LineUI/Addr2LineUI_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="tools/cb_share_config/cb_share_config_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="tools/CBLauncher/CbLauncher_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="tools/cbp2make/cbp2make_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/displayevents/cbDisplayEvents_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxContribItems/wxContribItems_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmith/wxSmith_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_Windows_MSYS2.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_Windows_MSYS2.cbp" />
+			<Depends filename="plugins/contrib/wxSmith/wxSmith_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_Windows_MSYS2.cbp">
+			<Depends filename="plugins/contrib/wxSmith/wxSmith_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/headerguard/headerguard_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/loghacker/loghacker_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/ModPoller/ModPoller_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/tidycmt/tidycmt_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/byogames/byogames_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/Cccc/Cccc_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/clangd_client/Clangd_Client_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/codesnippets/codesnippets_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/codestat/codestat_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/copystrings/copystrings_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/CppCheck/CppCheck_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/Cscope/Cscope_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/devpak_plugin/DevPakPlugin_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/dragscroll/DragScroll_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/EditorConfig/EditorConfig_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/envvars/envvars_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/FileManager/FileManager_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/headerfixup/headerfixup_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/help_plugin/help-plugin_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/HexEditor/HexEditor_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/keybinder/Keybinder_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/lib_finder/lib_finder_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/MouseSap/MouseSap_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/profiler/cbprofiler_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ProjectExporter/ProjectExporter_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ProjectOptionsManipulator/ProjectOptionsManipulator_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/regex_testbed/RegExTestbed_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/rndgen/rndgen_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/source_exporter/Exporter_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/symtab/symtab_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/FortranProject/FortranProject_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbDiff/cbDiff_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/GitBlocks/GitBlocks_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbInno/cbInno_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbNSIS/cbNSIS_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbBuildTools/cbBuildTools_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbMarkdown/cbMarkdown_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbMemoryView/cbMemoryView_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows_MSYS2.cbp" />
+		<Project filename="plugins/contrib-wip/Debugger_DAP/Debugger_DAP_Windows_MSYS2.cbp">
+			<Depends filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows_MSYS2.cbp" />
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

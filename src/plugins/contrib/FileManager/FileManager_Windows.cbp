@@ -15,7 +15,7 @@
 				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\FileManager.zip manifest.xml Resources\fileexplorersettings.xrc Resources\CommitBrowser.xrc" />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\FileManager.zip manifest.xml Resources/*.xrc" />
 				</ExtraCommands>
 			</Target>
 		</Build>

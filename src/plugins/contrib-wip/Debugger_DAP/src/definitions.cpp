@@ -48,7 +48,7 @@ bool wxStringToBool(wxString value)
 void AddChildNode(tinyxml2::XMLNode * pNodeParent,  const wxString name, const wxString value)
 {
     tinyxml2::XMLDocument * pDoc = pNodeParent->GetDocument();
-    tinyxml2::XMLElement * pNewXMLElement = pDoc->NewElement(name);
+    tinyxml2::XMLElement * pNewXMLElement = pDoc->NewElement(cbU2C(name));
     pNewXMLElement->SetText(value.mb_str());
     pNodeParent->InsertEndChild(pNewXMLElement);
 }
@@ -98,7 +98,7 @@ void AddChildNode(tinyxml2::XMLNode * pNodeParent,  const wxString name, const b
 
 wxString ReadChildNodewxString(tinyxml2::XMLElement * pElementParent,  const wxString childName)
 {
-    tinyxml2::XMLElement * pElementChild = pElementParent->FirstChildElement(childName);
+    tinyxml2::XMLElement * pElementChild = pElementParent->FirstChildElement(cbU2C(childName));
 
     if (pElementChild)
     {

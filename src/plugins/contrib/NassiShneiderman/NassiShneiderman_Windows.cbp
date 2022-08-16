@@ -48,7 +48,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\NassiShneiderman.zip manifest.xml *.xrc" />
-					<Add after="zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\NassiShneiderman.zip .\images" />
+					<Add after="zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\NassiShneiderman.zip ./images" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

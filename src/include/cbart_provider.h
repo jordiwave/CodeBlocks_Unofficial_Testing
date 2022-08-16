@@ -16,35 +16,40 @@
 /// something meaningful and unique for the plugin).
 class DLLIMPORT cbArtProvider : public wxArtProvider
 {
-    public:
-        /// @param prefix Path where to search for images. It must contain folders of the form NNxNN.
-        cbArtProvider(const wxString & prefix);
+public:
+    /// @param prefix Path where to search for images. It must contain folders of the form NNxNN.
+    cbArtProvider(const wxString &prefix);
 
-        /// Map a stockId to a path inside the prefix.
-        void AddMapping(const wxString & stockId, const wxString & fileName);
-        /// Map a stockId to a path inside the prefix. The fileName is expected to contain two integer
-        /// printf formatting flags (%d). If you fail to provide them the behaviour is undefined!
-        /// Example fileName could look like this: "some-secondary-prefix/%dx%d/filename.png".
-        void AddMappingF(const wxString & stockId, const wxString & fileName);
-    protected:
-        wxBitmap CreateBitmap(const wxArtID & id, const wxArtClient & client,
-                              const wxSize & size) override;
-    private:
-        wxBitmap DoCreateBitmap(const wxArtID & id, Manager::UIComponent uiComponent) const;
-    private:
-        wxString m_prefix;
+    /// Map a stockId to a path inside the prefix.
+    void AddMapping(const wxString &stockId, const wxString &fileName);
+    /// Map a stockId to a path inside the prefix. The fileName is expected to contain two integer
+    /// printf formatting flags (%d). If you fail to provide them the behaviour is undefined!
+    /// Example fileName could look like this: "some-secondary-prefix/%dx%d/filename.png".
+    void AddMappingF(const wxString &stockId, const wxString &fileName);
 
-        struct Data
-        {
-            Data() : hasFormatting(false) {}
-            Data(const wxString & path, bool hasFormatting) : path(path), hasFormatting(hasFormatting) {}
+protected:
+    wxBitmap CreateBitmap(const wxArtID& id, const wxArtClient& client,
+                          const wxSize &size) override;
+#if wxCHECK_VERSION(3, 1, 6)
+    wxBitmapBundle CreateBitmapBundle(const wxArtID& id, const wxArtClient& client,
+                          const wxSize &size) override;
+#endif
 
-            wxString path;
-            bool hasFormatting;
-        };
+private:
+    wxBitmap DoCreateBitmap(const wxArtID& id, Manager::UIComponent uiComponent) const;
+    wxString m_prefix;
 
-        typedef std::unordered_map<wxString, Data> MapStockIdToPath;
+    struct Data
+    {
+        Data() : hasFormatting(false) {}
+        Data(const wxString &path, bool hasFormatting) : path(path), hasFormatting(hasFormatting) {}
 
-        MapStockIdToPath m_idToPath;
+        wxString path;
+        bool hasFormatting;
+    };
+
+    typedef std::unordered_map<wxString, Data> MapStockIdToPath;
+
+    MapStockIdToPath m_idToPath;
 };
 #endif // CODEBLOCKS_ART_PROVIDER_H

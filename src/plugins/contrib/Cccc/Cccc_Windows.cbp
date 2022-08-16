@@ -52,7 +52,7 @@
 			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\Cccc.zip resources\manifest.xml" />
+			<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\Cccc.zip resources/manifest.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="Cccc.cpp" />

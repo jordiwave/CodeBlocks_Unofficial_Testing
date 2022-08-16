@@ -165,7 +165,7 @@
 			<Depends filename="CodeBlocks_Unix.cbp" />
 		</Project>
 		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE SVN EXTERN PLUGINS <=<=<=<=<=<=<=<=<=<= -->
-		<Project filename="plugins/contrib/FortranProject/FortranProject_Cbsvn_Unix.cbp">
+		<Project filename="plugins/contrib/FortranProject/FortranProject_Unix.cbp">
 			<Depends filename="CodeBlocks_Unix.cbp" />
 		</Project>
 		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->

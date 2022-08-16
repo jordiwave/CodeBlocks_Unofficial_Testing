@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 70 $
- * $Id: Version.h 70 2022-07-30 19:32:46Z pecanh $
+ * $Revision: 71 $
+ * $Id: Version.h 71 2022-08-15 20:23:03Z pecanh $
  * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/Version.h $
  */
 
@@ -18,14 +18,14 @@
 
 #define LOGIT wxLogDebug
 #if defined(LOGGING)
-    #define LOGGING 1
-    #undef LOGIT
-    #define LOGIT wxLogMessage
-    #define TRAP asm("int3")
+ #define LOGGING 1
+ #undef LOGIT
+ #define LOGIT wxLogMessage
+ #define TRAP asm("int3")
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.32 2022/07/30")
+#define VERSION wxT("0.2.33 2022/08/13")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -35,19 +35,13 @@ class AppVersion
 // ----------------------------------------------------------------------------
 {
     public:
-        AppVersion()
-        {
-            m_version = VERSION;
-        }
-        ~AppVersion() {};
+        AppVersion() { m_version = VERSION;}
+       ~AppVersion(){};
 
-        wxString GetVersion()
-        {
-            return m_version;
-        }
+    wxString GetVersion(){return m_version;}
 
-        wxString m_version;
-        wxString m_AppName;
+    wxString m_version;
+    wxString m_AppName;
     protected:
     private:
 };
@@ -56,6 +50,33 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.33    Commit 2022/08/15 rev 71
+//          2022/08/13
+//          Fix a Linux error box poping up when re-loading a project into a workspace.
+//              When any project was reloaded into a work space Linux would
+//              issue the msg "Error 9: Bad file descriptor closing start_here.zip"
+//              Elimination the descriptior closes for the parent in UnixProcess()
+//              solved the problem.
+//          2022/08/8
+//          Fix Linux crash or hang caused by misuse of unixProcess.
+//              calling Detach() outside of unixProcess caused join() to hang or crash.
+//          Clean up termination. Client and Parser were not being deleted correctly.
+//          2022/08/3
+//          Fixed Ticket #57
+//              OnEditorActivated was erroneously checking if the client existed.
+//              Should have been checking if the editors project ptr existed yet.
+//              Then activating the parser associated with the editors project..
+//              ClgdCompletion.cpp:3982
+//          Fixed Ticket #58
+//              The code was checking for PauseParserExists() instead of
+//              PauseParserCount() in Parser.cpp 552 .
+//          2022/08/1
+//          Move IdleCallback code to each parser, allows deleting entries per/project
+//          2022/07/31
+//          LSP_ParseSemanticTokens() add sanity check for m_TokenTree ptr.
+//          LSP_DidChange() check for wx3.1.5 vs 3.0 std::string assignment line:2663
+//          OnWorspaceClosingBeging() clear all queued OnIdleCallbacks
+//
 //0.2.32    Commit 2022/07/30 rev 70
 //          2022/07/30
 //          Guard all clangd response functions with check for app or plugin shutting down (GetIsShuttingDown())

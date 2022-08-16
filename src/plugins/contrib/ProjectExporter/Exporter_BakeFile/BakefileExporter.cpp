@@ -589,7 +589,7 @@ void BakefileExporter::RunExport()
                 subElement->SetAttribute("var", tmpString.ToAscii());
                 wxString tmpStringB = Manager::Get()->GetMacrosManager()->ReplaceMacros((const wxString)m_options[i]);
                 tmpStringB.Replace(Manager::Get()->GetMacrosManager()->ReplaceMacros((const wxString)(m_options[i].BeforeFirst('.') + ")")), "");
-                text = new TiXmlText(("$(") + tmpString.BeforeFirst('.') + ")" + tmpStringB.ToAscii());
+                text = new TiXmlText(cbU2C("$(" + tmpString.BeforeFirst('.') + ")" + tmpStringB.ToAscii()));
                 subElement->LinkEndChild(text);
                 TiXmlNode * iterate = element->FirstChild();
 

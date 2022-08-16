@@ -21,6 +21,7 @@ If you fix any outstanding issue please fork this repo and create a pull request
 
 1. Resolve intermittent compiler plugin loading issues
 2. Use in anger to fix C::B issue(s) on MacOS. In other words use it in the real world.
+3. Find GDB plugin and test: https://forums.codeblocks.org/index.php/topic,25065.new.html#new
 
 ### Medium Priority
 

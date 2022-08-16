@@ -15,17 +15,16 @@
 
 const long premake5cb::ID_EXPORT = wxNewId();
 
-BEGIN_EVENT_TABLE(premake5cb, cbToolPlugin)
-    EVT_MENU(ID_EXPORT, premake5cb::OnFileExport)
-END_EVENT_TABLE()
+//BEGIN_EVENT_TABLE(premake5cb, cbToolPlugin)
+//    EVT_MENU(ID_EXPORT, premake5cb::OnFileExport)
+//END_EVENT_TABLE()
 
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
-namespace
-{
-PluginRegistrant<premake5cb> reg(_T("premake5cb"));
-}
-
+//namespace
+//{
+//PluginRegistrant<premake5cb> reg(_T("premake5cb"));
+//}
 
 
 // constructor

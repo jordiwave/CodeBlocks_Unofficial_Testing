@@ -30,9 +30,9 @@
 #include "ClgdCCToken.h"                //(ph 2022/07/09)
 
 #if defined(_WIN32)
-    #include "winprocess/misc/fileutils.h"  //(ph 2021/12/21)
+#include "winprocess/misc/fileutils.h"  //(ph 2021/12/21)
 #else
-    #include "fileutils.h"                 //(ph 2021/12/21)
+#include "fileutils.h"                 //(ph 2021/12/21)
 #endif //_WIN32
 
 // defines for the icon/resource images
@@ -81,26 +81,19 @@
 #define PARSER_IMG_MIN PARSER_IMG_CLASS_FOLDER
 #define PARSER_IMG_MAX PARSER_IMG_MACRO_USE_FOLDER
 
+extern wxMutex s_ParserMutex;
+
 /** Tree data associate with the symbol tree item */
 // ----------------------------------------------------------------------------
 class ClassTreeData : public wxTreeItemData
 // ----------------------------------------------------------------------------
 {
-    public:
-        ClassTreeData(Token * token)
-        {
-            m_Token = token;
-        }
-        Token * GetToken()
-        {
-            return m_Token;
-        }
-        void   SetToken(Token * token)
-        {
-            m_Token = token;
-        }
-    private:
-        Token * m_Token;
+public:
+    ClassTreeData(Token* token)   { m_Token = token; }
+    Token* GetToken()             { return m_Token;  }
+    void   SetToken(Token* token) { m_Token = token; }
+private:
+    Token* m_Token;
 };
 
 class ClassBrowser;
@@ -111,24 +104,24 @@ class ParseManager;     //(ph 2021/08/20)
 namespace ParserCommon
 // ----------------------------------------------------------------------------
 {
-enum ParserState
-{
-    /** the Parser object is newly created, and we are parsing the predefined macro buffer, the
-     * source files, and finally mark the project's tokens as local
-     */
-    ptCreateParser    = 1,
+    enum ParserState
+    {
+        /** the Parser object is newly created, and we are parsing the predefined macro buffer, the
+         * source files, and finally mark the project's tokens as local
+         */
+        ptCreateParser    = 1,
 
-    /** some files are changed by the user, so we are parsing the changed files */
-    ptReparseFile     = 2,
+        /** some files are changed by the user, so we are parsing the changed files */
+        ptReparseFile     = 2,
 
-    /** the user has add some files to the cbproject, so we are parsing the new added files */
-    ptAddFileToParser = 3,
+        /** the user has add some files to the cbproject, so we are parsing the new added files */
+        ptAddFileToParser = 3,
 
-    /** non of the above three status, this means our Parser has finish all the jobs, and it is
-     * in idle mode
-     */
-    ptUndefined       = 4
-};
+        /** non of the above three status, this means our Parser has finish all the jobs, and it is
+         * in idle mode
+         */
+        ptUndefined       = 4
+    };
 }
 
 /** @brief Parser class holds all the tokens of a C::B project
@@ -141,376 +134,311 @@ enum ParserState
 class Parser : public ParserBase
 // ----------------------------------------------------------------------------
 {
-        friend class LSP_SymbolsParser;
+    friend class LSP_SymbolsParser;
 
-    public:
-        /** constructor
-         * @param parent which is actually a ParseManager object
-         * @param project the C::B project associated with the current Parser
-         */
-        Parser(ParseManager * pParseManager, cbProject * project);
-        /** destructor */
-        ~Parser() override;
+public:
+    /** constructor
+     * @param parent which is actually a ParseManager object
+     * @param project the C::B project associated with the current Parser
+     */
+    Parser(ParseManager* pParseManager, cbProject* project);
+    /** destructor */
+    ~Parser() override;
 
-        /** Add files to batch parse mode, internally. The files will be parsed sequentially.
-         * @param filenames input files name array
-         */
-        void AddBatchParse(const StringList & filenames) override;
+    /** Add files to batch parse mode, internally. The files will be parsed sequentially.
+     * @param filenames input files name array
+     */
+    void AddBatchParse(const StringList& filenames) override;
 
-        /** Add one file to Batch mode Parsing, this is the bridge between the main thread and the
-         * thread pool, after this function call, the file(Parserthread) will be run from the thread
-         * pool.
-         * @param filenames input file name
-         */
-        void AddParse(const wxString & filename) override;
+    /** Add one file to Batch mode Parsing, this is the bridge between the main thread and the
+     * thread pool, after this function call, the file(Parserthread) will be run from the thread
+     * pool.
+     * @param filenames input file name
+     */
+    void AddParse(const wxString& filename) override;
 
-        /** Add one file to json mode Parsing
-         * @param filenames input file name
-         * @param json containing LSP symbols
-         */
-        void LSP_ParseDocumentSymbols(wxCommandEvent & event);
-        void LSP_ParseSemanticTokens(wxCommandEvent & event);                 //(ph 2021/03/17)
-        void LSP_OnClientInitialized(cbProject * pProject);                   //(ph 2021/11/11)
-        bool IsOkToUpdateClassBrowserView();
+    /** Add one file to json mode Parsing
+     * @param filenames input file name
+     * @param json containing LSP symbols
+     */
+    void LSP_ParseDocumentSymbols(wxCommandEvent& event);
+    void LSP_ParseSemanticTokens(wxCommandEvent& event);                  //(ph 2021/03/17)
+    void LSP_OnClientInitialized(cbProject* pProject);                    //(ph 2021/11/11)
+    bool IsOkToUpdateClassBrowserView();
 
-#define SYMBOL_NAME 0  //string
-#define SYMBOL_TYPE 1  //LSP_SymbolKind
-#define SYMBOL_LINE_NUMBER 2 //Line number in editor
-        typedef std::tuple<std::string, LSP_SymbolKind, int> LSP_SymbolsTupleType; //fileOpenInServer, editorPosn, editor is ready, editor is modified
-        const LSP_SymbolsTupleType emptySymbolsTuple = LSP_SymbolsTupleType("", Null, -1);
-        bool  LSP_GetSymbolsByType(json * pJson, std::set<LSP_SymbolKind> & symbolset, std::vector<LSP_SymbolsTupleType> & LSP_VectorOfSymbolsFound);
-        //-void  WalkDocumentSymbols(json& jref, wxString& filename, size_t level);
-        void  WalkDocumentSymbols(json & jref, wxString & filename, int & nextVectorSlot, std::set<LSP_SymbolKind> & symbolset, std::vector<LSP_SymbolsTupleType> & LSP_VectorOfSymbolsFound);
+    #define SYMBOL_NAME 0  //string
+    #define SYMBOL_TYPE 1  //LSP_SymbolKind
+    #define SYMBOL_LINE_NUMBER 2 //Line number in editor
+    typedef std::tuple<std::string,LSP_SymbolKind,int> LSP_SymbolsTupleType; //fileOpenInServer, editorPosn, editor is ready, editor is modified
+    const LSP_SymbolsTupleType emptySymbolsTuple = LSP_SymbolsTupleType("",Null,-1);
+    bool  LSP_GetSymbolsByType(json* pJson, std::set<LSP_SymbolKind>& symbolset, std::vector<LSP_SymbolsTupleType>& LSP_VectorOfSymbolsFound);
+    //-void  WalkDocumentSymbols(json& jref, wxString& filename, size_t level);
+    void  WalkDocumentSymbols(json& jref, wxString& filename, int& nextVectorSlot, std::set<LSP_SymbolKind>& symbolset, std::vector<LSP_SymbolsTupleType>& LSP_VectorOfSymbolsFound);
 
-        /** clears the list of predefined macros after it has been parsed */
-        virtual void ClearPredefinedMacros();
+    /** clears the list of predefined macros after it has been parsed */
+    virtual void ClearPredefinedMacros();
 
-        /** return the predefined macro definition string that has been collected */
-        const wxString GetPredefinedMacros() const override;
+    /** return the predefined macro definition string that has been collected */
+    const wxString GetPredefinedMacros() const override;
 
-        /** set the associated C::B project pointer. (only used by one parser for whole workspace)
-         *  @return true if it can do the switch, other wise, return false, and print some debug logs.
-         */
-        bool UpdateParsingProject(cbProject * project) override;
+    /** set the associated C::B project pointer. (only used by one parser for whole workspace)
+     *  @return true if it can do the switch, other wise, return false, and print some debug logs.
+     */
+    bool UpdateParsingProject(cbProject* project) override;
 
-        /** this usually happens when user adds some files to an existing project, it just use AddParse()
-         * function internally to add the file. and switch the ParserState to ParserCommon::ptAddFileToParser.
-         */
-        bool AddFile(const wxString & filename, cbProject * project, bool isLocal = true) override;
+    /** this usually happens when user adds some files to an existing project, it just use AddParse()
+     * function internally to add the file. and switch the ParserState to ParserCommon::ptAddFileToParser.
+     */
+    bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true) override;
 
-        /** this usually happens when the user removes a file from the existing project, it will remove
-         * all the tokens belonging to the file.
-         */
-        void RemoveFile(const wxString & filename) override;
+    /** this usually happens when the user removes a file from the existing project, it will remove
+     * all the tokens belonging to the file.
+     */
+    void RemoveFile(const wxString& filename) override;
 
-        /** check to see a file is parsed already, it first checks the TokenTree to see whether it has
-         * the specified file, but if a file is already queued (put in m_BatchParseFiles), we regard it
-         * as already parsed.
-         */
-        bool IsFileParsed(const wxString & filename) override;
-        void SetFileParsed(wxString filename)
-        {
-            m_FilesParsed.insert(filename);
-        }
+    /** check to see a file is parsed already, it first checks the TokenTree to see whether it has
+     * the specified file, but if a file is already queued (put in m_BatchParseFiles), we regard it
+     * as already parsed.
+     */
+    bool IsFileParsed(const wxString& filename) override;
+    void SetFileParsed(wxString filename) {m_FilesParsed.insert(filename);}
 
-        /** check to see whether Parser is in Idle mode, there is no work need to be done in the Parser*/
-        bool Done() override;
+    /** check to see whether Parser is in Idle mode, there is no work need to be done in the Parser*/
+    bool Done() override;
 
-        /** if the Parser is not in Idle mode, show which need to be done */
-        wxString NotDoneReason() override;
+    /** if the Parser is not in Idle mode, show which need to be done */
+    wxString NotDoneReason() override;
 
-        ParseManager * GetParseManager()
-        {
-            return m_pParseManager;   //(ph 2021/08/20)
-        }
+    ParseManager* GetParseManager(){return m_pParseManager;}    //(ph 2021/08/20)
 
-        IdleCallbackHandler * GetIdleCallbackHandler()              //(ph 2022/02/14)
-        {
-            cbAssert(GetParseManager()->GetIdleCallbackHandler());
-            return GetParseManager()->GetIdleCallbackHandler();
-        }
+////    IdleCallbackHandler* GetIdleCallbackHandler()               //(ph 2022/02/14)
+////    {
+////        cbAssert(GetParseManager()->GetIdleCallbackHandler());
+////        return GetParseManager()->GetIdleCallbackHandler();
+////    }
 
-        bool GetIsShuttingDown()                                    //(ph 2022/07/30)
-        {
-            ParseManager * pParseMgr = GetParseManager();
+    bool GetIsShuttingDown()                                    //(ph 2022/07/30)
+    {
+        ParseManager* pParseMgr = GetParseManager();
+        if (not pParseMgr) return true;
+        if (pParseMgr->GetPluginIsShuttingDown())
+            return true;
+        return false;
+    }
+    void RequestSemanticTokens(cbEditor* pEditor);
 
-            if (not pParseMgr)
-            {
+    //(ph 2021/10/23)
+    void OnLSP_ReferencesResponse(wxCommandEvent& event);
+    void OnLSP_DeclDefResponse(wxCommandEvent& event);
+    void OnLSP_RequestedSymbolsResponse(wxCommandEvent& event);               //(ph 2021/03/12)
+    void OnLSP_RequestedSemanticTokensResponse(wxCommandEvent& event);  //(ph 2022/06/8)
+    void OnLSP_CompletionResponse(wxCommandEvent& event, std::vector<ClgdCCToken>& v_completionTokens); //(ph 2021/10/31) //(ph 2022/07/09)
+    void OnLSP_DiagnosticsResponse(wxCommandEvent& event);
+    void OnLSP_HoverResponse(wxCommandEvent& event, std::vector<ClgdCCToken>& v_HoverTokens, int n_hoverLastPosition);
+    void OnLSP_SignatureHelpResponse(wxCommandEvent& event, std::vector<cbCodeCompletionPlugin::CCCallTip>& v_SignatureTokens, int n_HoverLastPosition );
+    void OnLSP_RenameResponse(wxCommandEvent& event);
+    void OnLSP_GoToPrevFunctionResponse(wxCommandEvent& event);
+    void OnLSP_GoToNextFunctionResponse(wxCommandEvent& event);
+    void OnLSP_GoToFunctionResponse(wxCommandEvent& event); //unused
+    void OnLSP_CompletionPopupHoverResponse(wxCommandEvent& event); //(ph 2022/06/15)
+
+    wxString GetCompletionPopupDocumentation(const ClgdCCToken& token);
+    int      FindSemanticTokenEntryFromCompletion( cbCodeCompletionPlugin::CCToken& cctoken, int completionTokenKind);
+
+    // Called from ClgdCompletion when debugger starts and finishes //(ph 2022/07/16)
+    void OnDebuggerStarting(CodeBlocksEvent& event);
+    void OnDebuggerFinished(CodeBlocksEvent& event);
+
+    FileUtils fileUtils;
+
+protected:
+
+    /** A timer is used to optimized the event handling for parsing, e.g. several files/projects
+     * were added to the project, so we don't start the real parsing stage until the last
+     * file/project was added,
+     */
+    void OnLSP_BatchTimer(wxTimerEvent& event);     //(ph 2021/04/10)
+
+    /** read Parser options from configure file */
+    void ReadOptions() override;
+    /** write Parse options to configure file */
+    void WriteOptions() override;
+
+private:
+
+    /** connect event handlers of the timers and thread pool */
+    void ConnectEvents();
+
+    /** connect event handlers of the timers and thread pool */
+    void DisconnectEvents();
+
+    /** when initialized, this variable will be an instance of a ParseManager */
+    ParseManager* m_pParseManager;
+
+    /** referring to the C::B cbp project currently parsing in non-project owned files */
+    cbProject*                m_ProxyProject;
+    /** referring to the C::B cbp project currently parsing owned project files */
+    cbProject*                m_ParsersProject;
+
+    bool m_DebuggerRunning = false;
+
+private:
+
+    /** a timer to delay the operation of batch parsing, see OnBatchTimer() member function as a
+     * reference
+     */
+    wxTimer                   m_BatchTimer;
+
+    /** All other batch parse files, like the normal headers/sources */
+    StringList                m_BatchParseFiles;
+
+    /** Pre-defined macros, its a buffer queried from the compiler command line */
+    wxString                  m_PredefinedMacros;
+    wxString                  m_LastPredefinedMacros; // for debugging
+
+    /** indicated the current state the parser */
+    ParserCommon::ParserState m_ParserState;
+
+    // ----------------------------------------------------------------------------
+    // LSP
+    // ----------------------------------------------------------------------------
+    bool m_LSP_ParserDone;
+    cbStyledTextCtrl* GetNewHiddenEditor(const wxString& filename);             //(ph 2021/04/10)
+
+    int  m_cfg_parallel_processes;
+    int  m_cfg_max_parsers_while_compiling;
+    std::set<wxString> m_FilesParsed; // files parsed by clangd parser      //(ph 2021/10/14)
+
+    //(ph 2021/10/23)
+    wxArrayString* m_pReferenceValues = nullptr;
+    //-int reportedBadFileReference = 0;
+    wxArrayString m_ReportedBadFileReferences; //filenames of bad references
+    wxString m_LogFileBase = wxString();
+
+  public:
+    size_t GetFilesRemainingToParse()
+        { return m_BatchParseFiles.size(); }
+
+    bool GetUserParsingPaused()
+        {   if (PauseParsingExists("UserPausedParsing")
+                and PauseParsingCount("UserPausedParsing") )
                 return true;
-            }
-
-            if (pParseMgr->GetPluginIsShuttingDown())
-            {
-                return true;
-            }
-
             return false;
         }
-        void RequestSemanticTokens(cbEditor * pEditor);
-
-        //(ph 2021/10/23)
-        void OnLSP_ReferencesResponse(wxCommandEvent & event);
-        void OnLSP_DeclDefResponse(wxCommandEvent & event);
-        void OnLSP_RequestedSymbolsResponse(wxCommandEvent & event);              //(ph 2021/03/12)
-        void OnLSP_RequestedSemanticTokensResponse(wxCommandEvent & event); //(ph 2022/06/8)
-        void OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<ClgdCCToken> & v_completionTokens); //(ph 2021/10/31) //(ph 2022/07/09)
-        void OnLSP_DiagnosticsResponse(wxCommandEvent & event);
-        void OnLSP_HoverResponse(wxCommandEvent & event, std::vector<ClgdCCToken> & v_HoverTokens, int n_hoverLastPosition);
-        void OnLSP_SignatureHelpResponse(wxCommandEvent & event, std::vector<cbCodeCompletionPlugin::CCCallTip> & v_SignatureTokens, int n_HoverLastPosition);
-        void OnLSP_RenameResponse(wxCommandEvent & event);
-        void OnLSP_GoToPrevFunctionResponse(wxCommandEvent & event);
-        void OnLSP_GoToNextFunctionResponse(wxCommandEvent & event);
-        void OnLSP_GoToFunctionResponse(wxCommandEvent & event); //unused
-        void OnLSP_CompletionPopupHoverResponse(wxCommandEvent & event); //(ph 2022/06/15)
-
-        wxString GetCompletionPopupDocumentation(const ClgdCCToken & token);
-        int      FindSemanticTokenEntryFromCompletion(cbCodeCompletionPlugin::CCToken & cctoken, int completionTokenKind);
-
-        // Called from ClgdCompletion when debugger starts and finishes //(ph 2022/07/16)
-        void OnDebuggerStarting(CodeBlocksEvent & event);
-        void OnDebuggerFinished(CodeBlocksEvent & event);
-
-        FileUtils fileUtils;
-
-    protected:
-
-        /** A timer is used to optimized the event handling for parsing, e.g. several files/projects
-         * were added to the project, so we don't start the real parsing stage until the last
-         * file/project was added,
-         */
-        void OnLSP_BatchTimer(wxTimerEvent & event);    //(ph 2021/04/10)
-
-        /** read Parser options from configure file */
-        void ReadOptions() override;
-        /** write Parse options to configure file */
-        void WriteOptions() override;
-
-    private:
-
-        /** connect event handlers of the timers and thread pool */
-        void ConnectEvents();
-
-        /** connect event handlers of the timers and thread pool */
-        void DisconnectEvents();
-
-        /** when initialized, this variable will be an instance of a ParseManager */
-        ParseManager * m_pParseManager;
-
-        /** referring to the C::B cbp project currently parsing in non-project owned files */
-        cbProject        *        m_ProxyProject;
-        /** referring to the C::B cbp project currently parsing owned project files */
-        cbProject        *        m_ParsersProject;
-
-        bool m_DebuggerRunning = false;
-
-    private:
-
-        /** a timer to delay the operation of batch parsing, see OnBatchTimer() member function as a
-         * reference
-         */
-        wxTimer                   m_BatchTimer;
-
-        /** All other batch parse files, like the normal headers/sources */
-        StringList                m_BatchParseFiles;
-
-        /** Pre-defined macros, its a buffer queried from the compiler command line */
-        wxString                  m_PredefinedMacros;
-        wxString                  m_LastPredefinedMacros; // for debugging
-
-        /** indicated the current state the parser */
-        ParserCommon::ParserState m_ParserState;
-
-        // ----------------------------------------------------------------------------
-        // LSP
-        // ----------------------------------------------------------------------------
-        bool m_LSP_ParserDone;
-        cbStyledTextCtrl * GetNewHiddenEditor(const wxString & filename);           //(ph 2021/04/10)
-
-        int  m_cfg_parallel_processes;
-        int  m_cfg_max_parsers_while_compiling;
-        std::set<wxString> m_FilesParsed; // files parsed by clangd parser      //(ph 2021/10/14)
-
-        //(ph 2021/10/23)
-        wxArrayString * m_pReferenceValues = nullptr;
-        //-int reportedBadFileReference = 0;
-        wxArrayString m_ReportedBadFileReferences; //filenames of bad references
-        wxString m_LogFileBase = wxString();
-
-    public:
-        size_t GetFilesRemainingToParse()
-        {
-            return m_BatchParseFiles.size();
-        }
-
-        bool GetUserParsingPaused()
-        {
-            if (PauseParsingExists("UserPausedParsing")
-                    and PauseParsingCount("UserPausedParsing"))
-            {
-                return true;
-            }
-
-            return false;
-        }
-        void SetUserParsingPaused(bool newStatus)
+    void SetUserParsingPaused(bool newStatus)
         {
             PauseParsingForReason("UserPausedParsing", newStatus);
         }
 
-        /** stops the batch parse timer and clears the list of waiting files to be parsed */
-        void ClearBatchParse();
+    /** stops the batch parse timer and clears the list of waiting files to be parsed */
+    void ClearBatchParse();
 
-    private:
-        // map of reasons to pause parsing <reason, count>
-        typedef std::map<wxString, int> PauseReasonType;
-        PauseReasonType m_PauseParsingMap; //map of pauseReason and count
-        //std::vector<cbCodeCompletionPlugin::CCToken> m_vHoverTokens;
-        wxString m_HoverCompletionString;
-        cbCodeCompletionPlugin::CCToken m_HoverCCTokenPending = {-1, "", "", -1, -1};
-        /** Provider of documentation for the popup window */
-        DocumentationHelper m_DocHelper;
+  private:
+    // map of reasons to pause parsing <reason, count>
+    typedef std::map<wxString, int> PauseReasonType;
+    PauseReasonType m_PauseParsingMap; //map of pauseReason and count
+    //std::vector<cbCodeCompletionPlugin::CCToken> m_vHoverTokens;
+    wxString m_HoverCompletionString;
+    cbCodeCompletionPlugin::CCToken m_HoverCCTokenPending = {-1,"", "", -1, -1};
+    /** Provider of documentation for the popup window */
+    DocumentationHelper m_DocHelper;
 
-    public:
-        // ----------------------------------------------------------------------------
-        int PauseParsingCount()
-        // ----------------------------------------------------------------------------
+  public:
+    // ----------------------------------------------------------------------------
+    int PauseParsingCount()
+    // ----------------------------------------------------------------------------
+    {
+        if (not m_PauseParsingMap.size())
+            return 0;
+        int pauseCounts = 0;
+        for (PauseReasonType::iterator it = m_PauseParsingMap.begin(); it != m_PauseParsingMap.end(); ++it)
+            pauseCounts += it->second;
+        return pauseCounts;
+    }
+
+    // ----------------------------------------------------------------------------
+    int PauseParsingCount(wxString reason)
+    // ----------------------------------------------------------------------------
+    {
+        wxString the_reason = reason.MakeLower();
+        if ( m_PauseParsingMap.find(the_reason) == m_PauseParsingMap.end() )
         {
-            if (not m_PauseParsingMap.size())
-            {
-                return 0;
-            }
-
-            int pauseCounts = 0;
-
-            for (PauseReasonType::iterator it = m_PauseParsingMap.begin(); it != m_PauseParsingMap.end(); ++it)
-            {
-                pauseCounts += it->second;
-            }
-
-            return pauseCounts;
+            return 0;
         }
+        return m_PauseParsingMap[the_reason];
+    }
 
-        // ----------------------------------------------------------------------------
-        int PauseParsingCount(wxString reason)
-        // ----------------------------------------------------------------------------
-        {
-            wxString the_reason = reason.MakeLower();
-
-            if (m_PauseParsingMap.find(the_reason) == m_PauseParsingMap.end())
-            {
-#if defined(cbDEBUG)
-                cbAssertNonFatal(the_reason == "Does not exist");
-#endif
-                return 0;
-            }
-
-            return m_PauseParsingMap[the_reason];
-        }
-
-        // ----------------------------------------------------------------------------
-        bool PauseParsingExists(wxString reason)
-        // ----------------------------------------------------------------------------
-        {
-            wxString the_reason = reason.MakeLower();
-
-            if (m_PauseParsingMap.find(the_reason) == m_PauseParsingMap.end())
-            {
-                return false;
-            }
-
+    // ----------------------------------------------------------------------------
+    bool PauseParsingExists(wxString reason)
+    // ----------------------------------------------------------------------------
+    {
+        wxString the_reason = reason.MakeLower();
+        if ( m_PauseParsingMap.find(the_reason) == m_PauseParsingMap.end() )
+            return false;
+        return true;
+    }
+    // ----------------------------------------------------------------------------
+    bool PauseParsingForReason(wxString reason, bool increment)
+    // ----------------------------------------------------------------------------
+    {
+        //wxString the_project = m_Project->GetTitle();
+        wxString the_project = GetParsersProject()->GetTitle();
+        wxString the_reason = reason.MakeLower();
+        if (PauseParsingExists(the_reason) and increment)
+        {   ++m_PauseParsingMap[the_reason];
+            wxString reasonMsg = wxString::Format("Pausing parser(%s) for reason %s(%d)", the_project, reason, m_PauseParsingMap[the_reason]);
+            CCLogger::Get()->DebugLog(reasonMsg);
             return true;
         }
-        // ----------------------------------------------------------------------------
-        bool PauseParsingForReason(wxString reason, bool increment)
-        // ----------------------------------------------------------------------------
-        {
-            //wxString the_project = m_Project->GetTitle();
-            wxString the_project = GetParsersProject()->GetTitle();
-            wxString the_reason = reason.MakeLower();
-
-            if (PauseParsingExists(the_reason) and increment)
-            {
-                ++m_PauseParsingMap[the_reason];
-                wxString reasonMsg = wxString::Format("Pausing parser(%s) for reason %s(%d)", the_project, reason, m_PauseParsingMap[the_reason]);
-                CCLogger::Get()->DebugLog(reasonMsg);
-                return true;
-            }
-            else
-                if (increment) //doesnt exist and increment, creat it
-                {
-                    m_PauseParsingMap[the_reason] = 1;
-                    CCLogger::Get()->DebugLog(wxString::Format("Pausing parser(%s) for %s", the_project, reason));
-                    return true;
-                }
-                else
-                    if (not PauseParsingExists(the_reason) and (increment == false))
-                    {
-                        //decrement but doesnt exist, is an error
-#if defined (cbDEBUG)
-                        cbAssertNonFatal(reason == "reason does not exist");
-#endif
-                        CCLogger::Get()->DebugLogError(wxString::Format("PauseParsing request Error:%s", reason));
-                        return false;
-                    }
-                    else
-                    {
-                        // decrement the pause reason
-                        --m_PauseParsingMap[the_reason];
-                        wxString reasonMsg = wxString::Format("Un-pausing parser(%s) for reason: %s(%d)", the_project, reason, m_PauseParsingMap[the_reason]);
-                        CCLogger::Get()->DebugLog(reasonMsg);
-
-                        if (m_PauseParsingMap[the_reason] < 0)
-                        {
-                            CCLogger::Get()->DebugLogError("Un-pausing parser count below zero for reason: " + reason);
-                            m_PauseParsingMap[the_reason] = 0;
-                        }
-
-                        return true;
-                    }
-
+        else  if (increment) //doesnt exist and increment, create it
+        {   m_PauseParsingMap[the_reason] = 1;
+            CCLogger::Get()->DebugLog(wxString::Format("Pausing parser(%s) for %s", the_project, reason));
+            return true;
+        }
+        else if (not PauseParsingExists(the_reason) and (increment==false))
+        {    //decrement but doesnt exist, is an error
+            #if defined (cbDEBUG)
+            wxString msg(wxString::Format("%s() line:%d", __FUNCTION__, __LINE__));
+            msg += wxString::Format("\nReason param(%s) does not exist", the_reason);
+            cbMessageBox(msg, "Assert(non fatal)");
+            #endif
+            CCLogger::Get()->DebugLogError(wxString::Format("PauseParsing request Error:%s", reason));
             return false;
         }
-
-        /** Remember and return the base dir for the SearchLog */
-        void SetLogFileBase(wxString filebase)
-        {
-            m_LogFileBase = filebase;
-        }
-        wxString GetLogFileBase()
-        {
-            return m_LogFileBase;
-        }
-
-        wxString GetLineTextFromFile(const wxString & file, const int lineNum); //(ph 2020/10/26)
-        bool FindDuplicateEntry(wxArrayString * pArray, wxString fullPath, wxString & lineNum, wxString & text); //(ph 2021/02/1)
-
-        // ----------------------------------------------------------------
-        inline int GetCaretPosition(cbEditor * pEditor)
-        // ----------------------------------------------------------------
-        {
-            if (not pEditor)
+        else
+        {   // decrement the pause reason
+            --m_PauseParsingMap[the_reason];
+            wxString reasonMsg = wxString::Format("Un-pausing parser(%s) for reason: %s(%d)", the_project, reason, m_PauseParsingMap[the_reason]);
+            CCLogger::Get()->DebugLog(reasonMsg);
+            if (m_PauseParsingMap[the_reason] < 0)
             {
-                return 0;
+                CCLogger::Get()->DebugLogError("Un-pausing parser count below zero for reason: " + reason);
+                m_PauseParsingMap[the_reason] = 0;
             }
-
-            cbStyledTextCtrl * pCntl = pEditor->GetControl();
-
-            if (not pCntl)
-            {
-                return 0;
-            }
-
-            return pCntl->GetCurrentPos();
+            return true;
         }
+        return false;
+    }
 
-        cbProject * GetProxyProject()
-        {
-            return m_ProxyProject;
-        }
-        cbProject * GetParsersProject()
-        {
-            return m_ParsersProject;
-        }
+    /** Remember and return the base dir for the SearchLog */
+    void SetLogFileBase(wxString filebase){m_LogFileBase = filebase;}
+    wxString GetLogFileBase(){return m_LogFileBase;}
+
+    wxString GetLineTextFromFile(const wxString& file, const int lineNum); //(ph 2020/10/26)
+    bool FindDuplicateEntry(wxArrayString* pArray, wxString fullPath, wxString& lineNum, wxString& text); //(ph 2021/02/1)
+
+    // ----------------------------------------------------------------
+    inline int GetCaretPosition(cbEditor* pEditor)
+    // ----------------------------------------------------------------
+    {
+        if (not pEditor) return 0;
+        cbStyledTextCtrl* pCntl = pEditor->GetControl();
+        if (not pCntl) return 0;
+        return pCntl->GetCurrentPos();
+    }
+
+    cbProject* GetProxyProject()   {return m_ProxyProject;}
+    cbProject* GetParsersProject() {return m_ParsersProject;}
 };
 
 #endif // PARSER_H

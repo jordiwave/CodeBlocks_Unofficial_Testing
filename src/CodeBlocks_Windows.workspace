@@ -155,7 +155,7 @@
 		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_Windows.cbp">
+		<Project filename="plugins/contrib/FortranProject/FortranProject_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/cbDiff/cbDiff_Windows.cbp">
