@@ -51,7 +51,7 @@ wxString        m_ClassBrowserBuilderThreadMutex_Owner = wxString();
         {                                                            \
             f.AddLine(msg);                                          \
             bool exp = f.Write() && f.Close()                        \
-            cbAssert(exp);                                           \
+                       cbAssert(exp);                                           \
         }                                                            \
     }                                                                \
 
@@ -66,18 +66,19 @@ CCLogger::CCLogger() :
 {
     m_ExternLogActive = false;
     m_ExternLogPID = wxGetProcessId();
-
     // location of the last tree lock
     s_TokenTreeMutex_Owner = wxString();
     // location of the last parser lock
     s_ParserMutex_Owner    = wxString();
 }
 // ----------------------------------------------------------------------------
-/*static*/ CCLogger* CCLogger::Get()
+/*static*/ CCLogger * CCLogger::Get()
 // ----------------------------------------------------------------------------
 {
     if (!s_Inst.get())
+    {
         s_Inst.reset(new CCLogger);
+    }
 
     return s_Inst.get();
 }
@@ -86,28 +87,33 @@ void CCLogger::SetExternalLog(bool OnOrOff)
 // ----------------------------------------------------------------------------
 {
     //(ph 2021/08/30) create external logging
-
     m_ExternLogActive = OnOrOff;
+
     if (m_ExternLogActive)
     {
         // Close previous CBCCLogger Files (if any);
         if (m_ExternLogFile.IsOpened())
+        {
             m_ExternLogFile.Close();
+        }
 
         wxString tempDir = wxFileName::GetTempDir();
         wxString externLogFileName = wxString::Format("%s\\CBCClogger-%d.log", tempDir, m_ExternLogPID);
-        LogManager* pLogMgr =  Manager::Get()->GetLogManager();
+        LogManager * pLogMgr =  Manager::Get()->GetLogManager();
         m_ExternLogFile.Open(externLogFileName, "w");
-        if (not m_ExternLogFile.IsOpened() )
-            pLogMgr->DebugLog("CClogger failed to open CClog "+ externLogFileName);
+
+        if (not m_ExternLogFile.IsOpened())
+        {
+            pLogMgr->DebugLog("CClogger failed to open CClog " + externLogFileName);
+        }
         else
         {
             wxDateTime now = wxDateTime::Now();
             wxString nowTime = now.Format("%H:%M:%S", wxDateTime::Local);
             wxString nowDate = now.FormatDate();
             wxString itemsep = ";";
-            wxString pidToStr = std::to_string(wxGetProcessId() );
-            wxString logLine = "PID:" + pidToStr + itemsep + nowDate+"_"+nowTime + itemsep ;
+            wxString pidToStr = std::to_string(wxGetProcessId());
+            wxString logLine = "PID:" + pidToStr + itemsep + nowDate + "_" + nowTime + itemsep ;
             m_ExternLogFile.Write(logLine + "\n");
             m_ExternLogFile.Flush();
         }
@@ -116,21 +122,24 @@ void CCLogger::SetExternalLog(bool OnOrOff)
     {
         // Close any open CClogger files
         if (m_ExternLogFile.IsOpened())
+        {
             m_ExternLogFile.Close();
+        }
     }
-
 }
 // ----------------------------------------------------------------------------
 CCLogger::~CCLogger()
 // ----------------------------------------------------------------------------
 {
-    if (m_ExternLogFile.IsOpened() )
+    if (m_ExternLogFile.IsOpened())
+    {
         m_ExternLogFile.Close();
+    }
 }
 
 // Initialized from CodeCompletion constructor
 // ----------------------------------------------------------------------------
-void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId, int debugLogErrorId, int addTokenId)
+void CCLogger::Init(wxEvtHandler * parent, int logId, int debugLogId, int debugLogErrorId, int addTokenId)
 // ----------------------------------------------------------------------------
 {
     m_Parent     = parent;
@@ -138,19 +147,24 @@ void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId, int debugLo
     m_DebugLogId = debugLogId;
     m_DebugLogErrorId = debugLogErrorId;
     m_AddTokenId = addTokenId;
-
     // Remove all previous CBCCLogger Files.
     wxString tempDir = wxFileName::GetTempDir();
     wxArrayString logFiles;
     wxDir::GetAllFiles(tempDir, &logFiles, "CBCCLogger*.log", wxDIR_FILES);
-    for (size_t ii=0; ii<logFiles.GetCount(); ++ii)
+
+    for (size_t ii = 0; ii < logFiles.GetCount(); ++ii)
+    {
         wxRemoveFile(logFiles[ii]);
     }
+}
 // ----------------------------------------------------------------------------
-void CCLogger::AddToken(const wxString& msg)
+void CCLogger::AddToken(const wxString & msg)
 // ----------------------------------------------------------------------------
 {
-    if (!m_Parent || m_AddTokenId<1) return;
+    if (!m_Parent || m_AddTokenId < 1)
+    {
+        return;
+    }
 
     CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_AddTokenId);
     evt.SetString(msg);
@@ -161,14 +175,19 @@ void CCLogger::AddToken(const wxString& msg)
 #endif
 }
 // ----------------------------------------------------------------------------
-void CCLogger::Log(const wxString& msg)
+void CCLogger::Log(const wxString & msg)
 // ----------------------------------------------------------------------------
 {
     //Could crash here; should check if shutting down
     if (Manager::IsAppShuttingDown())
+    {
         return;
+    }
 
-    if (!m_Parent || m_LogId<1) return;
+    if (!m_Parent || m_LogId < 1)
+    {
+        return;
+    }
 
     CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_LogId);
     evt.SetString(msg);
@@ -179,26 +198,31 @@ void CCLogger::Log(const wxString& msg)
 #endif
 }
 // ----------------------------------------------------------------------------
-void CCLogger::DebugLog(const wxString& msg, int id)
+void CCLogger::DebugLog(const wxString & msg, int id)
 // ----------------------------------------------------------------------------
 {
     // Could crash here; should check if shutting down
     if (Manager::IsAppShuttingDown())
+    {
         return;
+    }
 
-    if (!m_Parent || m_DebugLogId<1) return;
+    if (!m_Parent || m_DebugLogId < 1)
+    {
+        return;
+    }
 
     CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, id);
     evt.SetString(msg);
 
     // Don't swamp event system with debugger messages
-    if (not m_ExternLogActive )
+    if (not m_ExternLogActive)
     {
-        #if CC_PROCESS_LOG_EVENT_TO_PARENT
-            m_Parent->ProcessEvent(evt);
-        #else
-            wxPostEvent(m_Parent, evt);
-        #endif
+#if CC_PROCESS_LOG_EVENT_TO_PARENT
+        m_Parent->ProcessEvent(evt);
+#else
+        wxPostEvent(m_Parent, evt);
+#endif
     }
 
     //(ph 2021/08/30) write debugging msgs to external file.
@@ -211,7 +235,7 @@ void CCLogger::DebugLog(const wxString& msg, int id)
     }
 }
 // ----------------------------------------------------------------------------
-void CCLogger::DebugLogError(const wxString& msg)
+void CCLogger::DebugLogError(const wxString & msg)
 // ----------------------------------------------------------------------------
 {
     DebugLog(msg, m_DebugLogErrorId);

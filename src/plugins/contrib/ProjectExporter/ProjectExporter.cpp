@@ -18,7 +18,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<ProjectExporter> reg("ProjectExporter");
+PluginRegistrant<ProjectExporter> reg("ProjectExporter");
 }
 
 int ID_Menu_ExportProject = wxNewId();
@@ -43,6 +43,7 @@ ProjectExporter::ProjectExporter()
     {
         NotifyMissingFile("ProjectExporter.zip");
     }
+
     pm5ExportClass = new premake5cb();
 }
 
@@ -105,14 +106,13 @@ void ProjectExporter::OnStartupDone(CodeBlocksEvent & event)
     wxMenuItem * MenuItemExportPremake4 = new wxMenuItem(SubmenuExportProject,  ID_Menu_Premake4Export,  _("&Premake4 script..."),      _("Export active project as a Premake4 script"));
     wxMenuItem * MenuItemExportPremake5 = new wxMenuItem(SubmenuExportProject,  ID_Menu_Premake5Export,  _("Premake&5 script..."),      _("Export active project as a Premake5 script"));
     wxMenuItem * MenuItemExportCMake    = new wxMenuItem(SubmenuExportProject,  ID_Menu_CMakeExport,     _("C&MakeLists.txt (WIP)..."), _("Export active project to a simple CMakeLists.txt file"));
-
     SubmenuExportProject->Append(MenuItemExportAutotools);
     SubmenuExportProject->Append(MenuItemExportBakefile);
     SubmenuExportProject->Append(MenuItemExportPremake4);
     SubmenuExportProject->Append(MenuItemExportPremake5);
     SubmenuExportProject->Append(MenuItemExportCMake);
-
     int idx = submenu->GetMenuItems().IndexOf(submenu->FindItem(submenu->FindItem(_("&Import project"))));
+
     if (idx == wxNOT_FOUND)
     {
         idx = submenu->GetMenuItems().IndexOf(submenu->FindItem(submenu->FindItem(_("R&ecent files"))));
@@ -137,7 +137,6 @@ void ProjectExporter::OnStartupDone(CodeBlocksEvent & event)
     MenuItemExportPremake4->Enable(IsProjectOpen());
     MenuItemExportPremake5->Enable(IsProjectOpen());
     MenuItemExportCMake->Enable(IsProjectOpen());
-
     Connect(ID_Menu_AutotoolsExport, wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportAutotools);
     Connect(ID_Menu_BakefileExport,  wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportBakefile);
     Connect(ID_Menu_Premake4Export,  wxEVT_MENU, (wxObjectEventFunction)&ProjectExporter::RunExportPremake4);

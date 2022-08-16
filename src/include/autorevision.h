@@ -8,9 +8,9 @@
 
 namespace autorevision
 {
-	const unsigned int svn_revision = 12868;
-	const wxString svnRevision(_T("12868"));
-	const wxString svnDate(_T("2022-08-16 00:00:00"));
+const unsigned int svn_revision = 12868;
+const wxString svnRevision(_T("12868"));
+const wxString svnDate(_T("2022-08-16 00:00:00"));
 }
 
 

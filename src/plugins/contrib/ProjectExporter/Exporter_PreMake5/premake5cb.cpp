@@ -38,6 +38,7 @@ premake5cb::premake5cb()
     {
         NotifyMissingFile(_T("premake5cb.zip"));
     }
+
 #else
     m_defaults = std::make_shared<pm_defaults>(Manager::Get()->GetConfigManager("premake5cb"));
 #endif
@@ -82,6 +83,7 @@ void premake5cb::OnRelease(bool appShutDown)
 int premake5cb::Execute()
 {
     PM5SettingsDialog dlg(Manager::Get()->GetAppWindow());
+
     if (!m_defaults)
     {
         m_defaults = std::make_shared<pm_defaults>(Manager::Get()->GetConfigManager("premake5cb"));
@@ -148,6 +150,7 @@ void premake5cb::OnSave(CodeBlocksEvent & event)
 void premake5cb::OnFileExport(wxCommandEvent & event)
 {
     cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+
     if (pWorkspace)
     {
         bool use_workspace_prefix = m_defaults->get_bool_flag("use_workspace_prefix", true);
@@ -187,52 +190,53 @@ void premake5cb::OnFileExport(wxCommandEvent & event)
 
 void premake5cb::DoExport(const wxFileName & fname_lua)
 {
-//    if (m_IsAttached)
-//    {
-        if (m_defaults->get_bool_flag("save_all_on_export", false))
+    //    if (m_IsAttached)
+    //    {
+    if (m_defaults->get_bool_flag("save_all_on_export", false))
+    {
+        Manager::Get()->GetProjectManager()->SaveAllProjects();
+        Manager::Get()->GetProjectManager()->SaveWorkspace();
+    }
+
+    auto ws = std::make_shared<pm_workspace_cb>(m_defaults);
+
+    if (ws->size() == 0)
+    {
+        Manager::Get()->GetLogManager()->LogError("premake5cb: workspace is empty " + ws->filename().GetFullPath());
+        return;
+    }
+
+    if (ws->is_local_workspace())
+    {
+        std::string fname = fname_lua.GetFullPath().ToStdString();
+        std::ofstream out(fname);
+
+        if (out.is_open())
         {
-            Manager::Get()->GetProjectManager()->SaveAllProjects();
-            Manager::Get()->GetProjectManager()->SaveWorkspace();
-        }
+            // write the premake5 file
+            ws->premake_export(out);
+            Manager::Get()->GetLogManager()->Log("premake5cb: created " + fname_lua.GetFullPath());
+            // produce error/warning message if it was saved in the wrong folder
+            wxString lua_path = fname_lua.GetPath();
+            wxString ws_path  = ws->filename().GetPath();
 
-        auto ws = std::make_shared<pm_workspace_cb>(m_defaults);
-
-        if (ws->size() == 0)
-        {
-            Manager::Get()->GetLogManager()->LogError("premake5cb: workspace is empty " + ws->filename().GetFullPath());
-            return;
-        }
-
-        if (ws->is_local_workspace())
-        {
-            std::string fname = fname_lua.GetFullPath().ToStdString();
-            std::ofstream out(fname);
-
-            if (out.is_open())
+            if (lua_path != ws_path)
             {
-                // write the premake5 file
-                ws->premake_export(out);
-                Manager::Get()->GetLogManager()->Log("premake5cb: created " + fname_lua.GetFullPath());
-                // produce error/warning message if it was saved in the wrong folder
-                wxString lua_path = fname_lua.GetPath();
-                wxString ws_path  = ws->filename().GetPath();
-
-                if (lua_path != ws_path)
-                {
-                    Manager::Get()->GetLogManager()->LogError(wxString("premake5cb: C::B workspace and premake5 folders are not the same!")
-                                                              + "\nC::B workspace folder = " + ws_path
-                                                              + "\nPremake5 lua folder = " + lua_path
-                                                             );
-                }
-            }
-            else
-            {
-                Manager::Get()->GetLogManager()->LogError("premake5cb: could not write to " + fname_lua.GetFullPath());
+                Manager::Get()->GetLogManager()->LogError(wxString("premake5cb: C::B workspace and premake5 folders are not the same!")
+                                                          + "\nC::B workspace folder = " + ws_path
+                                                          + "\nPremake5 lua folder = " + lua_path
+                                                         );
             }
         }
         else
         {
-            Manager::Get()->GetLogManager()->LogError("premake5cb: projects are not subdirs of " + ws->filename().GetFullPath());
+            Manager::Get()->GetLogManager()->LogError("premake5cb: could not write to " + fname_lua.GetFullPath());
         }
-//    }
+    }
+    else
+    {
+        Manager::Get()->GetLogManager()->LogError("premake5cb: projects are not subdirs of " + ws->filename().GetFullPath());
+    }
+
+    //    }
 }

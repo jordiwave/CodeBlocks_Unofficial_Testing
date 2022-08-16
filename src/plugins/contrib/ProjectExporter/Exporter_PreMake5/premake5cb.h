@@ -104,7 +104,7 @@ class premake5cb : public cbToolPlugin
         static const long ID_EXPORT;
         void DoExport(const wxFileName & lua_name);
 
-//        DECLARE_EVENT_TABLE()
+        //        DECLARE_EVENT_TABLE()
 
     private:
         std::shared_ptr<pm_defaults> m_defaults;
