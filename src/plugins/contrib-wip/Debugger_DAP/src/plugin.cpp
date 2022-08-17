@@ -175,8 +175,6 @@ void Debugger_DAP::OnAttachReal()
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__));
     m_timer_poll_debugger.SetOwner(this, id_gdb_poll_timer);
-    DebuggerManager & dbg_manager = *Manager::Get()->GetDebuggerManager();
-    dbg_manager.RegisterDebugger(this);
     // Do no use cbEVT_PROJECT_OPEN as the project may not be active!!!!
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,  new cbEventFunctor<Debugger_DAP, CodeBlocksEvent>(this, &Debugger_DAP::OnProjectOpened));
 }
