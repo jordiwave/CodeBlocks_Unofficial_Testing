@@ -138,8 +138,8 @@ Additional Notes/Info:
         ./Build_Helper_Files/codeblocks_cleanup.sh
 
 
-Building WxWidget
------------------
+Building WxWidgets
+------------------
 If for some reason you need to build wxWidgets here are the quick instructions:
     cd /home/<USERNAME>
     git clone --recurse-submodules https://github.com/wxWidgets/wxWidgets wxWidgets_github

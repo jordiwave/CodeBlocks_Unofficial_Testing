@@ -12,7 +12,6 @@
 				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/ProjectExporter" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
@@ -111,11 +110,11 @@
 		<Unit filename="Exporter_PreMake5/wxsmith/PM5SettingsDialog.wxs" />
 		<Unit filename="ProjectExporter.cpp" />
 		<Unit filename="ProjectExporter.h" />
-		<Unit filename="manifest.rc">
+		<Unit filename="wxsmith/PremakeDlg.wxs" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="manifest.xml" />
-		<Unit filename="wxsmith/PremakeDlg.wxs" />
 		<Extensions>
 			<cbSystemView>
 				<target name="#project#">
