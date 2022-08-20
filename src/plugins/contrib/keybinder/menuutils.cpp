@@ -7,7 +7,6 @@
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-// RCS-ID:      $Id: menuutils.cpp 12250 2020-12-22 14:39:11Z fuscated $
 
 // menuutils for KeyBinder v2.0 2019/04/8
 

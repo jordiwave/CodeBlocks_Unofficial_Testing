@@ -5,7 +5,6 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id: chartwindow.cpp 12668 2022-01-21 10:28:31Z wh11204 $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

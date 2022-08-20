@@ -16,7 +16,6 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: BrowseMarks.h 11347 2018-03-26 14:24:13Z pecanh $
 #ifndef BROWSEMARKS_H
 #define BROWSEMARKS_H
 

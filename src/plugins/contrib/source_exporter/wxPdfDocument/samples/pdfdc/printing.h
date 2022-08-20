@@ -5,7 +5,6 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     1995
-// RCS-ID:      $Id: printing.h 11688 2019-05-08 05:59:01Z mortenmacfly $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

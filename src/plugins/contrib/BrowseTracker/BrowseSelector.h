@@ -16,7 +16,6 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: BrowseSelector.h 12470 2021-06-24 19:45:05Z pecanh $
 
 #ifndef BROWSE_SELECTOR_H
 #define BROWSE_SELECTOR_H

@@ -4,7 +4,6 @@
 // Author:      John Labenski
 // Modified by:
 // Created:     1/08/1999
-// RCS-ID:      $Id: thingdef.h 7947 2012-04-28 10:01:45Z mortenmacfly $
 // Copyright:   (c) John Labenski
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

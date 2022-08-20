@@ -5,7 +5,6 @@
  * Copyright: (c) Pecan Heber
  * License:   GPL
  **************************************************************/
-// RCS-ID:      $Id: cbKeybinder.h 12189 2020-07-15 19:25:10Z pecanh $
 //cause a commit 2020/04/7
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H

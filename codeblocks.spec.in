@@ -109,7 +109,6 @@ Most of its functionality is already provided by plugins.
  Plugins included in the base package are:
     * Compiler front end to many free compilers
     * Debugger front end for GDB (and CDB for windows platforms)
-    * Debugger front end for DAP (LLDB client and other DAP clients)
     * Source formatter (based on AStyle)
     * Wizard to create new C++ classes
     * Default MIME handler
@@ -159,6 +158,7 @@ plugins. These are:
  * Copy strings
  * CppCheck
  * Cscope
+ * Debugger front end for DAP (LLDB client and other DAP clients)
  * DoxyBlocks
  * DragScroll (enhances mouse operations)
  * EditorConfig
@@ -288,7 +288,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libclasswizard.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
-%{plugindir}/libdebugger_dap.so
 %{plugindir}/libdefaultmimehandler.so
 %{plugindir}/libDisplayEvents.so
 %{plugindir}/liboccurrenceshighlighting.so
@@ -347,6 +346,8 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libCppCheck.so
 %{plugindir}/libSmartIndent*.so
 %{plugindir}/libcb_koders.so
+%{plugindir}/libdebugger_dap.so
+%{_libdir}/libdebugger_wxdap.so
 %{plugindir}/libcodesnippets.so
 %{plugindir}/libcodestat.so
 %{plugindir}/libcopystrings.so

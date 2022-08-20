@@ -1,11 +1,5 @@
-if BUILD_DEBUGGER
-MAYBE_DEBUGGER_DAP_PLUGIN=Debugger_DAP
-endif
-
 SUBDIRS = \
-		cbDiff  \
-		DebugAdapterProtocol \
-		$(MAYBE_DEBUGGER_DAP_PLUGIN)
+		cbDiff 
 
 DIST_SUBDIRS = $(SUBDIRS)
 

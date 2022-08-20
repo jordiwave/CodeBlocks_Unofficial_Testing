@@ -3,7 +3,6 @@
 // Purpose:     wxSTEditor setup definitions (rename to setup.h)
 // Maintainer:
 // Created:     2003-04-04
-// RCS-ID:
 // Copyright:   (c) John Labenski
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////

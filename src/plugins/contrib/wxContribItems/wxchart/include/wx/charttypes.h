@@ -5,7 +5,6 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id: charttypes.h 9270 2013-08-18 05:22:02Z mortenmacfly $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

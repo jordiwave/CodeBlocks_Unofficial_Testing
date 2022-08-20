@@ -5,7 +5,6 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id: piechartpoints.cpp 12237 2020-11-21 16:35:54Z fuscated $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

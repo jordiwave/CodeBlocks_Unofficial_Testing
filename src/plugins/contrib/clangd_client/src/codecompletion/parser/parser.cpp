@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 71 $
- * $Id: parser.cpp 71 2022-08-15 20:23:03Z pecanh $
- * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parser/parser.cpp $
  */
 
 #include <sdk.h>
@@ -207,7 +204,7 @@ void Parser::OnDebuggerStarting(CodeBlocksEvent & event)
     {
         cbProject * pProject = GetParsersProject(); //This parsers cbProject
         wxString msg = wxString::Format("LSP background parsing PAUSED while debugging project(%s)", pProject->GetTitle());
-        Manager::Get()->GetLogManager()->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
     }
 }
 // ----------------------------------------------------------------------------
@@ -220,7 +217,7 @@ void Parser::OnDebuggerFinished(CodeBlocksEvent & event)
     {
         cbProject * pProject = GetParsersProject(); //This parsers cbProject
         wxString msg = wxString::Format("LSP background parsing CONTINUED after debugging project(%s)", pProject->GetTitle());
-        Manager::Get()->GetLogManager()->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
     }
 }
 // ----------------------------------------------------------------------------
@@ -535,7 +532,6 @@ bool Parser::IsOkToUpdateClassBrowserView()
 void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
 // ----------------------------------------------------------------------------
 {
-    CCLogger * pLogMgr =  CCLogger::Get();
     // Validate that this parser is associated with a project
     cbProject * pProject = m_ParsersProject;
 
@@ -577,7 +573,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
         catch (std::exception & err)
         {
             wxString errMsg(wxString::Format("ERROR: %s:%s", __FUNCTION__, err.what()));
-            pLogMgr->DebugLogError(errMsg);
+            CCLogger::Get()->DebugLogError(errMsg);
             LSP_ParserDocumentSymbolsQueue.pop_front(); //delete the current json queue pointer
             return;
         }
@@ -673,6 +669,8 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
         opts.platformCheck         = m_Options.platformCheck;
         opts.logClangdClientCheck  = m_Options.logClangdClientCheck;
         opts.logClangdServerCheck  = m_Options.logClangdServerCheck;
+        opts.logPluginInfoCheck    = m_Options.logPluginInfoCheck;
+        opts.logPluginDebugCheck   = m_Options.logPluginDebugCheck;
         opts.lspMsgsFocusOnSaveCheck  = m_Options.lspMsgsFocusOnSaveCheck;
         opts.lspMsgsClearOnSaveCheck  = m_Options.lspMsgsClearOnSaveCheck;
         // whether to collect doxygen style documents.
@@ -691,7 +689,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
         if (fileIdx)
         {
             wxString msg = wxString::Format("%s(): Removing tokens for %s", __FUNCTION__, filename);
-            pLogMgr->DebugLog(msg);
+            CCLogger::Get()->DebugLog(msg);
             m_TokenTree->RemoveFile(fileIdx);
         }
 
@@ -847,7 +845,6 @@ void Parser::LSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
         return;
     }
 
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
     /// Do Not free pJson, it will be freed in CodeCompletion::LSP_Event()
     json * pJson = (json *)event.GetClientData();
     // most ParserThreadOptions was copied from m_Options
@@ -863,6 +860,8 @@ void Parser::LSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
     opts.platformCheck         = m_Options.platformCheck;
     opts.logClangdClientCheck  = m_Options.logClangdClientCheck;
     opts.logClangdServerCheck  = m_Options.logClangdServerCheck;
+    opts.logPluginInfoCheck    = m_Options.logPluginInfoCheck;
+    opts.logPluginDebugCheck   = m_Options.logPluginDebugCheck;
     opts.lspMsgsFocusOnSaveCheck  = m_Options.lspMsgsFocusOnSaveCheck;
     opts.lspMsgsClearOnSaveCheck  = m_Options.lspMsgsClearOnSaveCheck;
     // whether to collect doxygen style documents.
@@ -875,7 +874,7 @@ void Parser::LSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
     {
         // What happened to the TokenTree?
         wxString msg = wxString::Format("%s() called with null m_TokenTree", __FUNCTION__);
-        pLogMgr->DebugLogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
 #if defined(cbDEBUG)
         cbAssertNonFatal(m_TokenTree && "Called with null m_TokenTree");
 #endif
@@ -934,7 +933,7 @@ void Parser::LSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
 
     if (not fileIdx)
     {
-        pLogMgr->DebugLogError(wxString::Format("%s() Error: Missing TokenTree fileIdx for %s", __FUNCTION__, filename));
+        CCLogger::Get()->DebugLogError(wxString::Format("%s() Error: Missing TokenTree fileIdx for %s", __FUNCTION__, filename));
     }
 
     bool parse_rc = false;
@@ -951,11 +950,11 @@ void Parser::LSP_ParseSemanticTokens(wxCommandEvent & event) //(ph 2021/03/17)
     // **Sanity check**
     if (not parse_rc)
     {
-        pLogMgr->DebugLogError(wxString::Format("%s() Error: Failed Semantic token parse for %s", __FUNCTION__, filename));
+        CCLogger::Get()->DebugLogError(wxString::Format("%s() Error: Failed Semantic token parse for %s", __FUNCTION__, filename));
     }
     else
     {
-        pLogMgr->DebugLog(wxString::Format("%s() Added Semantic tokens for %s", __FUNCTION__, filename));
+        CCLogger::Get()->DebugLog(wxString::Format("%s() Added Semantic tokens for %s", __FUNCTION__, filename));
     }
 
     if (pLSP_SymbolsParser)
@@ -1101,7 +1100,6 @@ void Parser::OnLSP_BatchTimer(cb_unused wxTimerEvent & event)           //(ph 20
     }
 
     cbProject * pProject = GetParsersProject(); //This parsers cbProject
-    LogManager * pLogMgr =  Manager::Get()->GetLogManager();
 
     // If user paused background parsing, reset the timer and return
     if (PauseParsingCount())
@@ -1242,8 +1240,8 @@ void Parser::OnLSP_BatchTimer(cb_unused wxTimerEvent & event)           //(ph 20
                 else
                 {
                     wxString msg = wxString::Format("LSP background parse FAILED for (%s) %s (%d more)", pProject->GetTitle(), filename, int(numEntries - 1));
-                    pLogMgr->DebugLog(msg);
-                    pLogMgr->Log(msg);
+                    CCLogger::Get()->DebugLog(msg);
+                    CCLogger::Get()->Log(msg);
                 }
 
                 break;
@@ -1257,9 +1255,9 @@ void Parser::OnLSP_BatchTimer(cb_unused wxTimerEvent & event)           //(ph 20
     else
     {
         wxString msg = "Background file parsing queue now empty."; //(ph 2021/04/15)
-        pLogMgr->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
         msg = wxString::Format("LSP Server is processing %zu remaining files.", pClient->LSP_GetServerFilesParsingCount());
-        pLogMgr->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
     }
 }
 // ----------------------------------------------------------------------------
@@ -1295,7 +1293,7 @@ bool Parser::IsFileParsed(const wxString & filename)
 void Parser::ReadOptions()
 // ----------------------------------------------------------------------------
 {
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("clangd_client");
     // one-time default settings change: upgrade everyone
     bool force_all_on = !cfg->ReadBool(_T("/parser_defaults_changed"), false);
 
@@ -1325,6 +1323,8 @@ void Parser::ReadOptions()
     m_Options.LLVM_MasterPath      = cfg->Read(_T("/LLVM_MasterPath"),                 "");
     m_Options.logClangdClientCheck = cfg->ReadBool(_T("/logClangdClient_check"),        false);
     m_Options.logClangdServerCheck = cfg->ReadBool(_T("/logClangdServer_check"),        false);
+    m_Options.logPluginInfoCheck   = cfg->ReadBool(_T("/logPluginInfo_check"),          true);
+    m_Options.logPluginDebugCheck  = cfg->ReadBool(_T("/logPluginDebug_check"),         false);
     m_Options.lspMsgsFocusOnSaveCheck = cfg->ReadBool(_T("/lspMsgsFocusOnSave_check"),  false);
     m_Options.lspMsgsClearOnSaveCheck = cfg->ReadBool(_T("/lspMsgsClearOnSave_check"),  false);
     // Page "Symbol browser"
@@ -1360,6 +1360,8 @@ void Parser::WriteOptions()
     cfg->Write(_T("/LLVM_MasterPath"),               m_Options.LLVM_MasterPath);
     cfg->Write(_T("/logClangdClient_check"),         m_Options.logClangdClientCheck);
     cfg->Write(_T("/logClangdServer_check"),         m_Options.logClangdServerCheck);
+    cfg->Write(_T("/logPluginInfo_check"),           m_Options.logPluginInfoCheck);
+    cfg->Write(_T("/logPluginDebug_check"),          m_Options.logPluginDebugCheck);
     cfg->Write(_T("/lspMsgsFocusOnSave_check"),      m_Options.lspMsgsFocusOnSaveCheck);
     cfg->Write(_T("/lspMsgsClearOnSave_check"),      m_Options.lspMsgsClearOnSaveCheck);
     // Page "Symbol browser"
@@ -1382,7 +1384,6 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         return;
     }
 
-    CCLogger * pLogMgr = CCLogger::Get();
     EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
     cbEditor * pActiveEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     // ----------------------------------------------------------------------------
@@ -1461,8 +1462,8 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
 
                 wxString msg = wxString::Format("LSP opened editor parse FINISHED for (%s) %s (%d ms) (%zu more)", pProject->GetTitle(), pEditor->GetFilename(),
                                                 pClient->LSP_GetServerFilesParsingDurationTime(pEditor->GetFilename()), remainingToParse);
-                pLogMgr->DebugLog(msg);
-                pLogMgr->Log(msg);
+                CCLogger::Get()->DebugLog(msg);
+                CCLogger::Get()->Log(msg);
             }
         }
     }//endif uri
@@ -1511,7 +1512,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         msg << wxString::Format("Project:%s, Parser:%p,\nFilename:%s", pProject->GetTitle(), pParser, cbFilename);
         cbMessageBox(msg, "Error");
         msg.Replace("\n", " ");
-        pLogMgr->DebugLogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
         //cbAssert(pParser);
         return;
     }
@@ -1531,8 +1532,8 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         wxString msg = wxString::Format("LSP background parsing FINISHED for: (%s) %s (%zu ms)",
                                         pProject->GetTitle(), cbFilename, filesParsingDurationTime);
         msg += wxString::Format(" (%zu more)", remainingToParse);
-        pLogMgr->DebugLog(msg);
-        pLogMgr->Log(msg);
+        CCLogger::Get()->DebugLog(msg);
+        CCLogger::Get()->Log(msg);
     }
 
     // This could be a /publishDiagnostics response from a didClose() request. Idiot server!!
@@ -1618,7 +1619,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
     catch (std::exception & e)
     {
         wxString msg = wxString::Format("OnLSP_DiagnosticsResponse error:%s\n%s", e.what());
-        pLogMgr->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
         cbMessageBox(msg);
         return;
     }
@@ -1641,7 +1642,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
     catch (std::exception & e)
     {
         wxString msg = wxString::Format("OnLSP_DiagnosticsResponse error:%s\n%s", e.what());
-        pLogMgr->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
         cbMessageBox(msg);
     }
 
@@ -1779,7 +1780,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
     catch (std::exception & e)
     {
         wxString errmsg(wxString::Format("LSP OnLSP_DiagnosticsResponse() error:\n%s", e.what()));
-        pLogMgr->DebugLog(errmsg);
+        CCLogger::Get()->DebugLog(errmsg);
         cbMessageBox(errmsg);
         return;
     }
@@ -1893,8 +1894,6 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent & event)
     {
         return;
     }
-
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
 
     // keep a persistent references array to detect duplicate references
     if (not m_pReferenceValues)
@@ -2064,7 +2063,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent & event)
         cbMessageBox(msg, "TextDocument/references error");
         //#endif
         msg = wxString::Format("%s contained nonexistent file: %s", __FUNCTION__, msgFilenames);
-        pLogMgr->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
         m_ReportedBadFileReferences.Clear();
     }
 
@@ -2934,8 +2933,6 @@ void Parser::OnLSP_CompletionPopupHoverResponse(wxCommandEvent & event)
         return;
     }
 
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
-
     if (m_HoverCompletionString.Length())
     {
         m_HoverCompletionString.clear();
@@ -2946,7 +2943,7 @@ void Parser::OnLSP_CompletionPopupHoverResponse(wxCommandEvent & event)
     if (not evtString.Contains("textDocument/hover"))
     {
         wxString msg = wxString::Format("%s: Received non textDocument/Hover response", __FUNCTION__);
-        pLogMgr->DebugLogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
         return;
     }
 
@@ -3721,11 +3718,10 @@ bool Parser::LSP_GetSymbolsByType(json * pJson, std::set<LSP_SymbolKind> & symbo
     }
 
     //-Token* savedLastParent = nullptr;
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
 
     if (debugging)
     {
-        pLogMgr->DebugLog("-----------------symbols----------------");
+        CCLogger::Get()->DebugLog("-----------------symbols----------------");
     }
 
     int nextVectorSlot = 0;
@@ -3755,9 +3751,9 @@ bool Parser::LSP_GetSymbolsByType(json * pJson, std::set<LSP_SymbolKind> & symbo
 
             if (debugging)   //debugging
             {
-                pLogMgr->DebugLog(wxString::Format("name[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", name, kind, startLine, startCol, endLine, endCol));
-                pLogMgr->DebugLog(wxString::Format("SelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
-                pLogMgr->DebugLog(wxString::Format("\tchildren[%d]", childcnt));
+                CCLogger::Get()->DebugLog(wxString::Format("name[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", name, kind, startLine, startCol, endLine, endCol));
+                CCLogger::Get()->DebugLog(wxString::Format("SelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
+                CCLogger::Get()->DebugLog(wxString::Format("\tchildren[%d]", childcnt));
             }
 
             //Note: start and end lines contain the whole definition/implementation code.
@@ -3795,7 +3791,6 @@ void Parser::WalkDocumentSymbols(json & jref, wxString & filename, int & nextVec
 // ----------------------------------------------------------------------------
 {
     bool debugging = false;
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
 
     try
     {
@@ -3820,11 +3815,11 @@ void Parser::WalkDocumentSymbols(json & jref, wxString & filename, int & nextVec
             if (debugging)   //debugging
             {
                 //-pLogMgr->DebugLog(wxString::Format("%*sname[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", indentLevel*4, "",  name, kind, startLine, startCol, endLine, endCol));
-                pLogMgr->DebugLog(wxString::Format("name[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", name, kind, startLine, startCol, endLine, endCol));
+                CCLogger::Get()->DebugLog(wxString::Format("name[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", name, kind, startLine, startCol, endLine, endCol));
                 //-pLogMgr->DebugLog(wxString::Format("%*sSelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", indentLevel*4, "",  selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
-                pLogMgr->DebugLog(wxString::Format("SelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
+                CCLogger::Get()->DebugLog(wxString::Format("SelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
                 //-pLogMgr->DebugLog(wxString::Format("%*s\tchildren[%d]", indentLevel*4, "",  childcnt ));
-                pLogMgr->DebugLog(wxString::Format("\tchildren[%d]", childcnt));
+                CCLogger::Get()->DebugLog(wxString::Format("\tchildren[%d]", childcnt));
             }
 
             if (symbolset.count((LSP_SymbolKind)kind))

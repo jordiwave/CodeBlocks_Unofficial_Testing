@@ -7,25 +7,25 @@
 		<Option platforms="Windows;" />
 		<Build>
 			<Target title="default">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\FortranProject" prefix_auto="0" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\FortranProject" />
+				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\FortranProject" prefix_auto="0" extension_auto="1" />
+				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\FortranProject" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\FortranProject.zip" />
-					<Add after="zip -qj9  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml resources/*.xrc" />
-					<Add after="zip -qr9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip ./images" />
+					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\FortranProject.zip" />
+					<Add after="zip -qj9  ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml resources/*.xrc" />
+					<Add after="zip -qr9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip ./images" />
 
-					<Add after="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\ mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject" />
-					<Add after="xcopy  /Y /S /Q images\fortranproject\*.png $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\" />
-					<Add after="xcopy  /Y /S /Q images\fortranproject\*.dem $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\" />
-					<Add after="xcopy  /Y /S /Q images\fortranproject\*.f90 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\" />
-					<Add after="xcopy  /Y /S /Q images\fortranproject\*.py  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\" />
+					<Add after="cmd /c if not exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\ mkdir ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject" />
+					<Add after="xcopy  /Y /S /Q images\fortranproject\*.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\" />
+					<Add after="xcopy  /Y /S /Q images\fortranproject\*.dem ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\" />
+					<Add after="xcopy  /Y /S /Q images\fortranproject\*.f90 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\" />
+					<Add after="xcopy  /Y /S /Q images\fortranproject\*.py  ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\fortranproject\" />
 
 					<Mode after="always" />
 				</ExtraCommands>
@@ -52,11 +52,11 @@
 			<Add option="-DNOPCH" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
-			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />
@@ -65,8 +65,8 @@
 		<Linker>
 			<Add library="codeblocks" />
 			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
 		</Linker>
 		<Unit filename="adddirparserthread.cpp" />
 		<Unit filename="adddirparserthread.h" />
@@ -142,12 +142,12 @@
 		<Unit filename="preprocfunction.h" />
 		<Unit filename="projectdependencies.cpp" />
 		<Unit filename="projectdependencies.h" />
-		<Unit filename="resources\calltreeview.xrc" />
-		<Unit filename="resources\changecase.xrc" />
-		<Unit filename="resources\fortranprojecttoolbar.xrc" />
-		<Unit filename="resources\project_settings_fortran.xrc" />
-		<Unit filename="resources\settings.xrc" />
-		<Unit filename="resources\tab2space.xrc" />
+		<Unit filename="resources/calltreeview.xrc" />
+		<Unit filename="resources/changecase.xrc" />
+		<Unit filename="resources/fortranprojecttoolbar.xrc" />
+		<Unit filename="resources/project_settings_fortran.xrc" />
+		<Unit filename="resources/settings.xrc" />
+		<Unit filename="resources/tab2space.xrc" />
 		<Unit filename="submoduletokenf.h" />
 		<Unit filename="tab2space.cpp" />
 		<Unit filename="tab2space.h" />
@@ -167,18 +167,18 @@
 		<Unit filename="workspacebrowserf.h" />
 		<Unit filename="workspaceparserthread.cpp" />
 		<Unit filename="workspaceparserthread.h" />
-		<Unit filename="wxsmith\Bindto.wxs" />
-		<Unit filename="wxsmith\BindtoNewType.wxs" />
-		<Unit filename="wxsmith\FormatIndentDlg.wxs" />
-		<Unit filename="wxsmith\MakefileDlg.wxs" />
+		<Unit filename="wxsmith/Bindto.wxs" />
+		<Unit filename="wxsmith/BindtoNewType.wxs" />
+		<Unit filename="wxsmith/FormatIndentDlg.wxs" />
+		<Unit filename="wxsmith/MakefileDlg.wxs" />
 		<Extensions>
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxDialog wxs="wxsmith\Bindto.wxs" src="bindto.cpp" hdr="bindto.h" fwddecl="0" i18n="1" name="Bindto" language="CPP" />
-					<wxDialog wxs="wxsmith\BindtoNewType.wxs" src="bindtonewtype.cpp" hdr="bindtonewtype.h" fwddecl="0" i18n="1" name="BindtoNewType" language="CPP" />
-					<wxDialog wxs="wxsmith\FormatIndentDlg.wxs" src="formatindentdlg.cpp" hdr="formatindentdlg.h" fwddecl="0" i18n="1" name="FormatIndentDlg" language="CPP" />
-					<wxDialog wxs="wxsmith\MakefileDlg.wxs" src="makefiledlg.cpp" hdr="makefiledlg.h" fwddecl="0" i18n="1" name="MakefileDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/Bindto.wxs" src="bindto.cpp" hdr="bindto.h" fwddecl="0" i18n="1" name="Bindto" language="CPP" />
+					<wxDialog wxs="wxsmith/BindtoNewType.wxs" src="bindtonewtype.cpp" hdr="bindtonewtype.h" fwddecl="0" i18n="1" name="BindtoNewType" language="CPP" />
+					<wxDialog wxs="wxsmith/FormatIndentDlg.wxs" src="formatindentdlg.cpp" hdr="formatindentdlg.h" fwddecl="0" i18n="1" name="FormatIndentDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/MakefileDlg.wxs" src="makefiledlg.cpp" hdr="makefiledlg.h" fwddecl="0" i18n="1" name="MakefileDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

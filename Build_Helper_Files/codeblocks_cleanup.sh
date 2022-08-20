@@ -88,9 +88,13 @@ echo 'Cleaning files from directory: ' ${PWD}
 [ -f "zmake.m4" ]                   && rm -f "zmake.m4"
 
 [ -d "autom4te.cache" ]             && rm -rf autom4te.cache
-[ -d "CodeBlocks.app" ]             && rm -rf CodeBlocks.app
 find . -maxdepth 1 -type f -name "z_*_result.txt"         | xargs rm -f
 find . -maxdepth 1 -type f -name "config.*.cdbs-orig"     | xargs rm -f
+
+
+# For MacOS build cleanup
+[ -d "CodeBlocks.app" ]             && rm -rf CodeBlocks.app
+find . -maxdepth 1 -type f -name "CB*.dmg"        | xargs rm -f
 
 cd src
 echo 'Cleaning files from directory: ' ${PWD}

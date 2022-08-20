@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 71 $
- * $Id: Version.h 71 2022-08-15 20:23:03Z pecanh $
- * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/Version.h $
  */
 
 #ifndef VERSION_H
@@ -25,7 +22,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.33 2022/08/13")
+#define VERSION wxT("0.2.35 2022/08/17")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -56,6 +53,14 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.35    Commit 2022/08/18 rev 73
+//          2022/08/17
+//          Changes for wxWidgets 3.1.7
+//          Add guard to OnEditorActivated to ignore events while workspace is closing.
+//              This should fix a crash addressing editor data that nolonger exists.
+//0.2.34    Commit 2022/08/17 rev 72
+//          2022/08/16
+//          Add ability to disable logging to Code::Blocks and Code::Blocks Debug logs.
 //0.2.33    Commit 2022/08/15 rev 71
 //          2022/08/13
 //          Fix a Linux error box poping up when re-loading a project into a workspace.

@@ -95,7 +95,7 @@ echo
 
 find . -maxdepth 1 -type f -name "*"    | xargs chmod 664 
 find . -maxdepth 1 -type f -name "*.sh" | xargs chmod 764
-grep -l "\/bin\/bash" * 2>/dev/null     | xargs chmod 764
+grep -l "\#\!/bin/" * 2>/dev/null     | xargs chmod 764
 
 if [ -d "debian" ] ; then 
     # For Linux Debian DEB build cleanup
@@ -103,7 +103,7 @@ if [ -d "debian" ] ; then
     echo "Now changing permissions in: " ${PWD}
     find . -maxdepth 1 -type f -name "*"    | xargs chmod 664
     find . -maxdepth 1 -type f -name "*.sh" | xargs chmod 764
-    grep -l "\/bin\/bash" * 2>/dev/null     | xargs chmod 764
+    grep -l "\#\!/bin/" * 2>/dev/null     | xargs chmod 764
     cd ..
 fi
 

@@ -18,7 +18,6 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 // ----------------------------------------------------------------------------
-// RCS-ID: $Id: Version.h 12797 2022-04-17 19:47:12Z pecanh $
 
 #ifndef VERSION_H
 #define VERSION_H

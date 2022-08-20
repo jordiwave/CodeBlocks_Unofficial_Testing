@@ -254,6 +254,7 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         /** SDK workspace related events */
         void OnWorkspaceChanged(CodeBlocksEvent & event);
         void OnWorkspaceClosingBegin(CodeBlocksEvent & event);
+        void OnWorkspaceClosingEnd(CodeBlocksEvent & event);
 
         /** SDK project related events */
         void OnProjectActivated(CodeBlocksEvent & event);
@@ -564,6 +565,8 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         /// @}
 
         static bool m_CCHasTreeLock;
+
+        bool m_WorkspaceClosing = false;
         // ----------------------------------------------------------------------------
         /// Language Service Process ( LSP client )
         // ----------------------------------------------------------------------------

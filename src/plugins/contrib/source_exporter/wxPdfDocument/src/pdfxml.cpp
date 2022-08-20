@@ -591,7 +591,7 @@ void wxPdfTable::Write()
         if (newPage)
         {
             newPage = false;
-            m_document->AddPage();
+            m_document->AddPage(m_document->GetPageOrientation(), false);
             writeHeader = m_headRowLast > m_headRowFirst;
             y = m_document->GetY();
         }
@@ -1388,9 +1388,6 @@ void wxPdfDocument::PrepareXmlCell(wxXmlNode * node, wxPdfCellContext & context)
 
                                                         wxString strViewport = GetXmlAttribute(child, wxS("viewport"), wxS("0 0 0 0"));
                                                         const wxArrayDouble & vp = ApplyViewport(strViewport, w, h);
-                                                        //const double& vpOffsetX = vp[0];
-                                                        //const double& vpOffsetY = vp[1];
-                                                        //const double& vpWidth = vp[4];
                                                         const double & vpHeight = vp[5];
                                                         context.AddHeight(vpHeight);
                                                     }

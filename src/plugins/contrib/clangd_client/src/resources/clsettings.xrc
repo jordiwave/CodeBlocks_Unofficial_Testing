@@ -433,10 +433,36 @@
 									<border>8</border>
 								</object>
 
-                            <!-- Begin clangd options for external logging -->
+                            <!-- Begin clangd options for Code::Blocks logging -->
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
-										<label>Clangd External file logging options</label>
+										<label>Plugin logging to Code::Blocks logs</label>
+                                    <orient>wxHORIZONTAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkLogPluginInfo">
+												<label>Enable plugin Info logging</label>
+                                            <checked>1</checked>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkLogPluginDebug">
+												<label>Enable plugin Debug logging</label>
+                                            <checked>0</checked>
+											</object>
+											<border>5</border>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>8</border>
+								</object>
+                            <!-- End clangd options for Code::Blocks logging -->
+
+                            <!-- Begin clangd options for external client/server logging -->
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Clangd External client/server logging options</label>
                                     <orient>wxHORIZONTAL</orient>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkLogClangdClient">
@@ -457,7 +483,7 @@
 									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
-                            <!-- End clangd options for external logging -->
+                            <!-- End clangd options for external client/server logging -->
 
                             <!-- Begin clangd LSP messages log optons -->
 								<object class="sizeritem">

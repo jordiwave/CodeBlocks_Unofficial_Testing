@@ -69,6 +69,21 @@ libProjectExporter_la_SOURCES = \
 			Exporter_CMake/CMakeListsExporter.cpp \
 			Exporter_PreMake4/Premake4Dlg.cpp \
 			Exporter_PreMake4/Premake4Exporter.cpp \
+			Exporter_PreMake5/pm_base.cpp \
+			Exporter_PreMake5/pm_config.cpp \
+			Exporter_PreMake5/pm_config_cb.cpp \
+			Exporter_PreMake5/pm_defaults.cpp \
+			Exporter_PreMake5/pm_file.cpp \
+			Exporter_PreMake5/pm_file_cb.cpp \
+			Exporter_PreMake5/pm_project.cpp \
+			Exporter_PreMake5/pm_project_cb.cpp \
+			Exporter_PreMake5/pm_regex.cpp \
+			Exporter_PreMake5/pm_settings.cpp \
+			Exporter_PreMake5/pm_utils.cpp \
+			Exporter_PreMake5/pm_workspace.cpp \
+			Exporter_PreMake5/pm_workspace_cb.cpp \
+			Exporter_PreMake5/PM5SettingsDialog.cpp \
+			Exporter_PreMake5/premake5cb.cpp \
 			ExporterBase.cpp \
 			ProjectExporter.cpp
 
@@ -76,14 +91,29 @@ noinst_HEADERS = \
 			Exporter_AutoTools/AutotoolsExporter.h \
 			Exporter_BakeFile/BakefileExporter.h \
 			Exporter_CMake/CMakeListsExporter.h \
-			Exporter_PreMake4/PremakeDlg.h \
+			Exporter_PreMake4/Premake4Dlg.h \
 			Exporter_PreMake4/Premake4Exporter.h \
+			Exporter_PreMake5/pm_base.h \
+			Exporter_PreMake5/pm_config.h \
+			Exporter_PreMake5/pm_config_cb.h \
+			Exporter_PreMake5/pm_defaults.h \
+			Exporter_PreMake5/pm_file.h \
+			Exporter_PreMake5/pm_file_cb.h \
+			Exporter_PreMake5/pm_project.h \
+			Exporter_PreMake5/pm_project_cb.h \
+			Exporter_PreMake5/pm_regex.h \
+			Exporter_PreMake5/pm_settings.h \
+			Exporter_PreMake5/pm_utils.h \
+			Exporter_PreMake5/pm_workspace.h \
+			Exporter_PreMake5/pm_workspace_cb.h \
+			Exporter_PreMake5/PM5SettingsDialog.h \
+			Exporter_PreMake5/premake5cb.h \
 			ExporterBase.h \
-			Project4Exporter.h
+			ProjectExporter.h
 
 resources_forZIP = \
 			manifest.xml \
-			Premake4Dlg.xrc
+			Exporter_PreMake4/Premake4Dlg.xrc
 
 EXTRA_DIST = \
 			$(resources_forZIP)

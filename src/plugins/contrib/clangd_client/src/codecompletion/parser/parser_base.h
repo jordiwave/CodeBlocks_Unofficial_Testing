@@ -247,6 +247,8 @@ struct ParserOptions
         platformCheck(true),
         logClangdClientCheck(false),
         logClangdServerCheck(false),
+        logPluginInfoCheck(false),
+        logPluginDebugCheck(false),
         lspMsgsFocusOnSaveCheck(false),
         lspMsgsClearOnSaveCheck(false),
         LLVM_MasterPath(""),        //(ph 2021/11/7)
@@ -263,6 +265,8 @@ struct ParserOptions
     bool platformCheck;        /// this will check for the platform of the project/target when adding include folders to the parser
     bool logClangdClientCheck; /// this will check for user enabled clangd client logging
     bool logClangdServerCheck; /// this will check for user enabled clangd server logging
+    bool logPluginInfoCheck;   /// this will check for user enabled plugin info logging
+    bool logPluginDebugCheck;  /// this will check for user enabled plugin debug logging
     bool lspMsgsFocusOnSaveCheck; /// this will check for user enabled Focus LSP messages tab on save text
     bool lspMsgsClearOnSaveCheck; /// this will check for user enabled LSP messages tab clear on save text
     wxString LLVM_MasterPath;  /// Path to LLVM install directory //(ph 2021/11/7)

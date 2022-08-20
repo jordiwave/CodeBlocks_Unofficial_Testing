@@ -4,7 +4,6 @@
 // Author:      Bruce Phillips modified by John Labenski
 // Modified by:
 // Created:     11/05/2002
-// RCS-ID:
 // Copyright:   (c) Bruce Phillips, John Labenski
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

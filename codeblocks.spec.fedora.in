@@ -179,7 +179,6 @@ fi
 %{plugindir}/libclasswizard.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
-%{plugindir}/libdebugger_dap.so
 %{plugindir}/libdefaultmimehandler.so
 %{plugindir}/libDisplayEvents.so
 %{plugindir}/liboccurrenceshighlighting.so
@@ -316,6 +315,8 @@ fi
 %{plugindir}/libValgrind.so
 %{plugindir}/libbyogames.so
 %{plugindir}/libcb_koders.so
+%{plugindir}/libdebugger_dap.so
+%{_libdir}/libdebugger_wxdap.so
 %{plugindir}/libcodesnippets.so
 %{plugindir}/libcodestat.so
 %{plugindir}/libcopystrings.so

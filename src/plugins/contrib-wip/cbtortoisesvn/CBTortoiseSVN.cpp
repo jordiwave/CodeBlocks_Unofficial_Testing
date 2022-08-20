@@ -767,7 +767,7 @@ void CBTortoiseSVN::Properties(const IMenuCmd & menu)
         ZeroMemory(&sei, sizeof(sei));
         sei.cbSize = sizeof(sei);
         sei.lpFile = filename.c_str();
-        sei.lpVerb = _("properties");
+        sei.lpVerb = L"properties";
         sei.fMask  = SEE_MASK_INVOKEIDLIST;
         ShellExecuteEx(&sei);
     }

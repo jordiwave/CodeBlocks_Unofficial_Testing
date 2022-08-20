@@ -16,7 +16,6 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: BrowseTracker.cpp 12853 2022-07-27 11:10:54Z wh11204 $
 
 // Notes:
 //

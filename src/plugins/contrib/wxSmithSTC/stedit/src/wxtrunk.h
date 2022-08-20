@@ -3,7 +3,6 @@
 // Purpose:     wx28/wx29 compatibility
 // Author:      Troels K
 // Created:     2011-10-28
-// RCS-ID:
 // Copyright:   (c) John Labenski, Troels K
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////

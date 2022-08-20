@@ -11,7 +11,6 @@
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/txml" />
 				<Option type="2" />
-				<Option compiler="gcc" />
 				<Compiler>
 					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 				</Compiler>
@@ -25,7 +24,6 @@
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tinyxml2" />
 				<Option type="2" />
-				<Option compiler="gcc" />
 				<Compiler>
 					<Add directory="$(#CB_BUILD)/base/tinyxml2" />
 				</Compiler>
@@ -39,7 +37,6 @@
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/autorevision" />
 				<Option type="1" />
-				<Option compiler="gcc" />
 				<Option parameters="+wx +int +t .. include/autorevision.h" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
@@ -58,7 +55,6 @@
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cb_console_runner" />
 				<Option type="1" />
-				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Os" />
@@ -73,7 +69,6 @@
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/squirrel" />
 				<Option type="2" />
-				<Option compiler="gcc" />
 				<Compiler>
 					<Add directory="$(#CB_BUILD.INCLUDE)/scripting/include" />
 				</Compiler>
@@ -87,7 +82,6 @@
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxscintilla_cb" />
 				<Option type="2" />
-				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GDK) --cflags`" />
 					<Add option="-D__WX__" />
@@ -113,7 +107,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxscintilla_cb.a" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -159,7 +152,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/CodeBlocks" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="0" />
-				<Option compiler="gcc" />
 				<Option parameters="--personality=debuging --multiple-instance --verbose --debug-log --prefix=$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -195,7 +187,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/abbreviations" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -224,7 +215,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/astyle" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -252,7 +242,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/autosave" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -277,7 +266,6 @@
 				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/depslib" />
 				<Option type="2" />
-				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-fno-strict-aliasing" />
 					<Add option="-DDEPSLIB_UNIX" />
@@ -293,7 +281,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/compiler" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libdepslib.a;$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -326,7 +313,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/debugger" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -353,7 +339,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/classwizard" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -379,7 +364,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/defaultmimehandler" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -405,7 +389,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/occurrenceshighlighting" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -432,7 +415,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/openfileslist" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -458,7 +440,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/projectsimporter" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -484,7 +465,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/scriptedwizard" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -517,7 +497,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/todo" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
 				<Option run_host_application_in_terminal="0" />
@@ -544,7 +523,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/xpmanifest" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
-				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />

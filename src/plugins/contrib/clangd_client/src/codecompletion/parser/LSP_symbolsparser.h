@@ -64,6 +64,8 @@ struct LSP_SymbolsParserOptions
         platformCheck(true),
         logClangdClientCheck(false),
         logClangdServerCheck(false),
+        logPluginInfoCheck(false),
+        logPluginDebugCheck(false),
         LLVM_MasterPath(""),
         handleFunctions(true),
         handleVars(true),
@@ -124,6 +126,12 @@ struct LSP_SymbolsParserOptions
 
     /** clangd server logging  */
     bool        logClangdServerCheck;
+
+    /** plugin info logging  */
+    bool        logPluginInfoCheck;
+
+    /** plugin debug logging  */
+    bool        logPluginDebugCheck;
 
     /** clangd LSP messages tab option  */
     bool        lspMsgsFocusOnSaveCheck;

@@ -623,9 +623,9 @@ AC_CONFIG_FILES([Makefile
     codeblocks.spec
     src/plugins/contrib-wip/Makefile
     src/plugins/contrib-wip/cbDiff/Makefile
-    src/plugins/contrib-wip/DebugAdapterProtocol/Makefile
-    src/plugins/contrib-wip/Debugger_DAP/Makefile
-    src/plugins/contrib-wip/Debugger_DAP/resources/Makefile
+    src/plugins/contrib/Debugger_DAP/DebugAdapterProtocol/Makefile
+    src/plugins/contrib/Debugger_DAP/Debugger_DAP/Makefile
+    src/plugins/contrib/Debugger_DAP/Debugger_DAP/resources/Makefile
 ])
 
 # no Makefile.am    src/plugins/contrib-wip/cbInno/Makefile

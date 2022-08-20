@@ -35,7 +35,6 @@ typedef std::map<wxString, wxString> wxStringTable_t;
 typedef wxStringTable_t wxStringMap_t; // aliases
 
 class ProcessReaderThread;
-//using namespace std;
 typedef std::vector<std::pair<wxString, wxString>> clEnvList_t;
 enum IProcessCreateFlags
 {

@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 68 $
- * $Id: ccoptionsdlg.cpp 68 2022-07-18 19:45:22Z pecanh $
- * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/ccoptionsdlg.cpp $
  */
 
 #include <sdk.h>
@@ -172,6 +169,8 @@ CCOptionsDlg::CCOptionsDlg(wxWindow * parent, ParseManager * np, ClgdCompletion 
     XRCCTRL(*this, "chkPlatformCheck",      wxCheckBox)->SetValue(m_Parser.Options().platformCheck);
     XRCCTRL(*this, "chkLogClangdClient",    wxCheckBox)->SetValue(m_Parser.Options().logClangdClientCheck);
     XRCCTRL(*this, "chkLogClangdServer",    wxCheckBox)->SetValue(m_Parser.Options().logClangdServerCheck);
+    XRCCTRL(*this, "chkLogPluginInfo",      wxCheckBox)->SetValue(m_Parser.Options().logPluginInfoCheck);
+    XRCCTRL(*this, "chkLogPluginDebug",     wxCheckBox)->SetValue(m_Parser.Options().logPluginDebugCheck);
     XRCCTRL(*this, "chkLSPMsgsFocusOnSave", wxCheckBox)->SetValue(m_Parser.Options().lspMsgsFocusOnSaveCheck);
     XRCCTRL(*this, "chkLSPMsgsClearOnSave", wxCheckBox)->SetValue(m_Parser.Options().lspMsgsClearOnSaveCheck);
     XRCCTRL(*this, "txtMasterPath",         wxTextCtrl)->SetValue(m_Parser.Options().LLVM_MasterPath);  //(ph 2021/11/7)
@@ -262,6 +261,8 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/platform_check"), (bool) XRCCTRL(*this, "chkPlatformCheck",         wxCheckBox)->GetValue());
     cfg->Write(_T("/logClangdClient_check"), (bool) XRCCTRL(*this, "chkLogClangdClient",       wxCheckBox)->GetValue());
     cfg->Write(_T("/logClangdServer_check"), (bool) XRCCTRL(*this, "chkLogClangdServer",       wxCheckBox)->GetValue());
+    cfg->Write(_T("/logPluginInfo_check"), (bool) XRCCTRL(*this, "chkLogPluginInfo",         wxCheckBox)->GetValue());
+    cfg->Write(_T("/logPluginDebug_check"), (bool) XRCCTRL(*this, "chkLogPluginDebug",        wxCheckBox)->GetValue());
     cfg->Write(_T("/lspMsgsFocusOnSave_check"), (bool) XRCCTRL(*this, "chkLSPMsgsFocusOnSave",    wxCheckBox)->GetValue());
     cfg->Write(_T("/lspMsgsClearOnSave_check"), (bool) XRCCTRL(*this, "chkLSPMsgsClearOnSave",    wxCheckBox)->GetValue());
     cfg->Write(_T("/LLVM_MasterPath"),                      XRCCTRL(*this, "txtMasterPath",            wxTextCtrl)->GetValue());
@@ -305,6 +306,8 @@ void CCOptionsDlg::OnApply()
     m_Parser.Options().platformCheck        = XRCCTRL(*this, "chkPlatformCheck",      wxCheckBox)->GetValue();
     m_Parser.Options().logClangdClientCheck = XRCCTRL(*this, "chkLogClangdClient",    wxCheckBox)->GetValue();
     m_Parser.Options().logClangdServerCheck = XRCCTRL(*this, "chkLogClangdServer",    wxCheckBox)->GetValue();
+    m_Parser.Options().logPluginInfoCheck   = XRCCTRL(*this, "chkLogPluginInfo",      wxCheckBox)->GetValue();
+    m_Parser.Options().logPluginDebugCheck  = XRCCTRL(*this, "chkLogPluginDebug",     wxCheckBox)->GetValue();
     m_Parser.Options().lspMsgsFocusOnSaveCheck = XRCCTRL(*this, "chkLSPMsgsFocusOnSave",  wxCheckBox)->GetValue();
     m_Parser.Options().lspMsgsClearOnSaveCheck = XRCCTRL(*this, "chkLSPMsgsClearOnSave",  wxCheckBox)->GetValue();
     m_Parser.Options().LLVM_MasterPath         = XRCCTRL(*this, "txtMasterPath",          wxTextCtrl)->GetValue();
@@ -416,6 +419,8 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent & event)
     XRCCTRL(*this, "chkPlatformCheck",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkLogClangdClient",            wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkLogClangdServer",            wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkLogPluginInfo",              wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkLogPluginDebug",             wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkLSPMsgsFocusOnSave",         wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkLSPMsgsClearOnSave",         wxCheckBox)->Enable(en);
     XRCCTRL(*this, "txtMasterPath",                 wxTextCtrl)->Enable(en);    //(ph 2021/11/7)

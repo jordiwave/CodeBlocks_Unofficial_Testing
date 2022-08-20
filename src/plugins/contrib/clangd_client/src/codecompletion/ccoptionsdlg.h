@@ -35,8 +35,8 @@ class CCOptionsDlg : public cbConfigurationPanel
         void OnCancel() override {}
         void OnPageChanging() override;
 
-        void OnFindDirClangd_Dlg(wxCommandEvent & event);  //(ph 2021/11/8)
-        void OnClangd_AutoDetect(cb_unused wxCommandEvent & event);       //(ph 2021/11/8)
+        void OnFindDirClangd_Dlg(wxCommandEvent & event);
+        void OnClangd_AutoDetect(cb_unused wxCommandEvent & event);
 
     protected:
         void OnChooseColour(wxCommandEvent & event);

@@ -17,7 +17,6 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: codesnippetswindow.h 10362 2015-07-26 08:13:33Z jenslody $
 
 #ifndef CODESNIPPETSWINDOW_H
 #define CODESNIPPETSWINDOW_H

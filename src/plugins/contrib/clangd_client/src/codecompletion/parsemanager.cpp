@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 71 $
- * $Id: parsemanager.cpp 71 2022-08-15 20:23:03Z pecanh $
- * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parsemanager.cpp $
  */
 
 #include <sdk.h>
@@ -995,6 +992,8 @@ void ParseManager::RereadParserOptions()
             || opts.parseComplexMacros   != m_Parser->Options().parseComplexMacros
             || opts.logClangdClientCheck != m_Parser->Options().logClangdClientCheck
             || opts.logClangdServerCheck != m_Parser->Options().logClangdServerCheck
+            || opts.logPluginInfoCheck   != m_Parser->Options().logPluginInfoCheck
+            || opts.logPluginDebugCheck  != m_Parser->Options().logPluginDebugCheck
             || opts.LLVM_MasterPath      != m_Parser->Options().LLVM_MasterPath //(ph 2021/11/7)
             || m_ParserPerWorkspace      != parserPerWorkspace)  //always false for clangd
     {
@@ -1751,7 +1750,7 @@ void ParseManager::SetParser(ParserBase * parser)
         fromProject = (m_Parser and ((Parser *)m_Parser)->GetParsersProject()) ? ((Parser *)m_Parser)->GetParsersProject()->GetTitle() : "*NONE*";
         toProject   = (parser and ((Parser *)  parser)->GetParsersProject()) ? ((Parser *)  parser)->GetParsersProject()->GetTitle() : "*NONE*";
         wxString msg = wxString::Format("Switching parser/project from %s to %s", fromProject, toProject); //(ph 2022/06/4)
-        Manager::Get()->GetLogManager()->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
     }
 
 #endif
@@ -3036,7 +3035,7 @@ const wxArrayString & ParseManager::GetGCCCompilerDirs(const wxString & cpp_path
 
         wxFileName fname(path, wxString());
         //-fname.Normalize(); //Ticket #56 deprecated for wx3.2.0
-        fname.Normalize(wxPathNormalize::wxPATH_NORM_ALL);
+        fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
         fname.SetVolume(fname.GetVolume().MakeUpper());
 
         if (not fname.DirExists())
@@ -3597,9 +3596,8 @@ void ParseManager::SetProxyProject(cbProject * pActiveProject)
     // compiler info needed for clangd to parse a file.
     // We'll add all opened non-project files to this proxy.
     // This allows us to manage non-project files without mangling the active cbProject.
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
     wxString msg = "Creating ProxyProject/Clangd_clinet/Parser for non-project files.";
-    pLogMgr->DebugLog(msg);
+    CCLogger::Get()->DebugLog(msg);
 
     if (not m_pProxyProject)
     {

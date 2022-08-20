@@ -131,8 +131,6 @@ Debugger_GDB_MI::~Debugger_GDB_MI()
 void Debugger_GDB_MI::OnAttachReal()
 {
     m_timer_poll_debugger.SetOwner(this, id_gdb_poll_timer);
-    DebuggerManager & dbg_manager = *Manager::Get()->GetDebuggerManager();
-    dbg_manager.RegisterDebugger(this);
     // Do no use cbEVT_PROJECT_OPEN as the project may not be active!!!!
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,  new cbEventFunctor<Debugger_GDB_MI, CodeBlocksEvent>(this, &Debugger_GDB_MI::OnProjectOpened));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE,     new cbEventFunctor<Debugger_GDB_MI, CodeBlocksEvent>(this, &Debugger_GDB_MI::OnProjectClosed));
@@ -140,7 +138,6 @@ void Debugger_GDB_MI::OnAttachReal()
 
 void Debugger_GDB_MI::OnReleaseReal(bool appShutDown)
 {
-    Manager::Get()->GetDebuggerManager()->UnregisterDebugger(this);
     KillConsole();
     m_executor.ForceStop();
 

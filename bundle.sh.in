@@ -60,6 +60,7 @@ copy_deps() {
 				ALL_DEPS="$ALL_DEPS $current_dep"
 				if [[ -f "$dep" ]]
 				then
+    				echo "Copying $dep"
 					cp "$dep" "$APPDIR/Contents/MacOS/"
 					install_name_tool -id "@executable_path/$current_dep" "$APPDIR/Contents/MacOS/$current_dep"
 				fi
@@ -73,15 +74,28 @@ copy_deps() {
 }
 
 echo "--------------------------------------------------------------------------------"
-echo "Copying libcodeblocks ..."
-cp -v ${PREFIX_DIR}/lib/libcodeblocks.dylib "$APPDIR/Contents/MacOS/"
-copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.dylib"
-install_name_tool -id "@executable_path/libcodeblocks.dylib" "$APPDIR/Contents/MacOS/libcodeblocks.dylib"
+if [ -f "${PREFIX_DIR}/lib/libcodeblocks.0.dylib" ]
+    echo "Copying libcodeblocks ..."
+    cp -v ${PREFIX_DIR}/lib/libcodeblocks.0.dylib "$APPDIR/Contents/MacOS/"
+    copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.0.dylib"
+    install_name_tool -id "@executable_path/libcodeblocks.0.dylib" "$APPDIR/Contents/MacOS/libcodeblocks.0.dylib"
+fi
+
+if [ -f "${PREFIX_DIR}/lib/libcodeblocks.dylib" ]
+    echo "Copying libcodeblocks ..."
+    cp -v ${PREFIX_DIR}/lib/libcodeblocks.dylib "$APPDIR/Contents/MacOS/"
+    copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.dylib"
+    install_name_tool -id "@executable_path/libcodeblocks.dylib" "$APPDIR/Contents/MacOS/libcodeblocks.dylib"
+fi
+
 echo "--------------------------------------------------------------------------------"
-echo "Copying Debugger WXDAP dylib"
-cp -v ${PREFIX_DIR}/lib/libdebugger_wxdap.dylib "$APPDIR/Contents/MacOS/"
-copy_deps "${APPDIR}/Contents/MacOS/libdebugger_wxdap.dylib"
-install_name_tool -id "@executable_path/libdebugger_wxdap.dylib" "$APPDIR/Contents/MacOS/libdebugger_wxdap.dylib"
+
+if [ -f "${PREFIX_DIR}/lib/libdebugger_wxdap.dylib" ]
+    echo "Copying Debugger WXDAP dylib"
+    cp -v ${PREFIX_DIR}/lib/libdebugger_wxdap.dylib "$APPDIR/Contents/MacOS/"
+    copy_deps "${APPDIR}/Contents/MacOS/libdebugger_wxdap.dylib"
+    install_name_tool -id "@executable_path/libdebugger_wxdap.dylib" "$APPDIR/Contents/MacOS/libdebugger_wxdap.dylib"
+fi
 echo "--------------------------------------------------------------------------------"
 
 echo "Copying binaries"

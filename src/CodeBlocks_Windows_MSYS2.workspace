@@ -188,9 +188,9 @@
 		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows_MSYS2.cbp">
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
-		<Project filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows_MSYS2.cbp" />
-		<Project filename="plugins/contrib-wip/Debugger_DAP/Debugger_DAP_Windows_MSYS2.cbp">
-			<Depends filename="plugins/contrib-wip/DebugAdapterProtocol/dapcxx_codeblocks_Windows_MSYS2.cbp" />
+		<Project filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Windows_MSYS2.cbp" />
+		<Project filename="plugins/contrib/Debugger_DAP/Debugger_DAP/Debugger_DAP_Windows_MSYS2.cbp">
+			<Depends filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Windows_MSYS2.cbp" />
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
 	</Workspace>

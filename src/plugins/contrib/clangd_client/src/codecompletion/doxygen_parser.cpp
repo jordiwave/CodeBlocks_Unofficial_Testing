@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 71 $
- * $Id: doxygen_parser.cpp 71 2022-08-15 20:23:03Z pecanh $
- * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/doxygen_parser.cpp $
  */
 
 #include <sdk.h>
@@ -927,7 +924,7 @@ wxString DocumentationHelper::GenerateHTMLbyHover(const ClgdCCToken & cccToken, 
     // Example Hover contents: L"instance-method HelloWxWorldFrame::OnAbout\n\nType: void\nParameters:\n- wxCommandEvent & event\n\n// In HelloWxWorldFrame\nprivate: void HelloWxWorldFrame::OnAbout(wxCommandEvent &event)"
     // get string array of hover info separated at /n chars.
     // **Debugging**
-    pLogMgr->DebugLog(wxString::Format("%s HoverInfo[%s}", __FUNCTION__, hoverString));
+    CCLogger::Get()->DebugLog(wxString::Format("%s HoverInfo[%s}", __FUNCTION__, hoverString));
     hoverString.Replace("\n\n", "\n"); //remove double newline chars
     wxArrayString vHoverInfo = GetArrayFromString(hoverString, "\n");
     // **Debugging**

@@ -123,13 +123,16 @@ To build Code::Blocks:
     10) If you run the ./codeblocks_build.sh of configured C::B with the "--prefix=$PWD/src/devel31" option then run the following to 
         test the C::B you built:
             cd $PWD/src/devel31/bin
-            codeblocks
+            ./codeblocks
 
     11) Run the following script to bundle the files:
             ./bundle.sh
 
-    12) Create the DMG file
+    12) Create the DMG file via one of the following two options:
             create-dmg CodeBlocks-Installer.dmg CodeBlocks.app
+            ./CB_create_dmg.sh
+        NOTE: If you use the ./CB_create_dmg.sh then when you run the DMG file you will be presented with the standard C::B MAC installer
+                drag and drop dialog.
 
 Additional Notes/Info:
 - - - - - - - - - - - -

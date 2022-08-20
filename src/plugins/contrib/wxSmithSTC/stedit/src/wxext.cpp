@@ -3,7 +3,6 @@
 // Purpose:     wxWidgets extensions
 // Author:      Troels K
 // Created:     2009-11-11
-// RCS-ID:
 // Copyright:   (c) John Labenski, Troels K
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////

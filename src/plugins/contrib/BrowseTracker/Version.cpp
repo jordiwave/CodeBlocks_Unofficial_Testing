@@ -16,7 +16,6 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: Version.cpp 12797 2022-04-17 19:47:12Z pecanh $
 
 #include "Version.h"
 

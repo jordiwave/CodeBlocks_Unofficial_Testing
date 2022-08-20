@@ -32,6 +32,7 @@ extern bool           g_EnableDebugTrace; //!< Toggles tracing into file.
 extern const wxString g_DebugTraceFile;   //!< Trace file name (if above is enabled).
 extern long           g_idCCAddToken;
 extern long           g_idCCLogger;
+extern long           g_idCCErrorLogger;
 extern long           g_idCCDebugLogger;
 extern long           g_idCCDebugErrorLogger;
 extern wxString       s_TokenTreeMutex_Owner;     // location of the last tree lock
@@ -43,11 +44,15 @@ class CCLogger
     public:
         static CCLogger * Get();
 
-        void Init(wxEvtHandler * parent, int logId, int debugLogId, int debugLogErrorId, int addTokenId = -1);
+        void Init(wxEvtHandler * parent, int logId, int logErrorId, int debugLogId, int debugLogErrorId, int addTokenId = -1);
         void AddToken(const wxString & msg);
-        void Log(const wxString & msg);
+
+        void Log(const wxString & msg, int id = g_idCCLogger);
+        void LogError(const wxString & msg);
+
         void DebugLog(const wxString & msg, int id = g_idCCDebugLogger);
         void DebugLogError(const wxString & msg);
+
         bool GetExternalLogStatus()
         {
             return m_ExternLogActive;
@@ -70,12 +75,15 @@ class CCLogger
     private:
         wxEvtHandler * m_Parent;
         int           m_LogId;
+        int           m_LogErrorId;
         int           m_DebugLogId;
         int           m_DebugLogErrorId;
         int           m_AddTokenId;
         bool          m_ExternLogActive;
         int           m_ExternLogPID;
         wxFFile       m_ExternLogFile;
+
+        ConfigManager * m_pCfgMgr = nullptr;
 };
 
 // --------Lock debugging ------------------------------------------
@@ -260,7 +268,7 @@ class CCLogger
         if (locker_result != wxMUTEX_NO_ERROR)  \
         {   wxString err1st = wxString::Format("Owner: %s", M##_Owner); \
             wxString err; \
-            err.Printf(_T("Lock() failed in %s at %s:%d \n\t%s"), __FUNCTION__, __FILE__, __LINE__, err1st); \
+            err.Printf(_T("Lock() failed in %s at %s:%d \n\t%s"), cbC2U(__FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(err1st).c_str()); \
             CCLogger::Get()->DebugLogError(wxString("Lock error") + err);  \
         } \
         else /*lock succeeded, record new owner*/ \

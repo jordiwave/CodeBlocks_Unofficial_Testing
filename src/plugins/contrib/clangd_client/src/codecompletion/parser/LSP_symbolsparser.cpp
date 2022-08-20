@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 71 $
- * $Id: LSP_symbolsparser.cpp 71 2022-08-15 20:23:03Z pecanh $
- * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/parser/LSP_symbolsparser.cpp $
  */
 
 #include <sdk.h>
@@ -810,11 +807,10 @@ bool LSP_SymbolsParser::DoParseSemanticTokens(json * pJson, cbProject * pProject
     bool isLocal = true;
     wxUnusedVar(isLocal);
     ParserBase * pParser = m_Parent;
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
 
     if (debugging)
     {
-        pLogMgr->DebugLog(wxString::Format("---SemanticTokens for %s---", filename));
+        CCLogger::Get()->DebugLog(wxString::Format("---SemanticTokens for %s---", filename));
     }
 
     // Example of textDocument/SemanticTokens response data
@@ -875,7 +871,7 @@ bool LSP_SymbolsParser::DoParseSemanticTokens(json * pJson, cbProject * pProject
                 wxString msg = wxString::Format("lineText[%s]", lineText);
                 msg << wxString::Format("\n\tname[%s] Type(%d) modifier[%x]",
                                         symbolName, symbolType, symbolModifier);
-                pLogMgr->DebugLog(msg);
+                CCLogger::Get()->DebugLog(msg);
             }
         }//endfor symidx
 
@@ -1022,11 +1018,10 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
     bool isLocal = true;
     wxUnusedVar(isLocal);
     Token * savedLastParent = nullptr;
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
 
     if (debugging)
     {
-        pLogMgr->DebugLog("--------Document-symbols--------");
+        CCLogger::Get()->DebugLog("--------Document-symbols--------");
     }
 
     try
@@ -1057,10 +1052,10 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
 
             if (debugging)   //debugging
             {
-                pLogMgr->DebugLog(wxString::Format("lineTxt[%s]", lineTxt));
-                pLogMgr->DebugLog(wxString::Format("name[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", name, kind, startLine, startCol, endLine, endCol));
-                pLogMgr->DebugLog(wxString::Format("SelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
-                pLogMgr->DebugLog(wxString::Format("\tchildren[%d]", childcnt));
+                CCLogger::Get()->DebugLog(wxString::Format("lineTxt[%s]", lineTxt));
+                CCLogger::Get()->DebugLog(wxString::Format("name[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", name, kind, startLine, startCol, endLine, endCol));
+                CCLogger::Get()->DebugLog(wxString::Format("SelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
+                CCLogger::Get()->DebugLog(wxString::Format("\tchildren[%d]", childcnt));
             }
 
             Token * newToken = nullptr;
@@ -1096,7 +1091,7 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
 
                                 // DoHandleClass() didn't understand the syntax. Could have been expanded macro.
                                 wxString msg = wxString::Format("LSP Error:DoHandleClass() did not understand line:%d %s", selectionRangeStartLine, lineTxt);
-                                pLogMgr->DebugLog(msg);
+                                CCLogger::Get()->DebugLog(msg);
                         }
 
                     // In case the user has ticked "show inheritance",
@@ -1231,7 +1226,6 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json & jref, wxString & filename, To
     Token * savedLastParent = nullptr;
     RECORD_TIME(startTime) //(ph 2021/09/7)
     size_t indentLevel = level++ ? level : 1;
-    LogManager * pLogMgr = Manager::Get()->GetLogManager();
     EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
     cbEditor * pEditor = pEdMgr->GetBuiltinEditor(filename);
     cbStyledTextCtrl * pEdCtrl = nullptr;       //(ph 2021/04/12)
@@ -1269,10 +1263,10 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json & jref, wxString & filename, To
 
             if (debugging)   //debugging
             {
-                pLogMgr->DebugLog(wxString::Format("%*slineTxt[%s]", indentLevel * 4, "", lineTxt));
-                pLogMgr->DebugLog(wxString::Format("%*sname[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", indentLevel * 4, "",  name, kind, startLine, startCol, endLine, endCol));
-                pLogMgr->DebugLog(wxString::Format("%*sSelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", indentLevel * 4, "",  selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
-                pLogMgr->DebugLog(wxString::Format("%*s\tchildren[%d]", indentLevel * 4, "",  childcnt));
+                CCLogger::Get()->DebugLog(wxString::Format("%*slineTxt[%s]", indentLevel * 4, "", lineTxt));
+                CCLogger::Get()->DebugLog(wxString::Format("%*sname[%s] kind(%d) startLine|startCol|endLine|endCol[%d:%d:%d:%d]", indentLevel * 4, "",  name, kind, startLine, startCol, endLine, endCol));
+                CCLogger::Get()->DebugLog(wxString::Format("%*sSelectionRange: startLine|StartCol|endLine|endCol[%d:%d:%d:%d]", indentLevel * 4, "",  selectionRangeStartLine, selectionRangeStartCol, selectionRangeEndLine, selectionRangeEndCol));
+                CCLogger::Get()->DebugLog(wxString::Format("%*s\tchildren[%d]", indentLevel * 4, "",  childcnt));
             }
 
             wxString args =  wxString();

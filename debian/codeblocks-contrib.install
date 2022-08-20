@@ -10,6 +10,8 @@ usr/lib/codeblocks/plugins/libcodesnippets.so
 usr/lib/codeblocks/plugins/libcodestat.so
 usr/lib/codeblocks/plugins/libcopystrings.so
 usr/lib/codeblocks/plugins/libCscope.so
+usr/lib/codeblocks/plugins/libdebugger_dap.so
+usr/lib/libdebugger_wxdap.so
 usr/lib/codeblocks/plugins/libDoxyBlocks.so
 usr/lib/codeblocks/plugins/libdragscroll.so
 usr/lib/codeblocks/plugins/libEditorConfig.so
@@ -39,8 +41,6 @@ usr/lib/codeblocks/plugins/libwxsmith.so
 usr/lib/codeblocks/plugins/libwxsmithcontribitems.so
 usr/lib/codeblocks/plugins/libwxSmithAui.so
 
-usr/lib/codeblocks/plugins/libdebugger_dap.so
-usr/lib/libdebugger_wxdap.so
 
 ../lintian/codeblocks-contrib  usr/share/lintian/overrides/
 usr/lib/pkgconfig/wxsmithaui.pc usr/lib/pkgconfig/

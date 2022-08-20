@@ -7,7 +7,6 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-// RCS-ID:      $Id: menuutils.h 12012 2020-03-31 15:44:13Z mortenmacfly $
 
 // Modified menuutils.h for CodeBlocks KeyBnder v2.0 2019/04/8
 

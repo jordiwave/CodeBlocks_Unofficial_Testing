@@ -4,7 +4,6 @@
 // Author:      John Labenski, and others see below
 // Modified by:
 // Created:     11/05/2002
-// RCS-ID:
 // Copyright:   (c) John Labenski, Neil Hodgson, & others see below
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,7 @@
 #include "compilerfactory.h"
 #include "configmanager.h"
 #include "projectmanager.h"
+#include "codecompletion/parser/cclogger.h"
 
 #if defined(_WIN32)
     #include "winprocess/asyncprocess/procutils.h"
@@ -103,7 +104,7 @@ wxString ClangLocator::Locate_ResourceDir(wxFileName fnClangd)
     if (clangdResponse.Count()) //tease out the version number
     {
         cmdLine = clangdResponse[0]; //usually "clangd version 13.0.1" followed by a space or -+whatever
-        Manager::Get()->GetLogManager()->DebugLog("Using Clangd version: " + clangdResponse[0]);
+        CCLogger::Get()->DebugLog("Using Clangd version: " + clangdResponse[0]);
         size_t sBgn = cmdLine.find("version ");
 
         if (sBgn)
@@ -136,7 +137,7 @@ wxString ClangLocator::Locate_ResourceDir(wxFileName fnClangd)
         if (versionMajorID < 13)
         {
             wxString msg = wxString::Format(_("Error: clangd version (%s) is older than the required version 13."), clangdVersion);
-            Manager::Get()->GetLogManager()->DebugLogError(msg);
+            CCLogger::Get()->DebugLogError(msg);
         }
     }
 
@@ -176,7 +177,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
     if (fnClangdPath.FileExists())
     {
-        pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), execDir + fileSep + "lsp"));
+        CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), execDir + fileSep + "lsp"));
     }
 
     if (not fnClangdPath.FileExists())
@@ -203,7 +204,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
                         if (fnClangdPath.FileExists())
                         {
-                            pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                            CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
                         }
                         else
                         {
@@ -211,7 +212,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
                             if (fnClangdPath.FileExists())
                             {
-                                pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                                CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
                             }
                         }
                     }
@@ -235,7 +236,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
                 if (fnClangdPath.FileExists())
                 {
-                    pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                    CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
                 }
                 else
                 {
@@ -243,7 +244,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
                     if (fnClangdPath.FileExists())
                     {
-                        pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                        CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
                     }
                 }
             }
@@ -268,7 +269,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
                 if (fnClangdPath.FileExists())
                 {
-                    pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                    CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
                     break;
                 }
             }
@@ -300,7 +301,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
                     if (fnClangdPath.FileExists())
                     {
-                        pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                        CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
                         break;
                     }
                 }
@@ -316,7 +317,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
         if (fnClangdPath.FileExists())
         {
-            pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+            CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
         }
 
 #ifdef __WXMAC__
@@ -326,7 +327,7 @@ wxString ClangLocator::Locate_ClangdDir()
 
             if (fnClangdPath.FileExists())
             {
-                pLogMgr->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
+                CCLogger::Get()->DebugLog(wxString::Format(_("Locate_ClangdDir detected clangd in : %s"), fnClangdPath.GetPath()));
             }
         }
 
@@ -369,7 +370,7 @@ wxArrayString ClangLocator::GetEnvPaths() const
         //-clWARNING() << "Could not read environment variable PATH";
         wxString msg;
         msg << "GetEnvPaths() Could not read environment variable PATH";
-        Manager::Get()->GetLogManager()->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
         return {};
     }
 

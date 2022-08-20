@@ -16,7 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: BrowseTrackerLayout.cpp 12602 2021-12-21 07:26:04Z wh11204 $
 
 /*
 * This file is part of Code::Bocks, an open-source cross-platform IDE

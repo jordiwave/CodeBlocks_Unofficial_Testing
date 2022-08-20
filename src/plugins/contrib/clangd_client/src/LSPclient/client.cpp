@@ -267,8 +267,8 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject * pProject, const c
             msg << " clangd Resource dir not found.";
         }
 
-        pLogMgr->LogError(msg);
-        pLogMgr->DebugLogError(msg);
+        CCLogger::Get()->LogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
         return;
     }
 
@@ -352,7 +352,7 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject * pProject, const c
     }
 
     // Show clangd start command in Code::Blocks Debug log
-    pLogMgr->DebugLog("Clangd start command:" + command);
+    CCLogger::Get()->DebugLog("Clangd start command:" + command);
 #if defined(_WIN32)  //<<------------windows only -------------------
     /** Info:
      * @brief start process
@@ -385,7 +385,7 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject * pProject, const c
     {
         wxString msg = wxString::Format("%s: The child process for clangd failed allocation.", __FUNCTION__);
         //cbMessageBox(msg, "ERROR");
-        pLogMgr->DebugLogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
     }
 
 #endif //_WIN32 vs _nix
@@ -594,7 +594,7 @@ ProcessLanguageClient::~ProcessLanguageClient()
 
         if (not Manager::IsAppShuttingDown()) //skip logging when shutting down, else we hang in linux
         {
-            Manager::Get()->GetLogManager()->DebugLogError(msg);
+            CCLogger::Get()->DebugLogError(msg);
         }
     }
 
@@ -841,7 +841,7 @@ void ProcessLanguageClient::OnClangd_stdout(wxThreadEvent & event)
     {
         wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __FUNCTION__);
         wxSafeShowMessage("Lock fail, lost data", msg);
-        Manager::Get()->GetLogManager()->DebugLogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
         writeClientLog(msg);
         return;
     }
@@ -1154,7 +1154,7 @@ bool ProcessLanguageClient::readJson(json & json)
     {
         wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __FUNCTION__);
         //-wxSafeShowMessage("Lock failed, lost data", msg); // **Debugging**
-        Manager::Get()->GetLogManager()->DebugLogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
         writeClientLog(msg);
         wxMilliSleep(500); //let pipe thread do its thing
         return false;
@@ -1229,7 +1229,7 @@ bool ProcessLanguageClient::readJson(json & json)
             wxString msg = wxString::Format(" >>> readJson() error:%s", e.what()) ;
 #if defined(cbDEBUG)
             //-Manager::Get()->GetLogManager()->DebugLogError(msg);
-            Manager::Get()->GetLogManager()->DebugLog(msg);
+            CCLogger::Get()->DebugLog(msg);
 #endif
 
             if (retryCount == 1) // do only once
@@ -1422,7 +1422,7 @@ bool ProcessLanguageClient::DoValidateUTF8data(std::string & strdata)
                 msg += wxString::Format(" URI(%s)", respURI);
             }
 
-            Manager::Get()->GetLogManager()->DebugLog(msg);
+            CCLogger::Get()->DebugLog(msg);
             writeClientLog(msg);
             // erase the invalid utf8 char
             strdata.erase(invloc, 1);
@@ -1961,7 +1961,7 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor * pcbEd)
     {
         wxString msg = _("LSP_DidOpen() Attempt to add file before initialization.");
         msg += wxString::Format("\n%s", pcbEd->GetFilename());
-        Manager::Get()->GetLogManager()->DebugLogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
         cbMessageBox(msg, "LSP_DidOpen");
         return false;
     }
@@ -2867,7 +2867,7 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t rri
     {
         wxString msg = wxString::Format("%s: %s not yet parsed.", __FUNCTION__, pEd->GetFilename());
         //-InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()) );
-        Manager::Get()->GetLogManager()->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
         return;
     }
 
@@ -3675,7 +3675,7 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget * 
 
     if (pf->compilerVar.IsEmpty())
     {
-        Manager::Get()->GetLogManager()->DebugLog(_("Cannot resolve compiler var for project file."));
+        CCLogger::Get()->DebugLog(_("Cannot resolve compiler var for project file."));
         return ret;
     }
 
@@ -3713,7 +3713,7 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget * 
 
     if (!compiler)
     {
-        Manager::Get()->GetLogManager()->DebugLog(_("Can't access compiler for file."));
+        CCLogger::Get()->DebugLog(_("Can't access compiler for file."));
         return ret;
     }
 
@@ -3778,8 +3778,8 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget * 
 
 #ifdef command_line_generation
 #warning command_line_generation is defined for debugging purposes
-        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_T("GetCompileFileCommand[1]: compiler_cmd='%s', source_file='%s', object='%s', object_dir='%s'."),
-                                                                   compiler_cmd.wx_str(), source_file.wx_str(), object.wx_str(), object_dir.wx_str()));
+        CCLogger::Get()->DebugLog(wxString::Format(_T("GetCompileFileCommand[1]: compiler_cmd='%s', source_file='%s', object='%s', object_dir='%s'."),
+                                                   compiler_cmd.wx_str(), source_file.wx_str(), object.wx_str(), object_dir.wx_str()));
 #endif
 
         // for resource files, use short from if path because if windres bug with spaces-in-paths
@@ -3790,8 +3790,8 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget * 
 
         QuoteStringIfNeeded(source_file);
 #ifdef command_line_generation
-        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_T("GetCompileFileCommand[2]: source_file='%s'."),
-                                                                   source_file.wx_str()));
+        CCLogger::Get()->DebugLog(wxString::Format(_T("GetCompileFileCommand[2]: source_file='%s'."),
+                                                   source_file.wx_str()));
 #endif
         cb::shared_ptr<CompilerCommandGenerator> generator(compiler ? compiler->GetCommandGenerator(pProject) : nullptr);
         generator->GenerateCommandLine(compiler_cmd, pTarget, pf, source_file, object,
@@ -3857,7 +3857,7 @@ wxArrayString ProcessLanguageClient::GetCompileFileCommand(ProjectBuildTarget * 
 
         if (wxFileExists(object_abs) && !wxRemoveFile(object_abs))
         {
-            Manager::Get()->GetLogManager()->DebugLog(_("Cannot remove old PCH file:\n") + object_abs);
+            CCLogger::Get()->DebugLog(_("Cannot remove old PCH file:\n") + object_abs);
         }
     }
 
@@ -4096,8 +4096,8 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject * pProject, Project
         //SetCompile_CommandsChanged(true);
         compileCommandDBchanged++;
 #if defined(cbDEBUG)
-        LogManager * pLogMgr = Manager::Get()->GetLogManager();
-        pLogMgr->DebugLog(wxString::Format("NewCompileCommand:%s", newEntry["command"].get<std::string>()));
+        //LogManager* pLogMgr = Manager::Get()->GetLogManager();
+        CCLogger::Get()->DebugLog(wxString::Format("NewCompileCommand:%s", newEntry["command"].get<std::string>()));
 #endif
     }
 
@@ -4273,7 +4273,7 @@ int ProcessLanguageClient::GetCompilationDatabaseEntry(wxArrayString & resultArr
     catch (std::exception & e)
     {
         wxString msg = "GetCompilationDatabaseEntry(): error reading " + fn_ccdbj.GetFullPath();
-        Manager::Get()->GetLogManager()->DebugLog(msg);
+        CCLogger::Get()->DebugLog(msg);
         cbMessageBox(msg);
         return 0;
     }

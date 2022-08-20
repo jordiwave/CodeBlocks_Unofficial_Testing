@@ -16,7 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id: BrowseSelector.cpp 12254 2020-12-23 19:11:14Z pecanh $
 
 
 #include <wx/listctrl.h>

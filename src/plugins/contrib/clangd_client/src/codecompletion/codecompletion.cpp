@@ -2,9 +2,6 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
-+ * $Revision: 71 $
-+ * $Id: codecompletion.cpp 71 2022-08-15 20:23:03Z pecanh $
-+ * $HeadURL: http://svn.code.sf.net/p/cb-clangd-client/code/trunk/clangd_client/src/codecompletion/codecompletion.cpp $
  */
 
 #include <sdk.h>
@@ -530,7 +527,7 @@ ClgdCompletion::ClgdCompletion() :
     m_pDocHelper = new DocumentationHelper(m_pParseManager.get());
     // CCLogger are the log event bridges, those events were finally handled by its parent, here
     // it is the CodeCompletion plugin ifself.
-    CCLogger::Get()->Init(this, g_idCCLogger, g_idCCDebugLogger, g_idCCDebugErrorLogger);
+    CCLogger::Get()->Init(this, g_idCCLogger, g_idCCErrorLogger, g_idCCDebugLogger, g_idCCDebugErrorLogger);
 
     if (!Manager::LoadResource(_T("clangd_client.zip")))
     {
@@ -539,6 +536,7 @@ ClgdCompletion::ClgdCompletion() :
 
     // handling events send from CCLogger
     Connect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCLogger));
+    Connect(g_idCCErrorLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCLogger));
     Connect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
     Connect(g_idCCDebugErrorLogger,      wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
     Connect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::OnToolbarTimer));                  //(ph 2021/07/27)
@@ -559,6 +557,7 @@ ClgdCompletion::~ClgdCompletion()
     }
 
     Disconnect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCLogger));
+    Disconnect(g_idCCErrorLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCLogger));
     Disconnect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
     Disconnect(g_idCCDebugErrorLogger,      wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
     Disconnect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::OnToolbarTimer));
@@ -674,6 +673,7 @@ void ClgdCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnAppStartupDone));
     pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED,    new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnWorkspaceChanged));
     pm->RegisterEventSink(cbEVT_WORKSPACE_CLOSING_BEGIN, new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnWorkspaceClosingBegin));
+    pm->RegisterEventSink(cbEVT_WORKSPACE_CLOSING_COMPLETE, new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnWorkspaceClosingEnd));
     pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectActivated));
     pm->RegisterEventSink(cbEVT_PROJECT_CLOSE,        new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectClosed));
     pm->RegisterEventSink(cbEVT_PROJECT_OPEN,         new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnProjectOpened)); //(ph 2021/03/8)
@@ -3181,6 +3181,14 @@ void ClgdCompletion::OnWorkspaceClosingBegin(CodeBlocksEvent & event)
     {
         GetParseManager()->GetProxyProject()->SetModified(false);
     }
+
+    m_WorkspaceClosing = true;
+}
+// ----------------------------------------------------------------------------
+void ClgdCompletion::OnWorkspaceClosingEnd(CodeBlocksEvent & event)
+// ----------------------------------------------------------------------------
+{
+    m_WorkspaceClosing = false;
 }
 // ----------------------------------------------------------------------------
 void ClgdCompletion::OnWorkspaceChanged(CodeBlocksEvent & event)
@@ -3190,6 +3198,11 @@ void ClgdCompletion::OnWorkspaceChanged(CodeBlocksEvent & event)
     // has finished loading or closing. It's the *LAST* event to be sent when
     // the workspace has been changed. So it's the ideal time to parse files
     // and update your widgets.
+    if (m_WorkspaceClosing)
+    {
+        return;
+    }
+
     if (IsAttached() && m_InitDone)
     {
         // Hide the ~ProxyProject~ because workspace/project tree was redrawn
@@ -3668,8 +3681,8 @@ void ClgdCompletion::OnLSP_ProcessTerminated(wxCommandEvent & event)    //(ph 20
         cbMessageBox(msg, "clangd client"); //Crashes with X window error on Linux Mint 20.2
         //#else
         msg.Replace("\n\n", "\n");
-        Manager::Get()->GetLogManager()->LogError(msg);
-        Manager::Get()->GetLogManager()->DebugLogError(msg);
+        CCLogger::Get()->LogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
         //#endif
         ShutdownLSPclient(pProject);
         // MS Windows had a lock on closed clangd logs until the project was closed.
@@ -3714,13 +3727,13 @@ ProcessLanguageClient * ClgdCompletion::CreateNewLanguageServiceProcess(cbProjec
     else
     {
         pLSPclient = new ProcessLanguageClient(pcbProject); //(ph 2021/11/18)
-        CCLogger * pLogMgr = CCLogger::Get();
 
+        //-CCLogger* pLogMgr = CCLogger::Get();
         if (pLSPclient and  pLSPclient->GetLSP_Server_PID())
-            pLogMgr->DebugLog("LSP: Started new LSP client/server for "
-                              + pcbProject->GetFilename() + " @("
-                              + pLSPclient->LSP_GetTimeHMSM() + ")"
-                             );
+            CCLogger::Get()->DebugLog("LSP: Started new LSP client/server for "
+                                      + pcbProject->GetFilename() + " @("
+                                      + pLSPclient->LSP_GetTimeHMSM() + ")"
+                                     );
     }
 
     if ((not pLSPclient) or (not pLSPclient->GetLSP_Server_PID()))
@@ -4215,7 +4228,7 @@ void ClgdCompletion::ShutdownLSPclient(cbProject * pProject)
 {
     if (IsAttached() && m_InitDone)
     {
-        CCLogger * pLogMgr = CCLogger::Get();
+        //-CCLogger* pLogMgr = CCLogger::Get();
         // ------------------------------------------------------------
         //  LSP client/server
         // ------------------------------------------------------------
@@ -4301,7 +4314,7 @@ void ClgdCompletion::ShutdownLSPclient(cbProject * pProject)
 
             if (pActiveProject && GetLSPclient(pActiveProject))
             {
-                pLogMgr->DebugLog(wxString::Format("LSP OnProjectClosed duration:%zu millisecs. ", GetLSPclient(pActiveProject)->GetDurationMilliSeconds(startMillis)));
+                CCLogger::Get()->DebugLog(wxString::Format("LSP OnProjectClosed duration:%zu millisecs. ", GetLSPclient(pActiveProject)->GetDurationMilliSeconds(startMillis)));
             }
         }//endif m_pLSPclient
     }
@@ -4743,6 +4756,12 @@ void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
     TRACE(_T("CodeCompletion::OnEditorActivated(): Enter"));
+
+    if (m_WorkspaceClosing)
+    {
+        return;
+    }
+
     LogManager * pLogMgr = Manager::Get()->GetLogManager();
     wxUnusedVar(pLogMgr);
 
@@ -5055,27 +5074,38 @@ void ClgdCompletion::OnEditorClosed(CodeBlocksEvent & event)
 void ClgdCompletion::OnCCLogger(CodeBlocksThreadEvent & event)
 // ----------------------------------------------------------------------------
 {
-    if (!Manager::IsAppShuttingDown())
+    if (Manager::IsAppShuttingDown())
+    {
+        return;
+    }
+
+    if (event.GetId() == g_idCCErrorLogger)
+    {
+        Manager::Get()->GetLogManager()->LogError(event.GetString());
+    }
+
+    if (event.GetId() == g_idCCLogger)
     {
         Manager::Get()->GetLogManager()->Log(event.GetString());
     }
 }
-
 // ----------------------------------------------------------------------------
 void ClgdCompletion::OnCCDebugLogger(CodeBlocksThreadEvent & event)
 // ----------------------------------------------------------------------------
 {
-    if (!Manager::IsAppShuttingDown())
+    if (Manager::IsAppShuttingDown())
     {
-        if (event.GetId() == g_idCCDebugLogger)
-        {
-            Manager::Get()->GetLogManager()->DebugLog(event.GetString());
-        }
+        return;
+    }
 
-        if (event.GetId() == g_idCCDebugErrorLogger)
-        {
-            Manager::Get()->GetLogManager()->DebugLogError(event.GetString());
-        }
+    if (event.GetId() == g_idCCDebugLogger)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(event.GetString());
+    }
+
+    if (event.GetId() == g_idCCDebugErrorLogger)
+    {
+        Manager::Get()->GetLogManager()->DebugLogError(event.GetString());
     }
 }
 // ----------------------------------------------------------------------------
@@ -5709,7 +5739,7 @@ void ClgdCompletion::ParseFunctionsAndFillToolbar()
     wxString debugMsg = wxString::Format("ParseFunctionsAndFillToolbar() : m_ToolbarNeedReparse=%d, m_ToolbarNeedRefresh=%d, ",
                                          m_ToolbarNeedReparse ? 1 : 0, m_ToolbarNeedRefresh ? 1 : 0);
     debugMsg += wxString::Format("\n%s: funcdata->parsed[%d] ", __FUNCTION__, funcdata->parsed);
-    LogManager * pLogMgr = CCLogger::Get()->pLogMgr->DebugLog(debugMsg);
+    CCLogger::Get()->pLogMgr->DebugLog(debugMsg);
 #endif
 
     // *** Part 1: Parse the file (if needed) ***
@@ -6639,7 +6669,7 @@ wxString ClgdCompletion::VerifyEditorParsed(cbEditor * pEd)
             msg += "\n Editor is not parsed.";
         }
 
-        Manager::Get()->GetLogManager()->DebugLogError(msg);
+        CCLogger::Get()->DebugLogError(msg);
         cbMessageBox(msg, "ERROR: VerifyEditorParsed()");
     }
 
