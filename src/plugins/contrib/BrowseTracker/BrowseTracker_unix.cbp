@@ -15,7 +15,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 					<Add option="-fPIC" />
 					<Add option="-DPIC" />
 					<Add option="-DNO_LOGGING" />
@@ -26,7 +26,7 @@
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,aui`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui`" />
 					<Add library="codeblocks" />
 					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>

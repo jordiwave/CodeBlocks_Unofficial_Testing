@@ -14,23 +14,22 @@
 				<Compiler>
 					<Add option="-Wshadow" />
 					<Add option="-Wall" />
-					<Add option="-D__WXMAC__" />
 					<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 					<Add option="$(#CB_BUILD.CFLAGS)" />
 					<Add option="-fPIC" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --cflags`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
-					<Add directory="$(#CB_BUILD)/devel" />
+					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -jq9 FortranProject.zip manifest.xml resources/workspacebrowserf.xrc resources/settings.xrc resources/fortranprojecttoolbar.xrc resources/changecase.xrc resources/tab2space.xrc" />

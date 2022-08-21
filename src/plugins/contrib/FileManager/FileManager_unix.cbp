@@ -25,8 +25,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
-			<Add option="`pkg-config --cflags gamin`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags gamin`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
@@ -39,8 +39,8 @@
 			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,aui`" />
-			<Add option="`pkg-config --libs gamin`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs gamin`" />
 			<Add library="codeblocks" />
 			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>

@@ -7,66 +7,33 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxSpellChecker">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxSpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxSpellChecker" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-O2" />
-					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --cflags`" />
-					<Add option="`/usr/local/bin/pkg-config hunspell --cflags`" />
-					<Add option="-fmessage-length=0" />
-					<Add option="-fexceptions" />
-					<Add option="-Winvalid-pch" />
-					<Add option="-fPIC" />
-					<Add option="-DcbDEBUG" />
-					<Add option="-DCB_PRECOMP" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) hunspell --cflags`" />
 					<Add option="-DHUNSPELL_STATIC" />
 					<Add directory="wxspellchecker/include" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
-					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 				</Compiler>
-				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --libs`" />
-					<Add option="`/usr/local/bin/pkg-config hunspell --libs`" />
-					<Add library="codeblocks" />
-					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				</Linker>
 			</Target>
 			<Target title="plugin">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/SpellChecker" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
+				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/SpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --cflags`" />
-					<Add option="-fmessage-length=0" />
-					<Add option="-fexceptions" />
-					<Add option="-Winvalid-pch" />
-					<Add option="-fPIC" />
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DcbDEBUG" />
 					<Add directory="wxspellchecker/include" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
-					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add library="codeblocks" />
 					<Add option="-lwxSpellChecker" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --libs`" />
-					<Add option="`/usr/local/bin/pkg-config hunspell --libs`" />
-					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
                 <ExtraCommands>
         			<!-- Create output directory -->
@@ -74,7 +41,7 @@
         			<Mode before="always" />
 
         			<!-- Create plugin zip file-->
-                    <Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
+                    <Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -85,26 +52,42 @@
 		</VirtualTargets>
 		<ExtraCommands>
 			<!-- Create output directory -->
-			<Add before="if [   -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then rm -r    $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/* ; fi" />
-			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
-			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
+			<Add before="if [   -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then rm -r    ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/* ; fi" />
+			<Add before="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
+			<Add before="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
 			<Mode before="always" />
 
 			<!-- Copy Spellchecker dictionary files -->
-			<Add after="cp -f OnlineSpellChecking.xml $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
-			<Add after="cp -rf dictionaries/*         $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="cp -f OnlineSpellChecking.xml ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="cp -rf dictionaries/*         ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
 
 			<!-- Copy Spellchecker image files -->
-			<Add after="cp -rf rc/* $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
-			<Add after="if [ ! -d   $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
-			<Add after="cp -f *.png $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/" />
+			<Add after="cp -rf rc/* ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="if [ ! -d   ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+			<Add after="cp -f *.png ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-D__WXMAC__" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-fPIC" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
+		<Linker>
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) hunspell --libs`" />
+			<Add library="codeblocks" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+		</Linker>
 		<Unit filename="DictionariesNeededDialog.cpp">
 			<Option target="plugin" />
 		</Unit>

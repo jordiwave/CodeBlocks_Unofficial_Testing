@@ -39,14 +39,14 @@
 			<Add option="-fPIC" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../FortranProject" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,aui,propgrid,richtext`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid,richtext`" />
 			<Add library="codeblocks" />
 			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>

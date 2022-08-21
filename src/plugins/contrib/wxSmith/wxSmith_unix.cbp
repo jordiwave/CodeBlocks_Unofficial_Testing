@@ -15,10 +15,10 @@
 				<Option parameters="--debug-log --multiple-instance -ns -p debug" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,aui,propgrid,richtext`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid,richtext`" />
 				</Linker>
 			</Target>
 			<Target title="wxSmith">
@@ -31,10 +31,10 @@
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,propgrid,richtext`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,propgrid,richtext`" />
 					<Add library="wxsmithlib" />
 				</Linker>
 				<ExtraCommands>
@@ -51,7 +51,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />

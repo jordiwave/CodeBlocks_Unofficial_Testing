@@ -19,10 +19,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
-			<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GLIB) --cflags`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) $(#CB_BUILD.PKG_CONFIG_GLIB) --cflags`" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="-DPIC" />
 			<Add option="-DcbDEBUG" />
@@ -32,8 +32,8 @@
 			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,propgrid`" />
-			<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GLIB) --libs`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,propgrid`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) $(#CB_BUILD.PKG_CONFIG_GLIB) --libs`" />
 			<Add library="txml" />
 			<Add directory="../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>

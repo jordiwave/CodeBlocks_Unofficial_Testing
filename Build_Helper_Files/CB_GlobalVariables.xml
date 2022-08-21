@@ -2,12 +2,19 @@
 <CodeBlocksGlobalVariableExportConfig version="1">
 <!-- ====================================================================================== -->
 	<default>
+		<cb_build>
+			<BASE>""</BASE>
+			<CFLAGS>-g -O0 -ggdb</CFLAGS>
+			<OSBITS>64</OSBITS>
+			<C_STD>c90</C_STD>
+			<CPP_STD>gnu++17</CPP_STD>
+		</cb_build>
 		<wxwidgets>
-			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.1.5_win64</BASE>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.0_win64</BASE>
 			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
 			<LIB>$(#WXWIDGETS)\lib</LIB>
-			<WX_CFG>&quot;&quot;</WX_CFG>
-			<WX_VERSION>31</WX_VERSION>
+			<WX_CFG>""</WX_CFG>
+			<WX_VERSION>32</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
 		</wxwidgets>
 		<discount>
@@ -15,14 +22,6 @@
 			<INCLUDE>$(#DISCOUNT)</INCLUDE>
 			<LIB>$(#DISCOUNT)</LIB>
 		</discount>
-		<cb_build>
-			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental_GCC\src</BASE>
-			<INCLUDE>$(#CB_BUILD)\include</INCLUDE>
-			<CFLAGS>-g -O0 -ggdb</CFLAGS>
-			<OSBITS>64</OSBITS>
-			<C_STD>c90</C_STD>
-			<CPP_STD>gnu++17</CPP_STD>
-		</cb_build>
 		<boost>
 			<BASE>D:\Andrew_Development\Libraries\boost</BASE>
 			<INCLUDE>$(#BOOST)</INCLUDE>
@@ -39,19 +38,18 @@
 <!-- ====================================================================================== -->
 	<cb_win32>
 		<cb_build>
-			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental_GCC\src</BASE>
-			<INCLUDE>$(#CB_BUILD)\include</INCLUDE>
+			<BASE>""</BASE>
 			<CFLAGS>-g -O0 -ggdb</CFLAGS>
 			<OSBITS>32</OSBITS>
 			<C_STD>c90</C_STD>
 			<CPP_STD>gnu++17</CPP_STD>
 		</cb_build>
 		<wxwidgets>
-			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.1.5_win$(#CB_BUILD.OSBITS)</BASE>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.0_win$(#CB_BUILD.OSBITS)</BASE>
 			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
 			<LIB>$(#WXWIDGETS)\lib</LIB>
-			<WX_CFG>&quot;&quot;</WX_CFG>
-			<WX_VERSION>31</WX_VERSION>
+			<WX_CFG>""</WX_CFG>
+			<WX_VERSION>32</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
 		</wxwidgets>
 		<discount>
@@ -66,27 +64,26 @@
 	</cb_win32>
 <!-- ====================================================================================== -->
 	<cb_win64>
-		<wxwidgets>
-			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.1.5_win64</BASE>
-			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
-			<LIB>$(#WXWIDGETS)\lib</LIB>
-			<WX_CFG>&quot;&quot;</WX_CFG>
-			<WX_VERSION>31</WX_VERSION>
-			<WX_SUFFIX>u</WX_SUFFIX>
-		</wxwidgets>
-		<discount>
-			<BASE>D:\Andrew_Development\Libraries\discount_win64</BASE>
-			<INCLUDE>$(#DISCOUNT)</INCLUDE>
-			<LIB>$(#DISCOUNT)</LIB>
-		</discount>
 		<cb_build>
-			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental_GCC\src</BASE>
-			<INCLUDE>$(#CB_BUILD)\include</INCLUDE>
+			<BASE>""</BASE>
 			<CFLAGS>-g -O0 -ggdb</CFLAGS>
 			<OSBITS>64</OSBITS>
 			<C_STD>c90</C_STD>
 			<CPP_STD>gnu++17</CPP_STD>
 		</cb_build>
+		<wxwidgets>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.0_win$(#CB_BUILD.OSBITS)</BASE>
+			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
+			<LIB>$(#WXWIDGETS)\lib</LIB>
+			<WX_CFG>""</WX_CFG>
+			<WX_VERSION>32</WX_VERSION>
+			<WX_SUFFIX>u</WX_SUFFIX>
+		</wxwidgets>
+		<discount>
+			<BASE>D:\Andrew_Development\Libraries\discount_win$(#CB_BUILD.OSBITS)</BASE>
+			<INCLUDE>$(#DISCOUNT)</INCLUDE>
+			<LIB>$(#DISCOUNT)</LIB>
+		</discount>
 		<boost>
 			<BASE>D:\Andrew_Development\Libraries\boost</BASE>
 			<INCLUDE>$(#BOOST)</INCLUDE>
@@ -95,8 +92,7 @@
 <!-- ====================================================================================== -->
 	<cb_unix>
 		<cb_build>
-			<BASE>~/code/CodeBLocks_Private_Experimental/src</BASE>
-			<INCLUDE>$(#CB_BUILD)/include</INCLUDE>
+			<BASE>""</BASE>
 			<CFLAGS>-g -O0 -ggdb</CFLAGS>
 			<OSBITS>64</OSBITS>
 			<C_STD>c90</C_STD>
@@ -104,36 +100,42 @@
 			<PKG_CONFIG_GTKPLUS>gtk+-3.0</PKG_CONFIG_GTKPLUS>
 			<PKG_CONFIG_GDK>gdk-3.0</PKG_CONFIG_GDK>
 			<PKG_CONFIG_GLIB>glib-2.0</PKG_CONFIG_GLIB>
+			<PKG_CONFIG_EXE>$(#CB_BUILD.PKG_CONFIG_UNIX)</PKG_CONFIG_EXE>
+			<PKG_CONFIG_UNIX>pkg-config</PKG_CONFIG_UNIX>
+			<PKG_CONFIG_MACOS>/usr/local/bin/pkg-config</PKG_CONFIG_MACOS>
 		</cb_build>
 		<wxwidgets>
 			<BASE>""</BASE>
-			<INCLUDE>(#WXWIDGETS)/include</INCLUDE>
-			<LIB>$(#WXWIDGETS)/lib</LIB>
 			<WX_CFG>""</WX_CFG>
-			<WX_VERSION>31</WX_VERSION>
+			<WX_VERSION>32</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
-			<WX_CONFIG_UNIX>wx-config --version=3.1</WX_CONFIG_UNIX>
+			<WX_CONFIG>$(#WXWIDGETS.WX_CONFIG_UNIX)</WX_CONFIG>
+			<WX_CONFIG_UNIX>wx-config --version=3.1 --toolkit=gtk3</WX_CONFIG_UNIX>
+			<WX_CONFIG_MACOS>/usr/local/bin/wx-config --version=3.2</WX_CONFIG_MACOS>
 		</wxwidgets>
 	</cb_unix>
 <!-- ====================================================================================== -->
 	<cb_macos>
 		<cb_build>
-			<BASE>/Users/Andy/Code/CodeBLocks_Private_Experimental_MAC/src</BASE>
-			<INCLUDE>$(#CB_BUILD)/include</INCLUDE>
+			<BASE>""</BASE>
 			<CFLAGS>-Og -gdwarf-4</CFLAGS>
 			<OSBITS>64</OSBITS>
 			<C_STD>c90</C_STD>
 			<CPP_STD>gnu++17</CPP_STD>
+			<PKG_CONFIG_GTKPLUS>""</PKG_CONFIG_GTKPLUS>
 			<PKG_CONFIG_GDK>gdk-3.0</PKG_CONFIG_GDK>
 			<PKG_CONFIG_GLIB>glib-2.0</PKG_CONFIG_GLIB>
+			<PKG_CONFIG_EXE>$(#CB_BUILD.PKG_CONFIG_MACOS)</PKG_CONFIG_EXE>
+			<PKG_CONFIG_UNIX>pkg-config</PKG_CONFIG_UNIX>
+			<PKG_CONFIG_MACOS>/usr/local/bin/pkg-config</PKG_CONFIG_MACOS>
 		</cb_build>
 		<wxwidgets>
-			<BASE>&quot;&quot;</BASE>
-			<INCLUDE>$(#WXWIDGETS)/include</INCLUDE>
-			<LIB>$(#WXWIDGETS)/lib</LIB>
-			<WX_CFG>&quot;&quot;</WX_CFG>
+			<BASE>""</BASE>
+			<WX_CFG>""</WX_CFG>
 			<WX_VERSION>32</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
+			<WX_CONFIG>$(#WXWIDGETS.WX_CONFIG_MACOS)</WX_CONFIG>
+			<WX_CONFIG_UNIX>wx-config --version=3.1 --toolkit=gtk3</WX_CONFIG_UNIX>
 			<WX_CONFIG_MACOS>/usr/local/bin/wx-config --version=3.2</WX_CONFIG_MACOS>
 		</wxwidgets>
 	</cb_macos>

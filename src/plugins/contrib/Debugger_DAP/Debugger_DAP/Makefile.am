@@ -8,7 +8,7 @@ AM_CPPFLAGS = \
 			$(CB_SQUIRREL_CFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
-			-I$(top_srcdir)/src/plugins/contrib-wip/DebugAdapterProtocol \
+			-I../DebugAdapterProtocol \
 			-Itinyxml2
 
 if CODEBLOCKS_NT
@@ -54,7 +54,7 @@ endif
 
 libdebugger_dap_la_LIBADD = \
 			$(top_srcdir)/src/sdk/libcodeblocks.la \
-			$(top_srcdir)/src/plugins/contrib-wip/DebugAdapterProtocol/libdebugger_wxdap.la \
+			../DebugAdapterProtocol/libdebugger_wxdap.la \
 			$(WX_LIBS) \
 			$(WX_GTK_LIBS)
 

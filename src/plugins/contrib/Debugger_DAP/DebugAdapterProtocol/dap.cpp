@@ -18,8 +18,11 @@
 #define GET_PROP(prop, Type) prop = json[#prop].Get##Type()
 #define ADD_BODY() Json body = json.AddObject("body")
 #define ADD_BODY_PROP(prop) body.Add(#prop, prop)
+
 #define ADD_ARRAY(Parent, Name) Json arr = Parent.AddArray(Name);
+
 #define READ_BODY() Json body = json["body"]
+
 #define GET_BODY_PROP(prop, Type) prop = body[#prop].Get##Type()
 #define CAPABILITIES_BODY_PROCESS(Type, sType)  \
     if(body[sType].IsOK()) {                    \
@@ -664,7 +667,7 @@ void InitializeResponse::From(const Json & json)
                 vFilters.push_back(filter);
             }
 
-            capabilities.exceptionBreakpointFilters.emplace(vFilters);
+            capabilities.exceptionBreakpointFilters = vFilters;
         }
 
         if (body["completionTriggerCharacters"].IsOK())
@@ -682,7 +685,7 @@ void InitializeResponse::From(const Json & json)
                 vTriggerChars.push_back(str);
             }
 
-            capabilities.completionTriggerCharacters.emplace(vTriggerChars);
+            capabilities.completionTriggerCharacters = vTriggerChars;
         }
 
         if (body["additionalModuleColumns"].IsOK())
@@ -701,7 +704,7 @@ void InitializeResponse::From(const Json & json)
                 vColumnDescriptor.push_back(columnDesc);
             }
 
-            capabilities.additionalModuleColumns.emplace(vColumnDescriptor);
+            capabilities.additionalModuleColumns = vColumnDescriptor;
         }
     }
 }

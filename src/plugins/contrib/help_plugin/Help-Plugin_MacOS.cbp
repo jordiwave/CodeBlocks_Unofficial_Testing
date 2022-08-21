@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Help Plugin Unix" />
+		<Option title="Help Plugin MacOS" />
 		<Option default_target="help_plugin" />
 		<Option compiler="gcc" />
 		<Build>
@@ -27,7 +27,7 @@
 
 					<!-- Copy file to docs directory -->
 					<Add before="if [ ! -d ../../../../windows_installer ] ; then cp index.ini ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/docs ; fi" />
-					<Add before="if [   -d ../../../../windows_installer ] ; then cp ../../../../windows_installer/Documentation/*.* ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/docs ; fi" />
+					<Add before="if [ -d ../../../../windows_installer ] ; then cp ../../../../windows_installer/Documentation/*.* ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/docs ; fi" />
 
 					<Mode after="always" />
 				</ExtraCommands>

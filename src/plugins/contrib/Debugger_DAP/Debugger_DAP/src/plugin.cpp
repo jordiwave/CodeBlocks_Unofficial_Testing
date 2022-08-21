@@ -183,7 +183,6 @@ void Debugger_DAP::OnReleaseReal(bool appShutDown)
 {
     // Do not log anything as we are closing
     DAPDebuggerResetData(true);
-    Manager::Get()->GetDebuggerManager()->UnregisterDebugger(this);
     //    if (m_command_stream_dialog)
     //    {
     //        m_command_stream_dialog->Destroy();
@@ -687,6 +686,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
 {
     // Reset the client and data
     DAPDebuggerResetData(false);
+    m_map_filebreakpoints.clear();
 
     if (dap_debugger.IsEmpty())
     {
@@ -1131,8 +1131,9 @@ void Debugger_DAP::UpdateDAPSetBreakpointsByFileName(const wxString & filename)
             }
         }
 
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", filename, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
-        m_dapClient.SetBreakpointsFile(filename, vlines);
+        wxString fn = UnixFilename(filename);
+        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", fn, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
+        m_dapClient.SetBreakpointsFile(fn, vlines);
     }
 }
 
@@ -2892,13 +2893,13 @@ void Debugger_DAP::OnInitializedEvent(DAPEvent & event)
     m_dapClient.ConfigurationDone();
 }
 
-#define SHOW_RESPONSE_DATA(msg, OptType, variable)                          \
-    if (OptType.has_value())                                    \
-    {                                                           \
-        m_pLogger->LogDAPMsgType("", -1,                        \
-                                 wxString::Format(msg, OptType.value() ?"True":"False"), \
-                                 dbg_DAP::LogPaneLogger::LineType::UserDisplay);         \
-        variable =  OptType.value();                            \
+#define SHOW_RESPONSE_DATA(msg, OptType, variable)                              \
+    if (!OptType.IsNull())                                          \
+    {                                                               \
+        m_pLogger->LogDAPMsgType("", -1,                            \
+                                 wxString::Format(msg, OptType.As<bool>() ?"True":"False"),  \
+                                 dbg_DAP::LogPaneLogger::LineType::UserDisplay);             \
+        variable =  OptType.As<bool>();                             \
     }
 
 /// DAP server sent `initialize` reponse to our `initialize` message
@@ -2948,16 +2949,16 @@ void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
             SHOW_RESPONSE_DATA(_("supportsWriteMemoryRequest: %s"), response_data->capabilities.supportsWriteMemoryRequest, supportsWriteMemoryRequest);
             SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"), response_data->capabilities.supportTerminateDebuggee, supportTerminateDebuggee);
 
-            if (response_data->capabilities.exceptionBreakpointFilters.has_value())
+            if (!response_data->capabilities.exceptionBreakpointFilters.IsNull())
             {
                 // Available exception filter options for the 'setExceptionBreakpoints' request.
-                vExceptionBreakpointFilters = response_data->capabilities.exceptionBreakpointFilters.value();
+                vExceptionBreakpointFilters = response_data->capabilities.exceptionBreakpointFilters.As<std::vector<dap::ExceptionBreakpointsFilter>>();
 
                 for (std::vector<dap::ExceptionBreakpointsFilter>::iterator it = vExceptionBreakpointFilters.begin(); it != vExceptionBreakpointFilters.end(); ++it)
                 {
-                    if ((*it).default_value.has_value())
+                    if (!(*it).default_value.IsNull())
                     {
-                        m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("exceptionBreakpointFilters - filter:\"%s\"  label:\"%s\" value:%s"), (*it).filter, (*it).label, (*it).default_value.value() ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+                        m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("exceptionBreakpointFilters - filter:\"%s\"  label:\"%s\" value:%s"), (*it).filter, (*it).label, (*it).default_value.As<bool>() ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
                     }
                     else
                     {
@@ -2966,10 +2967,10 @@ void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
                 }
             }
 
-            if (response_data->capabilities.completionTriggerCharacters.has_value())
+            if (!response_data->capabilities.completionTriggerCharacters.IsNull())
             {
                 // The set of characters that should trigger completion in a REPL. If not specified, the UI should assume the '.' character.
-                vCompletionTriggerCharacters = response_data->capabilities.completionTriggerCharacters.value();
+                vCompletionTriggerCharacters = response_data->capabilities.completionTriggerCharacters.As<std::vector<wxString>>();
 
                 for (std::vector<wxString>::iterator it = vCompletionTriggerCharacters.begin(); it != vCompletionTriggerCharacters.end(); ++it)
                 {
@@ -2977,10 +2978,10 @@ void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
                 }
             }
 
-            if (response_data->capabilities.additionalModuleColumns.has_value())
+            if (!response_data->capabilities.additionalModuleColumns.IsNull())
             {
                 // The set of additional module information exposed by the debug adapter.
-                vAdditionalModuleColumns = response_data->capabilities.additionalModuleColumns.value();
+                vAdditionalModuleColumns = response_data->capabilities.additionalModuleColumns.As<std::vector<dap::ColumnDescriptor>>();
                 m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("additionalModuleColumns - future display data ")), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
             }
 
@@ -3030,10 +3031,22 @@ void Debugger_DAP::OnStopped(DAPEvent & event)
         }
         else
         {
-            /* reason:
-            * Values: 'exception', 'pause', 'entry', 'function breakpoint', 'data breakpoint', etc
-            */
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped reason: %s not suported"), stopped_data->reason), dbg_DAP::LogPaneLogger::LineType::Error);
+            if (stopped_data->reason.IsSameAs("breakpoint"))
+            {
+                /* reason:
+                * Values: 'exception',
+                */
+                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped reason: %s"), stopped_data->reason), dbg_DAP::LogPaneLogger::LineType::Error);
+            }
+            else
+            {
+                /* reason:
+                * Values: 'pause', 'entry', 'function breakpoint', 'data breakpoint', etc
+                */
+                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped reason: %s not suported"), stopped_data->reason), dbg_DAP::LogPaneLogger::LineType::Error);
+            }
+
+            m_dapClient.GetFrames();
         }
     }
 

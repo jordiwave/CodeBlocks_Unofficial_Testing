@@ -346,7 +346,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         // The debug adapter supports the `suspendDebuggee` attribute on the `disconnect` request.
         bool supportSuspendDebuggee = false;
 
-        // The debug adapter supports the delayed loading of parts of the stack, which requires that both the 'startFrame' and 'levels' arguments and an std::optional 'totalFrames' result of the 'StackTrace' request are supported.
+        // The debug adapter supports the delayed loading of parts of the stack, which requires that both the 'startFrame' and 'levels' arguments and an optional 'totalFrames' result of the 'StackTrace' request are supported.
         bool supportsDelayedStackTraceLoading = false;
 
         // The debug adapter supports the 'loadedSources' request.

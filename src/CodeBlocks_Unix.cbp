@@ -83,7 +83,7 @@
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxscintilla_cb" />
 				<Option type="2" />
 				<Compiler>
-					<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GDK) --cflags`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) $(#CB_BUILD.PKG_CONFIG_GDK) --cflags`" />
 					<Add option="-D__WX__" />
 					<Add option="-DGTK" />
 					<Add option="-DLINK_LEXERS" />
@@ -112,7 +112,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GLIB) --cflags`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) $(#CB_BUILD.PKG_CONFIG_GLIB) --cflags`" />
 					<Add directory="include" />
 					<Add directory="include/tinyxml" />
 					<Add directory="include/scripting/include" />
@@ -126,7 +126,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-lwxscintilla_cb" />
-					<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GLIB) $(#CB_BUILD.PKG_CONFIG_GDK) --libs`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) $(#CB_BUILD.PKG_CONFIG_GLIB) $(#CB_BUILD.PKG_CONFIG_GDK) --libs`" />
 					<Add library="txml" />
 					<Add library="squirrel" />
 				</Linker>
@@ -150,7 +150,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/CodeBlocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/CodeBlocks" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="0" />
 				<Option parameters="--personality=debuging --multiple-instance --verbose --debug-log --prefix=devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Compiler>
@@ -185,7 +184,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/abbreviations" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -196,7 +194,7 @@
 					<Add directory="include/scripting/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -213,7 +211,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/astyle" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -225,7 +222,7 @@
 					<Add directory="plugins/astyle/astyle" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -240,7 +237,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/autosave" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -250,7 +246,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -291,7 +287,7 @@
 					<Add directory="include/scripting/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,propgrid`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,propgrid`" />
 					<Add library="codeblocks" />
 					<Add library="depslib" />
 				</Linker>
@@ -311,7 +307,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/debugger" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -321,7 +316,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -337,7 +332,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/classwizard" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -347,7 +341,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -362,7 +356,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/defaultmimehandler" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -372,7 +365,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -387,7 +380,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/occurrenceshighlighting" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -398,7 +390,7 @@
 					<Add directory="include/scripting/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -413,7 +405,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/openfileslist" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -423,7 +414,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -438,7 +429,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/projectsimporter" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -448,7 +438,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -463,7 +453,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/scriptedwizard" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -474,7 +463,7 @@
 					<Add directory="include/scripting/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -495,7 +484,6 @@
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/todo" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/todo" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="./CodeBlocks" />
@@ -505,7 +493,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
 				</Linker>
 				<ExtraCommands>
@@ -516,24 +504,18 @@
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="XP look &amp; feel">
-				<Option platforms="Windows;" />
-				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
+			<Target title="XP Manifest Creation">
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\xpmanifest" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/xpmanifest" />
-				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcodeblocks.so" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\xpmanifest" />
 				<Option type="3" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base" />
-					<Add option="-Wl,--add-stdcall-alias" />
-					<Add option="-Wl,--enable-auto-import" />
-					<Add option="-mthreads" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
-					<Add directory="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
@@ -545,8 +527,8 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;tinyXML2;AutoRevision;ConsoleRunner;Squirrel;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
+			<Add alias="All" targets="tinyXML;tinyXML2;AutoRevision;ConsoleRunner;Squirrel;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP Manifest Creation;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP Manifest Creation;" />
 			<Add alias="Third-party libs" targets="tinyXML;tinyXML2;AutoRevision;ConsoleRunner;Squirrel;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
@@ -558,18 +540,17 @@
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --cflags`" />
-			<Add option="`pkg-config --cflags $(#CB_BUILD.PKG_CONFIG_GTKPLUS)`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags $(#CB_BUILD.PKG_CONFIG_GTKPLUS)`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DUSE_GTK_NOTEBOOK" />
-			<Add option="-DENABLE_BINRELOC" />
 			<Add directory="sdk/wxscintilla/include" />
 			<Add directory="include/tinyxml" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,aui,propgrid`" />
-			<Add option="`pkg-config --libs $(#CB_BUILD.PKG_CONFIG_GTKPLUS)`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs $(#CB_BUILD.PKG_CONFIG_GTKPLUS)`" />
 			<Add directory="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<ExtraCommands>
@@ -594,6 +575,18 @@
 		</Unit>
 		<Unit filename="base/tinyxml/tinyxmlparser.cpp">
 			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="include/tinyxml/tinystr.h">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="include/tinyxml/tinyxml.h">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base/tinyxml2/tinyxml2.cpp">
+			<Option target="tinyXML2" />
+		</Unit>
+		<Unit filename="base/tinyxml2/tinyxml2.h">
+			<Option target="tinyXML2" />
 		</Unit>
 		<Unit filename="build_tools/autorevision/autorevision.cpp">
 			<Option target="AutoRevision" />
@@ -937,18 +930,6 @@
 		</Unit>
 		<Unit filename="include/tinywxuni.h">
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/tinyxml/tinystr.h">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="include/tinyxml/tinyxml.h">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="base/tinyxml2/tinyxml2.cpp">
-			<Option target="tinyXML2" />
-		</Unit>
-		<Unit filename="base/tinyxml2/tinyxml2.h">
-			<Option target="tinyXML2" />
 		</Unit>
 		<Unit filename="include/toolsmanager.h">
 			<Option target="sdk" />
@@ -1993,10 +1974,17 @@
 			<Option target="To-do" />
 		</Unit>
 		<Unit filename="plugins/xpmanifest/windowsxplooknfeel.cpp">
-			<Option target="XP look &amp; feel" />
+			<Option target="XP Manifest Creation" />
 		</Unit>
 		<Unit filename="plugins/xpmanifest/windowsxplooknfeel.h">
-			<Option target="XP look &amp; feel" />
+			<Option target="XP Manifest Creation" />
+		</Unit>
+		<Unit filename="plugins/xpmanifest/manifest.xml">
+			<Option target="XP Manifest Creation" />
+		</Unit>
+		<Unit filename="plugins/xpmanifest/manifest.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="XP Manifest Creation" />
 		</Unit>
 		<Unit filename="scripts/make_dist.script">
 			<Option target="src" />

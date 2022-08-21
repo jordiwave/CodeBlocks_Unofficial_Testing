@@ -33,7 +33,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DNOPCH" />
 			<Add option="-fPIC" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add option="-fexceptions" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
@@ -41,7 +41,7 @@
 			<Add directory="../wxSmith" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,aui,propgrid`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add library="codeblocks" />
 			<Add library="wxsmithlib" />

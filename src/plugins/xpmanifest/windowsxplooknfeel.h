@@ -3,14 +3,10 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#ifndef WINDOWSXPLOOKNFEEL_H
-#define WINDOWSXPLOOKNFEEL_H
+#ifndef __WINDOWSXPLOOKNFEEL_H__
+#define __WINDOWSXPLOOKNFEEL_H__
 
 #include "cbplugin.h" // the base class we 're inheriting
-
-#ifndef __WXMSW__
-    #error This plugin is for use under Win32 only!
-#endif
 
 class WindowsXPLookNFeel : public cbToolPlugin
 {
@@ -20,5 +16,5 @@ class WindowsXPLookNFeel : public cbToolPlugin
         int Execute();
 };
 
-#endif // WINDOWSXPLOOKNFEEL_H
+#endif // __WINDOWSXPLOOKNFEEL_H__
 

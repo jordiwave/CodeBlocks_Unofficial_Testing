@@ -31,7 +31,7 @@
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-fPIC" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --cflags`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include\tinyxml" />
@@ -39,7 +39,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,aui,propgrid`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="ExporterBase.cpp" />

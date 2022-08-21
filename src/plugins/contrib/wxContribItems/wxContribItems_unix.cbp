@@ -103,7 +103,7 @@
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
@@ -113,7 +113,7 @@
 			<Add directory="../../../include/tinyxml" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 		</Linker>
 		<Unit filename="KWIC/include/wx/KWIC/AngularMeter.h">
 			<Option target="wxKWIC" />

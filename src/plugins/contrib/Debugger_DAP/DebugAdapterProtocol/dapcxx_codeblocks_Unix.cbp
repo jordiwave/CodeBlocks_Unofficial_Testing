@@ -21,24 +21,22 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add option="-std=$(#CB_BUILD.C_STD)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-fPIC" />
 			<Add option="-pipe" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-DcbDEBUG" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
-			<Add option="`pkg-config --cflags codeblocks`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags codeblocks`" />
 			<Add directory="." />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)\gcc_dll$(#WXWIDGETS.WX_CFG)\msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std`" />
-			<Add option="`pkg-config --libs codeblocks`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs codeblocks`" />
 		</Linker>
 		<Unit filename="resources/manifest.rc">
 			<Option compilerVar="WINDRES" />

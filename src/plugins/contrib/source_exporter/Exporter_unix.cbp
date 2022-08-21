@@ -31,8 +31,8 @@
 				<Linker>
 					<Add option="-lcodeblocks" />
 					<Add option="-lwxPdfDocument" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
-					<Add option="`pkg-config --libs fontconfig`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs fontconfig`" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/exporter.zip manifest.xml" />
@@ -47,8 +47,8 @@
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
-			<Add option="`pkg-config --cflags fontconfig`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags fontconfig`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />

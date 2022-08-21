@@ -6,18 +6,20 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/NassiShneiderman" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/NassiShneiderman" />
+				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/NassiShneiderman" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/NassiShneiderman" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 					<Add option="-fPIC" />
 					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --cflags`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
@@ -26,21 +28,20 @@
 					<Add option="-DWX_PRECOMP" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
-					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
+					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --libs`" />
-					<!-- Add option="-Wl,--no-undefined" -->
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
-					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/NassiShneiderman.zip manifest.xml *.xrc" />
-					<Add after="zip -Rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/NassiShneiderman.zip images/16x16/*.png images/20x20/*.png images/24x24/*.png" />
-					<Add after="zip -Rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/NassiShneiderman.zip images/28x28/*.png images/32x32/*.png images/40x40/*.png" />
-					<Add after="zip -Rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/NassiShneiderman.zip images/48x48/*.png images/56x56/*.png images/64x64/*.png" />
+					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/NassiShneiderman.zip manifest.xml *.xrc" />
+					<Add after="zip -Rq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/NassiShneiderman.zip images/16x16/*.png images/20x20/*.png images/24x24/*.png" />
+					<Add after="zip -Rq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/NassiShneiderman.zip images/28x28/*.png images/32x32/*.png images/40x40/*.png" />
+					<Add after="zip -Rq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/NassiShneiderman.zip images/48x48/*.png images/56x56/*.png images/64x64/*.png" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -48,11 +49,6 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-D__WXMAC__" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-		</Compiler>
 		<Linker>
 			<Add library="boost_system" />
 		</Linker>

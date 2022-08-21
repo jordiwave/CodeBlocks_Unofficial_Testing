@@ -16,7 +16,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="`wx-config --cflags`" />
-					<Add option="`pkg-config --cflags codeblocks`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags codeblocks`" />
 					<Add directory="../../../../include" />
 				</Compiler>
 				<Linker>
@@ -67,11 +67,11 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="`wx-config --cflags`" />
-					<Add option="`pkg-config --cflags codeblocks`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags codeblocks`" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,-z,defs" />
-					<Add option="`pkg-config --libs codeblocks`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs codeblocks`" />
 					<Add library="XmlRpcEmbedder" />
 				</Linker>
 				<ExtraCommands>

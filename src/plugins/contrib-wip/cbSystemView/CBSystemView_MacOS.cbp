@@ -6,43 +6,43 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="cbSystemView_build">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbSystemView" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView_build" />
+				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbSystemView" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView_build" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance --no-splash-screen --verbose -p debug --no-ipc " />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+					<Add directory="../../../include/tinyxml" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
-					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
+					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbSystemView.zip manifest.xml" />
-					<Add after="zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbSystemView.zip images/*" />
-					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbSystemView.zip res/*.xrc" />
+					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbSystemView.zip manifest.xml" />
+					<Add after="zip -rq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbSystemView.zip images/*" />
+					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbSystemView.zip res/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="cbSystemView_plugin">
 				<Option output="output/wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView" prefix_auto="0" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView_plugin" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbSystemView_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add directory="$(#CB_BUILD.INCLUDE)" />
-					<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-					<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+					<Add directory="../../../include/tinyxml" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
-					<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
+					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="mkdir -p plugin_wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
@@ -59,15 +59,14 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-D__WXMAC__" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="-fPIC" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --cflags`" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+			<Add directory="../../../include" />
 			<Add directory="." />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS)  --libs std,aui,propgrid`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG)  --libs std,aui,propgrid`" />
 		</Linker>
 		<Unit filename="cbSystemView.cpp" />
 		<Unit filename="cbSystemView.h" />

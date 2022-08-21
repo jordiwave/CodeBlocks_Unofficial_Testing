@@ -6,20 +6,20 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debugger_DAP_Plugin">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/debugger_dap" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/debugger_dap" />
+				<Option output="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/debugger_dap" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="../../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/debugger_dap" />
 				<Option type="3" />
 				<Option parameters="-p debug -ns -ni --debug-log --multiple-instance " />
-				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
+				<Option host_application="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
-					<Add after="if [ -f ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ] ; then rm ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip; fi" />
+					<Add after="if [ -f ../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ] ; then rm ../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip; fi" />
 					<Add after="if [ -f $(TARGET_OUTPUT_BASENAME).cbplugin ] ; then rm $(TARGET_OUTPUT_BASENAME).cbplugin ; fi" />
 					<Add after="if [ -f $(TARGET_OUTPUT_BASENAME).zip      ] ; then rm $(TARGET_OUTPUT_BASENAME).zip      ; fi" />
 					<Add after="if [ -f $(TARGET_OUTPUT_BASENAME).so       ] ; then rm $(TARGET_OUTPUT_BASENAME).so      ; fi" />
-					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip resources/manifest.xml resources/*.xrc" />
+					<Add after="zip -jq9 ../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip resources/manifest.xml resources/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -35,8 +35,8 @@
 			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-fPIC" />
-			<Add option="`pkg-config --cflags codeblocks`" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags codeblocks`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add directory="../DebugAdapterProtocol" />
 			<Add directory="./src" />
 			<Add directory="./tinyxml2" />
@@ -45,12 +45,11 @@
 			<Add directory="../../../../include/tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
-			<Add option="`pkg-config --libs codeblocks`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs codeblocks`" />
 			<Add library="debugger_wxdap" />
 			<Add directory="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>

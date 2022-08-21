@@ -29,10 +29,11 @@ if [ ! -f "bootstrap" ]; then
     fi
 fi
 
-echo "|    CurrentDir C::B root is:            ${PWD}                                                  |"
+echo "+-------------------------------------------------------------------------------------------------+"
+echo "|    CurrentDir C::B root is: ${PWD}                |"
 
-CB_ROOT=$PWD
-CB_SRC=${CB_ROOT}/src
+CB_ROOT=${PWD}
+CB_SRC=${PWD}/src
 
 # ----------------------------------------------------------------------------
 # Check BUILD_BITS for validity
@@ -81,18 +82,24 @@ if [ "${CB_DEVEL_DIR}" == "" ] ; then
 fi
 
 if [ -d "${CB_DEVEL_DIR}/bin" ]; then
-    echo "ERROR: You built using the makefile process. Run the \'StartCB_Makefile.sh\' shell script instead!!!"
+    echo "|  ERROR: You built using the makefile process. Run the \'StartCB_Makefile.sh\' shell script instead!!! ||"
+    echo "|                                                                                                 |"
+    echo "+-------------------------------------------------------------------------------------------------+"
 else
 
     if [ -d "${CB_DEVEL_DIR}" ]; then
-        echo CB root dir: "${PWD}/${CB_DEVEL_DIR}"
-        echo CB exe: "${PWD}/${CB_DEVEL_DIR}/CodeBlocks"
-    
+        echo "| CB root dir: ${CB_DEVEL_DIR}                |"
+        echo "| CB exe:      ${CB_DEVEL_DIR}/CodeBlocks     |"
+        echo "+-------------------------------------------------------------------------------------------------+"
+
         cd ${CB_DEVEL_DIR}
-        echo "Running: ./CodeBlocks --verbose --debug-log --multiple-instance --personality=debuging --prefix=${PWD}"
-        ./CodeBlocks --verbose --debug-log --multiple-instance --personality=debuging --prefix=${PWD}
+        echo "Running: ./CodeBlocks --verbose --debug-log --multiple-instance --personality=debuging --prefix=${CB_DEVEL_DIR}"
+        echo
+        echo 
+        ./CodeBlocks --verbose --debug-log --multiple-instance --personality=debuging --prefix=${CB_DEVEL_DIR}
     else
-        echo ERROR: Cannot find CB root dir: "${CB_DEVEL_DIR}"
+        echo "|      ERROR: Cannot find CB root dir: ${CB_DEVEL_DIR}    |"
+        echo "|                                                                                                 |"
+        echo "+-------------------------------------------------------------------------------------------------+"
     fi
 fi
-

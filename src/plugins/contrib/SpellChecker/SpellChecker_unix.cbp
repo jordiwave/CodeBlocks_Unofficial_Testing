@@ -17,8 +17,8 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
-					<Add option="`pkg-config hunspell --cflags`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) hunspell --cflags`" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
@@ -32,8 +32,8 @@
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
-					<Add option="`pkg-config hunspell --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) hunspell --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
@@ -48,8 +48,8 @@
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
 					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
-					<Add option="`pkg-config hunspell --cflags`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) hunspell --cflags`" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
@@ -64,8 +64,8 @@
 				<Linker>
 					<Add library="codeblocks" />
 					<Add option="-lwxSpellChecker" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
-					<Add option="`pkg-config hunspell --libs`" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) hunspell --libs`" />
 					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
                 <ExtraCommands>

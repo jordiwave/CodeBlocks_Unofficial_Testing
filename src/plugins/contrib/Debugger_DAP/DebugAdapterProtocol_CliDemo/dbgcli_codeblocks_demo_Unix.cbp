@@ -24,21 +24,20 @@
 			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-pipe" />
 			<Add option="-fexceptions" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
-			<Add option="`pkg-config --cflags codeblocks`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags codeblocks`" />
 			<Add option="-DcbDEBUG" />
 			<Add directory="." />
 			<Add directory="../../../../include" />
 			<Add directory="../DebugAdapterProtocol" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-lwxscintilla_cb" />
-			<Add option="`pkg-config $(#CB_BUILD.PKG_CONFIG_GLIB) $(#CB_BUILD.PKG_CONFIG_GDK) --libs codeblocks`" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --toolkit=gtk3 --libs std,propgrid`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) $(#CB_BUILD.PKG_CONFIG_GLIB) $(#CB_BUILD.PKG_CONFIG_GDK) --libs codeblocks`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,propgrid`" />
 			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add library="debugger_wxdap" />
 		</Linker>

@@ -64,7 +64,7 @@
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
@@ -72,7 +72,7 @@
 			<Add option="-DCB_PRECOMP" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,propgrid`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,propgrid`" />
 		</Linker>
 		<Unit filename="manifest.xml" />
 		<Unit filename="wxSmithContribItems.cpp" />

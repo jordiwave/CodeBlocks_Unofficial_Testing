@@ -20,7 +20,7 @@
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="-fPIC" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add option="-pipe" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
@@ -31,7 +31,7 @@
 			<Add directory="../../include" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,aui,propgrid`" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add option="-z defs" />
 			<Add library="codeblocks" />
 			<Add library="UnitTest++" />
@@ -39,7 +39,7 @@
 			<Add directory="../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="LD_LIBRARY_PATH=$(TARGET_OUTPUT_DIR):`$(#WXWIDGETS.WX_CONFIG_UNIX) --prefix`/lib $(TARGET_OUTPUT_FILE)" />
+			<Add after="LD_LIBRARY_PATH=$(TARGET_OUTPUT_DIR):`$(#WXWIDGETS.WX_CONFIG) --prefix`/lib $(TARGET_OUTPUT_FILE)" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="debugger_defs.cpp" />

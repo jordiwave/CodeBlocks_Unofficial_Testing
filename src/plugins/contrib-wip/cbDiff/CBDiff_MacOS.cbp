@@ -6,24 +6,24 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbDiff" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/cbDiff" />
+				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbDiff" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/cbDiff" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
-					<Add after="if [ -f $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbMemoryView.zip ] ; then rm $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbMemoryView.zip; fi" />
-					<Add after="zip -jq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbMemoryView.zip manifest.xml *.xrc" />
+					<Add after="if [ -f ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbMemoryView.zip ] ; then rm ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbMemoryView.zip; fi" />
+					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbMemoryView.zip manifest.xml *.xrc" />
 
 					<Add after="if [ -f cbDiff.cbplugin ] ; then rm cbDiff.cbplugin ; fi" />
 					<Add after="if [ -f cbDiff.zip ] ; then rm cbDiff.zip ; fi" />
 					<Add after="if [ -f libcbDiff.so ] ; then rm libcbDiff.so ; fi" />
 					<Add after="zip -jq9 cbMemoryView.zip manifest.xml *.xrc" />
-					<Add after="zip -Rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbDiff.zip images/64x64/*.png images/56x56/*.png images/48x48/*.png images/40x40/*.png images/32x32/*.png images/28x28/*.png images/24x24/*.png images/20x20/*.png images/16x16/*.png cb_diff_toolbar.xrc" />
+					<Add after="zip -Rq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/cbDiff.zip images/64x64/*.png images/56x56/*.png images/48x48/*.png images/40x40/*.png images/32x32/*.png images/28x28/*.png images/24x24/*.png images/20x20/*.png images/16x16/*.png cb_diff_toolbar.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -33,9 +33,8 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-D__WXMAC__" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`pkg-config --cflags codeblocks`" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags codeblocks`" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="-fPIC" />
@@ -44,14 +43,14 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="./dtl" />
 			<Add directory="./src" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/tinyxml" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
-			<Add option="`pkg-config --libs codeblocks`" />
-			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs codeblocks`" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add library="codeblocks" />
 		</Linker>
 		<Unit filename="cb_diff_toolbar.xrc" />
