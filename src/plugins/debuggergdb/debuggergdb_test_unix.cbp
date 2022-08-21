@@ -6,8 +6,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debuggergdb_test">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/debuggergdb_test" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/debuggergdb/debuggergdb_test" />
+				<Option output="../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/debuggergdb_test" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/debuggergdb/debuggergdb_test" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 			</Target>
@@ -28,7 +28,7 @@
 			<Add option="-DCB_TEST_PROJECT" />
 			<Add directory="$(#unittest_pp.include)" />
 			<Add directory="." />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="../../include" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs std,aui,propgrid`" />
@@ -36,7 +36,7 @@
 			<Add library="codeblocks" />
 			<Add library="UnitTest++" />
 			<Add directory="$(#unittest_pp.lib)/" />
-			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="LD_LIBRARY_PATH=$(TARGET_OUTPUT_DIR):`$(#WXWIDGETS.WX_CONFIG_UNIX) --prefix`/lib $(TARGET_OUTPUT_FILE)" />

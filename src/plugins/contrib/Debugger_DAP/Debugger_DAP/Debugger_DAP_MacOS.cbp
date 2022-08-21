@@ -29,27 +29,26 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-D__WXMAC__" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add option="-std=$(#CB_BUILD.C_STD)" />
-			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --cflags`" />
-			<Add option="-fPIC" />
-			<Add option="-DcbDEBUG" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DWXUSINGDLL" />
-			<Add directory="$(#CB_BUILD)/plugins/contrib-wip/DebugAdapterProtocol" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-fPIC" />
+			<Add option="-D__WXMAC__" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_MAC) --cflags`" />
+			<Add directory="../DebugAdapterProtocol" />
 			<Add directory="./src" />
 			<Add directory="./tinyxml2" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
+			<Add directory="../../../../include" />
+			<Add directory="../../../../sdk/wxscintilla/include" />
+			<Add directory="../../../../include/tinyxml" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG_MACOS) --libs std`" />
 			<Add option="`/usr/local/bin/pkg-config --libs codeblocks`" />
 			<Add library="debugger_wxdap" />
-			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="resources/breakpoints_DAP_dlg.xrc" />
 		<Unit filename="resources/debugger_DAP_options_dlg.xrc" />

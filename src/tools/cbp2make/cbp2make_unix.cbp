@@ -6,9 +6,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbp2make" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tools/cbp2make" />
+				<Option output="../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cbp2make" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tools/cbp2make" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option parameters="-in cbp2make-unix.cbp" />

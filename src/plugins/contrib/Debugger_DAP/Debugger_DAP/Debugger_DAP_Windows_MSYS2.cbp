@@ -45,7 +45,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add directory="$(#CB_BUILD)/plugins/contrib-wip/DebugAdapterProtocol" />
+			<Add directory="../DebugAdapterProtocol" />
 			<Add directory="./src" />
 			<Add directory="./tinyxml2" />
 			<Add directory="$(#CB_BUILD.INCLUDE)" />
