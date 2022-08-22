@@ -1,9 +1,12 @@
-#ifndef WXFILESYSTEMMONITOR_H
-#define WXFILESYSTEMMONITOR_H
+#ifndef __DIRECTORYMONITOR_H__
+#define __DIRECTORYMONITOR_H__
 
-
+#include <map>
 
 #include <wx/wx.h>
+#include <wx/timer.h>
+#include <wx/filename.h>
+
 
 #define MONITOR_TERMINATE 0x010000
 #define MONITOR_TOO_MANY_CHANGES 0x020000
@@ -18,9 +21,9 @@
 
 #define DEFAULT_MONITOR_FILTER MONITOR_FILE_CHANGED|MONITOR_FILE_DELETED|MONITOR_FILE_CREATED|MONITOR_FILE_ATTRIBUTES
 
-class DirMonitorThread;
+//class DirMonitorThread;
 
-class wxDirectoryMonitor;
+//class wxDirectoryMonitor;
 
 ///////////////////////////////////////
 // EVENT CODE /////////////////////////
@@ -71,16 +74,49 @@ class wxDirectoryMonitor: public wxEvtHandler
     public:
         wxDirectoryMonitor(wxEvtHandler * parent, const wxArrayString & uri, int eventfilter = DEFAULT_MONITOR_FILTER);
         virtual ~wxDirectoryMonitor();
-        bool Start();
+
+        /**
+         * @brief start to watching list of files.
+         * This object fires the following events (clFileSystemEvent):
+         * wxEVT_FILE_MODIFIED, wxEVT_FILE_DELETED
+         */
+        void Start();
+
+        /**
+         * @brief stop watching the list of files
+         */
+        void Stop();
+
+        /**
+         * @brief clear the list of files to watch and stop the watcher
+         */
+        void Clear();
+
+        size_t GetFileSize(const wxFileName& filename);
+        time_t GetFileModificationTime(const wxFileName& filename);
+
         void ChangePaths(const wxArrayString & uri);
         void OnMonitorEvent(wxDirectoryMonitorEvent & e);
         void OnMonitorEvent2(wxCommandEvent & e);
+
+        struct File {
+            wxFileName filename;
+            time_t lastModified;
+            size_t file_size;
+            typedef std::map<wxString, File> Map_t;
+        };
+
+    protected:
+        void OnTimer(wxTimerEvent& event);
+
     private:
         wxArrayString m_uri;
         wxEvtHandler * m_parent;
         int m_eventfilter;
-        DirMonitorThread * m_monitorthread;
+
+        File::Map_t m_files;
+        wxTimer* m_timer;
         DECLARE_EVENT_TABLE()
 };
 
-#endif // WXFILESYSTEMMONITOR_H
+#endif // __DIRECTORYMONITOR_H__

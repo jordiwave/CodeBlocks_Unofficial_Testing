@@ -781,7 +781,6 @@ void FileExplorer::OnUpdateTreeItems(wxCommandEvent & /*e*/)
         return;
     }
 
-    //    cbMessageBox(_T("Node OK"));
     //    m_Tree->DeleteChildren(ti);
     FileDataVec & removers = m_updater->m_removers;
     FileDataVec & adders = m_updater->m_adders;
@@ -791,10 +790,8 @@ void FileExplorer::OnUpdateTreeItems(wxCommandEvent & /*e*/)
         m_Tree->Freeze();
 
         //LOOP THROUGH THE REMOVERS LIST AND REMOVE THOSE ITEMS FROM THE TREE
-        //    cbMessageBox(_T("Removers"));
         for (FileDataVec::iterator it = removers.begin(); it != removers.end(); it++)
         {
-            //        cbMessageBox(it->name);
             wxTreeItemIdValue cookie;
             wxTreeItemId ch = m_Tree->GetFirstChild(ti, cookie);
 
@@ -811,10 +808,8 @@ void FileExplorer::OnUpdateTreeItems(wxCommandEvent & /*e*/)
         }
 
         //LOOP THROUGH THE ADDERS LIST AND ADD THOSE ITEMS TO THE TREE
-        //    cbMessageBox(_T("Adders"));
         for (FileDataVec::iterator it = adders.begin(); it != adders.end(); it++)
         {
-            //        cbMessageBox(it->name);
             wxTreeItemId newitem = m_Tree->AppendItem(ti, it->name, it->state);
             m_Tree->SetItemHasChildren(newitem, it->state == fvsFolder);
         }
@@ -1038,7 +1033,6 @@ void FileExplorer::OnChooseWild(wxCommandEvent & /*event*/)
     m_WildCards->Delete(m_WildCards->GetSelection());
     m_WildCards->Insert(wild, 0);
     //    event.Skip(true);
-    //    cbMessageBox(wild);
     m_WildCards->SetSelection(0);
     RefreshExpanded(m_Tree->GetRootItem());
 }
@@ -1420,7 +1414,7 @@ void FileExplorer::OnActivate(wxTreeEvent & event)
     {
         wxString msg;
         msg.Printf(_("Could not open file '%s'.\nNo handler registered for this type of file."), filename.c_str());
-        LogErrorMessage(msg);
+        Manager::Get()->GetLogManager()->LogError(msg);
         //        em->Open(filename); //should never need to open the file from here
     }
     else
@@ -1429,7 +1423,7 @@ void FileExplorer::OnActivate(wxTreeEvent & event)
             const PluginInfo * info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
             wxString msg;
             msg.Printf(_("Could not open file '%s'.\nThe registered handler (%s) could not open it."), filename.c_str(), info ? info->title.c_str() : wxString(_("<Unknown plugin>")).c_str());
-            LogErrorMessage(msg);
+            Manager::Get()->GetLogManager()->LogError(msg);
         }
 
     //    if(!em->IsOpen(file))
@@ -1762,7 +1756,7 @@ void FileExplorer::OnDuplicate(wxCommandEvent & /*event*/)
 
             if (hresult)
             {
-                MessageBox(m_Tree, _("Command '") + cmdline + _("' failed with error ") + wxString::Format(_T("%i"), hresult));
+                cbMessageBox(_("Command '") + cmdline + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
             }
         }
     }
@@ -1812,7 +1806,7 @@ void FileExplorer::CopyFiles(const wxString & destination, const wxArrayString &
 
             if (hresult)
             {
-                MessageBox(m_Tree, _("Copying '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult));
+                cbMessageBox(_("Copying '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
             }
         }
     }
@@ -1866,7 +1860,7 @@ void FileExplorer::MoveFiles(const wxString & destination, const wxArrayString &
 
             if (hresult)
             {
-                MessageBox(m_Tree, _("Moving '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult));
+                cbMessageBox(_("Moving '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
             }
         }
     }
@@ -1922,7 +1916,8 @@ void FileExplorer::OnDelete(wxCommandEvent & /*event*/)
 
     prompt += _("\nAre you sure?");
 
-    if (MessageBox(m_Tree, prompt, _("Delete"), wxYES_NO) != wxID_YES)
+
+    if (cbMessageBox(prompt, _("Delete"), wxYES_NO, m_Tree) != wxID_YES)
     {
         return;
     }
@@ -1933,15 +1928,9 @@ void FileExplorer::OnDelete(wxCommandEvent & /*event*/)
 
         if (wxFileName::FileExists(path))
         {
-            //        EditorManager* em = Manager::Get()->GetEditorManager();
-            //        if(em->IsOpen(path))
-            //        {
-            //            cbMessageBox(_("Close file ")+path.GetFullPath()+_(" first"));
-            //            return;
-            //        }
             if (!::wxRemoveFile(path))
             {
-                MessageBox(m_Tree, _("Delete file '") + path + _("' failed"));
+                cbMessageBox(_("Delete file '") + path + _("' failed"), wxEmptyString, wxOK, m_Tree);
             }
         }
         else
@@ -1956,7 +1945,7 @@ void FileExplorer::OnDelete(wxCommandEvent & /*event*/)
 
                 if (hresult)
                 {
-                    MessageBox(m_Tree, _("Delete directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult));
+                    cbMessageBox(_("Delete directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
                 }
             }
     }
@@ -2016,7 +2005,7 @@ void FileExplorer::OnRename(wxCommandEvent & /*event*/)
 
         if (hresult)
         {
-            MessageBox(m_Tree, _("Rename directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult));
+            cbMessageBox( _("Rename directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
         }
     }
 
@@ -2188,7 +2177,7 @@ void FileExplorer::OnEndDragTreeItem(wxTreeEvent & event)
 
                 if (hresult)
                 {
-                    MessageBox(m_Tree, _("Move directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult));
+                    cbMessageBox(_("Move directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
                 }
             }
             else
@@ -2219,7 +2208,7 @@ void FileExplorer::OnEndDragTreeItem(wxTreeEvent & event)
 
                 if (hresult)
                 {
-                    MessageBox(m_Tree, _("Copy directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult));
+                    cbMessageBox(_("Copy directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
                 }
             }
         }

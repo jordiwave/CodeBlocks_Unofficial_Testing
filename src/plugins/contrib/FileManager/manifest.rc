@@ -26,18 +26,18 @@ VS_VERSION_INFO        VERSIONINFO
   {
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
-      VALUE "Build",             "07-May-2022 SVN12803"
-      VALUE "Comments",          ""
+      VALUE "Build",             "22-Aug-2022 SVN12875"
+      VALUE "Comments",          "FileManger Plugin"
       VALUE "CompanyName",       "Damien Moore"
       VALUE "Developer",         "Damien Moore"
-      VALUE "FileVersion",       "0.5.0"
+      VALUE "FileVersion",       "0.6.0"
       VALUE "InternalName",      "FileManager"
       VALUE "LegalCopyright",    "GPL"
       VALUE "LegalTrademarks",   "All rights reserved."
       VALUE "OriginalFilename",  "FileManager.dll"
       VALUE "PrivateBuild",      ""
       VALUE "ProductName",       "FileManager"
-      VALUE "ProductVersion",    "0.5.0"
+      VALUE "ProductVersion",    "0.6.0"
       VALUE "SpecialBuild",      ""
       VALUE "Support",           ""
       VALUE "Users",             ""

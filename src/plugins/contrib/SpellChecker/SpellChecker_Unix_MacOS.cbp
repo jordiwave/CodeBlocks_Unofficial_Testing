@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="SpellChecker Unix_MacOS" />
+		<Option default_target="plugin" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="wxSpellChecker">
+				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxSpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option projectCompilerOptionsRelation="2" />
+				<Compiler>
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) hunspell --cflags`" />
+					<Add option="-DHUNSPELL_STATIC" />
+					<Add directory="wxspellchecker/include" />
+				</Compiler>
+			</Target>
+			<Target title="plugin">
+				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/SpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectCompilerOptionsRelation="2" />
+				<Compiler>
+					<Add directory="wxspellchecker/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-lwxSpellChecker" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) hunspell --libs`" />
+				</Linker>
+                <ExtraCommands>
+        			<!-- Create output directory -->
+        			<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+        			<Mode before="always" />
+
+        			<!-- Create plugin zip file-->
+                    <Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="wxSpellChecker;plugin;" />
+		</VirtualTargets>
+		<ExtraCommands>
+			<!-- Create output directory -->
+			<Add before="if [   -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then rm -r    ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/* ; fi" />
+			<Add before="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
+			<Mode before="always" />
+
+			<!-- Copy Spellchecker dictionary files -->
+			<Add after="cp -f OnlineSpellChecking.xml ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="cp -rf dictionaries/*         ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+
+			<!-- Copy Spellchecker image files -->
+			<Add after="cp -rf rc/* ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="if [ ! -d   ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+			<Add after="cp -f *.png ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+			<Add option="-fPIC" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+		</Compiler>
+		<Linker>
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
+			<Add library="codeblocks" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+		</Linker>
+		<Unit filename="DictionariesNeededDialog.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="DictionariesNeededDialog.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="HunspellInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="HunspellInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="MySpellingDialog.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="MySpellingDialog.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="OnlineSpellChecker.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="OnlineSpellChecker.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="OnlineSpellChecking.xml">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckHelper.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckHelper.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckSettingsPanel.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckSettingsPanel.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckSettingsPanel.xrc">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckerConfig.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckerConfig.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckerPlugin.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="SpellCheckerPlugin.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="StatusField.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="StatusField.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="Thesaurus.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="Thesaurus.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="ThesaurusDialog.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="ThesaurusDialog.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="manifest.xml">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="mythes.cxx">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="mythes.hxx">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="wxThes.cpp">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="wxThes.h">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="wxsmith/SpellCheckSettingsPanel.wxs">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/PersonalDictionary.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckCmdLineInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckDialogInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckEngineInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckEngineOption.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckUserInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckerOptionsDialog.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/XmlPersonalDictionaryDialog.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/XmlSpellCheckDialog.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/exports.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/PersonalDictionary.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckCmdLineInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckDialogInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckEngineInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckEngineOption.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckUserInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckerOptionsDialog.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/XmlPersonalDictionaryDialog.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/XmlSpellCheckDialog.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/exports.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/open.xpm">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/SpellCheckSettingsPanel.wxs" src="SpellCheckSettingsPanel.cpp" hdr="SpellCheckSettingsPanel.h" xrc="SpellCheckSettingsPanel.xrc" fwddecl="0" i18n="1" name="SpellCheckSettingsPanel" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

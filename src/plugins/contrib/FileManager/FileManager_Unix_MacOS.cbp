@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="File Manager Plugin Unix_MacOS" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="FileManager">
+				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libFileManager" prefix_auto="0" extension_auto="1" />
+				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/$(TARGET_OUTPUT_BASENAME)" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ni -ns -v -p debug" />
+				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="$(#CB_BUILD.CFLAGS)" />
+					<Add option="-Wall" />
+					<Add option="-fPIC" />
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --cflags gamin`" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-D__FAM__" />
+					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+				</Compiler>
+				<Linker>
+					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui`" />
+					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs gamin`" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip manifest.xml Resources/fileexplorersettings.xrc Resources/CommitBrowser.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="FileManager;" />
+		</VirtualTargets>
+		<Unit filename="CommitBrowser.cpp" />
+		<Unit filename="CommitBrowser.h" />
+		<Unit filename="FileExplorer.cpp" />
+		<Unit filename="FileExplorer.h" />
+		<Unit filename="FileExplorerSettings.cpp" />
+		<Unit filename="FileExplorerSettings.h" />
+		<Unit filename="FileExplorerUpdater.cpp" />
+		<Unit filename="FileExplorerUpdater.h" />
+		<Unit filename="FileManager.cpp" />
+		<Unit filename="FileManager.h" />
+		<Unit filename="Resources/CommitBrowser.xrc" />
+		<Unit filename="Resources/fileexplorersettings.xrc" />
+		<Unit filename="directorymonitor.cpp" />
+		<Unit filename="directorymonitor.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="se_globals.cpp" />
+		<Unit filename="se_globals.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

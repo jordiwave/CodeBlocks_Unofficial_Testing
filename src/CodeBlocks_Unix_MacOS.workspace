@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="CodeBlocks Workspace Unix">
+		<Project filename="CodeBlocks_Unix_MacOS.cbp" active="1"  />
+		<!-- Windows only Project filename="tools/Addr2LineUI/Addr2LineUI_Unix_MacOS.cbp" -->
+		<Project filename="tools/cb_share_config/CB_Share_Config_Unix_MacOS.cbp" >
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<!-- Windows only Project filename="tools/CBLauncher/CbLauncher_Unix_MacOS.cbp" -->
+		<Project filename="tools/cbp2make/CBP2make_Unix_MacOS.cbp" >
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/displayevents/CBDisplayEvents_Unix_MacOS.cbp" >
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxContribItems/WxContribItems_Unix_MacOS.cbp" >
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmith/WxSmith_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithContribItems/WxSmithContribItems_Unix_MacOS.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/WxContribItems_Unix_MacOS.cbp" />
+			<Depends filename="plugins/contrib/wxSmith/WxSmith_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithAui/WxSmithAui_Unix_MacOS.cbp">
+			<Depends filename="plugins/contrib/wxSmith/WxSmith_Unix_MacOS.cbp" />
+		</Project>
+		<!-- NOT built by default >
+			<Project filename="plugins/headerguard/HeaderGuard_Unix_MacOS.cbp">
+				<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/loghacker/LogHacker_Unix_MacOS.cbp">
+				<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/ModPoller/ModPoller_Unix_MacOS.cbp">
+				<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/tidycmt/Tidycmt_Unix_MacOS.cbp">
+				<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+			</Project>
+		< -->
+		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/byogames/ByoGames_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/Cccc/Cccc_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/clangd_client/Clangd_Client_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/codesnippets/CodeSnippets_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/codestat/Codestat_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/copystrings/CopyStrings_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/CppCheck/CppCheck_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/Cscope/Cscope_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<!-- NOT built by default >
+			<Project filename="plugins/contrib/devpak_plugin/DevPakPlugin_Unix_MacOS.cbp">
+				<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+			</Project>
+		< -->
+		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/dragscroll/DragScroll_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/EditorConfig/EditorConfig_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/envvars/EnvVars_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<!-- DOES NOT BUILD DUE TO MISSING GAMIn LIBRARY ON MACOS -->
+		<Project filename="plugins/contrib/FileManager/FileManager_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+ 		<Project filename="plugins/contrib/FortranProject/FortranProject_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>    
+		<Project filename="plugins/contrib/headerfixup/HeaderFixUp_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/help_plugin/Help-Plugin_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/HexEditor/HexEditor_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/keybinder/KeyBinder_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/lib_finder/Lib_Finder_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/MouseSap/MouseSap_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/profiler/CBProfiler_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ProjectExporter/ProjectExporter_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ProjectOptionsManipulator/ProjectOptionsManipulator_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/regex_testbed/RegExTestbed_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/rndgen/Rndgen_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/source_exporter/Exporter_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/symtab/Symtab_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/Valgrind/Valgrind_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<Project filename="plugins/contrib-wip/cbDiff/CBDiff_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+<!-- LATER
+		<Project filename="plugins/contrib-wip/GitBlocks/GitBlocks_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbInno/cbInno_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbNSIS/cbNSIS_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+-->
+		<Project filename="plugins/contrib-wip/cbBuildTools/CBBuildTools_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+<!-- LATER
+		<Project filename="plugins/contrib-wip/cbMarkdown/cbMarkdown_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+-->
+		<Project filename="plugins/contrib-wip/cbMemoryView/CBMemoryView_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbSystemView/CBSystemView_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXPERIMENTAL WIP PLUGINS <=<=<=<=<=<=<=<=<=<= -->
+
+		<Project filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Unix_MacOS.cbp" />
+		<Project filename="plugins/contrib/Debugger_DAP/Debugger_DAP/Debugger_DAP_Unix_MacOS.cbp" >
+			<Depends filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Unix_MacOS.cbp" />
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<!-- Project filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol_CliDemo/dbgcli_codeblocks_demo_Unix_MacOS.cbp" >
+			<Depends filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Unix_MacOS.cbp" />
+		</Project -->
+
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXPERIMENTAL WIP PLUGINS <=<=<=<=<=<=<=<=<=<= -->
+	</Workspace>
+</CodeBlocks_workspace_file>

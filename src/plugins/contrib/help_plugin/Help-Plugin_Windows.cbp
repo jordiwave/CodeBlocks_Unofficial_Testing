@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Help Plugin Windows" />
+		<Option pch_mode="0" />
+		<Option default_target="help_plugin" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="help_plugin">
+				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\help_plugin.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\help_plugin" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<ExtraCommands>
+					<!-- Create output directories -->
+					<!-- Create output directory -->
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Add before="cmd /c if not exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\ mkdir ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\ " />
+					<Mode before="always" />
+
+					<!-- Create help_plugin.zip -->
+					<Add after="zip -jq9  ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip manifest.xml *.xrc" />
+					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip ./images" />
+
+					<!-- Copy file to docs directory -->
+					<Add after="cmd /c if not exist ..\..\..\..\windows_installer\Documentation xcopy /Y /Q index.ini                                       ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\ " />
+					<Add after="cmd /c if     exist ..\..\..\..\windows_installer\Documentation xcopy /Y /Q ..\..\..\..\windows_installer\Documentation\*.* ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\ " />
+
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="help_plugin;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/scripting/include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
+		<Linker>
+            <Add option="-mthreads" />
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add option="-Wl,--enable-auto-import" />
+			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add library="bz2" />
+			<Add library="z" />
+			<Add library="codeblocks" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
+		</Linker>
+		<Unit filename="HelpConfigDialog.cpp" />
+		<Unit filename="HelpConfigDialog.h" />
+		<Unit filename="MANFrame.cpp" />
+		<Unit filename="MANFrame.h" />
+		<Unit filename="defs.h" />
+		<Unit filename="help_common.cpp" />
+		<Unit filename="help_common.h" />
+		<Unit filename="help_plugin.cpp" />
+		<Unit filename="help_plugin.h" />
+		<Unit filename="help_plugin.xrc" />
+		<Unit filename="man2html.cpp" />
+		<Unit filename="man2html.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="manifest.rc" >
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
