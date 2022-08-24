@@ -1996,7 +1996,8 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent & event)
                 searchLog->Append(logValues, Logger::info);
 
                 // if this filename == active editor filename, select it as the focused log line
-                if ((logValues[0] == editorFile) && (wxAtoi(logValues[1]) == editorLine))
+                //-if (logValues[0] == editorFile && atoi(logValues[1]) == editorLine)  //ticket #62
+                if ((logValues[0] == editorFile) && (wxAtoi(logValues[1]) == editorLine))  //ticket #62
                 {
                     focusIndex = ii - 1;
                 }

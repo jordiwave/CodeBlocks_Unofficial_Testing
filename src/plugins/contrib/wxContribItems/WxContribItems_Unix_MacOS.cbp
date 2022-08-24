@@ -6,8 +6,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxFlatNoteBook">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxflatnotebook" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxflatnotebook" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -16,8 +16,8 @@
 				</Compiler>
 			</Target>
 			<Target title="wxChartCtrl">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxchartctrl" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxchartctrl" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -26,8 +26,8 @@
 				</Compiler>
 			</Target>
 			<Target title="wxCustomButton">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxcustombutton" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxcustombutton" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -36,8 +36,8 @@
 				</Compiler>
 			</Target>
 			<Target title="wxImagePanel">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwximagepanel" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwximagepanel" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -46,15 +46,15 @@
 				</Compiler>
 			</Target>
 			<Target title="wxSpeedButton">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxspeedbutton" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxspeedbutton" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 			</Target>
 			<Target title="wxKWIC">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxkwic" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxkwic" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -63,8 +63,8 @@
 				</Compiler>
 			</Target>
 			<Target title="wxLED">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxled" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxled" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -76,8 +76,8 @@
 				</Compiler>
 			</Target>
 			<Target title="wxMathPlot">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxmathplot" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems/wxmathplot" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxmathplot" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxContribItems/wxmathplot" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />

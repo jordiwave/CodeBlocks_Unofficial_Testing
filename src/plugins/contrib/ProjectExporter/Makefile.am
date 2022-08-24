@@ -119,4 +119,4 @@ EXTRA_DIST = \
 			$(resources_forZIP)
 
 ProjectExporter.zip: $(resources_forZIP)
-			PWD=`pwd` cd $(srcdir) && zip $(PWD)/ProjectExporter.zip $(resources_forZIP) > /dev/null
+			PWD=`pwd` cd $(srcdir) && zip -jq9 $(PWD)/ProjectExporter.zip $(resources_forZIP) > /dev/null

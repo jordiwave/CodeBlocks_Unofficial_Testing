@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxSpellChecker">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxSpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxSpellChecker" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -21,8 +21,8 @@
 				</Compiler>
 			</Target>
 			<Target title="plugin">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/SpellChecker" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/SpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SpellChecker" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -41,7 +41,7 @@
         			<Mode before="always" />
 
         			<!-- Create plugin zip file-->
-                    <Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
+                    <Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -51,18 +51,18 @@
 		</VirtualTargets>
 		<ExtraCommands>
 			<!-- Create output directory -->
-			<Add before="if [   -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then rm -r    ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/* ; fi" />
-			<Add before="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
+			<Add before="if [   -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then rm -r    $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/* ; fi" />
+			<Add before="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker   ; fi" />
 			<Mode before="always" />
 
 			<!-- Copy Spellchecker dictionary files -->
-			<Add after="cp -f OnlineSpellChecking.xml ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
-			<Add after="cp -rf dictionaries/*         ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="cp -f OnlineSpellChecking.xml $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="cp -rf dictionaries/*         $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
 
 			<!-- Copy Spellchecker image files -->
-			<Add after="cp -rf rc/* ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
-			<Add after="if [ ! -d   ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
-			<Add after="cp -f *.png ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/" />
+			<Add after="cp -rf rc/* $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SpellChecker/" />
+			<Add after="if [ ! -d   $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+			<Add after="cp -f *.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Compiler>
@@ -83,7 +83,7 @@
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 			<Add library="codeblocks" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="DictionariesNeededDialog.cpp">
 			<Option target="plugin" />

@@ -6,8 +6,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/FortranProject" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/FortranProject" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/FortranProject" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/FortranProject" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="codeblocks" />
@@ -29,19 +29,19 @@
         		<Linker>
         			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid,richtext`" />
         			<Add library="codeblocks" />
-        			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+        			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
         		</Linker>
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
-					<Add after="if [ -f ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ] ; then rm ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip; fi" />
-					<Add after="zip -qj9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip manifest.xml resources/*.xrc" />
-					<Add after="zip -qr9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ./images" />
+					<Add after="if [ -f $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ] ; then rm $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip; fi" />
+					<Add after="zip -qj9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip manifest.xml resources/*.xrc" />
+					<Add after="zip -qr9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ./images" />
 
-					<Add after="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/fortranproject ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/fortranproject; fi" />
-					<Add after="cd images/fortranproject &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs cp --parents -f -t ../../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/fortranproject " />
-
+					<Add after="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/fortranproject ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/fortranproject; fi" />
+					<Add after="cd images/fortranproject &amp;&amp; find . -type d | xargs -I{} mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/fortranproject/&quot;{}&quot; " />
+					<Add after="cd images/fortranproject &amp;&amp; find . -type f -name &quot;*&quot; ! -name &quot;Makefile.*&quot; | xargs -I{} cp -P -f &quot;{}&quot; $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/fortranproject/&quot;{}&quot; " />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

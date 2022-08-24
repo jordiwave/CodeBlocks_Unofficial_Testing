@@ -15,7 +15,7 @@ WX_GITHUB_TAG=3.2.0
 WX_DIR_VERSION=32
 WX_OSX_LIB_DIR_VERSION=3.2
 
-MAC_OSX_MIN_VERSION=11.6
+MAC_OSX_MIN_VERSION=11.0
 #MAC_OSX_MIN_VERSION=10.15
 
 InitialDir=${PWD}
@@ -223,27 +223,21 @@ function wxwidgets_build()
         echo "+--------------------------------------------------+"
         echo "|  configure wxWidgets in  ${OUT_WX} |"
         echo "+--------------------------------------------------+"
-
         # https://wiki.wxwidgets.org/Possible_Configure_Flags_under_OS_X
-        "${WX_ROOT_DIR}/configure"  --with-osx-cocoa --with-macosx-version-min=${MAC_OSX_MIN_VERSION} \
-                                    --disable-debug --disable-debug-flag --enable-unicode --enable-cxx11 \
-                                    --with-opengl --with-expat=builtin --with-libjpeg=builtin --with-libpng=builtin \
-                                    --with-regex=builtin --with-libtiff=builtin --with-zlib=builtin \
-            # "${WX_ROOT_DIR}/configure" 
-            # --with-osx-cocoa
-                # --with-macosx-version-min=${MAC_OSX_MIN_VERSION}  aka MAC_OSX_MIN_VERSION=11.6 or MAC_OSX_MIN_VERSION=10.15
-            # --disable-debug
-            # --disable-debug-flag
-            # --enable-unicode
-            # --enable-cxx11
-            # --with-opengl
-            # --with-expat=builtin
-            # --with-libjpeg=builtin
-            # --with-libpng=builtin
-            # --with-regex=builtin
-            # --with-libtiff=builtin
-                #--with-zlib=builtin
 
+        "${WX_ROOT_DIR}/configure" --with-osx-cocoa \
+                                    --with-macosx-version-min=${MAC_OSX_MIN_VERSION} \
+                                    --disable-debug \
+                                    --disable-debug-flag \
+                                    --enable-unicode \
+                                    --enable-cxx11 \
+                                    --with-opengl \
+                                    --with-expat=builtin \
+                                    --with-libjpeg=builtin \
+                                    --with-libpng=builtin \
+                                    --with-regex=builtin \
+                                    --with-libtiff=builtin \
+                                    --with-zlib=builtin
         status=$?
         if [ $status == 0 ] ; then
             echo "+--------------------------------------------------+"
@@ -324,20 +318,28 @@ function codeblocks_build()
         chmod +x configure *.sh
         
         if [ -f ./configure ]; then
-            ./configure CXXFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION} CC=clang CXX=clang++ \
-                        --disable-pch --prefix=${CB_ROOT_DIR}/src/devel${WX_DIR_VERSION} \
+            ./configure --prefix=${CB_ROOT_DIR}/src/devel${WX_DIR_VERSION} \
                         --with-contrib-plugins=all,-FileManager
+
+# More work required for this:
+#           ./configure  CXXFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION} \
+#                        CC=clang \
+#                        CXX=clang++ \
+#                        --prefix=${CB_ROOT_DIR}/src/devel${WX_DIR_VERSION} \
+#                        --with-contrib-plugins=all
+
+                # Parameter info:
                 #./configure 
-                #               CXXFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION}  aka MAC_OSX_MIN_VERSION=11.6 or MAC_OSX_MIN_VERSION=10.15
+                #               CXXFLAGS=-mmacosx-version-min=${MAC_OSX_MIN_VERSION}  aka MAC_OSX_MIN_VERSION=11.0 or MAC_OSX_MIN_VERSION=10.15
                 #               CC=clang
                 #               CXX=clang++
-				#		        --disable-pch
                 #               --prefix=${CB_ROOT_DIR}/src/devel${WX_DIR_VERSION}
                 #               --with-contrib-plugins=all,-FileManager
                 #
                 # Xaviou changes/additions
-				#		        --with-wx-config=/Users/username/dev/wx316/build-macOS-11.6/wx-config
-				#		        --prefix=/Users/username/dev/CB/build-macOS-11.6/output
+                #               --disable-pch
+                #               --with-wx-config=/Users/username/dev/wx316/build-macOS-11.6/wx-config
+                #               --prefix=/Users/username/dev/CB/build-macOS-11.6/output
 
             status=$?
             if [ $status != 0 ] ; then

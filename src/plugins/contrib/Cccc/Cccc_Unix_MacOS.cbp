@@ -6,8 +6,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/Cccc" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/Cccc" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/Cccc" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/Cccc" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
@@ -36,10 +36,10 @@
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 			<Add library="codeblocks" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/Cccc.zip resources/manifest.xml" />
+			<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/Cccc.zip resources/manifest.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="Cccc.cpp" />

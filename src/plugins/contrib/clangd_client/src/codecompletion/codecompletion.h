@@ -154,7 +154,10 @@ class ClgdCompletion : public cbCodeCompletionPlugin
 
             while (node)
             {
-                if (!node->GetNext())
+                //wxWindow*pwin = node->GetData(); removed for ticket #63 //(ac 2022/08/22)
+                //if (node->GetNext() == nullptr)
+                //    return pwin;
+                if (not node->GetNext())               //ticket #63 support for msys2
                 {
                     wxWindow * pwin = node->GetData();
                     return pwin;

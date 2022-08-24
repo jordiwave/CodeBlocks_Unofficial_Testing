@@ -2,13 +2,20 @@
 // |     see https://sourceforge.net/p/codeblocks/tickets/663/     |
 // =================================================================
 
-#include "sdk.h"
-
-#include "directorymonitor.h"
+// C++ includes (including wxWidgets)
+#include <algorithm>
+#include <set>
 #include <vector>
-//#include "se_globals.h"
+#include <wx/string.h>
 
-//#include <iostream>
+// Code::Blocks includes
+#include "sdk.h"
+#include "manager.h"
+#include "logmanager.h"
+
+// FileManager includes
+#include "directorymonitor.h"
+
 
 // In milliseconds
 #define FILE_CHECK_INTERVAL 500

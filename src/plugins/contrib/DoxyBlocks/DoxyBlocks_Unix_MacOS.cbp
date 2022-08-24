@@ -6,8 +6,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/DoxyBlocks" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/DoxyBlocks" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/DoxyBlocks" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/DoxyBlocks" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
@@ -30,19 +30,19 @@
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 					<Add library="codeblocks" />
-					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+					<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
-					<Add before="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings  ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings  ; fi" />
+					<Add before="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings  ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings  ; fi" />
 
 					<!-- create zip file-->
-					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/DoxyBlocks.zip manifest.xml" />
-					<Add after="zip -rq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/DoxyBlocks.zip images" />
+					<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/DoxyBlocks.zip manifest.xml" />
+					<Add after="zip -rq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/DoxyBlocks.zip images" />
 
 					<!-- copy images -->
-					<Add after="cp *.png ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/ > nul" />
+					<Add after="cp *.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/ > nul" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

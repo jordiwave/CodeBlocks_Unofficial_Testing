@@ -75,6 +75,7 @@ copy_deps() {
 
 echo "--------------------------------------------------------------------------------"
 if [ -f "${PREFIX_DIR}/lib/libcodeblocks.0.dylib" ]
+then
     echo "Copying libcodeblocks ..."
     cp -v ${PREFIX_DIR}/lib/libcodeblocks.0.dylib "$APPDIR/Contents/MacOS/"
     copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.0.dylib"
@@ -82,6 +83,7 @@ if [ -f "${PREFIX_DIR}/lib/libcodeblocks.0.dylib" ]
 fi
 
 if [ -f "${PREFIX_DIR}/lib/libcodeblocks.dylib" ]
+then
     echo "Copying libcodeblocks ..."
     cp -v ${PREFIX_DIR}/lib/libcodeblocks.dylib "$APPDIR/Contents/MacOS/"
     copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.dylib"
@@ -91,6 +93,7 @@ fi
 echo "--------------------------------------------------------------------------------"
 
 if [ -f "${PREFIX_DIR}/lib/libdebugger_wxdap.dylib" ]
+then
     echo "Copying Debugger WXDAP dylib"
     cp -v ${PREFIX_DIR}/lib/libdebugger_wxdap.dylib "$APPDIR/Contents/MacOS/"
     copy_deps "${APPDIR}/Contents/MacOS/libdebugger_wxdap.dylib"

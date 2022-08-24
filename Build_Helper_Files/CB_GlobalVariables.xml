@@ -118,7 +118,7 @@
 	<cb_macos>
 		<cb_build>
 			<BASE>""</BASE>
-			<CFLAGS>-Og -gdwarf-4</CFLAGS>
+			<CFLAGS>-Og -gdwarf-4 -Wno-varargs</CFLAGS>
 			<OSBITS>64</OSBITS>
 			<C_STD>c90</C_STD>
 			<CPP_STD>gnu++17</CPP_STD>

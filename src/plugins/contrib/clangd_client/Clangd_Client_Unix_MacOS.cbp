@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Clangd_Client">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/clangd_client" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/clangd_client" />
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance --no-splash-screen --verbose -p debug --no-ipc " />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -20,9 +20,9 @@
 					<Mode before="always" />
 
 					<!-- Create the clangd_client.zip file -->
-					<Add after="if [ -f  ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/clangd_client.zip ] ; then rm ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/clangd_client.zip; fi;" />
-					<Add after="cd src/resources &amp;&amp; zip -jq9 ../../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/clangd_client.zip manifest.xml *.xrc *.cbp" />
-					<Add after="cd src/resources &amp;&amp; zip -rq9 ../../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/clangd_client.zip images" />
+					<Add after="if [ -f  $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/clangd_client.zip ] ; then rm $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/clangd_client.zip; fi;" />
+					<Add after="cd src/resources &amp;&amp; zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/clangd_client.zip manifest.xml *.xrc *.cbp" />
+					<Add after="cd src/resources &amp;&amp; zip -rq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/clangd_client.zip images" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -52,7 +52,7 @@
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid,richtext`" />
 			<Add library="codeblocks" />
 			<Add library="util" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="src/ClangLocator.cpp" />
 		<Unit filename="src/ClangLocator.h" />

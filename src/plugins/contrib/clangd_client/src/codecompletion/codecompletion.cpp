@@ -1382,7 +1382,7 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto
             //pLogMgr->DebugLog(cmpltnStr);
         }
 
-        // Move to next request for completion to preserve for DoAutoComplete() //(ph 2022/07/10)
+        // Move clear() to next request for completions to preserve tokens for DoAutoComplete() //(ph 2022/07/10)
         //- Moved - m_CompletionTokens.clear(); //clear to use next time and return the tokens
         return tokens;
     }
@@ -4899,7 +4899,7 @@ void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
         ProcessLanguageClient * pEdClient = GetLSPclient(pEdProject);
         cbProject * pProxyProject = GetParseManager()->GetProxyProject();
 
-        if (pEd and pEdProject and pEdClient
+        if (pActiveProject and pEd and pEdProject and pEdClient
                 and (pEdProject == pProxyProject))
         {
             // If we previouly used the ProxyProject, see if we can now use the ActiveProject
@@ -4946,7 +4946,7 @@ void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
         {
             // We've got an editor that belongs to a non-active project in the workspace.
             // If the active project contains this file, use it's LSP_client, else use the ProxyProject
-            ProjectFile * pActiveProjectFile = pActiveProject->GetFileByFilename(pEd->GetFilename(), false);
+            ProjectFile * pActiveProjectFile = pActiveProject ? pActiveProject->GetFileByFilename(pEd->GetFilename(), false) : nullptr;
 
             if (pActiveProjectFile)
             {

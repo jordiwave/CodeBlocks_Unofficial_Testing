@@ -1214,7 +1214,6 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(const Token * token, bool loc
 
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-
             if (!curr_token)
             {
                 break;

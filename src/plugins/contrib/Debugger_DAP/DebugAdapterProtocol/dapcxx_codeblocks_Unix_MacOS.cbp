@@ -6,9 +6,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debugger_WXDAP">
-				<Option output="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/debugger_wxdap" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/debugger_wxdap" />
+				<Option output="$(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libdebugger_wxdap" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/$(TARGET_OUTPUT_BASENAME)" />
 				<Option type="3" />
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
@@ -36,7 +36,8 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std`" />
-			<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs codeblocks`" />
+			<Add library="codeblocks" />
+			<Add directory="$(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="resources/manifest.rc">
 			<Option compilerVar="WINDRES" />

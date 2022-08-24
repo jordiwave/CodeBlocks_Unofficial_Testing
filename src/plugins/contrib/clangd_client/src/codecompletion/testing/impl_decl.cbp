@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="impl_decl">
 				<Option output=".bin/impl_decl" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../../.objs/plugins/clangd_client/testing" />
+				<Option object_output="../../../.objs/plugins/codecompletion/testing" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 			</Target>

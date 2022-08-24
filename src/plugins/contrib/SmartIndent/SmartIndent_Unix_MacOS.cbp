@@ -6,9 +6,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="SmartIndentHDL">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentHDL" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentHDL" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -21,14 +21,14 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cp manifest_hdl.xml ./manifest.xml" />
-					<Add after="zip -jm9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentHDL.zip manifest.xml" />
+					<Add after="zip -jm9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentHDL.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentPascal">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentPascal" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentPascal" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -41,14 +41,14 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cp manifest_pascal.xml ./manifest.xml" />
-					<Add after="zip -jm9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentPascal.zip manifest.xml" />
+					<Add after="zip -jm9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentPascal.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentCpp">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentCpp" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentCpp" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="./codeblocks" />
@@ -61,14 +61,14 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cp manifest_cpp.xml ./manifest.xml" />
-					<Add after="zip -jm9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentCpp.zip manifest.xml" />
+					<Add after="zip -jm9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentCpp.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentPython">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentPython" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentPython" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -81,14 +81,14 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cp manifest_python.xml ./manifest.xml" />
-					<Add after="zip -jm9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentPython.zip manifest.xml" />
+					<Add after="zip -jm9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentPython.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentLua">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentLua" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentLua" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -101,14 +101,14 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cp manifest_lua.xml ./manifest.xml" />
-					<Add after="zip -jm9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentLua.zip manifest.xml" />
+					<Add after="zip -jm9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentLua.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentFortran">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentFortran" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentFortran" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -121,14 +121,14 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cp manifest_fortran.xml ./manifest.xml" />
-					<Add after="zip -jm9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentFortran.zip manifest.xml" />
+					<Add after="zip -jm9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentFortran.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentXML">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentXML" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libSmartIndentXML" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
@@ -141,7 +141,7 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cp manifest_xml.xml ./manifest.xml" />
-					<Add after="zip -jm9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentXML.zip manifest.xml" />
+					<Add after="zip -jm9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/SmartIndentXML.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -169,7 +169,7 @@
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid,richtext`" />
 			<Add library="codeblocks" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="SmartIndentCpp.cpp">
 			<Option target="SmartIndentCpp" />

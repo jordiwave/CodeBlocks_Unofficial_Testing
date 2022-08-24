@@ -206,7 +206,7 @@ class CCLogger
         auto locker_result = M.LockTimeout(250);   \
         if (locker_result != wxMUTEX_NO_ERROR)  \
         {   wxString err = wxString::Format("LOCK FAILED: Owner: %s", M##_Owner); \
-            err.Printf(_T("Assertion failed in %s at %s:%d.\n\n%s"), cbC2U(__FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(err).c_str()); \
+            err.Printf(_T("Assertion failed in %s at %s:%d.\n\n%s"), __FUNCTION__, __FILE__, __LINE__, err); \
             wxSafeShowMessage(_T("Assertion error"), err);  \
         }                                                   \
         cbAssert(locker_result==wxMUTEX_NO_ERROR);          \
@@ -221,7 +221,7 @@ class CCLogger
         if (locker_result != wxMUTEX_NO_ERROR)  \
         {   wxString err1st = wxString::Format("Owner: %s", M##_Owner); \
             wxString err; \
-            err.Printf(_T("LockTimeout() failed in %s at %s:%d \n\t%s"), cbC2U(__FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(err1st).c_str()); \
+            err.Printf(_T("LockTimeout() failed in %s at %s:%d \n\t%s"), __FUNCTION__, __FILE__, __LINE__, err1st); \
             CCLogger::Get()->DebugLogError(wxString("Lock error") + err);  \
             /* wxSafeShowMessage(_T("Assertion error"), err); */  \
             locker_result = M.Lock(); /* block anyway*/ \
@@ -241,7 +241,7 @@ class CCLogger
         if (locker_result != wxMUTEX_NO_ERROR)  \
         {   wxString err1st = wxString::Format("Last Owner: %s", M##_Owner); \
             wxString err; \
-            err.Printf(_T("UNLOCK failed in %s at %s:%d \n\t%s"), cbC2U(__FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(err1st).c_str()); \
+            err.Printf(_T("UNLOCK failed in %s at %s:%d \n\t%s"), __FUNCTION__, __FILE__, __LINE__, err1st); \
             CCLogger::Get()->DebugLogError(wxString("UnLock error") + err);  \
             wxSafeShowMessage(_T("Assertion error"), err);  \
             cbAssert(locker_result==wxMUTEX_NO_ERROR); /*assert if unlock fails*/ \
@@ -268,7 +268,7 @@ class CCLogger
         if (locker_result != wxMUTEX_NO_ERROR)  \
         {   wxString err1st = wxString::Format("Owner: %s", M##_Owner); \
             wxString err; \
-            err.Printf(_T("Lock() failed in %s at %s:%d \n\t%s"), cbC2U(__FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(err1st).c_str()); \
+            err.Printf(_T("Lock() failed in %s at %s:%d \n\t%s"), __FUNCTION__, __FILE__, __LINE__, err1st); \
             CCLogger::Get()->DebugLogError(wxString("Lock error") + err);  \
         } \
         else /*lock succeeded, record new owner*/ \

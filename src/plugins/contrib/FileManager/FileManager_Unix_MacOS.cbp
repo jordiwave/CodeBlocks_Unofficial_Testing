@@ -6,8 +6,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="FileManager">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libFileManager" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/$(TARGET_OUTPUT_BASENAME)" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libFileManager" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/$(TARGET_OUTPUT_BASENAME)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ni -ns -v -p debug" />
@@ -32,12 +32,11 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui`" />
-					<Add option="`$(#CB_BUILD.PKG_CONFIG_EXE) --libs gamin`" />
 					<Add library="codeblocks" />
-					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+					<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip manifest.xml Resources/fileexplorersettings.xrc Resources/CommitBrowser.xrc" />
+					<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/FileManager.zip manifest.xml Resources/fileexplorersettings.xrc Resources/CommitBrowser.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

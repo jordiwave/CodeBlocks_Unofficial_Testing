@@ -7,9 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxSmithContribItems">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/libwxSmithContribItems" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxSmithContribItems" />
-				<Option external_deps="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxsmithlib.so;../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxchartctrl.so;../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxcustombutton.so;../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxflatnotebook.so;../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwximagepanel.so;../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxspeedbutton.so;../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxkwic.so;" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/wxSmithContribItems" prefix_auto="0" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/wxSmithContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -47,10 +46,10 @@
 					<Add library="wxspeedbutton" />
 					<Add library="wxled" />
 					<Add library="wxmathplot" />
-					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+					<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -jq9 ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxSmithContribItems.zip manifest.xml" />
+					<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxSmithContribItems.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

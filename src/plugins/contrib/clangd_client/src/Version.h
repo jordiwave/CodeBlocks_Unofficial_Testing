@@ -22,7 +22,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.35 2022/08/17")
+#define VERSION wxT("0.2.37 2022/08/23")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -53,6 +53,12 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.37    2022/08/23
+//          Fix crash in OnEditorActivated() when closing wkspace and ~proxyProject~ file is
+//              activated and attempt is made to check its projectfile with pActiveProject == nullptr.
+//0.2.36    2022/08/23
+//          Apply ticket #62/62 changes to support msys2 by AndrewCo
+//          apply ticket #64 changes to cctest cbp(s) by AndrewCo
 //0.2.35    Commit 2022/08/18 rev 73
 //          2022/08/17
 //          Changes for wxWidgets 3.1.7

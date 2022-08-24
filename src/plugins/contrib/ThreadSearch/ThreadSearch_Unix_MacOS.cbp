@@ -6,8 +6,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="ThreadSearch">
-				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/ThreadSearch" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/ThreadSearch" />
+				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/ThreadSearch" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/ThreadSearch" />
 				<Option external_deps="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxcustombutton.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -17,16 +17,16 @@
 				<ExtraCommands>
 					<!-- Create output directory -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
-					<Add before="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ; fi" />
-					<Add before="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+					<Add before="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ; fi" />
+					<Add before="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
 					<Mode before="always" />
 
 					<!-- Create plugin zip file-->
-					<Add after="zip ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ThreadSearch.zip manifest.xml" />
-					<Add after="cd resources &amp;&amp; zip -rq9 ../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ThreadSearch.zip images" />
+					<Add after="zip $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ThreadSearch.zip manifest.xml" />
+					<Add after="cd resources &amp;&amp; zip -rq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ThreadSearch.zip images" />
 					<!-- Copy image files -->
-					<Add after="if [ ! -d ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
-					<Add after="cp ./resources/*.png ../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/ > /dev/null 2> /dev/null" />
+					<Add after="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings ; fi" />
+					<Add after="cp ./resources/*.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/ > /dev/null 2> /dev/null" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -54,7 +54,7 @@
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 			<Add library="codeblocks" />
 			<Add library="wxcustombutton" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="DirectoryParamsPanel.cpp" />
 		<Unit filename="DirectoryParamsPanel.h" />
