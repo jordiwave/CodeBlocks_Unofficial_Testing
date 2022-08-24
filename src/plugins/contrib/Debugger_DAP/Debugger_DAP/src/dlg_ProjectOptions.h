@@ -3,8 +3,8 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#ifndef __DEBUGGEROPTIONSPRJDLG_H__
-#define __DEBUGGEROPTIONSPRJDLG_H__
+#ifndef _DEBUGGER_DAP_DLG_PROJECTOPTIONS_H__
+#define _DEBUGGER_DAP_DLG_PROJECTOPTIONS_H__
 
 #include <wx/intl.h>
 #include "configurationpanel.h"
@@ -58,4 +58,4 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
 };
 }; // namespace dbg_DAP
 
-#endif // __DEBUGGEROPTIONSPRJDLG_H__
+#endif // _DEBUGGER_DAP_DLG_PROJECTOPTIONS_H__

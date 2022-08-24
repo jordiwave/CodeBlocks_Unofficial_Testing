@@ -210,8 +210,6 @@ class Debugger_DAP : public cbDebuggerPlugin
         wxTimer m_timer_poll_debugger;
         cbProject * m_pProject;
 
-        //        dbg_DAP::DAPExecutor m_executor;
-        //        dbg_DAP::ActionsMap  m_actions;
         dbg_DAP::LogPaneLogger * m_pLogger;
         dbg_DAP::DAPThreadsContainer m_threads;
 
@@ -219,8 +217,6 @@ class Debugger_DAP : public cbDebuggerPlugin
         //        dbg_DAP::DAPMemoryRangeWatchesContainer m_memoryRanges;
         //        dbg_DAP::DAPTextInfoWindow * m_command_stream_dialog;
         int m_exit_code;
-        //        int m_console_pid;
-        //        int m_pid_attached;
         bool m_hasStartUpError;
 
 

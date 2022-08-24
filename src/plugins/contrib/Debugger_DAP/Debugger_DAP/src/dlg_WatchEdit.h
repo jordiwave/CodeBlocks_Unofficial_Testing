@@ -3,8 +3,8 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#ifndef __EDITWATCHDLG_H__
-#define __EDITWATCHDLG_H__
+#ifndef __DEBUGGER_DAP_DLG_WATCHEDIT_H__
+#define __DEBUGGER_DAP_DLG_WATCHEDIT_H__
 
 #include "scrollingdialog.h"
 
@@ -25,4 +25,4 @@ class EditWatchDlg : public wxScrollingDialog
 };
 }; // namespace dbg_DAP
 
-#endif // __EDITWATCHDLG_H__
+#endif // __DEBUGGER_DAP_DLG_WATCHEDIT_H__

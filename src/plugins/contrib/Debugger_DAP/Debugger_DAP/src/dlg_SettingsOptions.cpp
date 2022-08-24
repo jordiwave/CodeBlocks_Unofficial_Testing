@@ -13,10 +13,12 @@
 #include <wx/xrc/xmlres.h>
 
 #include <sdk.h>
-#include <configmanager.h>
-#include <macrosmanager.h>
-#include <cbplugin.h>
-#include <logmanager.h>
+#include "cbplugin.h"
+#include "cbproject.h"
+#include "compilerfactory.h"
+#include "configmanager.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
 
 #include "dlg_SettingsOptions.h"
 
@@ -228,7 +230,7 @@ wxString DebuggerConfiguration::GetDAPExecutable(bool expandMacro)
 
     if (result.IsEmpty())
     {
-        result = cbDetectDebuggerExecutable(wxEmptyString, "lldb-vscode");
+        result = DetectDebuggerExecutable("lldb-vscode");
     }
     else
     {
@@ -244,7 +246,7 @@ wxString DebuggerConfiguration::GetDAPExecutable(bool expandMacro)
 
     if (result.IsEmpty() || !wxFileExists(result))
     {
-        result = cbDetectDebuggerExecutable(wxEmptyString, "lldb-vscode");
+        result = DetectDebuggerExecutable("lldb-vscode");
 
         // pLogMgr->DebugLog(wxString::Format("GetDAPExecutable : %s  (Line %d)", result, __LINE__));
         if (result.IsEmpty())
@@ -435,4 +437,114 @@ wxString DebuggerConfiguration::GetInitialCommands()
     return m_config.Read("init_commands", wxEmptyString);
 }
 
+wxString DebuggerConfiguration::SearchForDebuggerExecutable(wxString pathParam, const wxString & exeNameParam)
+{
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
+    wxFileName fnDetectDebuggerExecutable;
+    fnDetectDebuggerExecutable.SetFullName(exeNameParam);
+    pathParam = pathParam.Trim().Trim(false);
+    fnDetectDebuggerExecutable.SetPath(pathParam);
+
+    if (fnDetectDebuggerExecutable.FileExists())
+    {
+        pLogMgr->DebugLog(wxString::Format(_("SearchForDebuggerExecutable detected %s"), fnDetectDebuggerExecutable.GetFullPath()));
+        return fnDetectDebuggerExecutable.GetFullPath();
+    }
+    else
+    {
+        fnDetectDebuggerExecutable.SetPath(pathParam + wxFILE_SEP_PATH + "bin");
+
+        if (fnDetectDebuggerExecutable.FileExists())
+        {
+            pLogMgr->DebugLog(wxString::Format(_("SearchForDebuggerExecutable detected %s"), fnDetectDebuggerExecutable.GetFullPath()));
+            return fnDetectDebuggerExecutable.GetFullPath();
+        }
+    }
+
+    return wxEmptyString;
+}
+
+wxString DebuggerConfiguration::DetectDebuggerExecutable(const wxString & exeNameParam)
+{
+    // LogManager *pLogMgr = Manager::Get()->GetLogManager();
+    wxString masterPath = wxEmptyString;
+    wxFileName exeName(exeNameParam);
+
+    if (platform::windows)
+    {
+        if (exeName.GetExt().empty())
+        {
+            exeName.SetExt("exe");
+        }
+    }
+
+    // Check Project default compiler path to see if file in it
+    cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+    if (pProject)
+    {
+        // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable pProject found.(Line %d)", __LINE__));
+        int compilerIdx = CompilerFactory::GetCompilerIndex(pProject->GetCompilerID());
+
+        if (compilerIdx != -1)
+        {
+            Compiler * prjCompiler = CompilerFactory::GetCompiler(compilerIdx);
+
+            if (prjCompiler)
+            {
+                masterPath = prjCompiler->GetMasterPath();
+
+                if (!masterPath.IsEmpty())
+                {
+                    wxString debuggerSearchResult = SearchForDebuggerExecutable(masterPath, exeName.GetFullName());
+
+                    if (!debuggerSearchResult.IsEmpty())
+                    {
+                        // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                        return debuggerSearchResult;
+                    }
+                }
+            }
+        }
+    }
+
+    // else
+    // {
+    //    pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable no project found (Line %d)",  __LINE__));
+    // }
+    // Check default compiler path to see if file in it
+    Compiler * defaultCompiler = CompilerFactory::GetDefaultCompiler();
+
+    if (defaultCompiler)
+    {
+        masterPath = defaultCompiler->GetMasterPath();
+
+        // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable defaultCompiler found. masterPath %s  (Line %d)", masterPath, __LINE__));
+        if (!masterPath.IsEmpty() && wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
+        {
+            wxString debuggerSearchResult = SearchForDebuggerExecutable(masterPath, exeName.GetFullName());
+
+            if (!debuggerSearchResult.IsEmpty())
+            {
+                // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
+                return debuggerSearchResult;
+            }
+        }
+    }
+
+    // else
+    // {
+    //     pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable no defaultCompiler found (Line %d)",  __LINE__));
+    // }
+    wxString exePath = cbFindFileInPATH(exeName.GetFullName());
+
+    if (!wxDirExists(exePath))
+    {
+        return wxEmptyString;
+    }
+
+    return exePath + wxFILE_SEP_PATH + exeName.GetFullName();
+}
+
 } // namespace dbg_DAP
+

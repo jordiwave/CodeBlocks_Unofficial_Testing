@@ -1089,7 +1089,7 @@ bool CodeBlocksApp::OnInit()
         Manager::Get()->ProcessEvent(event);
 #ifdef __WXMSW__
         log->Log(wxString::Format(_("Setting the crash report file to: %s"), m_CrashReportFileName));
-#endif        
+#endif
         LogPaths();
         return true;
     }

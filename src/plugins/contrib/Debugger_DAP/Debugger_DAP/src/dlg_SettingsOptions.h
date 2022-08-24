@@ -3,8 +3,8 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#ifndef _DEBUGGER_DAP_CMD_DEBUGGEROPTIONSDLG_H_
-#define _DEBUGGER_DAP_CMD_DEBUGGEROPTIONSDLG_H_
+#ifndef __DEBUGGER_DAP_DLG_SETTINGSOPTIONS_H__
+#define __DEBUGGER_DAP_DLG_SETTINGSOPTIONS_H__
 
 #include <debuggermanager.h>
 
@@ -42,8 +42,13 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
         wxString GetDAPPythonHomeEnvSetting();
         wxString GetDisassemblyFlavorCommand();
         wxString GetInitialCommands();
+
+    private:
+        wxString SearchForDebuggerExecutable(wxString pathParam, const wxString & exeNameParam);
+        wxString DetectDebuggerExecutable(const wxString & exeNameParam);
+
 };
 
 } // namespace dbg_DAP
 
-#endif // _DEBUGGER_DAP_CMD_DEBUGGEROPTIONSDLG_H_
+#endif // __DEBUGGER_DAP_DLG_SETTINGSOPTIONS_H__

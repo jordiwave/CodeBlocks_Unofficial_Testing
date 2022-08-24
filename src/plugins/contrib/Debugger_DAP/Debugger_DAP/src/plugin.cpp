@@ -193,17 +193,6 @@ void Debugger_DAP::OnReleaseReal(bool appShutDown)
 void Debugger_DAP::GetCurrentPosition(wxString & filename, int & line)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    //    if (m_State.HasDriver())
-    //    {
-    //        const Cursor& cursor = m_State.GetDriver()->GetCursor();
-    //        filename = cursor.file;
-    //        line = cursor.line;
-    //    }
-    //    else
-    //    {
-    //        filename = wxEmptyString;
-    //        line = -1;
-    //    }
 }
 
 void Debugger_DAP::SetupToolsMenu(wxMenu & menu)
@@ -218,10 +207,10 @@ bool Debugger_DAP::SupportsFeature(cbDebuggerFeature::Flags flag)
         case cbDebuggerFeature::Breakpoints:
         case cbDebuggerFeature::Callstack:
         case cbDebuggerFeature::Watches:
-        case cbDebuggerFeature::RunToCursor:
-        case cbDebuggerFeature::SetNextStatement:
             return true;
 
+        case cbDebuggerFeature::SetNextStatement:
+        case cbDebuggerFeature::RunToCursor:
         case cbDebuggerFeature::CPURegisters:
         case cbDebuggerFeature::Disassembly:
         case cbDebuggerFeature::ExamineMemory:
@@ -262,13 +251,6 @@ void Debugger_DAP::OnTimer(wxTimerEvent & /*event*/)
 void Debugger_DAP::OnMenuInfoCommandStream(wxCommandEvent & /*event*/)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    //    wxString full;
-    //
-    //    for (int ii = 0; ii < m_executor.GetCommandQueueCount(); ++ii)
-    //    {
-    //        full += m_executor.GetQueueCommand(ii) + "\n";
-    //    }
-    //
     //    if (m_command_stream_dialog)
     //    {
     //        m_command_stream_dialog->SetText(full);
@@ -371,14 +353,7 @@ bool Debugger_DAP::Debug(bool breakOnEntry)
         return false;
     }
 
-    //    if (!WaitingCompilerToFinish() && !m_executor.IsRunning() && !m_hasStartUpError)
-    //    {
-    //        return StartDebugger(project, start_type) == 0;
-    //    }
-    //    else
-    {
-        return true;
-    }
+    return true;
 }
 
 // "=========================================================================================="
@@ -542,7 +517,6 @@ void Debugger_DAP::CleanupWhenProjectClosed(cbProject * project)
 
 int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
 {
-    //    ShowLog(true);
     Compiler * compiler;
     ProjectBuildTarget * target;
     SelectCompiler(*project, compiler, target, 0);
@@ -561,7 +535,7 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
         return 3;
     }
 
-    // is gdb accessible, i.e. can we find it?
+    // is debugger accessible, i.e. can we find it?
     wxString dap_debugger = GetActiveConfigEx().GetDAPExecutable(true);
 
     if (!wxFileExists(dap_debugger))
@@ -779,12 +753,6 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     initArgs.clientID = "CB_DAP_Plugin";
     initArgs.clientName = "CB_DAP_Plugin";
     m_dapClient.Initialize(&initArgs);
-    //    if (active_config.GetFlag(dbg_DAP::DebuggerConfiguration::CatchExceptions))
-    //    {
-    //        DoSendCommand("catch throw");
-    //        DoSendCommand("catch catch");
-    //    }
-    //
     //    wxString directorySearchPaths = wxEmptyString;
     //    const wxArrayString& pdirs = ParseSearchDirs(project);
     //    for (size_t i = 0; i < pdirs.GetCount(); ++i)
@@ -797,8 +765,6 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     //    {
     //        DoSendCommand(wxString::Format("directory %s", directorySearchPaths));
     //    }
-    //
-    //
     m_timer_poll_debugger.Start(20);
     return 0;
 }
@@ -1043,12 +1009,6 @@ void Debugger_DAP::UpdateMapFileBreakPoints(const wxString & filename, cb::share
         else
         {
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Trying to remove a break point line, but it is not in m_map_filebreakpoints!"), dbg_DAP::LogPaneLogger::LineType::Error);
-            //                #ifdef __MINGW32__
-            //                    if (IsDebuggerPresent())
-            //                    {
-            //                        DebugBreak();
-            //                    }
-            //                #endif // __MINGW32__
         }
     }
     else
@@ -1131,9 +1091,24 @@ void Debugger_DAP::UpdateDAPSetBreakpointsByFileName(const wxString & filename)
             }
         }
 
-        wxString fn = UnixFilename(filename);
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", fn, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
-        m_dapClient.SetBreakpointsFile(fn, vlines);
+        {
+            //        wxString fn = UnixFilename(filename, wxPATH_UNIX);
+            wxString fn = UnixFilename(filename);
+            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", fn, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
+            m_dapClient.SetBreakpointsFile(fn, vlines);
+        }
+
+        //{
+        //        wxString fn = UnixFilename(filename, wxPATH_UNIX);
+        //        int  ColonLocation = fn.Find(':');
+        //        if (ColonLocation == 1)
+        //        {
+        //            fn.Remove(ColonLocation, 1);
+        //            fn.Prepend("/");
+        //        }
+        //        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", fn, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
+        //        m_dapClient.SetBreakpointsFile(fn, vlines);
+        //}
     }
 }
 
@@ -1157,10 +1132,6 @@ cb::shared_ptr<cbBreakpoint> Debugger_DAP::UpdateOrAddBreakpoint(const wxString 
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Update %s:%d set ID %d"), filename, line, id), dbg_DAP::LogPaneLogger::LineType::Debug);
         }
 
-        //        else
-        //        {
-        //            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Exit as BP found and ID=-1 for %s:%d"), filename, line), dbg_DAP::LogPaneLogger::LineType::Debug);
-        //        }
         return bp;
     }
 
@@ -1196,26 +1167,25 @@ void Debugger_DAP::DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 
             case dbg_DAP::DAPBreakpoint::bptFunction:
                 m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Found dbg_DAP::DAPBreakpoint::bptFunction breakpoint type")), dbg_DAP::LogPaneLogger::LineType::Debug);
-#ifdef __MINGW32__
-
-                if (IsDebuggerPresent())
-                {
-                    DebugBreak();
-                }
-
-#endif // __MINGW32__
+                // #ifdef __MINGW32__
+                //                 if (IsDebuggerPresent())
+                //                 {
+                //                     DebugBreak();
+                //                 }
+                //
+                // #endif // __MINGW32__
                 return;
 
             default:
                 m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Unknown breakpoint type: %d",  bpType), dbg_DAP::LogPaneLogger::LineType::Error);
-#ifdef __MINGW32__
-
-                if (IsDebuggerPresent())
-                {
-                    DebugBreak();
-                }
-
-#endif // __MINGW32__
+                // #ifdef __MINGW32__
+                //
+                //                 if (IsDebuggerPresent())
+                //                 {
+                //                     DebugBreak();
+                //                 }
+                //
+                // #endif // __MINGW32__
                 return;
         }
 
@@ -1256,27 +1226,6 @@ void Debugger_DAP::DeleteAllBreakpoints()
     cbBreakpointsDlg * dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
     dlg->Reload();
 }
-
-//cb::shared_ptr<cbBreakpoint> Debugger_DAP::AddBreakpoint(cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp)
-//{
-//    m_breakpoints.push_back(bp);
-//
-//    if (IsRunning())
-//    {
-//        if (!IsStopped())
-//        {
-//            m_executor.Interupt();
-//            m_actions.Add(new dbg_DAP::DAPBreakpointAddAction(bp, m_pLogger));
-//            Continue();
-//        }
-//        else
-//        {
-//            m_actions.Add(new dbg_DAP::DAPBreakpointAddAction(bp, m_pLogger));
-//        }
-//    }
-//
-//    return cb::static_pointer_cast<cbBreakpoint>(m_breakpoints.back());
-//}
 
 cb::shared_ptr<cbBreakpoint> Debugger_DAP::AddDataBreakpoint(const wxString & dataExpression)
 {
@@ -1509,10 +1458,8 @@ void Debugger_DAP::CreateStartWatches()
 void Debugger_DAP::UpdateDAPWatches(int updateType)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("updating watches"), dbg_DAP::LogPaneLogger::LineType::Debug);
-    //Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->OnDebuggerUpdated();
     CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
     event.SetInt(updateType);
-    //event.SetPlugin(m_pDriver->GetDebugger());
     Manager::Get()->ProcessEvent(event);
 }
 
@@ -1553,7 +1500,6 @@ cb::shared_ptr<cbWatch> Debugger_DAP::AddWatch(dbg_DAP::DAPWatch * watch, cb_unu
     if (IsRunning())
     {
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Need to wire up watch.", dbg_DAP::LogPaneLogger::LineType::Error);
-        //        m_actions.Add(new dbg_DAP::DAPWatchCreateAction(w, m_watches, m_pLogger, true));
     }
 
     return w;
@@ -1568,20 +1514,6 @@ void Debugger_DAP::DeleteWatch(cb::shared_ptr<cbWatch> watch)
     if (it == m_watches.end())
     {
         return;
-    }
-
-    if (IsRunning())
-    {
-        if (IsStopped())
-        {
-            //            AddStringCommand("-var-delete " + (*it)->GetID());
-        }
-        else
-        {
-            //            m_executor.Interupt();
-            //            AddStringCommand("-var-delete " + (*it)->GetID());
-            Continue();
-        }
     }
 
     if (m_watches.size() == 1)
@@ -1667,7 +1599,7 @@ void Debugger_DAP::ExpandWatch(cb::shared_ptr<cbWatch> watch)
 
         if (!real_watch->HasBeenExpanded())
         {
-            //            m_actions.Add(new dbg_DAP::DAPWatchExpandedAction(*it, real_watch, m_watches, m_pLogger));
+            // m_actions.Add(new dbg_DAP::DAPWatchExpandedAction(*it, real_watch, m_watches, m_pLogger));
         }
     }
 }
@@ -1690,7 +1622,7 @@ void Debugger_DAP::CollapseWatch(cb::shared_ptr<cbWatch> watch)
 
         if (real_watch->HasBeenExpanded() && real_watch->DeleteOnCollapse())
         {
-            //            m_actions.Add(new dbg_DAP::DAPWatchCollapseAction(*it, real_watch, m_watches, m_pLogger));
+            // m_actions.Add(new dbg_DAP::DAPWatchCollapseAction(*it, real_watch, m_watches, m_pLogger));
         }
     }
 }
@@ -1734,7 +1666,6 @@ void Debugger_DAP::DoWatches()
     }
 
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Need to wire up DoWatches.", dbg_DAP::LogPaneLogger::LineType::Error);
-    //    m_actions.Add(new dbg_DAP::DAPStackVariables(m_pLogger, m_WatchLocalsandArgs, bWatchFuncLocalsArgs));
     // Update watches now
     CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
     event.SetInt(int(cbDebuggerPlugin::DebugWindows::Watches));
@@ -1813,9 +1744,6 @@ void Debugger_DAP::SwitchToFrame(int number)
         if (number < static_cast<int>(m_backtrace.size()))
         {
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("SwitchToFrame"), dbg_DAP::LogPaneLogger::LineType::Debug);
-            //int frame = m_backtrace[number]->GetNumber();
-            //typedef dbg_DAP::DAPSwitchToFrame<DAPSwitchToFrameNotification> SwitchType;
-            //m_actions.Add(new SwitchType(frame, DAPSwitchToFrameNotification(this), true));
         }
     }
 }
@@ -2073,11 +2001,6 @@ void Debugger_DAP::RequestUpdate(DebugWindows window)
     //    }
 }
 
-//void Debugger_DAP::GetCurrentPosition(wxString & filename, int & line)
-//{
-//    m_current_frame.GetPosition(filename, line);
-//}
-
 void Debugger_DAP::StripQuotes(wxString & str)
 {
     if ((str.GetChar(0) == '\"') && (str.GetChar(str.Length() - 1) == '\"'))
@@ -2159,9 +2082,13 @@ void Debugger_DAP::ConvertToDAPDirectory(wxString & str, wxString base, bool rel
     }
 
     ConvertToDAPFriendly(str);
-    ConvertToDAPFriendly(base);
     StripQuotes(str);
-    StripQuotes(base);
+
+    if (!base.IsEmpty())
+    {
+        ConvertToDAPFriendly(base);
+        StripQuotes(base);
+    }
 
     if (platform::windows)
     {
@@ -2173,6 +2100,7 @@ void Debugger_DAP::ConvertToDAPDirectory(wxString & str, wxString base, bool rel
             convert_path_83 = true;
         }
         else
+        {
             if (!base.IsEmpty() && str.GetChar(0) != '/')
             {
                 if (base.GetChar(base.Length()) == '/')
@@ -2196,6 +2124,7 @@ void Debugger_DAP::ConvertToDAPDirectory(wxString & str, wxString base, bool rel
 
                 convert_path_83 = true;
             }
+        }
 
         // If can, get 8.3 name for path (Windows only)
         if (convert_path_83 && str.Contains(' ')) // only if has spaces
@@ -2312,7 +2241,7 @@ void Debugger_DAP::ConvertToDAPDirectory(wxString & str, wxString base, bool rel
 
 wxArrayString Debugger_DAP::ParseSearchDirs(cbProject * pProject)
 {
-    // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
+    // NOTE: This is tinyXML as it interacts with the C::B SDK tinyXML code!!!!
     wxArrayString dirs;
     const TiXmlElement * elem = static_cast<const TiXmlElement *>(pProject->GetExtensionsNode());
 
@@ -2382,176 +2311,6 @@ wxArrayString Debugger_DAP::ParseSearchDirs(cbProject * pProject)
 //        {
 //            TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
 //            path->SetAttribute("add", cbU2C(dirs[i]));
-//        }
-//    }
-//}
-
-//dbg_DAP::RemoteDebuggingMap Debugger_DAP::ParseRemoteDebuggingMap(cbProject &project)
-//{
-//    // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
-//
-//    dbg_DAP::RemoteDebuggingMap map;
-//    const TiXmlElement* elem = static_cast<const TiXmlElement*>(project.GetExtensionsNode());
-//    if (elem)
-//    {
-//        const TiXmlElement* conf = elem->FirstChildElement("debugger");
-//        if (conf)
-//        {
-//            const TiXmlElement* rdElem = conf->FirstChildElement("remote_debugging");
-//            while (rdElem)
-//            {
-//                wxString targetName = cbC2U(rdElem->Attribute("target"));
-//                ProjectBuildTarget* bt = project.GetBuildTarget(targetName);
-//
-//                const TiXmlElement* rdOpt = rdElem->FirstChildElement("options");
-//                if (rdOpt)
-//                {
-//                    dbg_DAP::RemoteDebugging rd;
-//
-//                    if (rdOpt->Attribute("conn_type"))
-//                    {
-//                        rd.connType = (dbg_DAP::RemoteDebugging::ConnectionType)atol(rdOpt->Attribute("conn_type"));
-//                    }
-//                    if (rdOpt->Attribute("serial_port"))
-//                    {
-//                        rd.serialPort = cbC2U(rdOpt->Attribute("serial_port"));
-//                    }
-//                    if (rdOpt->Attribute("serial_baud"))
-//                    {
-//                        rd.serialBaud = cbC2U(rdOpt->Attribute("serial_baud"));
-//                    }
-//                    if (rd.serialBaud.empty())
-//                    {
-//                        rd.serialBaud = "115200";
-//                    }
-//                    if (rdOpt->Attribute("ip_address"))
-//                    {
-//                        rd.ip = cbC2U(rdOpt->Attribute("ip_address"));
-//                    }
-//                    if (rdOpt->Attribute("ip_port"))
-//                    {
-//                        rd.ipPort = cbC2U(rdOpt->Attribute("ip_port"));
-//                    }
-//                    if (rdOpt->Attribute("additional_cmds"))
-//                    {
-//                        rd.additionalCmds = cbC2U(rdOpt->Attribute("additional_cmds"));
-//                    }
-//                    if (rdOpt->Attribute("additional_cmds_before"))
-//                    {
-//                        rd.additionalCmdsBefore = cbC2U(rdOpt->Attribute("additional_cmds_before"));
-//                    }
-//                    if (rdOpt->Attribute("skip_ld_path"))
-//                    {
-//                        rd.skipLDpath = cbC2U(rdOpt->Attribute("skip_ld_path")) != "0";
-//                    }
-//                    if (rdOpt->Attribute("extended_remote"))
-//                    {
-//                        rd.extendedRemote = cbC2U(rdOpt->Attribute("extended_remote")) != "0";
-//                    }
-//                    if (rdOpt->Attribute("additional_shell_cmds_after"))
-//                    {
-//                        rd.additionalShellCmdsAfter = cbC2U(rdOpt->Attribute("additional_shell_cmds_after"));
-//                    }
-//                    if (rdOpt->Attribute("additional_shell_cmds_before"))
-//                    {
-//                        rd.additionalShellCmdsBefore = cbC2U(rdOpt->Attribute("additional_shell_cmds_before"));
-//                    }
-//
-//                    map.insert(map.end(), std::make_pair(bt, rd));
-//                }
-//
-//                rdElem = rdElem->NextSiblingElement("remote_debugging");
-//            }
-//        }
-//    }
-//    return map;
-//}
-//
-//void Debugger_DAP::SetRemoteDebuggingMap(cbProject &project, const dbg_DAP::RemoteDebuggingMap &rdMap)
-//{
-//    // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
-//
-//    TiXmlElement* node = GetElementForSaving(project, "remote_debugging");
-//
-//    if (!rdMap.empty())
-//    {
-//        typedef std::map<wxString, const dbg_DAP::RemoteDebugging*> MapTargetNameToRD;
-//        MapTargetNameToRD mapTargetNameToRD;
-//
-//        for (dbg_DAP::RemoteDebuggingMap::const_iterator it = rdMap.begin(); it != rdMap.end(); ++it)
-//        {
-//            wxString targetName = (it->first ? it->first->GetTitle() : wxString());
-//            const dbg_DAP::RemoteDebugging& rd = it->second;
-//            mapTargetNameToRD.emplace(targetName, &rd);
-//        }
-//
-//        for (MapTargetNameToRD::const_iterator it = mapTargetNameToRD.begin();
-//             it != mapTargetNameToRD.end();
-//             ++it)
-//        {
-//            const dbg_DAP::RemoteDebugging& rd = *it->second;
-//
-//            // if no different than defaults, skip it
-//            if (rd.serialPort.IsEmpty() &&
-//                rd.serialBaud == "115200" &&
-//                rd.ip.IsEmpty() &&
-//                rd.ipPort.IsEmpty() &&
-//                !rd.skipLDpath &&
-//                !rd.extendedRemote &&
-//                rd.additionalCmds.IsEmpty() &&
-//                rd.additionalCmdsBefore.IsEmpty() &&
-//                rd.additionalShellCmdsAfter.IsEmpty() &&
-//                rd.additionalShellCmdsBefore.IsEmpty())
-//            {
-//                continue;
-//            }
-//
-//            TiXmlElement* rdnode = node->InsertEndChild(TiXmlElement("remote_debugging"))->ToElement();
-//            if (!it->first.empty())
-//                rdnode->SetAttribute("target", cbU2C(it->first));
-//
-//            TiXmlElement* tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
-//            tgtnode->SetAttribute("conn_type", (int)rd.connType);
-//            if (!rd.serialPort.IsEmpty())
-//            {
-//                tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
-//            }
-//            if (rd.serialBaud != "115200")
-//            {
-//                tgtnode->SetAttribute("serial_baud", cbU2C(rd.serialBaud));
-//            }
-//            if (!rd.ip.IsEmpty())
-//            {
-//                tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
-//            }
-//            if (!rd.ipPort.IsEmpty())
-//            {
-//                tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
-//            }
-//            if (!rd.additionalCmds.IsEmpty())
-//            {
-//                tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
-//            }
-//            if (!rd.additionalCmdsBefore.IsEmpty())
-//            {
-//                tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
-//            }
-//            if (rd.skipLDpath)
-//            {
-//                tgtnode->SetAttribute("skip_ld_path", "1");
-//            }
-//            if (rd.extendedRemote)
-//            {
-//                tgtnode->SetAttribute("extended_remote", "1");
-//            }
-//            if (!rd.additionalShellCmdsAfter.IsEmpty())
-//            {
-//                tgtnode->SetAttribute("additional_shell_cmds_after", cbU2C(rd.additionalShellCmdsAfter));
-//            }
-//            if (!rd.additionalShellCmdsBefore.IsEmpty())
-//            {
-//                tgtnode->SetAttribute("additional_shell_cmds_before", cbU2C(rd.additionalShellCmdsBefore));
-//            }
 //        }
 //    }
 //}
@@ -3031,7 +2790,7 @@ void Debugger_DAP::OnStopped(DAPEvent & event)
         }
         else
         {
-            if (stopped_data->reason.IsSameAs("breakpoint"))
+            if (stopped_data->reason.IsSameAs("exception"))
             {
                 /* reason:
                 * Values: 'exception',
@@ -3077,7 +2836,7 @@ void Debugger_DAP::OnScopes(DAPEvent & event)
             }
             else
             {
-                m_dapClient.GetChildrenVariables(scope.variablesReference);
+                m_dapClient.GetChildrenVariables(scope.variablesReference, dap::EvaluateContext::VARIABLES, 0);
             }
         }
     }
