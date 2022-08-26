@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxScrollingDialog" name="dlgAskGlobalUsrVar">
+		<title>Get global variable</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="lblText">
+					<label>Please enter the value of global variable</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="txtDescription">
+					<style>wxTE_MULTILINE|wxTE_READONLY</style>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtValue" />
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnBrowse">
+							<label>...</label>
+							<size>31,23</size>
+						</object>
+						<flag>wxALL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</resource>
