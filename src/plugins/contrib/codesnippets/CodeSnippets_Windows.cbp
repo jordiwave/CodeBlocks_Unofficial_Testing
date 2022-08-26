@@ -24,7 +24,7 @@
 					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\codesnippets.zip resources/manifest.xml" />
 
 					<!-- copy PNG files  -->
-					<Add after="cmd /c copy .\resources\*.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets\ > nul" />
+					<Add after="cmd /c copy .\resources\*.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\codesnippets\ >nul" />
 
 					<Mode after="always" />
 				</ExtraCommands>

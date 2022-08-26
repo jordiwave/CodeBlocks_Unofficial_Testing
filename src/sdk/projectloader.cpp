@@ -960,30 +960,39 @@ void ProjectLoader::DoCompilerOptions(TiXmlElement * parentNode, ProjectBuildTar
 
     while (child)
     {
-        wxString option = cbC2U(child->Attribute("option"));
-        wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
-
-        if (!option.IsEmpty())
+        bool platformOkay = true;
+        if (child->Attribute("platforms"))
         {
-            if (target)
-            {
-                target->AddCompilerOption(option);
-            }
-            else
-            {
-                m_pProject->AddCompilerOption(option);
-            }
+            platformOkay = PlatformValid(child->Attribute("platforms"));
         }
 
-        if (!dir.IsEmpty())
+        if (platformOkay)
         {
-            if (target)
+            wxString option = cbC2U(child->Attribute("option"));
+            wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
+
+            if (!option.IsEmpty())
             {
-                target->AddIncludeDir(dir);
+                if (target)
+                {
+                    target->AddCompilerOption(option);
+                }
+                else
+                {
+                    m_pProject->AddCompilerOption(option);
+                }
             }
-            else
+
+            if (!dir.IsEmpty())
             {
-                m_pProject->AddIncludeDir(dir);
+                if (target)
+                {
+                    target->AddIncludeDir(dir);
+                }
+                else
+                {
+                    m_pProject->AddIncludeDir(dir);
+                }
             }
         }
 
@@ -1004,30 +1013,39 @@ void ProjectLoader::DoResourceCompilerOptions(TiXmlElement * parentNode, Project
 
     while (child)
     {
-        wxString option = cbC2U(child->Attribute("option"));
-        wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
-
-        if (!option.IsEmpty())
+        bool platformOkay = true;
+        if (child->Attribute("platforms"))
         {
-            if (target)
-            {
-                target->AddResourceCompilerOption(option);
-            }
-            else
-            {
-                m_pProject->AddResourceCompilerOption(option);
-            }
+            platformOkay = PlatformValid(child->Attribute("platforms"));
         }
 
-        if (!dir.IsEmpty())
+        if (platformOkay)
         {
-            if (target)
+            wxString option = cbC2U(child->Attribute("option"));
+            wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
+
+            if (!option.IsEmpty())
             {
-                target->AddResourceIncludeDir(dir);
+                if (target)
+                {
+                    target->AddResourceCompilerOption(option);
+                }
+                else
+                {
+                    m_pProject->AddResourceCompilerOption(option);
+                }
             }
-            else
+
+            if (!dir.IsEmpty())
             {
-                m_pProject->AddResourceIncludeDir(dir);
+                if (target)
+                {
+                    target->AddResourceIncludeDir(dir);
+                }
+                else
+                {
+                    m_pProject->AddResourceIncludeDir(dir);
+                }
             }
         }
 
@@ -1048,43 +1066,52 @@ void ProjectLoader::DoLinkerOptions(TiXmlElement * parentNode, ProjectBuildTarge
 
     while (child)
     {
-        wxString option = cbC2U(child->Attribute("option"));
-        wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
-        wxString lib = UnixFilename(cbC2U(child->Attribute("library")));
-
-        if (!option.IsEmpty())
+        bool platformOkay = true;
+        if (child->Attribute("platforms"))
         {
-            if (target)
-            {
-                target->AddLinkerOption(option);
-            }
-            else
-            {
-                m_pProject->AddLinkerOption(option);
-            }
+            platformOkay = PlatformValid(child->Attribute("platforms"));
         }
 
-        if (!lib.IsEmpty())
+        if (platformOkay)
         {
-            if (target)
-            {
-                target->AddLinkLib(lib);
-            }
-            else
-            {
-                m_pProject->AddLinkLib(lib);
-            }
-        }
+            wxString option = cbC2U(child->Attribute("option"));
+            wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
+            wxString lib = UnixFilename(cbC2U(child->Attribute("library")));
 
-        if (!dir.IsEmpty())
-        {
-            if (target)
+            if (!option.IsEmpty())
             {
-                target->AddLibDir(dir);
+                if (target)
+                {
+                    target->AddLinkerOption(option);
+                }
+                else
+                {
+                    m_pProject->AddLinkerOption(option);
+                }
             }
-            else
+
+            if (!lib.IsEmpty())
             {
-                m_pProject->AddLibDir(dir);
+                if (target)
+                {
+                    target->AddLinkLib(lib);
+                }
+                else
+                {
+                    m_pProject->AddLinkLib(lib);
+                }
+            }
+
+            if (!dir.IsEmpty())
+            {
+                if (target)
+                {
+                    target->AddLibDir(dir);
+                }
+                else
+                {
+                    m_pProject->AddLibDir(dir);
+                }
             }
         }
 
@@ -1139,17 +1166,26 @@ void ProjectLoader::DoIncludesOptions(TiXmlElement * parentNode, ProjectBuildTar
 
     while (child)
     {
-        wxString option = UnixFilename(cbC2U(child->Attribute("option")));
-
-        if (!option.IsEmpty())
+        bool platformOkay = true;
+        if (child->Attribute("platforms"))
         {
-            if (target)
+            platformOkay = PlatformValid(child->Attribute("platforms"));
+        }
+
+        if (platformOkay)
+        {
+            wxString option = UnixFilename(cbC2U(child->Attribute("option")));
+
+            if (!option.IsEmpty())
             {
-                target->AddIncludeDir(option);
-            }
-            else
-            {
-                m_pProject->AddIncludeDir(option);
+                if (target)
+                {
+                    target->AddIncludeDir(option);
+                }
+                else
+                {
+                    m_pProject->AddIncludeDir(option);
+                }
             }
         }
 
@@ -1170,23 +1206,33 @@ void ProjectLoader::DoLibsOptions(TiXmlElement * parentNode, ProjectBuildTarget 
 
     while (child)
     {
-        wxString option = UnixFilename(cbC2U(child->Attribute("option")));
-
-        if (!option.IsEmpty())
+        bool platformOkay = true;
+        if (child->Attribute("platforms"))
         {
-            if (target)
+            platformOkay = PlatformValid(child->Attribute("platforms"));
+        }
+
+        if (platformOkay)
+        {
+            wxString option = UnixFilename(cbC2U(child->Attribute("option")));
+
+            if (!option.IsEmpty())
             {
-                target->AddLibDir(option);
-            }
-            else
-            {
-                m_pProject->AddLibDir(option);
+                if (target)
+                {
+                    target->AddLibDir(option);
+                }
+                else
+                {
+                    m_pProject->AddLibDir(option);
+                }
             }
         }
 
         child = child->NextSiblingElement("Add");
     }
 }
+
 
 void ProjectLoader::DoExtraCommands(TiXmlElement * parentNode, ProjectBuildTarget * target)
 {
@@ -1213,27 +1259,35 @@ void ProjectLoader::DoExtraCommands(TiXmlElement * parentNode, ProjectBuildTarge
 
         while (child)
         {
-            wxString before;
-            wxString after;
-
-            if (child->Attribute("before"))
+            bool platformOkay = true;
+            if (child->Attribute("platforms"))
             {
-                before = cbC2U(child->Attribute("before"));
+                platformOkay = PlatformValid(child->Attribute("platforms"));
             }
 
-            if (child->Attribute("after"))
+            if (platformOkay)
             {
-                after = cbC2U(child->Attribute("after"));
-            }
+                wxString before;
+                wxString after;
+                if (child->Attribute("before"))
+                {
+                    before = cbC2U(child->Attribute("before"));
+                }
 
-            if (!before.IsEmpty())
-            {
-                base->AddCommandsBeforeBuild(before);
-            }
+                if (child->Attribute("after"))
+                {
+                    after = cbC2U(child->Attribute("after"));
+                }
 
-            if (!after.IsEmpty())
-            {
-                base->AddCommandsAfterBuild(after);
+                if (!before.IsEmpty())
+                {
+                    base->AddCommandsBeforeBuild(before);
+                }
+
+                if (!after.IsEmpty())
+                {
+                    base->AddCommandsAfterBuild(after);
+                }
             }
 
             child = child->NextSiblingElement("Add");
@@ -1268,27 +1322,36 @@ void ProjectLoader::DoExtraCommandsClean(TiXmlElement * parentNode, ProjectBuild
 
         while (child)
         {
-            wxString before;
-            wxString after;
-
-            if (child->Attribute("before"))
+            bool platformOkay = true;
+            if (child->Attribute("platforms"))
             {
-                before = cbC2U(child->Attribute("before"));
+                platformOkay = PlatformValid(child->Attribute("platforms"));
             }
 
-            if (child->Attribute("after"))
+            if (platformOkay)
             {
-                after = cbC2U(child->Attribute("after"));
-            }
+                wxString before;
+                wxString after;
 
-            if (!before.IsEmpty())
-            {
-                base->AddCommandsBeforeClean(before);
-            }
+                if (child->Attribute("before"))
+                {
+                    before = cbC2U(child->Attribute("before"));
+                }
 
-            if (!after.IsEmpty())
-            {
-                base->AddCommandsAfterClean(after);
+                if (child->Attribute("after"))
+                {
+                    after = cbC2U(child->Attribute("after"));
+                }
+
+                if (!before.IsEmpty())
+                {
+                    base->AddCommandsBeforeClean(before);
+                }
+
+                if (!after.IsEmpty())
+                {
+                    base->AddCommandsAfterClean(after);
+                }
             }
 
             child = child->NextSiblingElement("Add");
@@ -1309,16 +1372,25 @@ void ProjectLoader::DoExtraCommandsInstall(TiXmlElement * parentNode, ProjectBui
 
         while (child)
         {
-            wxString step;
-
-            if (child->Attribute("step"))
+            bool platformOkay = true;
+            if (child->Attribute("platforms"))
             {
-                step = cbC2U(child->Attribute("step"));
+                platformOkay = PlatformValid(child->Attribute("platforms"));
             }
 
-            if (!step.IsEmpty())
+            if (platformOkay)
             {
-                base->AddCommandsInstall(step);
+                wxString step;
+
+                if (child->Attribute("step"))
+                {
+                    step = cbC2U(child->Attribute("step"));
+                }
+
+                if (!step.IsEmpty())
+                {
+                    base->AddCommandsInstall(step);
+                }
             }
 
             child = child->NextSiblingElement("Add");
@@ -1343,12 +1415,21 @@ void ProjectLoader::DoEnvironment(TiXmlElement * parentNode, CompileOptionsBase 
 
         while (child)
         {
-            wxString name  = cbC2U(child->Attribute("name"));
-            wxString value = cbC2U(child->Attribute("value"));
-
-            if (!name.IsEmpty())
+            bool platformOkay = true;
+            if (child->Attribute("platforms"))
             {
-                base->SetVar(name, UnixFilename(value));
+                platformOkay = PlatformValid(child->Attribute("platforms"));
+            }
+
+            if (platformOkay)
+            {
+                wxString name  = cbC2U(child->Attribute("name"));
+                wxString value = cbC2U(child->Attribute("value"));
+
+                if (!name.IsEmpty())
+                {
+                    base->SetVar(name, UnixFilename(value));
+                }
             }
 
             child = child->NextSiblingElement("Variable");
@@ -1356,6 +1437,26 @@ void ProjectLoader::DoEnvironment(TiXmlElement * parentNode, CompileOptionsBase 
 
         node = node->NextSiblingElement("Environment");
     }
+}
+
+bool ProjectLoader::PlatformValid(const wxString & platforms)
+{
+    int platformsdecoded = GetPlatformsFromString(cbC2U(platforms));
+    if (platform::windows)
+    {
+        return ((platformsdecoded & spWindows) != 0);
+    }
+
+    if (platform::Unix)
+    {
+        return ((platformsdecoded & spUnix) != 0);
+    }
+
+    if (platform::macosx)
+    {
+        return ((platformsdecoded & spMac) != 0);
+    }
+    return false;
 }
 
 namespace
@@ -1497,31 +1598,40 @@ void ProjectLoader::DoUnits(const TiXmlElement * parentNode)
 
     while (unitsGlob)
     {
-        const wxString directory = cbC2U(unitsGlob->Attribute("directory"));
-        const wxString wildCard = cbC2U(unitsGlob->Attribute("wildcard"));
-        int recursive = 1;
-        unitsGlob->QueryIntAttribute("recursive", &recursive);
-
-        if (!directory.IsEmpty())
+        bool platformOkay = true;
+        if (unitsGlob->Attribute("platforms"))
         {
-            const bool isRecursive = (recursive) ? true : false;
-            unitsGlobs.push_back(cbProject::Glob(directory, wildCard, isRecursive));
-            std::vector<wxString> files = filesInDir(directory, wildCard, isRecursive, m_pProject->GetBasePath());
+            platformOkay = PlatformValid(unitsGlob->Attribute("platforms"));
+        }
 
-            for (std::size_t index = 0; index < files.size(); ++index)
+        if (platformOkay)
+        {
+            const wxString directory = cbC2U(unitsGlob->Attribute("directory"));
+            const wxString wildCard = cbC2U(unitsGlob->Attribute("wildcard"));
+            int recursive = 1;
+            unitsGlob->QueryIntAttribute("recursive", &recursive);
+
+            if (!directory.IsEmpty())
             {
-                const wxString filename = files[index];
-                ProjectFile * file = m_pProject->AddFile(-1, UnixFilename(filename));
+                const bool isRecursive = (recursive) ? true : false;
+                unitsGlobs.push_back(cbProject::Glob(directory, wildCard, isRecursive));
+                std::vector<wxString> files = filesInDir(directory, wildCard, isRecursive, m_pProject->GetBasePath());
 
-                if (!file)
+                for (std::size_t index = 0; index < files.size(); ++index)
                 {
-                    Manager::Get()->GetLogManager()->DebugLog(_T("Can't load file ") + filename);
-                }
-                else
-                {
-                    ++count;
-                    const TiXmlElement dummyUnitWithoutOptions("Unit");
-                    DoUnitOptions(&dummyUnitWithoutOptions, file);
+                    const wxString filename = files[index];
+                    ProjectFile * file = m_pProject->AddFile(-1, UnixFilename(filename));
+
+                    if (!file)
+                    {
+                        Manager::Get()->GetLogManager()->DebugLog(_T("Can't load file ") + filename);
+                    }
+                    else
+                    {
+                        ++count;
+                        const TiXmlElement dummyUnitWithoutOptions("Unit");
+                        DoUnitOptions(&dummyUnitWithoutOptions, file);
+                    }
                 }
             }
         }
@@ -1534,20 +1644,29 @@ void ProjectLoader::DoUnits(const TiXmlElement * parentNode)
 
     while (unit)
     {
-        const wxString filename = cbC2U(unit->Attribute("filename"));
-
-        if (!filename.IsEmpty())
+        bool platformOkay = true;
+        if (unit->Attribute("platforms"))
         {
-            ProjectFile * file = m_pProject->AddFile(-1, UnixFilename(filename));
+            platformOkay = PlatformValid(unit->Attribute("platforms"));
+        }
 
-            if (!file)
+        if (platformOkay)
+        {
+            const wxString filename = cbC2U(unit->Attribute("filename"));
+
+            if (!filename.IsEmpty())
             {
-                Manager::Get()->GetLogManager()->DebugLog(_T("Can't load file ") + filename);
-            }
-            else
-            {
-                ++count;
-                DoUnitOptions(unit, file);
+                ProjectFile * file = m_pProject->AddFile(-1, UnixFilename(filename));
+
+                if (!file)
+                {
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Can't load file ") + filename);
+                }
+                else
+                {
+                    ++count;
+                    DoUnitOptions(unit, file);
+                }
             }
         }
 

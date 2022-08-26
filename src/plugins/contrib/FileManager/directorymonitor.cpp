@@ -45,6 +45,7 @@ wxDirectoryMonitor::wxDirectoryMonitor(wxEvtHandler * parent, const wxArrayStrin
     m_parent = parent;
     m_uri = uri;
     m_eventfilter = eventfilter;
+
     Bind(wxEVT_TIMER, &wxDirectoryMonitor::OnTimer, this);
 }
 
@@ -65,6 +66,7 @@ void wxDirectoryMonitor::OnMonitorEvent(wxDirectoryMonitorEvent & e)
 void wxDirectoryMonitor::Start()
 {
     Stop();
+
     m_timer = new wxTimer(this);
     m_timer->Start(FILE_CHECK_INTERVAL, true);
 }
@@ -75,7 +77,6 @@ void wxDirectoryMonitor::Stop()
     {
         m_timer->Stop();
     }
-
     wxDELETE(m_timer);
 }
 
@@ -88,15 +89,14 @@ void wxDirectoryMonitor::Clear()
 void wxDirectoryMonitor::ChangePaths(const wxArrayString & uri)
 {
     m_uri = uri;
-    //    m_monitorthread->UpdatePaths(uri);
+//    m_monitorthread->UpdatePaths(uri);
 }
 
-size_t wxDirectoryMonitor::GetFileSize(const wxFileName & filename)
+size_t wxDirectoryMonitor::GetFileSize(const wxFileName& filename)
 {
     struct stat b;
     wxString file_name = filename.GetFullPath();
-    const char * cfile = file_name.mb_str(wxConvUTF8).data();
-
+    const char* cfile = file_name.mb_str(wxConvUTF8).data();
     if (::stat(cfile, &b) == 0)
     {
         return b.st_size;
@@ -107,34 +107,32 @@ size_t wxDirectoryMonitor::GetFileSize(const wxFileName & filename)
         return 0;
     }
 }
-time_t wxDirectoryMonitor::GetFileModificationTime(const wxFileName & filename)
+time_t wxDirectoryMonitor::GetFileModificationTime(const wxFileName& filename)
 {
     wxString file = filename.GetFullPath();
     struct stat buff;
     const wxCharBuffer cname = file.mb_str(wxConvUTF8);
-
     if (stat(cname.data(), &buff) < 0)
     {
         return 0;
     }
-
     return buff.st_mtime;
 }
 
-void wxDirectoryMonitor::OnTimer(wxTimerEvent & event)
+void wxDirectoryMonitor::OnTimer(wxTimerEvent& event)
 {
     std::set<wxString> nonExistingFiles;
-    std::for_each(m_files.begin(), m_files.end(), [&](const std::pair<wxString, wxDirectoryMonitor::File> & p)
+    std::for_each(m_files.begin(), m_files.end(), [&](const std::pair<wxString, wxDirectoryMonitor::File>& p)
     {
-        const File & f = p.second;
-        const wxFileName & fn = f.filename;
-
+        const File& f = p.second;
+        const wxFileName& fn = f.filename;
         if (!fn.Exists())
         {
             // fire file not found event
             //clFileSystemEvent evt(wxEVT_FILE_NOT_FOUND);
             //evt.SetPath(fn.GetFullPath());
             //GetOwner()->AddPendingEvent(evt);
+
             // add the missing file to a set
             nonExistingFiles.insert(fn.GetFullPath());
         }
@@ -153,7 +151,6 @@ void wxDirectoryMonitor::OnTimer(wxTimerEvent & event)
                 wxDirectoryMonitorEvent e(fn.GetFullPath(), MONITOR_FILE_CHANGED, fn.GetName());
                 m_parent->AddPendingEvent(e);
             }
-
 #ifdef __WXMSW__
             File updatdFile = f;
             updatdFile.file_size = curr_value;
@@ -165,11 +162,9 @@ void wxDirectoryMonitor::OnTimer(wxTimerEvent & event)
             m_files[fn.GetFullPath()] = updatdFile;
         }
     });
+
     // Remove the non existing files
-    std::for_each(nonExistingFiles.begin(), nonExistingFiles.end(), [&](const wxString & fn)
-    {
-        m_files.erase(fn);
-    });
+    std::for_each(nonExistingFiles.begin(), nonExistingFiles.end(), [&](const wxString& fn) { m_files.erase(fn); });
 
     if (m_timer)
     {

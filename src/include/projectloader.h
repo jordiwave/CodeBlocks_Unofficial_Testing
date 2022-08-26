@@ -98,6 +98,8 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
 
         void DoGlobalVariables(const TiXmlElement * parentNode);
     private:
+        bool PlatformValid(const wxString & platforms);
+
         void ConvertVersion_Pre_1_1();
         void ConvertLibraries(CompileTargetBase * object);
 

@@ -48,6 +48,7 @@
 #include "sdk_events.h"
 #include "splashscreen.h"
 #include "uservarmanager.h"
+#include "uservardlgs.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
     #include <sys/param.h>
@@ -329,6 +330,13 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
         wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("profile"),               CMD_ENTRY("synonym to personality"),
         wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
     },
+    // Command line for global user variables
+    { wxCMD_LINE_SWITCH, CMD_ENTRY("S"),  CMD_ENTRY("set"),                   CMD_ENTRY("specify the active global user variable set"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, CMD_ENTRY("D"),  CMD_ENTRY(""),                      CMD_ENTRY("set value for global variable. For example: -D [set.]name[.member]=value to set the optional \"member\" value of variable \"name\" in the optional \"set\" to \"value\""),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    // Build command lines
+
     {
         wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("rebuild"),               CMD_ENTRY("clean and then build the project/workspace"),
         wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
@@ -475,23 +483,18 @@ bool CodeBlocksApp::LoadConfig()
         }
     }
 
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("app"));
-    wxString data(wxT(APP_PREFIX));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("app");
+    wxString data(APP_PREFIX);
 
-    if (platform::windows)
+    if (platform::macosx)
     {
-        data.assign(GetAppPath());
-    }
-    else
-        if (platform::macosx)
-        {
-            data.assign(GetResourcesDir());                 // CodeBlocks.app/Contents/Resources
+        data.assign(GetResourcesDir());                 // CodeBlocks.app/Contents/Resources
 
-            if (!data.Contains(wxString(_T("/Resources")))) // not a bundle, use relative path
-            {
-                data = GetAppPath() + _T("/..");
-            }
+        if (!data.Contains(wxString("/Resources"))) // not a bundle, use relative path
+        {
+            data = GetAppPath() + "/..";
         }
+    }
 
     if (data.IsEmpty())
     {
@@ -499,11 +502,7 @@ bool CodeBlocksApp::LoadConfig()
         data.Replace("/bin", "");
     }
 
-    if (!m_Prefix.IsEmpty())        // --prefix command line switch overrides builtin value
-    {
-        data = m_Prefix;
-    }
-    else                            // also, check for environment
+    if (data.IsEmpty())
     {
         wxString env;
         wxGetEnv("CODEBLOCKS_DATA_DIR", &env);
@@ -526,15 +525,17 @@ bool CodeBlocksApp::LoadConfig()
     }
 
     data = filename.GetFullPath();
-    wxDir dirFileName(data);
 
-    if (dirFileName.HasSubDirs("CodeBlocks"))
+    if (wxDir::Exists(wxString::Format("%s%cCodeBlocks", data, wxFILE_SEP_PATH)))
     {
         data.append(wxString::Format("%cCodeBlocks", wxFILE_SEP_PATH));
     }
     else
     {
-        data.append(wxString::Format("%ccodeblocks", wxFILE_SEP_PATH));
+        if (wxDir::Exists(wxString::Format("%s%ccodeblocks", data, wxFILE_SEP_PATH)))
+        {
+            data.append(wxString::Format("%ccodeblocks", wxFILE_SEP_PATH));
+        }
     }
 
     cfg->Write("data_path", data);
@@ -911,10 +912,6 @@ bool CodeBlocksApp::OnInit()
                                       scalingFactor, actualScalingFactor));
         }
 
-        // NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START -----
-        // NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START -----
-        // NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START -----
-
         if (m_Batch)
         {
             if (!m_MasterPathParameterOrBackup.empty())
@@ -996,10 +993,11 @@ bool CodeBlocksApp::OnInit()
                 }
             }
         }
+        else
+        {
+            Manager::Get()->GetUserVariableManager()->SetUI(std::unique_ptr<UserVarManagerUI>(new UserVarManagerGUI()));
+        }
 
-        // NEW CODE END  -----  NEW CODE END   -----  NEW CODE END  -----  NEW CODE END  -----  NEW CODE END  -----
-        // NEW CODE END  -----  NEW CODE END   -----  NEW CODE END  -----  NEW CODE END  -----  NEW CODE END  -----
-        // NEW CODE END  -----  NEW CODE END   -----  NEW CODE END  -----  NEW CODE END  -----  NEW CODE END  -----
         // plugins loaded -> check command line arguments again
         delete wxMessageOutput::Set(new wxMessageOutputBest); // warn about unknown options
 
@@ -1487,7 +1485,7 @@ void CodeBlocksApp::OnTBIconLeftDown(wxTaskBarIconEvent & event)
 
 wxString CodeBlocksApp::GetAppPath() const
 {
-    wxString base;
+    wxString base = wxEmptyString;
 #ifdef __WXMSW__
     wxChar name[MAX_PATH] = {0};
     GetModuleFileName(0L, name, MAX_PATH);
@@ -1495,20 +1493,18 @@ wxString CodeBlocksApp::GetAppPath() const
     base = fname.GetPath(wxPATH_GET_VOLUME);
 #else
 
-    if (!m_Prefix.IsEmpty())
-    {
-        return m_Prefix;
-    }
-
     base = wxStandardPaths::Get().GetExecutablePath();
     base = wxFileName(base).GetPath();
 
-    if (base.empty())
-    {
-        base = ".";
-    }
 
 #endif
+    if (base.empty())
+    {
+        if (!m_Prefix.IsEmpty())
+        {
+            return m_Prefix;
+        }
+    }
     return base;
 }
 
@@ -1549,6 +1545,9 @@ int CodeBlocksApp::ParseCmdLine(MainFrame * handlerFrame, const wxString & CmdLi
         {
             m_HasProject = false;
             m_HasWorkSpace = false;
+
+            Manager::Get()->GetUserVariableManager()->ParseCommandLine(parser);
+
             int count = parser.GetParamCount();
             parser.Found(_T("file"), &m_AutoFile);
 
@@ -1729,7 +1728,7 @@ bool CodeBlocksApp::SetActiveVariableSet(wxString & varset)
 {
     UserVariableManager * userMgr = Manager::Get()->GetUserVariableManager();
 
-    if (userMgr->SetActiveVariableSet(varset))
+    if (userMgr->SetActiveSetName(varset))
     {
         return true;
     }
@@ -1744,7 +1743,7 @@ bool CodeBlocksApp::SetActiveVariableSet(wxString & varset)
 
 wxString CodeBlocksApp::GetActiveVariableSet()
 {
-    return Manager::Get()->GetUserVariableManager()->GetActiveVariableSet();
+    return Manager::Get()->GetUserVariableManager()->GetActiveSetName();
 }
 
 void CodeBlocksApp::LoadDelayedFiles(MainFrame * const frame)

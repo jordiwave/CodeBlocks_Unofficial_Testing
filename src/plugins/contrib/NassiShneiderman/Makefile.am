@@ -100,7 +100,6 @@ noinst_HEADERS = \
 			NassiPlugin.h \
 			NassiView.h \
 			parseactions.h \
-			parserules.h \
 			PasteTask.h \
 			RedHatchDrawlet.h \
 			RedLineDrawlet.h \

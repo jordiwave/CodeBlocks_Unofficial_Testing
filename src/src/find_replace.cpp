@@ -1934,7 +1934,7 @@ int FindReplace::FindInFiles(cbFindReplaceData * data)
         LogSearch(_T(""), -1, msg);
         m_pSearchLog->FocusEntry(oldcount);
 
-        if (!isLogPaneVisible && !m_pSearchLog->IsVisible() && !automaticallyShowPanel)  // Only use a message box if the log panel is not visible and we are not allowed to open it
+        if (!isLogPaneVisible && !m_pSearchLog->IsVisible() && !automaticallyShowPanel)   // Only use a message box if the log panel is not visible and we are not allowed to open it
         {
             cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
         }

@@ -44,8 +44,8 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
         wxString GetInitialCommands();
 
     private:
-        wxString SearchForDebuggerExecutable(wxString pathParam, const wxString & exeNameParam);
-        wxString DetectDebuggerExecutable(const wxString & exeNameParam);
+        wxString SearchForDebuggerExecutable(wxString pathParam, const wxString &exeNameParam);
+        wxString DetectDebuggerExecutable(const wxString &exeNameParam);
 
 };
 

@@ -26,7 +26,7 @@ struct ProjectVarView
     };
 
     ProjectVarView(const ProjectGlobalVariableEntry & entry, bool used) : m_inProject(true), m_used(used), m_name(entry.name),
-        m_desc(entry.description), m_def(entry.defaultValue)
+                                                                          m_desc(entry.description), m_def(entry.defaultValue)
     {
     }
 

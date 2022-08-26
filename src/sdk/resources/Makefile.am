@@ -14,8 +14,6 @@ resources_forZIP = \
 			findreplacedlg.xrc \
 			generic_multiline_notes.xrc \
 			generic_multi_select.xrc \
-			get_global_uservar.xrc \
-			global_uservars.xrc \
 			new_from_template.xrc \
 			plugins_configuration.xrc \
 			projectfile_options.xrc \
@@ -91,6 +89,7 @@ dist_noinst_DATA = \
 
 pkgdata_DATA = \
 			manager_resources.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 

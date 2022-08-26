@@ -139,6 +139,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow * parent, cbProject * project)
     // scripts
     BuildScriptsTree();
     BuildGlobalVariablesView();
+
     // make sure everything is laid out properly
     // before adding panels from plugins
     // we don't want the dialog to become huge ;)
@@ -187,11 +188,9 @@ void ProjectOptionsDlg::OnHandleGlobarVariablesEditDone(wxDataViewEvent & evt)
 {
     wxDataViewListCtrl * listCtrl = XRCCTRL(*this, "lstGlobalVars", wxDataViewListCtrl);
     wxDataViewItem item = evt.GetItem();
-
     if (item.IsOk())
     {
         wxUIntPtr indx = listCtrl->GetItemData(item);
-
         if (indx >= 0 && indx < m_VarList.size())
         {
             ProjectVarView & dataItem = m_VarList[indx];
@@ -264,7 +263,6 @@ void ProjectOptionsDlg::OnHandleGlobarVariablesEditStarted(wxDataViewEvent & evt
                         cbMessageBox(_("The variable has to be stored in the project to add description or default value.\nPlease check the \"Stored\" column to edit"), _("Please select \"Stored\" first."), wxICON_EXCLAMATION | wxOK);
                         evt.Veto();
                     }
-
                     break;
             }
         }
@@ -284,21 +282,33 @@ void ProjectOptionsDlg::BuildGlobalVariablesView()
 
     XRCCTRL(*this, "lblWarnProjectNotSaved", wxStaticText)->Show(m_Project->GetModified());
     UserVariableManager * mgr = Manager::Get()->GetUserVariableManager();
-    wxDataViewListCtrl * listCtrl = XRCCTRL(*this, "lstGlobalVars", wxDataViewListCtrl);
-#if wxCHECK_VERSION(3,1,0)
+
+    wxDataViewListCtrl* listCtrl = new wxDataViewListCtrl(this, wxID_ANY);
+    wxXmlResource::Get()->AttachUnknownControl("lstGlobalVars", listCtrl, this);  // wxDataViewListCtrl XRC handler is only wx > 3.1
+
     wxDataViewColumn * usedInPrjCol =    listCtrl->AppendToggleColumn("U", wxDATAVIEW_CELL_INERT);
     wxDataViewColumn * storedInPrjCol =  listCtrl->AppendToggleColumn("S", wxDATAVIEW_CELL_ACTIVATABLE);
     wxDataViewColumn * nameCol =         listCtrl->AppendTextColumn("Name", wxDATAVIEW_CELL_INERT);
     wxDataViewColumn * currentValCol =   listCtrl->AppendTextColumn("Current value", wxDATAVIEW_CELL_INERT);
     wxDataViewColumn * defValueCol =     listCtrl->AppendTextColumn("Default value", wxDATAVIEW_CELL_EDITABLE);
     wxDataViewColumn * descrCol =        listCtrl->AppendTextColumn("Description", wxDATAVIEW_CELL_EDITABLE);
+
+#if wxCHECK_VERSION(3, 1, 0)
     usedInPrjCol->SetWidth(listCtrl->FromDIP(20));
     storedInPrjCol->SetWidth(listCtrl->FromDIP(20));
     nameCol->SetWidth(listCtrl->FromDIP(100));
     defValueCol->SetWidth(listCtrl->FromDIP(100));
     currentValCol->SetWidth(listCtrl->FromDIP(100));
     descrCol->SetWidth(listCtrl->FromDIP(200));
+#else
+    usedInPrjCol->SetWidth(20);
+    storedInPrjCol->SetWidth(20);
+    nameCol->SetWidth(100);
+    defValueCol->SetWidth(100);
+    currentValCol->SetWidth(100);
+    descrCol->SetWidth(200);
 #endif
+
     std::vector<ProjectGlobalVariableEntry> currentVariables = m_Project->GetGlobalVariables();
     std::set<wxString> vars;
     mgr->CollectVariableNames(buffer, vars);
@@ -324,6 +334,7 @@ void ProjectOptionsDlg::BuildGlobalVariablesView()
     {
         const ProjectVarView & view = m_VarList[i];
         const wxString varName = view.m_name;
+
         wxVector<wxVariant> data;
         data.push_back(wxVariant(view.m_used));
         data.push_back(wxVariant(view.m_inProject));
@@ -331,7 +342,7 @@ void ProjectOptionsDlg::BuildGlobalVariablesView()
 
         if (mgr->Exists(varName))
         {
-            data.push_back(wxVariant(mgr->Replace(varName)));
+            data.push_back( wxVariant(mgr->Replace(varName, nullptr)));
         }
         else
         {
@@ -340,6 +351,7 @@ void ProjectOptionsDlg::BuildGlobalVariablesView()
 
         data.push_back(wxVariant(view.m_def));
         data.push_back(wxVariant(view.m_desc));
+
         listCtrl->AppendItem(data, wxUIntPtr(i));
     }
 }
@@ -1745,7 +1757,6 @@ void ProjectOptionsDlg::EndModal(int retCode)
         }
 
         std::vector<ProjectGlobalVariableEntry> newList;
-
         for (const ProjectVarView & var :  m_VarList)
         {
             if (var.m_inProject)

@@ -2749,12 +2749,6 @@
 		<Unit filename="sdk/resources/generic_multiline_notes.xrc">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/resources/get_global_uservar.xrc">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/resources/global_uservars.xrc">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_A68k.sample">
 			<Option target="scintilla" />
 		</Unit>
@@ -4130,6 +4124,9 @@
 		<Unit filename="src/resources/ask_assocs.xrc">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/resources/ask_global_uservar.xrc">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/resources/debugger_menu.xrc">
 			<Option target="src" />
 		</Unit>
@@ -4155,6 +4152,12 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/env_settings.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/get_global_uservar.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/global_uservars.xrc">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/ia64.manifest">
@@ -4234,6 +4237,12 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/threadsdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/uservardlgs.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/uservardlgs.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/virtualbuildtargetsdlg.cpp">

@@ -206,12 +206,7 @@ wxArrayString HunspellInterface::GetSuggestions(const wxString & strMisspelledWo
 
         if (misspelledWordCharBuffer.data() != NULL)
         {
-#if 1
             int ns = Hunspell_suggest(m_pHunhandle, &wlst, misspelledWordCharBuffer);
-#else
-            int ns = m_pHunspell->suggest(&wlst, misspelledWordCharBuffer);
-#endif
-
             for (int i = 0; i < ns; i++)
             {
                 wxReturnArray.Add(ConvertFromUnicode(wlst[i]));
@@ -482,8 +477,6 @@ wxString HunspellInterface::GetCharacterEncoding()
         {
             wxEncoding = wxString::FromUTF8(pEncoding);
         }
-
-        // wxString encoding(wxConvUTF8.cMB2WC(Hunspell_get_dic_encoding(m_pHunhandle)), *wxConvCurrent);
     }
 
     return wxEncoding;
