@@ -961,6 +961,7 @@ void ProjectLoader::DoCompilerOptions(TiXmlElement * parentNode, ProjectBuildTar
     while (child)
     {
         bool platformOkay = true;
+
         if (child->Attribute("platforms"))
         {
             platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1014,6 +1015,7 @@ void ProjectLoader::DoResourceCompilerOptions(TiXmlElement * parentNode, Project
     while (child)
     {
         bool platformOkay = true;
+
         if (child->Attribute("platforms"))
         {
             platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1067,6 +1069,7 @@ void ProjectLoader::DoLinkerOptions(TiXmlElement * parentNode, ProjectBuildTarge
     while (child)
     {
         bool platformOkay = true;
+
         if (child->Attribute("platforms"))
         {
             platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1167,6 +1170,7 @@ void ProjectLoader::DoIncludesOptions(TiXmlElement * parentNode, ProjectBuildTar
     while (child)
     {
         bool platformOkay = true;
+
         if (child->Attribute("platforms"))
         {
             platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1207,6 +1211,7 @@ void ProjectLoader::DoLibsOptions(TiXmlElement * parentNode, ProjectBuildTarget 
     while (child)
     {
         bool platformOkay = true;
+
         if (child->Attribute("platforms"))
         {
             platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1260,6 +1265,7 @@ void ProjectLoader::DoExtraCommands(TiXmlElement * parentNode, ProjectBuildTarge
         while (child)
         {
             bool platformOkay = true;
+
             if (child->Attribute("platforms"))
             {
                 platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1269,6 +1275,7 @@ void ProjectLoader::DoExtraCommands(TiXmlElement * parentNode, ProjectBuildTarge
             {
                 wxString before;
                 wxString after;
+
                 if (child->Attribute("before"))
                 {
                     before = cbC2U(child->Attribute("before"));
@@ -1323,6 +1330,7 @@ void ProjectLoader::DoExtraCommandsClean(TiXmlElement * parentNode, ProjectBuild
         while (child)
         {
             bool platformOkay = true;
+
             if (child->Attribute("platforms"))
             {
                 platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1373,6 +1381,7 @@ void ProjectLoader::DoExtraCommandsInstall(TiXmlElement * parentNode, ProjectBui
         while (child)
         {
             bool platformOkay = true;
+
             if (child->Attribute("platforms"))
             {
                 platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1416,6 +1425,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement * parentNode, CompileOptionsBase 
         while (child)
         {
             bool platformOkay = true;
+
             if (child->Attribute("platforms"))
             {
                 platformOkay = PlatformValid(child->Attribute("platforms"));
@@ -1442,6 +1452,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement * parentNode, CompileOptionsBase 
 bool ProjectLoader::PlatformValid(const wxString & platforms)
 {
     int platformsdecoded = GetPlatformsFromString(cbC2U(platforms));
+
     if (platform::windows)
     {
         return ((platformsdecoded & spWindows) != 0);
@@ -1456,6 +1467,7 @@ bool ProjectLoader::PlatformValid(const wxString & platforms)
     {
         return ((platformsdecoded & spMac) != 0);
     }
+
     return false;
 }
 
@@ -1599,6 +1611,7 @@ void ProjectLoader::DoUnits(const TiXmlElement * parentNode)
     while (unitsGlob)
     {
         bool platformOkay = true;
+
         if (unitsGlob->Attribute("platforms"))
         {
             platformOkay = PlatformValid(unitsGlob->Attribute("platforms"));
@@ -1645,6 +1658,7 @@ void ProjectLoader::DoUnits(const TiXmlElement * parentNode)
     while (unit)
     {
         bool platformOkay = true;
+
         if (unit->Attribute("platforms"))
         {
             platformOkay = PlatformValid(unit->Attribute("platforms"));

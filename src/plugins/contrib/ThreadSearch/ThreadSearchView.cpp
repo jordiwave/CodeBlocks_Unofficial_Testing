@@ -180,6 +180,7 @@ void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent & /*event*/)
     // in combo box text control.
     // Runs a multi threaded search.
     wxString value = m_pCboSearchExpr->GetValue();
+
     if (value.empty())
     {
         // If the value of the combo box is empty we search for the last

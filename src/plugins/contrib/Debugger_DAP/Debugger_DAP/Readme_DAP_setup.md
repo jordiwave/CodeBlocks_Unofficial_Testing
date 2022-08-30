@@ -1,22 +1,54 @@
-**WINDOWS**
-On Windows you can now use the following DAP adapters:
+# WINDOWS
+On Windows you can use the following DAP adapters:
     * MSYS2 MingW64  C:\msys64\mingw64\bin\lldb-vscode.exe
     * MSYS2 Clang64  C:\msys64\clang64\bin\lldb-vscode.exe
-    * https://github.com/vadimcn/vscode-lldb using the extension\adapter\codelldb.exe file
-    
-NOTES:
-1) There is a bug in the LLVM 14.0.6 lldb-vscode.exe with Windows directory paths that stops it from working with the plugin. It only works on C: and then needs.....
+    * LLVM 14.0.6 C:\llvm\bin\lldb-vscode.exe
+    * https://github.com/vadimcn/vscode-lldb using the ".\extension\adapter\codelldb.exe" that is in the VSIX file (contents are zipped)
 
-2) You need to set the PYTHONHOME variable in the Debugger setting dialog for the appropriate DAP adapter you use above as follows:
+On Windows you configure the different DAP adapters as follows for the debugger directory configuration setting:
+
+|+         DAP Adapter                   +| Config setting                                 |
+|-----------------------------------------|----------------------------------------------- |
+|+ C:\msys64\mingw64\bin\lldb-vscode.exe +| Use native paths                               |
+|+ C:\msys64\clang64\bin\lldb-vscode.exe +| Needs C::B compilergcc.cpp change to work !!!!  "Use Linux paths on Windows no drive letter" |
+|+ C:\llvm\bin\lldb-vscode.exe           +| Needs C::B compilergcc.cpp change to work !!!!  "Use Linux paths on Windows no drive letter" |
+|+ .\extension\adapter\codelldb.exe      +| Use relative path compared to the executable   |
+    
+**NOTES:**
+1) To use the LLDB debugger you need to compiler with either -gdwarf-2 or -gdwarf-4 instead of -ggdb to ensure that the Dwarf 2 or 4 debug forat is used.
+
+2) The compilergcc.cpp for clangc++ builds need to change parameters to use the Unix '/' for the DAP debugger to work. This can be done in the
+    CompilerGCC::DoRunQueue() function where the " if (!platform::windows)" at line 1384 changes to if you need to use clang++ on Windows and the
+    LLDb debugger:
+~~~ C++
+        if (platform::windows)
+        {
+            Compiler * compiler = CompilerFactory::GetCompiler(m_CompilerId);
+            if (compiler && compiler->GetID().IsSameAs("clang", false))
+            {
+                cmd->command.Replace('\\','/');
+            }
+        }
+        else
+        {
+            const wxString shell(Manager::Get()->GetConfigManager("app")->Read("/console_shell", DEFAULT_CONSOLE_SHELL));
+            cmd->command = shell + " '" + cmd->command + "'";
+        }
+~~~
+    This change above is not included in the DAP debugger patches as the change is in a core plugin.
+
+3) You need to set the PYTHONHOME variable in the Debugger setting dialog for the appropriate DAP adapter you use above as follows:
     * C:\msys64\mingw64\bin\lldb-vscode.exe       PYTHONHOME = C:\msys64\mingw64
     * C:\msys64\clang64\bin\lldb-vscode.exe       PYTHONHOME = C:\msys64\clang64
-    * extension\adapter\codelldb.exe              PYTHONHOME = C:\Users\<username>\AppData\Local\Programs\Python\Python310
+    * C:\llvm\bin\lldb-vscode.exe                 PYTHONHOME = C:\Users\<username>\AppData\Local\Programs\Python\Python310
+    * .\extension\adapter\codelldb.exe            PYTHONHOME = C:\Users\<username>\AppData\Local\Programs\Python\Python310
     
-3) The following is a batch file to start the codelldb.exe DAP adapter with debugging output enabled. You will need to adjust it for your Windows configuration:
+4) The following is a batch file to start the codelldb.exe DAP adapter with debugging output enabled. You will need to adjust it for your Windows configuration:
 
 ~~~
 echo on
 @setlocal
+
 @SET CurrentDir="%CD%"
 @set PYTHONHOME=C:\Users\<usrername>\AppData\Local\Programs\Python\Python310\
 @set RUST_LOG=debug,codelldb=debug
@@ -24,8 +56,9 @@ echo on
 @set RUST_BACKTRACE=full
 @cd /d C:\vscode-lldb\extension\adapter
 codelldb.exe --port 12345
-@endlocal
 cd /d %CurrentDir%
+
+@endlocal
 ~~~
 
 4) The following is a batch file to start the MinGW64 lldb-vscode.exe DAP adapter
@@ -43,7 +76,8 @@ echo on
 set PYTHONHOME=C:\msys64\clang64
 C:\msys64\clang64\bin\lldb-vscode.exe --port 12345
 ~~~
-5) The following is a batch file to start the LLVM lldb-vscode.exe DAP adapter
+
+6) The following is a batch file to start the LLVM lldb-vscode.exe DAP adapter
 
 ~~~
 echo on
@@ -51,14 +85,18 @@ set PYTHONHOME=C:\Users\<username>\AppData\Local\Programs\Python\Python310\
 C:\LLVM\bin\lldb-vscode.exe --port 12345
 ~~~
 
-**MACOS**
+    
+    
+# MACOS
 
-On the Mac Intel computers you can now use the following DAP adapters:
+On the Mac Intel computers you can use the following DAP adapters:
     * LLVM 14.0.6 lldb-vscode  /usr/local/opt/llvm/bin/lldb-vscode
-    * https://github.com/vadimcn/vscode-lldb using the extension/adapter/codelldb file
+    * https://github.com/vadimcn/vscode-lldb using the "./extension/adapter/codelldb" that is in the VSIX file (contents are zipped)
     
 NOTES:
-1) You will need to stop the Mac converting down dash "--" to an emdash "—" (longer dash). The following web page has info on how to do this:
+1) To use the LLDB debugger you need to compiler with either -gdwarf-3 ot -gdrwarf-4 instead of -ggdb to ensure that the Dwarf 2 or 4 debug forat is used.
+
+2) You will need to stop the Mac converting down dash "--" to an emdash "—" (longer dash). The following web page has info on how to do this:
 https://superuser.com/questions/555628/how-to-stop-mac-to-convert-typing-double-dash-to-emdash
 
 From the page for Mac 10.9 and above:
@@ -68,7 +106,7 @@ tickbox "Use smart quotes and dashes". Un-ticking this stops it changing two hyp
 
 One little gotcha: you must exit then restart your editor to have this change take effect.
 
-2) The following is a shell script to start the codelldb.exe DAP adapter with debugging output enabled. You will need to adjust it for your Mac configuration:
+3) The following is a shell script to start the codelldb.exe DAP adapter with debugging output enabled. You will need to adjust it for your Mac configuration:
 
 ~~~
 #!/bin/sh
@@ -83,8 +121,20 @@ export RUST_BACKTRACE=full
 ./codelldb --port 12345
 ~~~
 
-3) If you get any of the following errors when debuging C::B then "brew install mesa" and try again:
+4) If you get any of the following errors when debugging C::B then "brew install mesa" and try again:
 
     * +[MTLIOAccelDevice registerDevices]: Zero Metal services found
     * [api] No Metal renderer available.
     * [render]Unable to create basic Accelerated OpenGL renderer.
+
+
+# Installing vscode-lldb
+
+To install the vscode-lldb debugger you can us the following steps:
+1) Download the applicable release for your OS on from the following Github Repo:
+    https://github.com/vadimcn/vscode-lldb
+2) Unzip the codelldb-*.vsix file
+3) In the C::B DAP debugger configuration set the DAP executable to the following file that was unzipped :
+    .\extension\adapter\codelldb[.exe]
+    
+

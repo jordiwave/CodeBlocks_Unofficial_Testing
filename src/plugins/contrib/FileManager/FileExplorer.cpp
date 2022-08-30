@@ -1916,7 +1916,6 @@ void FileExplorer::OnDelete(wxCommandEvent & /*event*/)
 
     prompt += _("\nAre you sure?");
 
-
     if (cbMessageBox(prompt, _("Delete"), wxYES_NO, m_Tree) != wxID_YES)
     {
         return;
@@ -2005,7 +2004,7 @@ void FileExplorer::OnRename(wxCommandEvent & /*event*/)
 
         if (hresult)
         {
-            cbMessageBox( _("Rename directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
+            cbMessageBox(_("Rename directory '") + path + _("' failed with error ") + wxString::Format(_T("%i"), hresult), wxEmptyString, wxOK, m_Tree);
         }
     }
 

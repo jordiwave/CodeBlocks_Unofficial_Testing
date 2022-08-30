@@ -1655,19 +1655,6 @@ int CompilerGCC::DoRunQueue()
     bool hasLog = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false);
     bool saveFull = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log/full_command_line"), false);
 
-    if (hasLog)
-    {
-        if (!cmd->command.IsEmpty() && saveFull)
-        {
-            LogMessage(cmd->command, cltNormal, ltFile);
-        }
-        else
-            if (!cmd->message.IsEmpty() && !saveFull)
-            {
-                LogMessage(cmd->message, cltNormal, ltFile);
-            }
-    }
-
     if (cmd->command.IsEmpty())
     {
         // log message
@@ -1768,7 +1755,16 @@ int CompilerGCC::DoRunQueue()
 
         // Run the command in a shell, so stream redirections (<, >, << and >>),
         // piping and other shell features can be evaluated.
-        if (!platform::windows)
+        if (platform::windows)
+        {
+            Compiler * compiler = CompilerFactory::GetCompiler(m_CompilerId);
+
+            if (compiler && compiler->GetID().IsSameAs("clang", false))
+            {
+                cmd->command.Replace('\\', '/');
+            }
+        }
+        else
         {
             const wxString shell(Manager::Get()->GetConfigManager("app")->Read("/console_shell", DEFAULT_CONSOLE_SHELL));
             cmd->command = shell + " '" + cmd->command + "'";
@@ -1778,6 +1774,22 @@ int CompilerGCC::DoRunQueue()
 #ifdef LOG_DEBUG_STATE_MACHINE_INFO
     LogMessage(wxString::Format("Line: %d has CMD:\n%s\n\n", __LINE__, cmd->command));
 #endif
+
+    if (hasLog)
+    {
+        if (!cmd->command.IsEmpty() && saveFull)
+        {
+            LogMessage(cmd->command, cltNormal, ltFile);
+        }
+        else
+        {
+            if (!cmd->message.IsEmpty() && !saveFull)
+            {
+                LogMessage(cmd->message, cltNormal, ltFile);
+            }
+        }
+    }
+
     // create a new process
     CompilerProcess & process = m_CompilerProcessList.at(procIndex);
     process.OutputFile = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString(wxEmptyString);

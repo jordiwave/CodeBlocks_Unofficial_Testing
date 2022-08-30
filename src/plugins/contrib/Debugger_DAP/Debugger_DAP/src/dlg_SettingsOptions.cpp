@@ -107,49 +107,52 @@ wxPanel * DebuggerConfiguration::MakePanel(wxWindow * parent)
 
     XRCCTRL(*panel, "txtDAPExecutable", wxTextCtrl)->ChangeValue(GetDAPExecutable(false));
     panel->ValidateExecutablePath();
-    XRCCTRL(*panel, "txtPortNumber",            wxTextCtrl)->ChangeValue(GetDAPPortNumber());
-    XRCCTRL(*panel, "txtPythonHome",            wxTextCtrl)->ChangeValue(GetDAPPythonHomeEnvSetting());
-    XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->ChangeValue(GetInitialCommands());
-    XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->SetMinSize(wxSize(-1, 75));;
-    XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->SetValue(GetFlag(WatchFuncLocalsArgs));
-    XRCCTRL(*panel, "chkExceptionCatch",        wxCheckBox)->SetValue(GetFlag(ExceptionCatch));
-    XRCCTRL(*panel, "chkExceptionThrow",        wxCheckBox)->SetValue(GetFlag(ExceptionThrow));
-    XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->SetValue(GetFlag(EvalExpression));
-    XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->SetValue(GetFlag(AddOtherProjectDirs));
-    XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->SetValue(GetFlag(DoNotRun));
-    XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->SetValue(GetFlag(PersistDebugElements));
-    XRCCTRL(*panel, "chkStopOnMain",            wxCheckBox)->SetValue(GetFlag(StopOnMain));
-    XRCCTRL(*panel, "chkRunDAPServer",          wxCheckBox)->SetValue(GetFlag(RunDAPServer));
-    XRCCTRL(*panel, "choDisassemblyFlavor",     wxChoice)->SetSelection(m_config.ReadInt("disassembly_flavor", 0));
-    XRCCTRL(*panel, "txtInstructionSet",        wxTextCtrl)->ChangeValue(m_config.Read("instruction_set", wxEmptyString));
+    XRCCTRL(*panel, "txtPortNumber",                    wxTextCtrl)->ChangeValue(GetDAPPortNumber());
+    XRCCTRL(*panel, "txtPythonHome",                    wxTextCtrl)->ChangeValue(GetDAPPythonHomeEnvSetting());
+    XRCCTRL(*panel, "txtInit",                          wxTextCtrl)->ChangeValue(GetInitialCommands());
+    XRCCTRL(*panel, "txtInit",                          wxTextCtrl)->SetMinSize(wxSize(-1, 75));;
+    XRCCTRL(*panel, "chkRunDAPServer",                  wxCheckBox)->SetValue(GetFlag(RunDAPServer));
+    XRCCTRL(*panel, "chkStopOnMain",                    wxCheckBox)->SetValue(GetFlag(StopOnMain));
+    XRCCTRL(*panel, "chkExceptionCatch",                wxCheckBox)->SetValue(GetFlag(ExceptionCatch));
+    XRCCTRL(*panel, "chkExceptionThrow",                wxCheckBox)->SetValue(GetFlag(ExceptionThrow));
+    XRCCTRL(*panel, "chkPersistDebugElements",          wxCheckBox)->SetValue(GetFlag(PersistDebugElements));
+    XRCCTRL(*panel, "choChoiceDebugTesting",            wxChoice)->SetSelection(m_config.ReadInt("debug_testing", 0));
+    XRCCTRL(*panel, "chkTooltipEval",                   wxCheckBox)->SetValue(GetFlag(EvalExpression));
+    XRCCTRL(*panel, "chkAddForeignDirs",                wxCheckBox)->SetValue(GetFlag(AddOtherProjectDirs));
+    XRCCTRL(*panel, "chkWatchLocalsandArgs",            wxCheckBox)->SetValue(GetFlag(WatchFuncLocalsArgs));
+    XRCCTRL(*panel, "choDisassemblyFlavor",             wxChoice)->SetSelection(m_config.ReadInt("disassembly_flavor", 0));
+    XRCCTRL(*panel, "txtInstructionSet",                wxTextCtrl)->ChangeValue(m_config.Read("instruction_set", wxEmptyString));
     return panel;
 }
 
 bool DebuggerConfiguration::SaveChanges(wxPanel * panel)
 {
-    m_config.Write("executable_path",       XRCCTRL(*panel, "txtDAPExecutable",         wxTextCtrl)->GetValue());
-    m_config.Write("python_home_env",       XRCCTRL(*panel, "txtPythonHome",            wxTextCtrl)->GetValue());
-    m_config.Write("init_commands",         XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->GetValue());
-    m_config.Write("watch_locals_and_args", XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->GetValue());
-    m_config.Write("exception_catch",       XRCCTRL(*panel, "chkExceptionCatch",        wxCheckBox)->GetValue());
-    m_config.Write("exception_throw",       XRCCTRL(*panel, "chkExceptionThrow",        wxCheckBox)->GetValue());
-    m_config.Write("eval_tooltip",          XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->GetValue());
-    m_config.Write("add_other_search_dirs", XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->GetValue());
-    m_config.Write("do_not_run_debuggee",   XRCCTRL(*panel, "chkDoNotRun",              wxCheckBox)->GetValue());
-    m_config.Write("persist_debug_elements", XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->GetValue());
-    m_config.Write("stop_on_main",          XRCCTRL(*panel, "chkStopOnMain",            wxCheckBox)->GetValue());
-    m_config.Write("run_DAP_server",        XRCCTRL(*panel, "chkRunDAPServer",          wxCheckBox)->GetValue());
-    m_config.Write("disassembly_flavor",    XRCCTRL(*panel, "choDisassemblyFlavor",     wxChoice)->GetSelection());
-    m_config.Write("instruction_set",       XRCCTRL(*panel, "txtInstructionSet",        wxTextCtrl)->GetValue());
+    m_config.Write("executable_path",                   XRCCTRL(*panel, "txtDAPExecutable",         wxTextCtrl)->GetValue());
+    m_config.Write("python_home_env",                   XRCCTRL(*panel, "txtPythonHome",            wxTextCtrl)->GetValue());
+    m_config.Write("init_commands",                     XRCCTRL(*panel, "txtInit",                  wxTextCtrl)->GetValue());
+    m_config.Write("run_DAP_server",                    XRCCTRL(*panel, "chkRunDAPServer",          wxCheckBox)->GetValue());
+    m_config.Write("stop_on_main",                      XRCCTRL(*panel, "chkStopOnMain",            wxCheckBox)->GetValue());
+    m_config.Write("exception_catch",                   XRCCTRL(*panel, "chkExceptionCatch",        wxCheckBox)->GetValue());
+    m_config.Write("exception_throw",                   XRCCTRL(*panel, "chkExceptionThrow",        wxCheckBox)->GetValue());
+    m_config.Write("persist_debug_elements",            XRCCTRL(*panel, "chkPersistDebugElements",  wxCheckBox)->GetValue());
+    m_config.Write("debug_testing",                     XRCCTRL(*panel, "choChoiceDebugTesting",     wxChoice)->GetSelection());
+    m_config.Write("watch_locals_and_args",             XRCCTRL(*panel, "chkWatchLocalsandArgs",    wxCheckBox)->GetValue());
+    m_config.Write("eval_tooltip",                      XRCCTRL(*panel, "chkTooltipEval",           wxCheckBox)->GetValue());
+    m_config.Write("add_other_search_dirs",             XRCCTRL(*panel, "chkAddForeignDirs",        wxCheckBox)->GetValue());
+    m_config.Write("disassembly_flavor",                XRCCTRL(*panel, "choDisassemblyFlavor",     wxChoice)->GetSelection());
+    m_config.Write("instruction_set",                   XRCCTRL(*panel, "txtInstructionSet",        wxTextCtrl)->GetValue());
     return true;
 }
 
-bool DebuggerConfiguration::GetFlag(Flags flag)
+bool DebuggerConfiguration::GetFlag(eFlags flag)
 {
     switch (flag)
     {
-        case WatchFuncLocalsArgs:
-            return m_config.ReadBool("watch_locals_and_args", true);
+        case RunDAPServer:
+            return m_config.ReadBool("run_DAP_server", true);
+
+        case StopOnMain:
+            return m_config.ReadBool("stop_on_main", false);
 
         case ExceptionCatch:
             return m_config.ReadBool("exception_catch", true);
@@ -157,35 +160,31 @@ bool DebuggerConfiguration::GetFlag(Flags flag)
         case ExceptionThrow:
             return m_config.ReadBool("exception_throw", true);
 
+        case PersistDebugElements:
+            return m_config.ReadBool("persist_debug_elements", false);
+
+        case WatchFuncLocalsArgs:
+            return m_config.ReadBool("watch_locals_and_args", true);
+
         case EvalExpression:
             return m_config.ReadBool("eval_tooltip", false);
 
         case AddOtherProjectDirs:
             return m_config.ReadBool("add_other_search_dirs", false);
 
-        case DoNotRun:
-            return m_config.ReadBool("do_not_run_debuggee", false);
-
-        case PersistDebugElements:
-            return m_config.ReadBool("persist_debug_elements", false);
-
-        case StopOnMain:
-            return m_config.ReadBool("stop_on_main", false);
-
-        case RunDAPServer:
-            return m_config.ReadBool("run_DAP_server", true);
-
         default:
             return false;
     }
 }
-void DebuggerConfiguration::SetFlag(Flags flag, bool value)
+void DebuggerConfiguration::SetFlag(eFlags flag, bool value)
 {
     switch (flag)
     {
-        case WatchFuncLocalsArgs:
-            m_config.Write("watch_locals_and_args", value);
-            break;
+        case RunDAPServer:
+            m_config.Write("run_DAP_server", value);
+
+        case StopOnMain:
+            m_config.Write("stop_on_main", value);
 
         case ExceptionCatch:
             m_config.Write("exception_catch", value);
@@ -199,22 +198,16 @@ void DebuggerConfiguration::SetFlag(Flags flag, bool value)
             m_config.Write("eval_tooltip", value);
             break;
 
-        case AddOtherProjectDirs:
-            m_config.Write("add_other_search_dirs", value);
-            break;
-
-        case DoNotRun:
-            m_config.Write("do_not_run", value);
-            break;
-
         case PersistDebugElements:
             m_config.Write("persist_debug_elements", value);
 
-        case StopOnMain:
-            m_config.Write("stop_on_main", value);
+        case WatchFuncLocalsArgs:
+            m_config.Write("watch_locals_and_args", value);
+            break;
 
-        case RunDAPServer:
-            m_config.Write("run_DAP_server", value);
+        case AddOtherProjectDirs:
+            m_config.Write("add_other_search_dirs", value);
+            break;
 
         default:
             ;
@@ -392,6 +385,11 @@ wxString DebuggerConfiguration::GetDAPPythonHomeEnvSetting()
     return result;
 }
 
+DebuggerConfiguration::eDebugTestingOptions DebuggerConfiguration::GetDebugTestingChoiceOption()
+{
+    return static_cast<eDebugTestingOptions>(m_config.ReadInt("debug_testing", 0));
+}
+
 wxString DebuggerConfiguration::GetDisassemblyFlavorCommand()
 {
     int disassembly_flavour = m_config.ReadInt("disassembly_flavor", 0);
@@ -437,14 +435,14 @@ wxString DebuggerConfiguration::GetInitialCommands()
     return m_config.Read("init_commands", wxEmptyString);
 }
 
-wxString DebuggerConfiguration::SearchForDebuggerExecutable(wxString pathParam, const wxString &exeNameParam)
+wxString DebuggerConfiguration::SearchForDebuggerExecutable(wxString pathParam, const wxString & exeNameParam)
 {
-    LogManager* pLogMgr = Manager::Get()->GetLogManager();
+    LogManager * pLogMgr = Manager::Get()->GetLogManager();
     wxFileName fnDetectDebuggerExecutable;
     fnDetectDebuggerExecutable.SetFullName(exeNameParam);
     pathParam = pathParam.Trim().Trim(false);
-
     fnDetectDebuggerExecutable.SetPath(pathParam);
+
     if (fnDetectDebuggerExecutable.FileExists())
     {
         pLogMgr->DebugLog(wxString::Format(_("SearchForDebuggerExecutable detected %s"), fnDetectDebuggerExecutable.GetFullPath()));
@@ -452,22 +450,24 @@ wxString DebuggerConfiguration::SearchForDebuggerExecutable(wxString pathParam, 
     }
     else
     {
-        fnDetectDebuggerExecutable.SetPath( pathParam + wxFILE_SEP_PATH + "bin");
+        fnDetectDebuggerExecutable.SetPath(pathParam + wxFILE_SEP_PATH + "bin");
+
         if (fnDetectDebuggerExecutable.FileExists())
         {
             pLogMgr->DebugLog(wxString::Format(_("SearchForDebuggerExecutable detected %s"), fnDetectDebuggerExecutable.GetFullPath()));
             return fnDetectDebuggerExecutable.GetFullPath();
         }
     }
+
     return wxEmptyString;
 }
 
-wxString DebuggerConfiguration::DetectDebuggerExecutable(const wxString &exeNameParam)
+wxString DebuggerConfiguration::DetectDebuggerExecutable(const wxString & exeNameParam)
 {
     // LogManager *pLogMgr = Manager::Get()->GetLogManager();
     wxString masterPath = wxEmptyString;
-
     wxFileName exeName(exeNameParam);
+
     if (platform::windows)
     {
         if (exeName.GetExt().empty())
@@ -477,20 +477,25 @@ wxString DebuggerConfiguration::DetectDebuggerExecutable(const wxString &exeName
     }
 
     // Check Project default compiler path to see if file in it
-    cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     if (pProject)
     {
         // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable pProject found.(Line %d)", __LINE__));
         int compilerIdx = CompilerFactory::GetCompilerIndex(pProject->GetCompilerID());
+
         if (compilerIdx != -1)
         {
-            Compiler* prjCompiler = CompilerFactory::GetCompiler(compilerIdx);
+            Compiler * prjCompiler = CompilerFactory::GetCompiler(compilerIdx);
+
             if (prjCompiler)
             {
                 masterPath = prjCompiler->GetMasterPath();
+
                 if (!masterPath.IsEmpty())
                 {
                     wxString debuggerSearchResult = SearchForDebuggerExecutable(masterPath, exeName.GetFullName());
+
                     if (!debuggerSearchResult.IsEmpty())
                     {
                         // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
@@ -500,20 +505,23 @@ wxString DebuggerConfiguration::DetectDebuggerExecutable(const wxString &exeName
             }
         }
     }
+
     // else
     // {
     //    pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable no project found (Line %d)",  __LINE__));
     // }
-
     // Check default compiler path to see if file in it
-    Compiler* defaultCompiler = CompilerFactory::GetDefaultCompiler();
+    Compiler * defaultCompiler = CompilerFactory::GetDefaultCompiler();
+
     if (defaultCompiler)
     {
         masterPath = defaultCompiler->GetMasterPath();
+
         // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable defaultCompiler found. masterPath %s  (Line %d)", masterPath, __LINE__));
         if (!masterPath.IsEmpty() && wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
         {
             wxString debuggerSearchResult = SearchForDebuggerExecutable(masterPath, exeName.GetFullName());
+
             if (!debuggerSearchResult.IsEmpty())
             {
                 // pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable : debugger %s (Line %d)", debuggerSearchResult, __LINE__));
@@ -521,17 +529,18 @@ wxString DebuggerConfiguration::DetectDebuggerExecutable(const wxString &exeName
             }
         }
     }
+
     // else
     // {
     //     pLogMgr->DebugLog(wxString::Format("cbDetectDebuggerExecutable no defaultCompiler found (Line %d)",  __LINE__));
     // }
-
     wxString exePath = cbFindFileInPATH(exeName.GetFullName());
 
     if (!wxDirExists(exePath))
     {
         return wxEmptyString;
     }
+
     return exePath + wxFILE_SEP_PATH + exeName.GetFullName();
 }
 

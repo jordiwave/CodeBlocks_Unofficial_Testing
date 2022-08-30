@@ -207,6 +207,7 @@ wxArrayString HunspellInterface::GetSuggestions(const wxString & strMisspelledWo
         if (misspelledWordCharBuffer.data() != NULL)
         {
             int ns = Hunspell_suggest(m_pHunhandle, &wlst, misspelledWordCharBuffer);
+
             for (int i = 0; i < ns; i++)
             {
                 wxReturnArray.Add(ConvertFromUnicode(wlst[i]));

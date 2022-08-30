@@ -92,14 +92,15 @@ class wxDirectoryMonitor: public wxEvtHandler
          */
         void Clear();
 
-        size_t GetFileSize(const wxFileName& filename);
-        time_t GetFileModificationTime(const wxFileName& filename);
+        size_t GetFileSize(const wxFileName & filename);
+        time_t GetFileModificationTime(const wxFileName & filename);
 
         void ChangePaths(const wxArrayString & uri);
         void OnMonitorEvent(wxDirectoryMonitorEvent & e);
         void OnMonitorEvent2(wxCommandEvent & e);
 
-        struct File {
+        struct File
+        {
             wxFileName filename;
             time_t lastModified;
             size_t file_size;
@@ -107,7 +108,7 @@ class wxDirectoryMonitor: public wxEvtHandler
         };
 
     protected:
-        void OnTimer(wxTimerEvent& event);
+        void OnTimer(wxTimerEvent & event);
 
     private:
         wxArrayString m_uri;
@@ -115,7 +116,7 @@ class wxDirectoryMonitor: public wxEvtHandler
         int m_eventfilter;
 
         File::Map_t m_files;
-        wxTimer* m_timer;
+        wxTimer * m_timer;
         DECLARE_EVENT_TABLE()
 };
 

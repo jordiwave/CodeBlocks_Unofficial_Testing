@@ -22,30 +22,41 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
         bool SaveChanges(wxPanel * panel) override;
 
     public:
-        enum Flags
+        typedef enum
         {
-            WatchFuncLocalsArgs,
+            RunDAPServer = 0,
+            StopOnMain,
             ExceptionCatch,
             ExceptionThrow,
-            EvalExpression,
-            AddOtherProjectDirs,
-            DoNotRun,
             PersistDebugElements,
-            StopOnMain,
-            RunDAPServer
-        };
 
-        bool GetFlag(Flags flag);
-        void SetFlag(Flags flag, bool value);
+            WatchFuncLocalsArgs,
+            EvalExpression,
+            AddOtherProjectDirs
+        } eFlags;
+
+        typedef enum
+        {
+            UseNativePaths = 0,
+            UseLinuxPathsOnWindowsWithDriveLetter,
+            UseLinuxPathsOnWindowsWithNoCollen,
+            UseLinuxPathsOnWindowsWithNoDriveLetter,
+            UseWindowsPathsWithDriveLetterRemoved,
+            UseRelativePathComparedToTheExecutable
+        } eDebugTestingOptions;
+
+        bool GetFlag(eFlags flag);
+        void SetFlag(eFlags flag, bool value);
         wxString GetDAPExecutable(bool expandMacro = true);
         wxString GetDAPPortNumber();
         wxString GetDAPPythonHomeEnvSetting();
+        eDebugTestingOptions GetDebugTestingChoiceOption();
         wxString GetDisassemblyFlavorCommand();
         wxString GetInitialCommands();
 
     private:
-        wxString SearchForDebuggerExecutable(wxString pathParam, const wxString &exeNameParam);
-        wxString DetectDebuggerExecutable(const wxString &exeNameParam);
+        wxString SearchForDebuggerExecutable(wxString pathParam, const wxString & exeNameParam);
+        wxString DetectDebuggerExecutable(const wxString & exeNameParam);
 
 };
 

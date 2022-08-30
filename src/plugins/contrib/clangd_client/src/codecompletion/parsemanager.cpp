@@ -3408,7 +3408,7 @@ void ParseManager::OnEditorClosed(EditorBase * editor)
 {
     // the caller of the function should guarantee its a built-in editor
     wxString filename = editor->GetFilename();
-    const int pos = m_StandaloneFiles.Index(filename);
+    const int pos = m_StandaloneFiles.Index(filename); // not used by clangd_client
 
     if (pos != wxNOT_FOUND)
     {
@@ -3421,6 +3421,20 @@ void ParseManager::OnEditorClosed(EditorBase * editor)
         else
         {
             RemoveFileFromParser(NULL, filename);
+        }
+    }
+
+    // Remove the file from ~ProxyProject~
+    cbProject * pProxyProject = GetProxyProject();
+
+    if (pProxyProject and pProxyProject->GetFileByFilename(filename, false))
+    {
+        ProjectFile * pProjectFile = pProxyProject->GetFileByFilename(filename, false);
+
+        if (pProjectFile)
+        {
+            pProxyProject->RemoveFile(pProjectFile);
+            pProxyProject->SetModified(false);
         }
     }
 }

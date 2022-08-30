@@ -331,10 +331,14 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
         wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
     },
     // Command line for global user variables
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("S"),  CMD_ENTRY("set"),                   CMD_ENTRY("specify the active global user variable set"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("D"),  CMD_ENTRY(""),                      CMD_ENTRY("set value for global variable. For example: -D [set.]name[.member]=value to set the optional \"member\" value of variable \"name\" in the optional \"set\" to \"value\""),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("S"),  CMD_ENTRY("set"),                   CMD_ENTRY("specify the active global user variable set"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("D"),  CMD_ENTRY(""),                      CMD_ENTRY("set value for global variable. For example: -D [set.]name[.member]=value to set the optional \"member\" value of variable \"name\" in the optional \"set\" to \"value\""),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL
+    },
     // Build command lines
 
     {
@@ -1492,12 +1496,10 @@ wxString CodeBlocksApp::GetAppPath() const
     wxFileName fname(name);
     base = fname.GetPath(wxPATH_GET_VOLUME);
 #else
-
     base = wxStandardPaths::Get().GetExecutablePath();
     base = wxFileName(base).GetPath();
-
-
 #endif
+
     if (base.empty())
     {
         if (!m_Prefix.IsEmpty())
@@ -1505,6 +1507,7 @@ wxString CodeBlocksApp::GetAppPath() const
             return m_Prefix;
         }
     }
+
     return base;
 }
 
@@ -1545,9 +1548,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame * handlerFrame, const wxString & CmdLi
         {
             m_HasProject = false;
             m_HasWorkSpace = false;
-
             Manager::Get()->GetUserVariableManager()->ParseCommandLine(parser);
-
             int count = parser.GetParamCount();
             parser.Found(_T("file"), &m_AutoFile);
 

@@ -22,7 +22,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.37 2022/08/23")
+#define VERSION wxT("0.2.38 2022/08/26")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -53,10 +53,19 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
-//0.2.37    2022/08/23
+//0.2.38    Commit 2022/08/26 rev 76
+//          2022/08/26 Fix annoying switch the LSP messages tab (ticket #66)
+//          2022/08/24
+//          Remove Files from ~ProxyProject~ when file is closed.
+//          The parser in a Workspace with the active file NOT owned by the old active project
+//              was not being switched to (activating the new projects parser) because
+//              m_LastFile == curFile in NotifyParserEditorActivated().
+//              Solution: when a project is activated and m_LastFile == cur,file, do m_LastFile.Clear()
+//              in OnProjectActivated() so the parser for the newly activated project gets set active.
+//0.2.37    commit 2022/08/23 rev 75
 //          Fix crash in OnEditorActivated() when closing wkspace and ~proxyProject~ file is
 //              activated and attempt is made to check its projectfile with pActiveProject == nullptr.
-//0.2.36    2022/08/23
+//0.2.36    commit 2022/08/23 rev 74
 //          Apply ticket #62/62 changes to support msys2 by AndrewCo
 //          apply ticket #64 changes to cctest cbp(s) by AndrewCo
 //0.2.35    Commit 2022/08/18 rev 73

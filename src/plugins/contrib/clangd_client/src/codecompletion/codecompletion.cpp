@@ -3416,6 +3416,16 @@ void ClgdCompletion::OnProjectActivated(CodeBlocksEvent & event)
 
     if ((not ProjectManager::IsBusy()) && IsAttached() && m_InitDone && pActiveEditor)
     {
+        // clear the m_LastFile so parser re-records the active editor filename
+        EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+        EditorBase * pEditor = pEdMgr->GetActiveEditor();
+        wxString activeEdFilename = pEditor ? pEditor->GetFilename() : wxString();
+
+        if (pEditor and (activeEdFilename == m_LastFile))
+        {
+            m_LastFile.Clear();
+        }
+
         CodeBlocksEvent edEvent;
         edEvent.SetEditor(pActiveEditor);
         edEvent.SetOldEditor(nullptr);
@@ -4839,7 +4849,6 @@ void ClgdCompletion::OnEditorActivated(CodeBlocksEvent & event)
                         //-unused-ParserBase* pParser = GetParseManager()->GetParserByProject(pActiveProject);
                         pProjectFile = GetParseManager()->GetProxyProject()->AddFile(0, pEd->GetFilename(), true, false);
                         pEd->SetProjectFile(pProjectFile);
-                        ;
                     }
                 }
             }//endif not projectfile
@@ -4990,16 +4999,16 @@ void ClgdCompletion::OnEditorClosed(CodeBlocksEvent & event)
     }
 
     wxString activeFile;
-    EditorBase * eb = pEdMgr->GetActiveEditor();
+    EditorBase * pEdBase = pEdMgr->GetActiveEditor();
 
-    if (eb)
+    if (pEdBase)
     {
-        activeFile = eb->GetFilename();
+        activeFile = pEdBase->GetFilename();
     }
 
     TRACE(_T("CodeCompletion::OnEditorClosed(): Closed editor's file is %s"), activeFile.wx_str());
     // ----------------------------------------------------------------------------
-    // Tell Language Service Process that an editor was closed //(ph 2020/10/3) LSP
+    // Tell Language Service Process that an editor was closed
     // ----------------------------------------------------------------------------
     // Invoke didClose for the event editor, not the active editor
     // This file may have already been didClose'd by OnProjectClose() LSP shutdown.
@@ -6687,7 +6696,8 @@ wxString ClgdCompletion::VerifyEditorHasSymbols(cbEditor * pEd)
     }
 
     // VerifyEditorParsed() assures that we have good pProject, pClient
-    // Note to reader: ProxyProject is never requested to produces Document symbols
+    // VerifyEditorHasSymbols() assures that we have received response for Document Symbols
+    // Note that ProxyProject is never requested to produce Document symbols
     cbProject * pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
     ProjectFile * pProjectFile = pEd->GetProjectFile();
     cbProject * pProject = pProjectFile ? pProjectFile->GetParentProject() : nullptr;
@@ -6701,9 +6711,13 @@ wxString ClgdCompletion::VerifyEditorHasSymbols(cbEditor * pEd)
         return msg;
     }
 
+    // Here: (project == active project) but no DocumentSymbols for this editor.
+    // LSP_ParseDocumenSymbols has not responded or was never requested (why?)
     if (not hasDocSymbols)
     {
-        msg = wxString::Format(_("Try again...\nEditor symbols DOWN LOADING. \n%s"), pEd->GetFilename());
+        msg = _("Try again... Editor symbols DOWNLOADING.");
+        msg += _("\n or rightClick in window and select Reparse this file");
+        msg += wxString::Format("\n%s", pEd->GetFilename());
     }
 
     return msg;

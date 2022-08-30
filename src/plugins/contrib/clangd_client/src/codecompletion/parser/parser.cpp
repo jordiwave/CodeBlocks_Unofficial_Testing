@@ -1798,17 +1798,12 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         // If last request was anything but "textDocument/didSave", don't steal the log focus.
         // If the compiler is running, do not switch away from build log unless
         // user has set option to do so.
-        bool doFocus = not GetParseManager()->IsCompilerRunning(); //set false if compiler is running
+        bool canFocus = not popupActive;
+        canFocus = canFocus and (not GetParseManager()->IsCompilerRunning()); //set false if compiler is running
         ConfigManager * pCfg = Manager::Get()->GetConfigManager("clangd_client");
-        // If user wants to focus anyway, set focus to true
         bool userFocus = pCfg->ReadBool("/lspMsgsFocusOnSave_check", false);
 
-        if (userFocus)
-        {
-            doFocus = true;
-        }
-
-        if ((not popupActive) and doFocus)
+        if (userFocus and canFocus)
             switch (1)
             {
                 default:

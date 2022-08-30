@@ -47,13 +47,13 @@ static const char * XML_CFG_ROOT_TAG = "Debugger_layout_file";
 
 namespace
 {
-    int const id_gdb_poll_timer = wxNewId();
-    int const id_menu_info_command_stream = wxNewId();
+int const id_gdb_poll_timer = wxNewId();
+int const id_menu_info_command_stream = wxNewId();
 
-    // Register the plugin with Code::Blocks.
-    // We are using an anonymous namespace so we don't litter the global one.
-    // this auto-registers the plugin
-    PluginRegistrant<Debugger_DAP> reg("debugger_dap");
+// Register the plugin with Code::Blocks.
+// We are using an anonymous namespace so we don't litter the global one.
+// this auto-registers the plugin
+PluginRegistrant<Debugger_DAP> reg("debugger_dap");
 }
 
 
@@ -99,6 +99,7 @@ Debugger_DAP::Debugger_DAP() :
     cbDebuggerPlugin("DAP", "debugger_dap"),
     m_pProject(nullptr),
     m_dapPid(0),
+    m_debuggee(wxEmptyString),
     DAPDebuggerState(eDAPState::NotConnected)
 {
     if (!Manager::LoadResource("debugger_dap.zip"))
@@ -335,25 +336,10 @@ void Debugger_DAP::UpdateDebugDialogs(bool bClearAllData)
 
 bool Debugger_DAP::Debug(bool breakOnEntry)
 {
-    m_hasStartUpError = false;
-    ProjectManager & project_manager = *Manager::Get()->GetProjectManager();
-    cbProject * project = project_manager.GetActiveProject();
-
-    if (!project)
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Cannot debug as no active project"), dbg_DAP::LogPaneLogger::LineType::Error);
-        return false;
-    }
-
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("starting debugger"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    m_hasStartUpError = false;
     StartType start_type = breakOnEntry ? StartTypeStepInto : StartTypeRun;
-
-    if (!EnsureBuildUpToDate(start_type))
-    {
-        return false;
-    }
-
-    return true;
+    return !EnsureBuildUpToDate(start_type);
 }
 
 // "=========================================================================================="
@@ -404,7 +390,6 @@ bool Debugger_DAP::SelectCompiler(cbProject & project, Compiler *& compiler,
         }
 
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Selecting target: %s"), target->GetTitle()), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-
         // find the target's compiler (to see which debugger to use)
         compiler = CompilerFactory::GetCompiler(target ? target->GetCompilerID() : project.GetCompilerID());
     }
@@ -575,6 +560,7 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
 
     m_pProject = project;
     m_hasStartUpError = false;
+    m_debuggee = debuggee;
     return 0;
 }
 
@@ -596,7 +582,6 @@ void Debugger_DAP::LaunchDAPDebugger(cbProject * project, const wxString & dap_d
 
     wxExecuteEnv execEnv;
     execEnv.cwd = wdir;
-
     // Read the current environment variables and then make changes to them.
     wxGetEnvMap(&execEnv.env);
 #ifndef __WXMAC__
@@ -726,13 +711,10 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     }
 
     DAPDebuggerState = eDAPState::Connected;
-
     // construct new client with the transport
     m_dapClient.SetTransport(transport);
-
     // This part is done in mode **sync**
     DAPDebuggerState = eDAPState::Running;
-
     // Create the DAP debuggee command line including any parameters
     Compiler * compiler;
     ProjectBuildTarget * target;
@@ -758,7 +740,6 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     initArgs.clientID = "CB_DAP_Plugin";
     initArgs.clientName = "CB_DAP_Plugin";
     m_dapClient.Initialize(&initArgs);
-
     //    wxString directorySearchPaths = wxEmptyString;
     //    const wxArrayString& pdirs = ParseSearchDirs(project);
     //    for (size_t i = 0; i < pdirs.GetCount(); ++i)
@@ -771,7 +752,6 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     //    {
     //        DoSendCommand(wxString::Format("directory %s", directorySearchPaths));
     //    }
-
     m_timer_poll_debugger.Start(20);
     return 0;
 }
@@ -1098,23 +1078,74 @@ void Debugger_DAP::UpdateDAPSetBreakpointsByFileName(const wxString & filename)
             }
         }
 
-{
-//        wxString fn = UnixFilename(filename, wxPATH_UNIX);
-        wxString fn = UnixFilename(filename);
+        wxString fn;
+        dbg_DAP::DebuggerConfiguration::eDebugTestingOptions debugtest = GetActiveConfigEx().GetDebugTestingChoiceOption();
+
+        switch (debugtest)
+        {
+            default:
+            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseNativePaths:
+                fn = UnixFilename(filename);
+                break;
+
+            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseLinuxPathsOnWindowsWithDriveLetter:
+                fn = UnixFilename(filename, wxPATH_UNIX);
+                break;
+
+            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseLinuxPathsOnWindowsWithNoCollen:
+            {
+                fn = UnixFilename(filename, wxPATH_UNIX);
+                int  ColonLocation = fn.Find(':');
+
+                if (ColonLocation == 1)
+                {
+                    fn.Remove(ColonLocation, 1);
+                    fn.Prepend("/");
+                }
+            }
+            break;
+
+            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseLinuxPathsOnWindowsWithNoDriveLetter:
+            {
+                fn = UnixFilename(filename, wxPATH_UNIX);
+                int  ColonLocation = fn.Find(':');
+
+                if (ColonLocation == 1)
+                {
+                    fn.Remove(0, ColonLocation + 1);
+                }
+            }
+            break;
+
+            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseWindowsPathsWithDriveLetterRemoved:
+            {
+                fn = UnixFilename(filename);
+                int  ColonLocation = fn.Find(':');
+
+                if (ColonLocation == 1)
+                {
+                    fn.Remove(0, ColonLocation + 1);
+                }
+            }
+            break;
+
+            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseRelativePathComparedToTheExecutable:
+            {
+                fn = UnixFilename(filename);
+                wxFileName fnFileName(fn);
+
+                if (fnFileName.Exists())
+                {
+                    wxFileName fnDebuggee(m_debuggee);
+                    fnFileName.MakeRelativeTo(fnDebuggee.GetPath());
+                    fn = fnFileName.GetFullPath();
+                }
+            }
+            break;
+        }
+
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", fn, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
         m_dapClient.SetBreakpointsFile(fn, vlines);
-}
-//{
-//        wxString fn = UnixFilename(filename, wxPATH_UNIX);
-//        int  ColonLocation = fn.Find(':');
-//        if (ColonLocation == 1)
-//        {
-//            fn.Remove(ColonLocation, 1);
-//            fn.Prepend("/");
-//        }
-//        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", fn, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
-//        m_dapClient.SetBreakpointsFile(fn, vlines);
-//}
     }
 }
 
@@ -1137,6 +1168,7 @@ cb::shared_ptr<cbBreakpoint> Debugger_DAP::UpdateOrAddBreakpoint(const wxString 
             bp->SetID(id);
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Update %s:%d set ID %d"), filename, line, id), dbg_DAP::LogPaneLogger::LineType::Debug);
         }
+
         return bp;
     }
 
@@ -1172,25 +1204,25 @@ void Debugger_DAP::DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 
             case dbg_DAP::DAPBreakpoint::bptFunction:
                 m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Found dbg_DAP::DAPBreakpoint::bptFunction breakpoint type")), dbg_DAP::LogPaneLogger::LineType::Debug);
-// #ifdef __MINGW32__
-//                 if (IsDebuggerPresent())
-//                 {
-//                     DebugBreak();
-//                 }
-//
-// #endif // __MINGW32__
+                // #ifdef __MINGW32__
+                //                 if (IsDebuggerPresent())
+                //                 {
+                //                     DebugBreak();
+                //                 }
+                //
+                // #endif // __MINGW32__
                 return;
 
             default:
                 m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Unknown breakpoint type: %d",  bpType), dbg_DAP::LogPaneLogger::LineType::Error);
-// #ifdef __MINGW32__
-//
-//                 if (IsDebuggerPresent())
-//                 {
-//                     DebugBreak();
-//                 }
-//
-// #endif // __MINGW32__
+                // #ifdef __MINGW32__
+                //
+                //                 if (IsDebuggerPresent())
+                //                 {
+                //                     DebugBreak();
+                //                 }
+                //
+                // #endif // __MINGW32__
                 return;
         }
 
@@ -1463,7 +1495,6 @@ void Debugger_DAP::CreateStartWatches()
 void Debugger_DAP::UpdateDAPWatches(int updateType)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("updating watches"), dbg_DAP::LogPaneLogger::LineType::Debug);
-
     CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
     event.SetInt(updateType);
     Manager::Get()->ProcessEvent(event);
@@ -1672,7 +1703,6 @@ void Debugger_DAP::DoWatches()
     }
 
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Need to wire up DoWatches.", dbg_DAP::LogPaneLogger::LineType::Error);
-
     // Update watches now
     CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
     event.SetInt(int(cbDebuggerPlugin::DebugWindows::Watches));
@@ -2090,6 +2120,7 @@ void Debugger_DAP::ConvertToDAPDirectory(wxString & str, wxString base, bool rel
 
     ConvertToDAPFriendly(str);
     StripQuotes(str);
+
     if (!base.IsEmpty())
     {
         ConvertToDAPFriendly(base);
@@ -2750,7 +2781,7 @@ void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
                 m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("additionalModuleColumns - future display data ")), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
             }
 
-            m_dapClient.Launch(std::move(m_DAP_DebuggeeStartCMD));
+            m_dapClient.Launch(std::move(m_DAP_DebuggeeStartCMD), UnixFilename(m_pProject->GetBasePath()));
         }
         else
         {
@@ -3036,7 +3067,7 @@ void Debugger_DAP::OnBreakpointDataSet(DAPEvent & event)
         {
             dbg_DAP::LogPaneLogger::LineType logType = dbg_DAP::LogPaneLogger::LineType::UserDisplay;
 
-            if ((bp.line == -1) || !bp.verified || bp.source.path.IsEmpty())
+            if ((bp.line == -1) || !bp.verified) //  || bp.source.path.IsEmpty())
             {
                 logType = dbg_DAP::LogPaneLogger::LineType::Error;
             }

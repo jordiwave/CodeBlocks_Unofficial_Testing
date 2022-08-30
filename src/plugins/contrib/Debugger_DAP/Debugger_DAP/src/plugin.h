@@ -223,6 +223,7 @@ class Debugger_DAP : public cbDebuggerPlugin
     private:
         dap::Client m_dapClient;
         long m_dapPid;
+        wxString m_debuggee;
         std::vector<wxString> m_DAP_DebuggeeStartCMD;
         dap::Process * m_DAPTerminalProcess = nullptr;
 

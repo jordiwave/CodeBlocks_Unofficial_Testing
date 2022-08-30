@@ -554,7 +554,7 @@ Token * ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayN
             // ---------------------------------------------
             CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex) //UNlock TokenTree
             // ---------------------------------------------
-        return nullptr;
+            return nullptr;
     }
     else
     {
