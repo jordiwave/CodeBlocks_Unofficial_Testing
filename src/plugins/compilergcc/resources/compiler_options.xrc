@@ -1165,7 +1165,7 @@
 												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
 													<object class="wxFlexGridSizer">
-														<cols>2</cols>
+														<cols>4</cols>
 														<vgap>8</vgap>
 														<hgap>8</hgap>
 														<growablecols>1</growablecols>
@@ -1189,14 +1189,14 @@
 															<object class="wxStaticText" name="ID_STATICTEXT26">
 																<label>Max nr. of errors to log (0=unlimited):</label>
 															</object>
-															<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-															<border>4</border>
+															<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<border>50</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxSpinCtrl" name="spnMaxErrors">
 																<value>50</value>
 															</object>
-															<flag>wxEXPAND</flag>
+															<flag>wxALIGN_LEFT</flag>
 														</object>
 													</object>
 													<flag>wxALL</flag>
@@ -1225,6 +1225,14 @@
 													<object class="wxCheckBox" name="chkSkipIncludeDeps">
 														<label>Skip include dependency check to compute what files need to be compiled (HANDLE WITH CARE!)</label>
 														<help>Enabling this option will skip the calculation of files to be forced to be compiled due to #includes.&#x0A;Setting this option wrong may break the build process.&#x0A;It is intended for compilers/languages not working with the default #include statements.</help>
+													</object>
+													<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkCompilerBuildUseUnixDelimiter">
+														<label>Use Unix delimiter when building files. Use with LLVM Clang compiler for debugging (HANDLE WITH CARE).</label>
+														<help>LLVM Clang change directory delimiter</help>
 													</object>
 													<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 													<border>8</border>

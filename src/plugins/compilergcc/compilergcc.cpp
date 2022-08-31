@@ -1654,12 +1654,32 @@ int CompilerGCC::DoRunQueue()
     // log file
     bool hasLog = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false);
     bool saveFull = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log/full_command_line"), false);
+    if (hasLog)
+    {
+        if (!cmd->command.IsEmpty() && saveFull)
+        {
+            LogMessage(cmd->command, cltNormal, ltFile);
+        }
+        else
+        {
+            if (!cmd->message.IsEmpty() && !saveFull)
+            {
+                LogMessage(cmd->message, cltNormal, ltFile);
+            }
+        }
+    }
+
 
     if (cmd->command.IsEmpty())
     {
         // log message
         if (!cmd->message.IsEmpty())
         {
+            if ((m_BuildState == bsTargetBuild) && Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/compiler_build_use_unix_delimiter"), false))
+            {
+                cmd->message.Replace('\\','/');
+            }
+
             LogMessage(cmd->message, cltNormal, ltMessages, false, false, true);
         }
 
@@ -1753,18 +1773,14 @@ int CompilerGCC::DoRunQueue()
         LogMessage(wxString::Format("Line: %d has CMD:\n%s\n\n", __LINE__, cmd->command));
 #endif
 
+        if ((m_BuildState == bsTargetBuild) && Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/compiler_build_use_unix_delimiter"), false))
+        {
+            cmd->command.Replace('\\','/');
+        }
+
         // Run the command in a shell, so stream redirections (<, >, << and >>),
         // piping and other shell features can be evaluated.
-        if (platform::windows)
-        {
-            Compiler * compiler = CompilerFactory::GetCompiler(m_CompilerId);
-
-            if (compiler && compiler->GetID().IsSameAs("clang", false))
-            {
-                cmd->command.Replace('\\', '/');
-            }
-        }
-        else
+        if (!platform::windows)
         {
             const wxString shell(Manager::Get()->GetConfigManager("app")->Read("/console_shell", DEFAULT_CONSOLE_SHELL));
             cmd->command = shell + " '" + cmd->command + "'";
@@ -1774,21 +1790,6 @@ int CompilerGCC::DoRunQueue()
 #ifdef LOG_DEBUG_STATE_MACHINE_INFO
     LogMessage(wxString::Format("Line: %d has CMD:\n%s\n\n", __LINE__, cmd->command));
 #endif
-
-    if (hasLog)
-    {
-        if (!cmd->command.IsEmpty() && saveFull)
-        {
-            LogMessage(cmd->command, cltNormal, ltFile);
-        }
-        else
-        {
-            if (!cmd->message.IsEmpty() && !saveFull)
-            {
-                LogMessage(cmd->message, cltNormal, ltFile);
-            }
-        }
-    }
 
     // create a new process
     CompilerProcess & process = m_CompilerProcessList.at(procIndex);
@@ -2939,7 +2940,7 @@ void CompilerGCC::ResetBuildState()
     }
 }
 
-inline wxString StateToString(BuildState bs)
+wxString CompilerGCC::StateToString(BuildState bs)
 {
     switch (bs)
     {

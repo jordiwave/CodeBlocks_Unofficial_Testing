@@ -825,64 +825,62 @@ void CompilerOptionsDlg::DoFillOthers()
     }
 
     ConfigManager * cfg = Manager::Get()->GetConfigManager("compiler");
-    wxCheckBox * chk = XRCCTRL(*this, "chkIncludeFileCwd", wxCheckBox);
 
+    wxCheckBox * chk = XRCCTRL(*this, "chkIncludeFileCwd", wxCheckBox);
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/include_file_cwd", false));
     }
 
     chk = XRCCTRL(*this, "chkIncludePrjCwd", wxCheckBox);
-
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/include_prj_cwd", false));
     }
 
     chk = XRCCTRL(*this, "chkSkipIncludeDeps", wxCheckBox);
-
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/skip_include_deps", false));
     }
 
-    chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
+    chk = XRCCTRL(*this, "chkCompilerBuildUseUnixDelimiter", wxCheckBox);
+    if (chk)
+    {
+        chk->SetValue(cfg->ReadBool("/compiler_build_use_unix_delimiter", false));
+    }
 
+    chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/save_html_build_log", false));
     }
 
     chk = XRCCTRL(*this, "chkFullHtmlLog", wxCheckBox);
-
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/save_html_build_log/full_command_line", false));
     }
 
     chk = XRCCTRL(*this, "chkBuildProgressBar", wxCheckBox);
-
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/build_progress/bar", false));
     }
 
     chk = XRCCTRL(*this, "chkBuildProgressPerc", wxCheckBox);
-
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/build_progress/percentage", false));
     }
 
     wxSpinCtrl * spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
-
     if (spn)
     {
         spn->SetValue(cfg->ReadInt("/parallel_processes", 0));
     }
 
     spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
-
     if (spn)
     {
         spn->SetRange(0, 1000);
@@ -890,14 +888,12 @@ void CompilerOptionsDlg::DoFillOthers()
     }
 
     chk = XRCCTRL(*this, "chkRebuildSeperately", wxCheckBox);
-
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/rebuild_seperately", false));
     }
 
     wxListBox * lst = XRCCTRL(*this, "lstIgnore", wxListBox);
-
     if (lst)
     {
         wxArrayString IgnoreOutput;
@@ -906,7 +902,6 @@ void CompilerOptionsDlg::DoFillOthers()
     }
 
     chk = XRCCTRL(*this, "chkNonPlatComp", wxCheckBox);
-
     if (chk)
     {
         chk->SetValue(cfg->ReadBool("/non_plat_comp", false));
@@ -3708,50 +3703,51 @@ void CompilerOptionsDlg::OnApply()
     if (!m_pProject)
     {
         ConfigManager * cfg = Manager::Get()->GetConfigManager("compiler");
-        wxCheckBox * chk = XRCCTRL(*this, "chkIncludeFileCwd", wxCheckBox);
 
+        wxCheckBox * chk = XRCCTRL(*this, "chkIncludeFileCwd", wxCheckBox);
         if (chk)
         {
             cfg->Write("/include_file_cwd", (bool)chk->IsChecked());
         }
 
         chk = XRCCTRL(*this, "chkIncludePrjCwd", wxCheckBox);
-
         if (chk)
         {
             cfg->Write("/include_prj_cwd", (bool)chk->IsChecked());
         }
 
         chk = XRCCTRL(*this, "chkSkipIncludeDeps", wxCheckBox);
-
         if (chk)
         {
             cfg->Write("/skip_include_deps", (bool)chk->IsChecked());
         }
 
-        chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
+        chk = XRCCTRL(*this, "chkCompilerBuildUseUnixDelimiter", wxCheckBox);
+        if (chk)
+        {
+            cfg->Write("/compiler_build_use_unix_delimiter", (bool)chk->IsChecked());
+        }
 
+
+        chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
         if (chk)
         {
             cfg->Write("/save_html_build_log", (bool)chk->IsChecked());
         }
 
         chk = XRCCTRL(*this, "chkFullHtmlLog", wxCheckBox);
-
         if (chk)
         {
             cfg->Write("/save_html_build_log/full_command_line", (bool)chk->IsChecked());
         }
 
         chk = XRCCTRL(*this, "chkBuildProgressBar", wxCheckBox);
-
         if (chk)
         {
             cfg->Write("/build_progress/bar", (bool)chk->IsChecked());
         }
 
         chk = XRCCTRL(*this, "chkBuildProgressPerc", wxCheckBox);
-
         if (chk)
         {
             cfg->Write("/build_progress/percentage", (bool)chk->IsChecked());
@@ -3759,7 +3755,6 @@ void CompilerOptionsDlg::OnApply()
         }
 
         wxSpinCtrl * spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
-
         if (spn && (((int)spn->GetValue()) != cfg->ReadInt("/parallel_processes", 0)))
         {
             if (m_Compiler->IsRunning())
@@ -3774,21 +3769,18 @@ void CompilerOptionsDlg::OnApply()
         }
 
         spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
-
         if (spn)
         {
             cfg->Write("/max_reported_errors", (int)spn->GetValue());
         }
 
         chk = XRCCTRL(*this, "chkRebuildSeperately", wxCheckBox);
-
         if (chk)
         {
             cfg->Write("/rebuild_seperately", (bool)chk->IsChecked());
         }
 
         wxListBox * lst = XRCCTRL(*this, "lstIgnore", wxListBox);
-
         if (lst)
         {
             wxArrayString IgnoreOutput;
@@ -3797,7 +3789,6 @@ void CompilerOptionsDlg::OnApply()
         }
 
         chk = XRCCTRL(*this, "chkNonPlatComp", wxCheckBox);
-
         if (chk && (chk->IsChecked() != cfg->ReadBool("/non_plat_comp", false)))
         {
             if (m_Compiler->IsRunning())

@@ -264,6 +264,7 @@ class CompilerGCC : public cbCompilerPlugin
         void InitBuildState(BuildJob job, const wxString & target, bool clean, bool build, bool install);
         void ResetBuildState();
         void BuildStateManagement(); ///< This uses m_BuildJob.
+        wxString StateToString(BuildState bs);
         BuildState GetNextStateBasedOnJob();
         void NotifyJobDone(bool showNothingToBeDone = false);
 
