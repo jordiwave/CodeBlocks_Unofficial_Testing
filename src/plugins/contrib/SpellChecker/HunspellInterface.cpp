@@ -468,7 +468,7 @@ void HunspellInterface::OpenPersonalDictionary(const wxString & strPersonalDicti
 
 wxString HunspellInterface::GetCharacterEncoding()
 {
-    wxString wxEncoding = wxEmptyString;
+    wxString character_encoding = wxEmptyString;
 
     if (m_pHunhandle != NULL)
     {
@@ -476,11 +476,11 @@ wxString HunspellInterface::GetCharacterEncoding()
 
         if (pEncoding && (strlen(pEncoding) > 0))
         {
-            wxEncoding = wxString::FromUTF8(pEncoding);
+            character_encoding = wxString::FromUTF8(pEncoding);
         }
     }
 
-    return wxEncoding;
+    return character_encoding;
 }
 
 ///////////// Options /////////////////

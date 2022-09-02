@@ -615,6 +615,16 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
 
     item.property->SetExpanded(watch->IsExpanded());
     item.watch = watch;
+
+#if 1
+    if (watch->GetChildCount() > 0)
+    {
+        const wxColour & changedColour = Manager::Get()->GetColourManager()->GetColour(wxT("dbg_watches_changed"));
+        AppendChildren(*m_grid, *item.property, *item.watch, item.readonly, changedColour);
+    }
+
+#endif // 1
+
     m_watches.push_back(item);
     m_grid->Refresh();
 }

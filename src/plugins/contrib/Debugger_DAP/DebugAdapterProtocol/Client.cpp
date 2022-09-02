@@ -658,7 +658,7 @@ void dap::Client::StepOut(int threadId, bool singleThread)
     SendRequest(req);
 }
 
-void dap::Client::GetChildrenVariables(int variablesReference, EvaluateContext context, size_t count,
+int dap::Client::GetChildrenVariables(int variablesReference, EvaluateContext context, size_t count,
                                        ValueDisplayFormat format)
 {
     VariablesRequest req = MakeRequest<VariablesRequest>();
@@ -667,6 +667,7 @@ void dap::Client::GetChildrenVariables(int variablesReference, EvaluateContext c
     req.arguments.format.hex = (format == ValueDisplayFormat::HEX);
     m_get_variables_queue.push_back({ variablesReference, context });
     SendRequest(req);
+    return req.seq;
 }
 
 void dap::Client::Pause(int threadId)

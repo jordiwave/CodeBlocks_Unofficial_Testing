@@ -201,7 +201,7 @@ void DAPBreakpoint::LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpo
 
     if (ed == nullptr)
     {
-        dbgDAP->AddBreakpoint(m_filename, m_line);
+        dbgDAP->UpdateOrAddBreakpoint(m_filename, m_line, m_enabled, -1);
     }
     else
     {
@@ -309,6 +309,7 @@ bool DAPBreakpoint::IsTemporary() const
     return m_temporary;
 }
 
+/*
 cb::shared_ptr<DAPWatch> FindWatch(wxString const & expression, DAPWatchesContainer & watches)
 {
     size_t expLength = expression.length();
@@ -359,7 +360,7 @@ cb::shared_ptr<DAPWatch> FindWatch(wxString const & expression, DAPWatchesContai
 
     return cb::shared_ptr<DAPWatch>();
 }
-
+*/
 wxString DAPWatch::GetWatchFormatTowxString()
 {
     switch (m_format)
@@ -453,7 +454,7 @@ void DAPWatch::SaveWatchToXML(tinyxml2::XMLNode * pWatchesMasterNode)
     tinyxml2::XMLNode * pNodeWatch = pWatchesMasterNode->InsertEndChild(pNewXMLElement);
     AddChildNode(pNodeWatch, "DAPWatchClassName", m_DAPWatchClassName);
     AddChildNode(pNodeWatch, "projectTitle", m_project->GetTitle());   // The Project the file belongs to.
-    // AddChildNode(pNodeWatch, "id", m_id);
+    // AddChildNode(pNodeWatch, "DAPVariableReference", m_DAPVariableReference);
     AddChildNode(pNodeWatch, "symbol", m_symbol);
     // AddChildNode(pNodeWatch, "value", m_value);
     AddChildNode(pNodeWatch, "type", m_type);
@@ -472,7 +473,7 @@ void DAPWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_D
 {
     //Only load the breakpoints that belong to the current project
     m_DAPWatchClassName = ReadChildNodewxString(pElementWatch, "DAPWatchClassName");
-    m_id = ReadChildNodewxString(pElementWatch, "id");
+    // m_DAPVariableReference = ReadChildNodewxString(pElementWatch, "DAPVariableReference");
     m_symbol = ReadChildNodewxString(pElementWatch, "symbol");
     m_value = ReadChildNodewxString(pElementWatch, "value");
     m_type = ReadChildNodewxString(pElementWatch, "type");

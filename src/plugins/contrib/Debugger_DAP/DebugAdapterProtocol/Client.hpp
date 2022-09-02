@@ -181,7 +181,7 @@ public:
     }
 
     /**
-     * @brief set the tranposrt for this client. The `Client` takes
+     * @brief set the transport for this client. The `Client` takes
      * the ownership for this pointer and will free it when its done with it.
      * This means that transport **must** be allocated on the heap
      */
@@ -295,7 +295,7 @@ public:
      * @param context the context of variablesReference
      * @param count number of children. If count 0, all variables are returned
      */
-    void GetChildrenVariables(int variablesReference, EvaluateContext context = EvaluateContext::VARIABLES,
+    int GetChildrenVariables(int variablesReference, EvaluateContext context = EvaluateContext::VARIABLES,
                               size_t count = 10, ValueDisplayFormat format = ValueDisplayFormat::NATIVE);
 
     /**

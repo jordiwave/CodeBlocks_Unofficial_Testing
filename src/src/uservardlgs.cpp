@@ -465,7 +465,7 @@ void UsrGlblMgrEditDialog::SelectSet(cb_unused wxCommandEvent & event)
 
 void UsrGlblMgrEditDialog::Load()
 {
-    m_DeleteSet->Enable(!m_CurrentSetName.IsSameAs(_T("default")));
+    m_DeleteSet->Enable(!m_CurrentSetName.IsSameAs(UserVariableManagerConsts::defaultSetName));
     std::vector<wxString> knownMembers = UserVariableManagerConsts::cBuiltinMembers;
 
     // Clear all controlls first
@@ -593,7 +593,7 @@ void UsrGlblMgrEditDialog::UpdateChoices()
 {
     if (m_CurrentSetName.IsEmpty())
     {
-        m_CurrentSetName = _T("default");
+        m_CurrentSetName = UserVariableManagerConsts::defaultSetName;
     }
 
     if (m_varMap.size() > 0)

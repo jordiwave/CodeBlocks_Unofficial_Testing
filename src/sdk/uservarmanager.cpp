@@ -163,6 +163,12 @@ void UserVariableManager::Reload()
 
         m_VariableSetMap.emplace(set, std::move(variableMap));
     }
+
+    if (m_VariableSetMap.find(UserVariableManagerConsts::defaultSetName) == m_VariableSetMap.end())
+    {
+        // There is no default set, so lets create one...
+        m_VariableSetMap[UserVariableManagerConsts::defaultSetName] = VariableMap();
+    }
 }
 
 void UserVariableManager::Save()

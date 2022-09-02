@@ -26,7 +26,7 @@ namespace dbg_DAP
 EditWatchDlg::EditWatchDlg(cb::shared_ptr<dbg_DAP::DAPWatch> watch, wxWindow * parent)
     : m_watch(watch)
 {
-    wxXmlResource::Get()->LoadObject(this, parent, "dlgEditWatchDAPMI", "wxScrollingDialog");
+    wxXmlResource::Get()->LoadObject(this, parent, "dlgEditWatch_DAP", "wxScrollingDialog");
 
     if (m_watch)
     {

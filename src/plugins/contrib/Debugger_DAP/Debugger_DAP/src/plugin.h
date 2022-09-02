@@ -81,7 +81,7 @@ class Debugger_DAP : public cbDebuggerPlugin
 
         // breakpoints calls
         virtual cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString & filename, int line);
-        cb::shared_ptr<cbBreakpoint> UpdateOrAddBreakpoint(const wxString & filename, const int line, const int id);
+        cb::shared_ptr<cbBreakpoint> UpdateOrAddBreakpoint(const wxString & filename, const int line, const bool bEnable, const int id);
         //        cb::shared_ptr<cbBreakpoint> AddBreakpoint(cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp);
         virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString & dataExpression);
         virtual int GetBreakpointsCount() const;
@@ -92,7 +92,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         virtual void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
         virtual void DeleteAllBreakpoints();
         virtual void ShiftBreakpoint(int index, int lines_to_shift);
-        virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable);
+        virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool bEnable);
 
         // threads
         virtual int GetThreadsCount() const;
@@ -239,6 +239,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         // breakpoints
         dbg_DAP::DAPBreakpointsContainer m_breakpoints;
         std::map<wxString, std::vector<cb::shared_ptr<dbg_DAP::DAPBreakpoint>>> m_map_filebreakpoints;
+        std::map<wxString, wxString> m_map_fileSystemDap;
         dbg_DAP::DAPBreakpointsContainer m_temporary_breakpoints;
         cb::shared_ptr<dbg_DAP::DAPBreakpoint> FindBreakpoint(const cbProject * project, const wxString & filename, const int line);
         void UpdateMapFileBreakPoints(const wxString & filename, cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp, bool bAddBreakpoint);
@@ -257,6 +258,7 @@ class Debugger_DAP : public cbDebuggerPlugin
         // misc
         void DAPDebuggerResetData(bool bClearAllData);
         void OnProcessBreakpointData(const wxString & brkDescription);
+        bool AddWatchChildByReqestSequence(cb::shared_ptr<dbg_DAP::DAPWatch> Watch, int requestSeq, const dap::Variable & var);
 
         /// Dap events
         void OnStopped(DAPEvent & event);

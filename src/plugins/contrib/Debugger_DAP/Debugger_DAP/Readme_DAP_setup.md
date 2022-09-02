@@ -9,16 +9,16 @@ On Windows you can use the following DAP adapters:
 
 On Windows you configure the different DAP adapters as follows for the debugger directory configuration setting:
 
-|         DAP Adapter                   | Config setting                                 |
-|:------------------------------------- |:---------------------------------------------- |
-| C:\msys64\mingw64\bin\lldb-vscode.exe | Use native paths                               |
+|         DAP Adapter                   | Config setting                                                                           |
+|:------------------------------------- |:---------------------------------------------------------------------------------------- |
+| C:\msys64\mingw64\bin\lldb-vscode.exe | Use native paths                                                                         |
 | C:\msys64\clang64\bin\lldb-vscode.exe | Needs C::B compilergcc change to work !!!!  "Use Linux paths on Windows no drive letter" |
-| C:\llvm\bin\lldb-vscode.exe           | Needs C::B compilergcc change to work !!!!  "Use Linux paths on Windows no drive letter" |
-| .\extension\adapter\codelldb.exe      | Use relative path compared to the executable   |
+| C:\llvm\bin\lldb-vscode.exe           | Need to spend time to see what is causing the launch request to fail                     |
+| .\extension\adapter\codelldb.exe      | Use relative path compared to the executable                                             |
 
 **NOTES:**
 
-1. To use the LLDB debugger you need to compiler with either -gdwarf-2 or -gdwarf-4 instead of -ggdb to ensure that the Dwarf 2 or 4 debug forat is used.
+1. To use the LLDB debugger you need to compiler with either -gdwarf-2 or -gdwarf-4 instead of -ggdb to ensure that the Dwarf2 or Dwarf4 debug format is used.
 
 2. The compilergcc.cpp for clangc++ builds need to change parameters to use the Unix '/' for the DAP debugger to work. This can be done in the
     CompilerGCC::DoRunQueue() function, but to make it configurable more files need to change.
@@ -44,7 +44,7 @@ On Windows you configure the different DAP adapters as follows for the debugger 
 echo on
 @setlocal
 @SET CurrentDir="%CD%"
-@set PYTHONHOME=C:\Users\<usrername>\AppData\Local\Programs\Python\Python310\
+@set PYTHONHOME=C:\Users\<username>\AppData\Local\Programs\Python\Python310\
 @set RUST_LOG=debug,codelldb=debug
 @set RUST_LOG_STYLE=always
 @set RUST_BACKTRACE=full

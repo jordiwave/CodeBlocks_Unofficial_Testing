@@ -450,7 +450,8 @@ class DAPWatch : public cbWatch
             m_project(project),
             m_pLogger(logger),
             m_DAPWatchClassName("DAPWatch"),
-            m_id(wxEmptyString),
+            m_DAPVariableReference(0),
+            m_DAPChildVariableRequestSequence(0),
             m_symbol(symbol),
             m_address(0),
             m_type(wxEmptyString),
@@ -475,7 +476,9 @@ class DAPWatch : public cbWatch
 
         void Reset()
         {
-            m_id = m_type = m_value = wxEmptyString;
+            m_DAPVariableReference = 0;
+            m_DAPChildVariableRequestSequence = 0,
+            m_type = m_value = wxEmptyString;
             m_ValueErrorMessage = false;
             m_has_been_expanded = false;
             RemoveChildren();
@@ -520,15 +523,24 @@ class DAPWatch : public cbWatch
             return m_forTooltip;
         }
 
-
-        wxString const & GetID() const
+        uint64_t const GetDAPVariableReference() const
         {
-            return m_id;
+            return m_DAPVariableReference;
         }
 
-        void SetID(wxString const & id)
+        void SetDAPChildVariableRequestSequence(int id)
         {
-            m_id = id;
+            m_DAPChildVariableRequestSequence = id;
+        }
+
+        int const GetDAPChildVariableRequestSequence() const
+        {
+            return m_DAPChildVariableRequestSequence;
+        }
+
+        void SetDAPVariableReference(uint64_t const & id)
+        {
+            m_DAPVariableReference = id;
         }
 
         bool HasBeenExpanded() const
@@ -636,7 +648,7 @@ class DAPWatch : public cbWatch
 
         wxString GetDebugString() const override
         {
-            m_debug_string = m_id + "->" + m_symbol + " = " + m_value;
+            m_debug_string = m_DAPVariableReference + "->" + m_symbol + " = " + m_value;
             return m_debug_string;
         }
 
@@ -662,7 +674,8 @@ class DAPWatch : public cbWatch
         dbg_DAP::LogPaneLogger * m_pLogger;
 
         wxString m_DAPWatchClassName;
-        wxString m_id;
+        uint64_t m_DAPVariableReference;
+        int m_DAPChildVariableRequestSequence;
         wxString m_symbol;
         uint64_t m_address;
         wxString m_type;
@@ -684,7 +697,7 @@ class DAPWatch : public cbWatch
 
 typedef std::vector<cb::shared_ptr<DAPWatch>> DAPWatchesContainer;
 
-cb::shared_ptr<DAPWatch> FindWatch(wxString const & expression, DAPWatchesContainer & watches);
+// cb::shared_ptr<DAPWatch> FindWatch(wxString const & expression, DAPWatchesContainer & watches);
 
 class DAPMemoryRangeWatch  : public cbWatch
 {
