@@ -73,10 +73,9 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Add watch before starting the debugger                  | 31-Aug |  N/A   |  N/A   |  N/A   |
 |   * Add watch after starting the debugger                   | 31-Aug |  Pass  |   ?    |   ?    |
 |   * Simple data types                                       | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Simple structure                                        | 31-Aug |**Fail**|   ?    |   ?    |
-|   * Array of simple structures                              | 31-Aug |**Fail**|   ?    |   ?    |
-|   * Complex structures                                      | 01-Sep |**Fail**|   ?    |   ?    |
-|   * Can expand cbProject complex structures                 | 01-Sep |**Fail**|   ?    |   ?    |
+|   * Simple structure                                        | 02-Sep |  Pass  |   ?    |   ?    |
+|   * Array of simple structures                              | 02-Sep |  Pass  |   ?    |   ?    |
+|   * Complex structures                                      | 02-Sep |  Pass  |   ?    |   ?    |
 |   * Edit watches                                            |        |   -    |   -    |   -    |
 |   * Watches data saved on project close                     | 01-Sep |  Pass  |   ?    |   ?    |
 |   * Watches removed after closing the project               | 31-Aug |  Pass  |   ?    |   ?    |
