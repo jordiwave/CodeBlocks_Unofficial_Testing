@@ -60,7 +60,6 @@ class DAPBreakpoint : public cbBreakpoint
             m_filename(wxEmptyString),
             m_line(-1),
             m_ID(-1),
-            m_index(-1),
             m_temporary(false),
             m_enabled(true),
             m_active(true),
@@ -82,7 +81,6 @@ class DAPBreakpoint : public cbBreakpoint
             m_filename(filename),
             m_line(line),
             m_ID(id),
-            m_index(-1),
             m_temporary(false),
             m_enabled(true),
             m_active(true),
@@ -109,11 +107,6 @@ class DAPBreakpoint : public cbBreakpoint
         virtual bool IsTemporary() const;
 
         // DAP additional
-        int GetIndex() const
-        {
-            return m_index;
-        }
-
         const wxString & GetCondition() const
         {
             return m_condition;
@@ -132,11 +125,6 @@ class DAPBreakpoint : public cbBreakpoint
         bool HasIgnoreCount() const
         {
             return false;
-        }
-
-        void SetIndex(int index)
-        {
-            m_index = index;
         }
 
         void SetShiftLines(int linesToShift)
@@ -224,16 +212,6 @@ class DAPBreakpoint : public cbBreakpoint
         void SetID(int id)
         {
             m_ID = id;
-        }
-
-        long GetIndex()
-        {
-            return m_index;
-        }
-
-        void SetIndex(long index)
-        {
-            m_index = index;
         }
 
         bool GetIsTemporary()
@@ -399,7 +377,6 @@ class DAPBreakpoint : public cbBreakpoint
         int m_ID;                       // DAP ID for the breakpoint
         //wxString filenameAsPassed;    // The filename for the breakpoint as passed to the debugger (i.e. full filename).
 
-        long m_index;                   // The breakpoint number. Set automatically. *Don't* write to it.
         bool m_temporary;               // Is this a temporary (one-shot) breakpoint?
         bool m_enabled;                 // Is the breakpoint enabled?
         bool m_active;                  // Is the breakpoint active? (currently unused)

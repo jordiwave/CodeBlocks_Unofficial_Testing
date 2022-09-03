@@ -17,5 +17,5 @@ if exist ..\..\..\bootstrap cd ..\..\..
 :Finish
 @echo Done
 @cd /d "%CurrentDir%"
-pause
+@rem pause
 @endlocal

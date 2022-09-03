@@ -157,7 +157,6 @@ void DAPBreakpoint::SaveBreakpointToXML(tinyxml2::XMLNode * pNodeParent)
     AddChildNode(pNodeBreakpoint, "projectTitle", m_project->GetTitle());   // The Project the file belongs to.
     AddChildNode(pNodeBreakpoint, "filename", m_filename);                  // The filename for the breakpoint.
     AddChildNode(pNodeBreakpoint, "line", m_line);                          // The line for the breakpoint.
-    AddChildNode(pNodeBreakpoint, "index", m_index);                        // The breakpoint number. Set automatically. *Don't* write to it.
     AddChildNode(pNodeBreakpoint, "temporary", m_temporary);                // Is this a temporary (one-shot) breakpoint?
     AddChildNode(pNodeBreakpoint, "enabled", m_enabled);                    // Is the breakpoint enabled?
     AddChildNode(pNodeBreakpoint, "active", m_active);                      // Is the breakpoint active? (currently unused)
@@ -181,7 +180,6 @@ void DAPBreakpoint::LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpo
     SetType(ReadChildNodewxString(pElementBreakpoint, "type"));                    // The type of this breakpoint.
     m_filename = ReadChildNodewxString(pElementBreakpoint, "filename");            // The filename for the breakpoint.
     m_line = ReadChildNodeInt(pElementBreakpoint, "line");                         // The line for the breakpoint.
-    m_index = ReadChildNodeLong(pElementBreakpoint, "index");                      // The breakpoint number. Set automatically. *Don't* write to it.
     m_temporary = ReadChildNodeBool(pElementBreakpoint, "temporary");              // Is this a temporary (one-shot) breakpoint?
     m_enabled = ReadChildNodeBool(pElementBreakpoint, "enabled");                  // Is the breakpoint enabled?
     m_active = ReadChildNodeBool(pElementBreakpoint, "active");                    // Is the breakpoint active? (currently unused)

@@ -91,7 +91,8 @@ class Debugger_DAP : public cbDebuggerPlugin
         virtual void UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
         virtual void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
         virtual void DeleteAllBreakpoints();
-        virtual void ShiftBreakpoint(int index, int lines_to_shift);
+        virtual void ShiftBreakpoint(int index, int lines_to_shift) {};
+        virtual bool ShiftAllFileBreakpoints(const wxString & filename, int startline, int lines);
         virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool bEnable);
 
         // threads

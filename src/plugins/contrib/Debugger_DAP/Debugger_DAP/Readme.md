@@ -47,12 +47,14 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Skipping over files                                     |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Breakpoints**                                             |        |        |        |        |
+|   * Stop at Main works                                      | 02-Sep |  Pass  |**F(2)**|   ?    |
 |   * Add line break point before starting the debugger       | 31-Aug |  Pass  |   ?    |   ?    |
 |   * Add line break point after the starting the debugger    | 31-Aug |  Pass  |   ?    |   ?    |
 |   * Debug menu option to Toggle line break point (F5)       | 31-Aug |  Pass  |   ?    |   ?    |
 |   * Debug menu option to Remove all breakpoints             | 31-Aug |  Pass  |   ?    |   ?    |
 |   * Disable/Enable line break point via pop up menu         | 31-Aug |  Pass  |   ?    |   ?    |
 |   * Remove line break point                                 | 31-Aug |  Pass  |   ?    |   ?    |
+|   * Move breakpoint by adding line before break point	      | 03-Sep |  Pass  |   ?    |   ?    |
 |   * Edit line break point                                   |        |   -    |   -    |   -    |
 |     * ignore count before break                             |        |   -    |   -    |   -    |
 |     * break when expression is true                         |        |   -    |   -    |   -    |
@@ -63,10 +65,8 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Break points created on project open                    | 01-Sep |  Pass  |   ?    |   ?    |
 |                                                             |        |        |        |        |
 | **Exception Handling**                                      |        |        |        |        |
-|   * Windows Clang64 catches exceptions and shows call stack | 31-Jul |  Pass  |   ?    |   ?    |
-|   * Windows MinGW64 catches exceptions and shows call stack | 01-Sep |  Pass  |   ?    |   ?    |
-|   * Linux Debugger catches exceptions and shows call stack  | 06-Jul |  TEST  |   ?    |   ?    |
-|   * MacOS Debugger catches exceptions and shows call stack  | 06-Jul |  TEST  |   ?    |   ?    |
+|   * Clang++ catches exceptions and shows call stack         | 31-Jul |  Pass  |   ?    |   ?    |
+|   * Windows MinGW64 catches exceptions and shows call stack | 01-Sep |  Pass  |  N/A   |  N/A   
 |                                                             |        |        |        |        |
 | **Watches**                                                 |        |        |        |        |
 |   * watches dialog shows function args and local vars       |        |   -    |   -    |   -    |
@@ -154,8 +154,8 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Memory view watches created on project open             |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Show tty for console projects**                           |        |        |        |        |
-|   * Show console on console app                             | 31-Aug |  Pass  |   ?    |   ?    |
-|   * printf display on console on console app                | 01-Sep |**FAIL**|   ?    |   ?    |
+|   * Show console on console app                             | 31-Aug |  Pass  |**FAIL**|   ?    |
+|   * printf display on console on console app                | 01-Sep |**FAIL**|**FAIL**|   ?    |
 |   * Do NOT show console on GUI app                          |        |   ?    |   ?    |   ?    |
 |                                                             |        |        |        |        |
 | **Projects - debugger options dialog**                      |        |        |        |        |
@@ -184,14 +184,14 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Ensure TCP debugging works                              |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Operating System**                                        |        | Windows| Linux  | MacOS  |
-|   * Builds via workspace                                    | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Builds bootstrap/configure/make                         | 06-Jul |  TEST  |  TEST  | TEST   |
-|   * Builds on Linux via Debian process                      | 06-Jul |  N/A   |  TEST  |  N/A   |
-|   * Create DAP cbplugin                                     |        |   ?    |   ?    |   ?    |
-|   * Test DAP cbplugin with Latest nightly                   |        |   ?    |   ?    |   ?    |
+|   * Builds via workspace                                    | 31-Aug |  Pass  |  Pass  |   ?    |
+|   * Builds bootstrap/configure/make                         | 06-Jul |  N/A   |  Pass  | Pass   |
+|   * Builds on Linux via Debian process                      | 06-Jul |  N/A   |  Pass  |  N/A   |
+|   * Create DAP cbplugin                                     | 01-Sep |  Pass  |   ?    |   ?    |
+|   * Test DAP cbplugin with Latest nightly                   | 01-Sep |**P(1)**|   ?    |   ?    |
 |                                                             |        |        |        |        |
 
-The table was last updated on 31-Aug-2022.
+The table was last updated on 03-Sep-2022.
 
 NOTES:
  "TEST"     - To be tested, passed when last tested.
@@ -200,3 +200,8 @@ NOTES:
  "?"        - Not tested yet. Do not raise any issues on this item if it does not work as expected.
  "-"        - Functionality that may/does not exist in the DAP debugger yet. Future work.
  "N/A"      - This feature is not applicable for the DAP debugger due.
+
+
+P(1) - Fails due to the SF SVN code bumping the SDk version from 2.20.0 to 2.21.0. reverting works
+F(2) - Fails cannot stop on main, but can set breakpoint and start correctly if using a breakpoint
+Move lines needs cbplugin.cpp and cbplugin.cpp change to add ShiftAllFileBreakpoints(...) function

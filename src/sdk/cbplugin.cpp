@@ -444,6 +444,13 @@ void cbDebuggerPlugin::EditorLinesAddedOrRemoved(cbEditor * editor, int startlin
     }
 
     const wxString & filename = editor->GetFilename();
+
+    // Try if debugger support shifting all breakpoints at once
+    if (ShiftAllFileBreakpoints(filename, startline, lines))
+    {
+        return;
+    }
+
     std::vector<int> breakpoints_for_file;
     int count = GetBreakpointsCount();
 

@@ -1,5 +1,12 @@
+#include <wx/dirdlg.h>
+#include <wx/filedlg.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+
 #include "uservardlgs.h"
 #include "annoyingdialog.h"
+#include "tinywxuni.h"
+
 
 #define MAX_USER_DEFINED 8
 
