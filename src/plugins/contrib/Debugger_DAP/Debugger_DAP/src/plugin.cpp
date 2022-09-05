@@ -1573,7 +1573,6 @@ cb::shared_ptr<cbWatch> Debugger_DAP::AddWatch(const wxString & symbol, cb_unuse
         if (symbol.IsSameAs(var.name))
         {
 #ifdef DAP_DEBUG_ENABLE
-            wxString button = (var.variablesReference > 0 ? "> " : "  ");
             wxString value = var.value.empty() ? "\"\"" : var.value;
             wxString attributes = wxEmptyString;
 
@@ -1584,11 +1583,10 @@ cb::shared_ptr<cbWatch> Debugger_DAP::AddWatch(const wxString & symbol, cb_unuse
 
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
                                      __LINE__,
-                                     wxString::Format(_("Var: %s  (%d) %s = %s , Type: %s, Hint: kind: %s , attributes %s , visibility: %s "),
-                                                      button,
-                                                      var.variablesReference,
+                                     wxString::Format(_("Var: %s = %s , variablesReference: %d  Type: %s, Hint: kind: %s , attributes %s , visibility: %s "),
                                                       var.name,
                                                       value,
+                                                      var.variablesReference,
                                                       var.type,
                                                       var.presentationHint.kind,
                                                       attributes,
@@ -2826,9 +2824,11 @@ void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
             SHOW_RESPONSE_DATA(_("supportsLoadedSourcesRequest: %s"), response_data->capabilities.supportsLoadedSourcesRequest, supportsLoadedSourcesRequest);
             SHOW_RESPONSE_DATA(_("supportsLogPoints: %s"), response_data->capabilities.supportsLogPoints, supportsLogPoints);
             SHOW_RESPONSE_DATA(_("supportsModulesRequest: %s"), response_data->capabilities.supportsModulesRequest, supportsModulesRequest);
+            //SHOW_RESPONSE_DATA(_("supportsProgressReporting: %s"), response_data->capabilities.supportsProgressReporting , supportsProgressReporting);
             SHOW_RESPONSE_DATA(_("supportsReadMemoryRequest: %s"), response_data->capabilities.supportsReadMemoryRequest, supportsReadMemoryRequest);
             SHOW_RESPONSE_DATA(_("supportsRestartFrame: %s"), response_data->capabilities.supportsRestartFrame, supportsRestartFrame);
             SHOW_RESPONSE_DATA(_("supportsRestartRequest: %s"), response_data->capabilities.supportsRestartRequest, supportsRestartRequest);
+            //SHOW_RESPONSE_DATA(_("supportsRunInTerminalRequest: %s"), response_data->capabilities.supportsRunInTerminalRequest, supportsRunInTerminalRequest);
             SHOW_RESPONSE_DATA(_("supportsSetExpression: %s"), response_data->capabilities.supportsSetExpression, supportsSetExpression);
             SHOW_RESPONSE_DATA(_("supportsSetVariable: %s"), response_data->capabilities.supportsSetVariable, supportsSetVariable);
             SHOW_RESPONSE_DATA(_("supportsSingleThreadExecutionRequests: %s"), response_data->capabilities.supportsSingleThreadExecutionRequests, supportsSingleThreadExecutionRequests);

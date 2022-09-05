@@ -604,8 +604,26 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
         m_grid->SetPropertyName(item.property, symbol);
         m_grid->SetPropertyValue(item.property, value);
         m_grid->SetPropertyAttribute(item.property, "Units", type);
+        if (value.empty())
+        {
+            m_grid->SetPropertyHelpString(item.property, wxEmptyString);
+        }
+        else
+        {
+            wxString valueTruncated;
+            if (value.length() > 128)
+            {
+                valueTruncated = value.Left(128) + "...";
+            }
+            else
+            {
+                valueTruncated=value;
+            }
+            m_grid->SetPropertyHelpString(item.property, symbol + "=" + valueTruncated);
+        }
         WatchesProperty * watches_prop = static_cast<WatchesProperty *>(last_prop);
         watches_prop->SetWatch(watch);
+        // Append blank row
         m_grid->Append(new WatchesProperty(wxEmptyString, wxEmptyString, cb::shared_ptr<cbWatch>(), false));
     }
     else

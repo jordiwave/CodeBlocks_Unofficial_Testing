@@ -31,56 +31,57 @@ If you find issue that is listed in the table below that indicates it is passing
 |                   Debugging Feature                         | Date   |clang64 |  Linux | MacOS  |
 | :---------------------------------------------------------- | :----: | :----: | :----: | :----: |
 | **Stepping**                                                |        |        |        |        |
-|   * Start/Continue       (F8)                               | 31-Aug |  Pass  |   ?    |   ?    |
+|   * Start/Continue       (F8)                               | 31-Aug |  Pass  |  Pass  |  Pass  |
 |   * Break debugger                                          |        |   -    |   -    |   -    |
-|   * Stop debugger        (Shift-F8)                         | 31-Aug |  Pass  |   ?    |   ?    |
+|   * Stop debugger        (Shift-F8)                         | 31-Aug |  Pass  |  Pass  |  Pass  |
 |   * Run to cursor        (F4)                               |        |   -    |   -    |   -    |
-|   * Next line            (F7)                               | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Step Into            (Shift-F7)                         | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Step out             (Ctrl-F7)                          | 31-Aug |  Pass  |   ?    |   ?    |
+|   * Next line            (F7)                               | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Step Into            (Shift-F7)                         | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Step out             (Ctrl-F7)                          | 31-Aug |  Pass  |  Pass  |  Pass  |
 |      * Display the return value of a function               |        |   -    |   -    |   -    |
 |   * Next instruction     (Alt-F7)                           |        |   -    |   -    |   -    |
 |   * Step into instruction(ALT-Shift-F7)                     |        |   -    |   -    |   -    |
 |   * Set next statement                                      |        |   -    |   -    |   -    |
-|   * Notification that the debugging has ended               | 01-Sep |  Pass  |   ?    |   ?    |
+|   * Notification that the debugging has ended               | 01-Sep |  Pass  |  Pass  |  Pass  |
 |   * Skipping over functions                                 |        |   -    |   -    |   -    |
 |   * Skipping over files                                     |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Breakpoints**                                             |        |        |        |        |
-|   * Stop at Main works                                      | 02-Sep |  Pass  |**F(2)**|   ?    |
-|   * Add line break point before starting the debugger       | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Add line break point after the starting the debugger    | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Debug menu option to Toggle line break point (F5)       | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Debug menu option to Remove all breakpoints             | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Disable/Enable line break point via pop up menu         | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Remove line break point                                 | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Move breakpoint by adding line before break point	      | 03-Sep |  Pass  |   ?    |   ?    |
+|   * Stop at Main works                                      | 02-Sep |  Pass  |  Pass  |  Pass  |
+|   * Add line break point before starting the debugger       | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Add line break point after the starting the debugger    | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Debug menu option to Toggle line break point (F5)       | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Debug menu option to Remove all breakpoints             | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Disable/Enable line break point via pop up menu         | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Remove line break point                                 | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Move breakpoint by adding line before break point       | 03-Sep |  Pass  |  Pass  |**FAIL**|
 |   * Edit line break point                                   |        |   -    |   -    |   -    |
 |     * ignore count before break                             |        |   -    |   -    |   -    |
 |     * break when expression is true                         |        |   -    |   -    |   -    |
-|   * Break points still there after stopping/exit debugger   | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Break points data saved on project close                | 01-Sep |  Pass  |   ?    |   ?    |
-|   * Break points removed after closing the project          | 01-Sep |  Pass  |   ?    |   ?    |
+|   * Break points still there after stopping/exit debugger   | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Break points data saved on project close                | 01-Sep |  Pass  |  Pass  |  Pass  |
+|   * Break points removed after closing the project          | 01-Sep |  Pass  |  Pass  |  Pass  |
 |   * Break points removed after changing debugger            |        |   -    |   -    |   -    |
-|   * Break points created on project open                    | 01-Sep |  Pass  |   ?    |   ?    |
+|   * Break points created on project open                    | 01-Sep |  Pass  |  Pass  |  Pass  |
 |                                                             |        |        |        |        |
 | **Exception Handling**                                      |        |        |        |        |
-|   * Clang++ catches exceptions and shows call stack         | 31-Jul |  Pass  |   ?    |   ?    |
+|   * Clang++ catches exceptions and shows call stack         | 31-Jul |  Pass  |  Pass  |  Pass  |
 |   * Windows MinGW64 catches exceptions and shows call stack | 01-Sep |  Pass  |  N/A   |  N/A   
 |                                                             |        |        |        |        |
 | **Watches**                                                 |        |        |        |        |
 |   * watches dialog shows function args and local vars       |        |   -    |   -    |   -    |
 |   * Add watch before starting the debugger                  | 31-Aug |  N/A   |  N/A   |  N/A   |
-|   * Add watch after starting the debugger                   | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Simple data types                                       | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Simple structure                                        | 02-Sep |  Pass  |   ?    |   ?    |
-|   * Array of simple structures                              | 02-Sep |  Pass  |   ?    |   ?    |
-|   * Complex structures                                      | 02-Sep |  Pass  |   ?    |   ?    |
+|   * Add watch after starting the debugger                   | 31-Aug | Pass(4)| Pass(4)| Pass(4)|
+|   * Simple data types                                       | 31-Aug | Pass(4)| Pass(4)| Pass(4)|
+|   * Simple structure                                        | 02-Sep | Pass(4)| Pass(4)| Pass(4)|
+|   * Array of simple structures                              | 02-Sep | Pass(4)| Pass(4)| Pass(4)|
+|   * Complex structures                                      | 02-Sep | Pass(4)| Pass(4)| Pass(4)|
+|   * Add element within a structure                          | 05-Sep |**FAIL**|**FAIL**|**FAIL**|
 |   * Edit watches                                            |        |   -    |   -    |   -    |
-|   * Watches data saved on project close                     | 01-Sep |  Pass  |   ?    |   ?    |
-|   * Watches removed after closing the project               | 31-Aug |  Pass  |   ?    |   ?    |
+|   * Watches data saved on project close                     | 01-Sep |  Pass  |  Pass  |  Pass  |
+|   * Watches removed after closing the project               | 31-Aug |  Pass  |  Pass  |  Pass  |
 |   * Watches removed after changing debugger                 |        |   -    |   -    |   -    |
-|   * Watches created on project open                         | 01-Sep |  Pass  |   ?    |   ?    |
+|   * Watches created on project open                         | 01-Sep |  Pass  |  Pass  |  Pass  |BUT, does not show data
 |                                                             |        |        |        |        |
 | **Data Breakpoints**                                        |        |        |        |        |
 |   * Display data breakpoints in break point dialog          |        |   -    |   -    |   -    |
@@ -100,14 +101,14 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Thread dialog cleared on app exit                       |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Debug Menu -> Breakpoints Dialog**                        |        |        |        |        |
-|   * Show Breakpoints dialog                                 | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Close Breakpoints dialog                                | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Pop up context menu on a breakpoint:                    |        |        |        |        |
-|       * Open in editor                                      | 31-Aug |  Pass  |   ?    |   ?    |
-|       * Edit                                                |        |   -    |   -    |   -    |
-|       * Disable                                             | 01-Sep |  Pass  |   ?    |   ?    |
-|       * Remove                                              | 31-Aug |  Pass  |   ?    |   ?    |
-|       * Remove all                                          | 31-Aug |  Pass  |   ?    |   ?    |
+|   * Show Breakpoints dialog                                 | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Close Breakpoints dialog                                | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Pop up context menu on a breakpoint:                    |        |        |**FAIL**|        |
+|       * Open in editor                                      | 31-Aug |  Pass  |**FAIL**|  Pass  |
+|       * Edit                                                |        |   -    |**FAIL**|   -    |
+|       * Disable                                             | 01-Sep |  Pass  |**FAIL**|  Pass  |
+|       * Remove                                              | 31-Aug |  Pass  |**FAIL**|  Pass  |
+|       * Remove all                                          | 31-Aug |  Pass  |**FAIL**|  Pass  |
 |       * Show temporary                                      |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Debug Menu -> CPU Registers Dialog**                      |        |        |        |        |
@@ -117,10 +118,10 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * CPU register dialog cleared on exit                     |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Debug Menu -> Call Stack Dialog**                         |        |        |        |        |
-|   * Show call stack dialog                                  | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Close call stack dialog                                 | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Double click on entry should open and go to the line    | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Call stack dialog cleared on stopping debugging         | 31-Aug |  Pass  |   ?    |   ?    |
+|   * Show call stack dialog                                  | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Close call stack dialog                                 | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Double click on entry should open and go to the line    | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Call stack dialog cleared on stopping debugging         | 31-Aug |  Pass  |  Pass  |  Pass  |
 |                                                             |        |        |        |        |
 | **Debug Menu -> Disassembly Dialog**                        |        |        |        |        |
 |   * Show disassembly dialog                                 |        |   -    |   -    |   -    |
@@ -154,8 +155,8 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Memory view watches created on project open             |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Show tty for console projects**                           |        |        |        |        |
-|   * Show console on console app                             | 31-Aug |  Pass  |**FAIL**|   ?    |
-|   * printf display on console on console app                | 01-Sep |**FAIL**|**FAIL**|   ?    |
+|   * Show console on console app                             | 31-Aug |  Pass  |**FAIL**|**FAIL**|
+|   * printf display on console on console app                | 01-Sep |**FAIL**|**FAIL**|**FAIL**|
 |   * Do NOT show console on GUI app                          |        |   ?    |   ?    |   ?    |
 |                                                             |        |        |        |        |
 | **Projects - debugger options dialog**                      |        |        |        |        |
@@ -165,17 +166,17 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Data used by Plugin                                     |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **DAP Debugger configuration dialog**                       |        |        |        |        |
-|   * Show debugger options dialog                            | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Close debugger options dialog                           | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Auto detected lldb-vscode exe                           | 01-Sep |  Pass  |   ?    |   ?    |
-|   * Executable path save/loaded/used                        | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Network port # save/loaded/used                         | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Run DAP server checkbox save/loaded/used                | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Stop at main checkbox save/loaded/used                  | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Enable exceptions C++ catch checkbox save/loaded/used   | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Enable exceptions C++ throw checkbox save/loaded/used   | 31-Aug |  Pass  |   ?    |   ?    |
-|   * Persists checkbox save/load breakpoint/watch etc        | 01-Sep |  Pass  |   ?    |   ?    |
-|   * Choose directory configuration options save/loaded/used | 31-Aug |  Pass  |   ?    |   ?    |
+|   * Show debugger options dialog                            | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Close debugger options dialog                           | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Auto detected lldb-vscode exe                           | 01-Sep |  Pass  |  Pass  |  Pass  |
+|   * Executable path save/loaded/used                        | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Network port # save/loaded/used                         | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Run DAP server checkbox save/loaded/used                | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Stop at main checkbox save/loaded/used                  | 31-Aug |  Pass  |  Pass  |  Pass  |
+|   * Enable exceptions C++ catch checkbox save/loaded/used   | 31-Aug |  Pass  | Pass(3)| Pass(3)|
+|   * Enable exceptions C++ throw checkbox save/loaded/used   | 31-Aug |  Pass  | Pass(3)| Pass(3)|
+|   * Persists checkbox save/load breakpoint/watch etc        | 01-Sep |  Pass  |  Pass  |  Pass  |
+|   * Choose directory configuration options save/loaded/used | 31-Aug |  Pass  |  n/a/? |  n/a/? |
 |   * Choose assembly flavor options save/loaded/used         |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Remote Debugging**                                        |        |        |        |        |
@@ -184,10 +185,10 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Ensure TCP debugging works                              |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
 | **Operating System**                                        |        | Windows| Linux  | MacOS  |
-|   * Builds via workspace                                    | 31-Aug |  Pass  |  Pass  |   ?    |
+|   * Builds via workspace                                    | 31-Aug |  Pass  |  Pass  | Pass(2)|
 |   * Builds bootstrap/configure/make                         | 06-Jul |  N/A   |  Pass  | Pass   |
 |   * Builds on Linux via Debian process                      | 06-Jul |  N/A   |  Pass  |  N/A   |
-|   * Create DAP cbplugin                                     | 01-Sep |  Pass  |   ?    |   ?    |
+|   * Create DAP cbplugin                                     | 01-Sep |  Pass  |  Pass  |  Pass  |
 |   * Test DAP cbplugin with Latest nightly                   | 01-Sep |**P(1)**|   ?    |   ?    |
 |                                                             |        |        |        |        |
 
@@ -205,3 +206,7 @@ NOTES:
 P(1) - Fails due to the SF SVN code bumping the SDk version from 2.20.0 to 2.21.0. reverting works
 F(2) - Fails cannot stop on main, but can set breakpoint and start correctly if using a breakpoint
 Move lines needs cbplugin.cpp and cbplugin.cpp change to add ShiftAllFileBreakpoints(...) function
+Pass(2) - Needs updated 1229 files to build.
+n/a/? - can change, but default works and should not be changed.
+Pass(3) - Enabled even if disabled
+Pass(4) - Needs watchesdlp.cpp changes to pass due to initial add watch not processing watch data
