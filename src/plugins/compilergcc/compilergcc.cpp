@@ -1654,6 +1654,7 @@ int CompilerGCC::DoRunQueue()
     // log file
     bool hasLog = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false);
     bool saveFull = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log/full_command_line"), false);
+
     if (hasLog)
     {
         if (!cmd->command.IsEmpty() && saveFull)
@@ -1669,7 +1670,6 @@ int CompilerGCC::DoRunQueue()
         }
     }
 
-
     if (cmd->command.IsEmpty())
     {
         // log message
@@ -1677,7 +1677,7 @@ int CompilerGCC::DoRunQueue()
         {
             if ((m_BuildState == bsTargetBuild) && Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/compiler_build_use_unix_delimiter"), false))
             {
-                cmd->message.Replace('\\','/');
+                cmd->message.Replace('\\', '/');
             }
 
             LogMessage(cmd->message, cltNormal, ltMessages, false, false, true);
@@ -1775,7 +1775,7 @@ int CompilerGCC::DoRunQueue()
 
         if ((m_BuildState == bsTargetBuild) && Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/compiler_build_use_unix_delimiter"), false))
         {
-            cmd->command.Replace('\\','/');
+            cmd->command.Replace('\\', '/');
         }
 
         // Run the command in a shell, so stream redirections (<, >, << and >>),
@@ -1790,7 +1790,6 @@ int CompilerGCC::DoRunQueue()
 #ifdef LOG_DEBUG_STATE_MACHINE_INFO
     LogMessage(wxString::Format("Line: %d has CMD:\n%s\n\n", __LINE__, cmd->command));
 #endif
-
     // create a new process
     CompilerProcess & process = m_CompilerProcessList.at(procIndex);
     process.OutputFile = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString(wxEmptyString);

@@ -659,7 +659,7 @@ void dap::Client::StepOut(int threadId, bool singleThread)
 }
 
 int dap::Client::GetChildrenVariables(int variablesReference, EvaluateContext context, size_t count,
-                                       ValueDisplayFormat format)
+                                      ValueDisplayFormat format)
 {
     VariablesRequest req = MakeRequest<VariablesRequest>();
     req.arguments.variablesReference = variablesReference;

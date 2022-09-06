@@ -54,6 +54,16 @@ Unicode True
 # Enable logging when using the NSIS special build
 #!define ENABLE_LOGGING
 
+##############################
+# Included NSIS script files #
+##############################
+!include LogicLib.nsh
+!include "UMUI.nsh"             # UMUI - Ultra Modern UI
+!include Sections.nsh
+!include x64.nsh
+!include WinVer.nsh
+!include StrFunc.nsh
+
 #########################################################
 # Room for adjustments of most important settings BEGIN #
 #########################################################
@@ -95,6 +105,10 @@ Unicode True
   !define NIGHTLY_BUILD_SVN 12860_EXPERIMENTAL_PLUS
 !endif
 
+!ifndef BUILD_RELEASE_TYPE
+    !define BUILD_RELEASE_TYPE=RELEASE
+!endif
+
 # Possibly required to adjust manually:
 # Note: a) These files are only required for the installer.
 #       b) These are in the ${CB_INSTALL_GRAPHICS_DIR} directory
@@ -109,15 +123,6 @@ Unicode True
 #########################################################
 # Room for adjustments of most important settings END   #
 #########################################################
-
-##############################
-# Included NSIS script files #
-##############################
-!include LogicLib.nsh
-!include "UMUI.nsh"             # UMUI - Ultra Modern UI
-!include Sections.nsh
-!include x64.nsh
-!include WinVer.nsh
 
 # WARNING: This is very SLOW if enabled, but it reduces the output exe by about 20%!!
 #SetCompressor /SOLID LZMA
@@ -434,9 +439,14 @@ SectionGroup "!Default install" SECGRP_DEFAULT
         accessOK:
             SetOverwrite on
 !ifdef WX_MONOLITHIC_BUILD            
-            File ${WX_BASE}\wxmsw*_gcc_cb.dll
-            File ${WX_BASE}\wxmsw*_gl_gcc_cb.dll
-!else            
+    !if BUILD_RELEASE_TYPE == "RELEASE"
+            File ${WX_BASE}\wxmsw${WX_DIR_VERSION}u_gcc_cb.dll
+            File ${WX_BASE}\wxmsw${WX_DIR_VERSION}u_gl_gcc_cb.dll
+    !else
+            File ${WX_BASE}\wxmsw${WX_DIR_VERSION}ud_gcc_cb.dll
+            File ${WX_BASE}\wxmsw${WX_DIR_VERSION}ud_gl_gcc_cb.dll
+    !endif
+!else
             File ${WX_BASE}\libdeflate.dll
             File ${WX_BASE}\libexpat-1.dll
             File ${WX_BASE}\libjbig-0.dll

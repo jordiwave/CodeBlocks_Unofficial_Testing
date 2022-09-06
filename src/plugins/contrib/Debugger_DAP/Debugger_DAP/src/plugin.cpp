@@ -1482,7 +1482,8 @@ bool Debugger_DAP::ShiftAllFileBreakpoints(const wxString & editorFilename, int 
 
     if (IsRunning() && bBrksUpdated)
     {
-        UpdateDAPSetBreakpointsByFileName(filenameBRK);
+        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Cannot move debugger Breakpoints as the debugger is running!!", editorFilename, startline, lines), dbg_DAP::LogPaneLogger::LineType::Error);
+        //        UpdateDAPSetBreakpointsByFileName(filenameBRK);
     }
 
     return true;

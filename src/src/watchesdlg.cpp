@@ -586,8 +586,10 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
     WatchItem item;
     wxString symbol, value, type;
     watch->GetSymbol(symbol);
+#if 1
     watch->GetValue(value);
     watch->GetType(type);
+#endif
 
     if (last_prop && last_prop->GetLabel() == wxEmptyString)
     {
@@ -602,8 +604,10 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
 
         m_grid->SetPropertyLabel(item.property, symbol);
         m_grid->SetPropertyName(item.property, symbol);
+#if 1
         m_grid->SetPropertyValue(item.property, value);
         m_grid->SetPropertyAttribute(item.property, "Units", type);
+
         if (value.empty())
         {
             m_grid->SetPropertyHelpString(item.property, wxEmptyString);
@@ -611,16 +615,20 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
         else
         {
             wxString valueTruncated;
+
             if (value.length() > 128)
             {
                 valueTruncated = value.Left(128) + "...";
             }
             else
             {
-                valueTruncated=value;
+                valueTruncated = value;
             }
+
             m_grid->SetPropertyHelpString(item.property, symbol + "=" + valueTruncated);
         }
+
+#endif
         WatchesProperty * watches_prop = static_cast<WatchesProperty *>(last_prop);
         watches_prop->SetWatch(watch);
         // Append blank row
@@ -633,8 +641,8 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
 
     item.property->SetExpanded(watch->IsExpanded());
     item.watch = watch;
-
 #if 1
+
     if (watch->GetChildCount() > 0)
     {
         const wxColour & changedColour = Manager::Get()->GetColourManager()->GetColour(wxT("dbg_watches_changed"));
@@ -642,7 +650,6 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
     }
 
 #endif // 1
-
     m_watches.push_back(item);
     m_grid->Refresh();
 }
