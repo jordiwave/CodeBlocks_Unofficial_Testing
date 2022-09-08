@@ -632,7 +632,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         void ProcessValueTooltip(CodeBlocksEvent & event);
         void CancelValueTooltip(CodeBlocksEvent & event);
 
-    protected:
+    public:
         enum StartType
         {
             StartTypeUnknown = 0,

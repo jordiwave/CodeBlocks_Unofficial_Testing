@@ -50,6 +50,18 @@ On Windows you can use the following DAP adapters:
     * LLVM 14.0.6 C:\llvm\bin\lldb-vscode.exe
     * https://github.com/vadimcn/vscode-lldb using the ".\extension\adapter\codelldb.exe" that is in the VSIX file (contents are zipped)
 
+On Windows the following table shows the installation package to install:
+
+|         DAP Adapter                   | Install package/URL
+|:------------------------------------- |:----------------------------------------- |
+| C:\msys64\mingw64\bin\lldb-vscode.exe | pacman -S mingw-w64-clang-x86_64-lldb     |
+| C:\msys64\clang64\bin\lldb-vscode.exe | pacman -S mingw-w64-x86_64-lldb           |
+| C:\msys64\mingw32\bin\lldb-vscode.exe | pacman -S mingw-w64-i686-lldb             |
+| C:\msys64\clang32\bin\lldb-vscode.exe | pacman -S mingw-w64-clang-i686-lldb       |
+| C:\llvm\bin\lldb-vscode.exe           | https://github.com/llvm/llvm-project      |
+| .\extension\adapter\codelldb.exe      | https://github.com/vadimcn/vscode-lldb    |
+
+
 On Windows you configure the different DAP adapters as follows for the debugger directory configuration setting:
 
 |         DAP Adapter                   | Config setting                                                                           |
@@ -122,6 +134,20 @@ C:\msys64\clang64\bin\lldb-vscode.exe --port 12345
 echo on
 set PYTHONHOME=C:\Users\<username>\AppData\Local\Programs\Python\Python310\
 C:\LLVM\bin\lldb-vscode.exe --port 12345
+```
+
+9. It is assumed that Windows 32 will work similar to x64, but has not been tested. zYou will need to adapt the instructions as required.
+
+# LINUX
+WIP:
+
+Test lldb-vscode can run:
+
+```sh
+export PYTHONHOME=/usr/lib/python3.10
+/usr/bin/lldb-vscode-14 --port 12345
+export PATH="$PATH:/usr/bin/python3"
+export PYTHONHOME=/usr/bin/python3
 ```
 
 # Installing vscode-lldb

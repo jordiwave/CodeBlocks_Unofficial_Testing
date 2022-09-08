@@ -43,6 +43,14 @@ uint64_t ReadChildNodeUint64(tinyxml2::XMLElement * pElementParent,  const wxStr
 uint64_t ReadChildNodeHex(tinyxml2::XMLElement * pElementParent,  const wxString childName);
 bool ReadChildNodeBool(tinyxml2::XMLElement * pElementParent,  const wxString childName);
 
+enum ResetDataType
+{
+    ResetData_Normal = 0,
+    ResetData_Startup,
+    ResetData_All
+};
+
+
 class DAPBreakpoint : public cbBreakpoint
 {
     public:
@@ -641,7 +649,7 @@ class DAPWatch : public cbWatch
 
         // DAP additional
         void SaveWatchToXML(tinyxml2::XMLNode * pWatchesMasterNode);
-        void LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgDAP);
+        void LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch);
 
     protected:
         virtual void DoDestroy() {}

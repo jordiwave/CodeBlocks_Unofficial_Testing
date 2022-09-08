@@ -467,7 +467,7 @@ void DAPWatch::SaveWatchToXML(tinyxml2::XMLNode * pWatchesMasterNode)
     AddChildNode(pNodeWatch, "forTooltip", m_forTooltip);
 }
 
-void DAPWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_DAP * dbgDAP)
+void DAPWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch)
 {
     //Only load the breakpoints that belong to the current project
     m_DAPWatchClassName = ReadChildNodewxString(pElementWatch, "DAPWatchClassName");
@@ -484,14 +484,6 @@ void DAPWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_D
     m_array_end = ReadChildNodeLong(pElementWatch, "array_end");
     m_is_array = ReadChildNodeLong(pElementWatch, "is_array");
     m_forTooltip = ReadChildNodeBool(pElementWatch, "forTooltip");
-
-    if (!m_symbol.IsEmpty())
-    {
-        // See debuggermenu.cpp DebuggerMenuHandler::OnAddWatch(...) function
-        cb::shared_ptr<cbWatch> watch = dbgDAP->AddWatch(this, true);
-        cbWatchesDlg * dialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
-        dialog->AddWatch(watch);   // This call adds the watch to the debugger and GUI
-    }
 }
 
 DAPMemoryRangeWatch::DAPMemoryRangeWatch(cbProject * project, dbg_DAP::LogPaneLogger * logger, uint64_t address, uint64_t size, const wxString & symbol) :

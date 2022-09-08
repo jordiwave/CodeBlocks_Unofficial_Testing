@@ -110,7 +110,7 @@
 			<WX_VERSION>32</WX_VERSION>
 			<WX_SUFFIX>u</WX_SUFFIX>
 			<WX_CONFIG>$(#WXWIDGETS.WX_CONFIG_UNIX)</WX_CONFIG>
-			<WX_CONFIG_UNIX>wx-config --version=3.1 --toolkit=gtk3</WX_CONFIG_UNIX>
+			<WX_CONFIG_UNIX>wx-config --version=3.2 --toolkit=gtk3</WX_CONFIG_UNIX>
 			<WX_CONFIG_MACOS>/usr/local/bin/wx-config --version=3.2</WX_CONFIG_MACOS>
 		</wxwidgets>
 	</cb_unix>

@@ -46,7 +46,7 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Skipping over functions                                 |        |   -    |   -    |   -    |
 |   * Skipping over files                                     |        |   -    |   -    |   -    |
 |                                                             |        |        |        |        |
-| **Breakpoints**                                             |        |        |        |        |
+| **Breakpoints**                                             |        |Pass(6) |        |        |
 |   * Stop at Main works                                      | 02-Sep |  Pass  |  Pass  |  Pass  |
 |   * Add line break point before starting the debugger       | 31-Aug |  Pass  |  Pass  |  Pass  |
 |   * Add line break point after the starting the debugger    | 31-Aug |  Pass  |  Pass  |  Pass  |
@@ -54,7 +54,7 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Debug menu option to Remove all breakpoints             | 31-Aug |  Pass  |  Pass  |  Pass  |
 |   * Disable/Enable line break point via pop up menu         | 31-Aug |  Pass  |  Pass  |  Pass  |
 |   * Remove line break point                                 | 31-Aug |  Pass  |  Pass  |  Pass  |
-|   * Move breakpoint by adding line before break point       | 03-Sep |  Pass  |  Pass  |**FAIL**|
+|   * Move breakpoint by adding line before break point	      | 03-Sep |Pass(5) |   WIP  |  WIP   |
 |   * Edit line break point                                   |        |   -    |   -    |   -    |
 |     * ignore count before break                             |        |   -    |   -    |   -    |
 |     * break when expression is true                         |        |   -    |   -    |   -    |
@@ -156,8 +156,8 @@ If you find issue that is listed in the table below that indicates it is passing
 |                                                             |        |        |        |        |
 | **Show tty for console projects**                           |        |        |        |        |
 |   * Show console on console app                             | 31-Aug |  Pass  |**FAIL**|**FAIL**|
-|   * printf display on console on console app                | 01-Sep |**FAIL**|**FAIL**|**FAIL**|
-|   * Do NOT show console on GUI app                          |        |   ?    |   ?    |   ?    |
+|   * printf display on console on console app                | 01-Sep |  Pass  |**FAIL**|**FAIL**|
+|   * Do NOT show console on GUI app                          | 05-Sep |  Pass  |  Pass  |  Pass  |
 |                                                             |        |        |        |        |
 | **Projects - debugger options dialog**                      |        |        |        |        |
 |   * Show debuggeroptionsprjdlg dialog                       |        |   -    |   -    |   -    |
@@ -178,6 +178,7 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Persists checkbox save/load breakpoint/watch etc        | 01-Sep |  Pass  |  Pass  |  Pass  |
 |   * Choose directory configuration options save/loaded/used | 31-Aug |  Pass  |  n/a/? |  n/a/? |
 |   * Choose assembly flavor options save/loaded/used         |        |   -    |   -    |   -    |
+|   * Add ability to configure the level of debugging         |  NEW   |  NEW   |  NEW   |  NEW   |
 |                                                             |        |        |        |        |
 | **Remote Debugging**                                        |        |        |        |        |
 |   * Use data from debuggeroptionsprjdlg dialog              |        |   -    |   -    |   -    |
@@ -192,7 +193,7 @@ If you find issue that is listed in the table below that indicates it is passing
 |   * Test DAP cbplugin with Latest nightly                   | 01-Sep |**P(1)**|   ?    |   ?    |
 |                                                             |        |        |        |        |
 
-The table was last updated on 03-Sep-2022.
+The table was last updated on 05-Sep-2022.
 
 NOTES:
  "TEST"     - To be tested, passed when last tested.
@@ -206,7 +207,9 @@ NOTES:
 P(1) - Fails due to the SF SVN code bumping the SDk version from 2.20.0 to 2.21.0. reverting works
 F(2) - Fails cannot stop on main, but can set breakpoint and start correctly if using a breakpoint
 Move lines needs cbplugin.cpp and cbplugin.cpp change to add ShiftAllFileBreakpoints(...) function
-Pass(2) - Needs updated 1229 files to build.
+Pass(2) - Needs ticket 1229 updated files to build.
 n/a/? - can change, but default works and should not be changed.
 Pass(3) - Enabled even if disabled
 Pass(4) - Needs watchesdlp.cpp changes to pass due to initial add watch not processing watch data
+Pass(5) - needs cbplugin changes
+Pass(6) - needs compilergcc changes for path delimiter changes

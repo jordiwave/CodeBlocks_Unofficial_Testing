@@ -5,8 +5,8 @@
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 VS_VERSION_INFO        VERSIONINFO
-  FILEVERSION          0,0,1
-  PRODUCTVERSION       2022,06,23,1
+  FILEVERSION          0,5,0
+  PRODUCTVERSION       2022,09,08,1
   FILEFLAGSMASK        0x3fL // VS_FFI_FILEFLAGSMASK
   // FILEFLAGS Can be a combination of the following OR'ed flags:
   //    VS_FF_DEBUG,        VS_FF_PATCHED,      VS_FF_PRERELEASE,
@@ -26,18 +26,18 @@ VS_VERSION_INFO        VERSIONINFO
   {
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
-      VALUE "Build",             "27-Jun-2022 SVN 1"
+      VALUE "Build",             "09-Sep-2022 SVN 12881"
       VALUE "Comments",          "Debugger DAP Plugin"
       VALUE "CompanyName",       "Andrew Cottrell"
       VALUE "Developer",         "Andrew Cottrell"
-      VALUE "FileVersion",       "0.0.1"
+      VALUE "FileVersion",       "0.5.0"
       VALUE "InternalName",      "debugger_dap"
       VALUE "LegalCopyright",    "GPL"
       VALUE "LegalTrademarks",   "All rights reserved."
       VALUE "OriginalFilename",  "debugger_dap.dll"
       VALUE "PrivateBuild",      ""
       VALUE "ProductName",       "debugger_dap"
-      VALUE "ProductVersion",    "0.0.1"
+      VALUE "ProductVersion",    "0.5.0"
       VALUE "SpecialBuild",      ""
       VALUE "Support",           ""
       VALUE "Users",             ""

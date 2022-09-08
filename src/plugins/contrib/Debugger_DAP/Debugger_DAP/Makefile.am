@@ -64,6 +64,10 @@ libdebugger_dap_la_LIBADD += \
 endif
 
 libdebugger_dap_la_SOURCES = \
+			src/DAP_Breakpoints.cpp \
+			src/DAP_CallStack.cpp \
+			src/DAP_Debugger_State.cpp \
+			src/DAP_Watches.cpp \
 			src/debugger_logger.cpp \
 			src/definitions.cpp \
 			src/dlg_ProjectOptions.cpp \
@@ -78,6 +82,10 @@ libdebugger_dap_la_SOURCES += \
 endif
 
 noinst_HEADERS = \
+			src/DAP_Breakpoints.h \
+			src/DAP_CallStack.h \
+			src/DAP_Debugger_State.h \
+			src/DAP_Watches.h \
 			src/debugger_logger.h \
 			src/definitions.h \
 			src/dlg_ProjectOptions.h \

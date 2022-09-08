@@ -194,10 +194,20 @@ echo "+-------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
 #case "$(OSDetected)" in
 #  Windows*)
+CODEBLOCKS_NAME=codeblocks
+if [ -f "${CB_DEVEL_DIR}/CodeBlocks${EXEEXT}" ] ; then
+    CODEBLOCKS_NAME=CodeBlocks
+fi
+if [ -f "${CB_DEVEL_DIR}/bin/CodeBlocks${EXEEXT}" ] ; then
+    CODEBLOCKS_NAME=CodeBlocks
+fi
+echo "CODEBLOCKS_NAME=${CODEBLOCKS_NAME}"
+echo "Check:${CB_DEVEL_DIR}/bin/CodeBlocks${EXEEXT}"
+
 if { [ -d "${CB_DEVEL_DIR}/bin" ] && [ -d "${CB_DEVEL_DIR}/lib" ] 
 } then
     if { !  {
-                [ -f "${CB_DEVEL_DIR}/bin/codeblocks${EXEEXT}" ]                        &&
+                [ -f "${CB_DEVEL_DIR}/bin/${CODEBLOCKS_NAME}${EXEEXT}" ]                        &&
                 [ -f "${CB_DEVEL_DIR}/lib/libcodeblocks.${LIBEXT}" ]                    &&
                 {
                     [ -f "${CB_DEVEL_DIR}/lib/codeblocks/plugins/todo.${LIBEXT}" ] ||
@@ -209,7 +219,7 @@ if { [ -d "${CB_DEVEL_DIR}/bin" ] && [ -d "${CB_DEVEL_DIR}/lib" ]
         echo "|             +--------------------------------------------------------------------+              |"
         echo "|             | Error: Code::Blocks make error was detected.                       |              |"
         echo "|             |        Please fix the error and try again.                         |              |"
-        [ ! -f "${CB_DEVEL_DIR}/bin/codeblocks${EXEEXT}" ]                     && echo "|             |        Missing ${CB_DEVEL_DIR}/bin/codeblocks${EXEEXT}!                          |              |"
+        [ ! -f "${CB_DEVEL_DIR}/bin/${CODEBLOCKS_NAME}${EXEEXT}" ]                     && echo "|             |        Missing ${CB_DEVEL_DIR}/bin/${CODEBLOCKS_NAME}${EXEEXT}!                          |              |"
         [ ! -f "${CB_DEVEL_DIR}/lib/libcodeblocks.${LIBEXT}" ]                 && echo "|             |        Missing ${CB_DEVEL_DIR}/lib/libcodeblocks.${LIBEXT}!                 |              |"
         [ ! -f "${CB_DEVEL_DIR}/lib/codeblocks/plugins/todo.${LIBEXT}" ]       && echo "|             |        Missing ${CB_DEVEL_DIR}/lib/codeblocks/plugins/todo.${LIBEXT}! |              |"
         [ ! -f "${CB_DEVEL_DIR}/lib/codeblocks/plugins/libtodo.${LIBEXT}" ]    && echo "|             |        Missing ${CB_DEVEL_DIR}/lib/codeblocks/plugins/libtodo.${LIBEXT}! |              |"
@@ -222,11 +232,11 @@ if { [ -d "${CB_DEVEL_DIR}/bin" ] && [ -d "${CB_DEVEL_DIR}/lib" ]
     fi
 else
     if { !  {
-                [ -f "${CB_DEVEL_DIR}/codeblocks${EXEEXT}" ]                        &&
+                [ -f "${CB_DEVEL_DIR}/${CODEBLOCKS_NAME}${EXEEXT}" ]                        &&
                 [ -f "${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}" ]                    &&
                 {
-                    [ -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}" ] ||
-                    [ -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}" ]
+                    [ -f "${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/todo.${LIBEXT}" ] ||
+                    [ -f "${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/libtodo.${LIBEXT}" ]
                 }
             }
        } then
@@ -234,10 +244,10 @@ else
         echo "|             +--------------------------------------------------------------------+              |"
         echo "|             | Error: Code::Blocks make error was detected.                       |              |"
         echo "|             |        Please fix the error and try again.                         |              |"
-        [ ! -f "${CB_DEVEL_DIR}/codeblocks${EXEEXT}" ]                     && echo "|             |        Missing ${CB_DEVEL_DIR}/codeblocks${EXEEXT}!                          |              |"
+        [ ! -f "${CB_DEVEL_DIR}/${CODEBLOCKS_NAME}${EXEEXT}" ]                     && echo "|             |        Missing ${CB_DEVEL_DIR}/${CODEBLOCKS_NAME}${EXEEXT}!                          |              |"
         [ ! -f "${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}" ]                 && echo "|             |        Missing ${CB_DEVEL_DIR}/libcodeblocks.${LIBEXT}!                 |              |"
-        [ ! -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}" ] && echo "|             |        Missing ${CB_DEVEL_DIR}/share/codeblocks/plugins/todo.${LIBEXT}! |              |"
-        [ ! -f "${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}" ] && echo "|             |        Missing ${CB_DEVEL_DIR}/share/codeblocks/plugins/libtodo.${LIBEXT}! |              |"
+        [ ! -f "${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/todo.${LIBEXT}" ] && echo "|             |        Missing ${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/todo.${LIBEXT}! |              |"
+        [ ! -f "${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/libtodo.${LIBEXT}" ] && echo "|             |        Missing ${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/libtodo.${LIBEXT}! |              |"
         echo "|             +--------------------------------------------------------------------+              |"
         echo "|                                                                                                 |"
         echo "+-------------------------------------------------------------------------------------------------+"
@@ -334,12 +344,12 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # ------------------------------------------------------------------------------------------
     # Rename DLL files if built with MSYS 2 using bootstrap/configure/make/make install process
     # ------------------------------------------------------------------------------------------
-    count=$(ls -1 ${CB_DEVEL_DIR}/share/codeblocks/plugins/*.dll 2>/dev/null | wc -l)
+    count=$(ls -1 ${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/*.dll 2>/dev/null | wc -l)
     if [ $count -eq 0 ] ; then
         echo "|                                                                                                 |"
         echo "|             +-----------------------------------------------------------+                       |"
         echo "|             | Error: Code::Blocks Plugin DLL files not found in:        |                       |"
-        echo "|             |          src/devel31_${BUILD_BITS}/share/codeblocks/plugins          |                       |"
+        echo "|             |          src/devel31_${BUILD_BITS}/share/${CODEBLOCKS_NAME}/plugins          |                       |"
         echo "|             +-----------------------------------------------------------+                       |"
         echo "|                                                                                                 |"
         echo "|                                                                                                 |"
@@ -349,10 +359,10 @@ if [ "${OSDetected}" = "Windows" ] ; then
         exit 8
     fi
 
-    count=$(ls -1 ${CB_DEVEL_DIR}/share/codeblocks/plugins/lib*.dll 2>/dev/null | wc -l)
+    count=$(ls -1 ${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/lib*.dll 2>/dev/null | wc -l)
     if [ $count -gt 0 ] ; then
         PrevDirectory=$PWD
-        cd "${CB_DEVEL_DIR}/share/codeblocks/plugins"
+        cd "${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins"
         for pluginLibFile in lib*.dll
         do 
             newPluginLibFile=$(echo $pluginLibFile |sed 's/^.\{3\}//g')
@@ -376,10 +386,10 @@ if [ "${OSDetected}" = "Windows" ] ; then
     # -------------------------------------------------------------------------------------------------------
     # Delete Plugin DLL *.a redundant files built with MSYS 2 using bootstrap/configure/make/make install process
     # -------------------------------------------------------------------------------------------------------
-    count=$(ls -1 ${CB_DEVEL_DIR}/share/CodeBlocks/plugins/*.a 2>/dev/null | wc -l)
+    count=$(ls -1 ${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins/*.a 2>/dev/null | wc -l)
     if [ $count -gt 0 ] ; then
         PrevDirectory=$PWD
-        cd "${CB_DEVEL_DIR}/share/CodeBlocks/plugins"
+        cd "${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}/plugins"
         find . -type f -name "*.a" | xargs rm -f
         cd $PrevDirectory
     fi
@@ -399,7 +409,7 @@ else
         done
     }
 
-    CB_DEVEL_RESDIR=${CB_DEVEL_DIR}/share/codeblocks
+    CB_DEVEL_RESDIR=${CB_DEVEL_DIR}/share/${CODEBLOCKS_NAME}
 
     mkdir -p ${CB_DEVEL_RESDIR}/compilers
     mkdir -p ${CB_DEVEL_RESDIR}/lexers

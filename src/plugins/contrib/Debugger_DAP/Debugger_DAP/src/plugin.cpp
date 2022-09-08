@@ -35,31 +35,30 @@
 #include "pipedprocess.h"
 #include "projectmanager.h"
 
-// DAP include files
+// DAP debugger includes
 #include "dlg_ProjectOptions.h"
 #include "dlg_SettingsOptions.h"
 #include "dlg_WatchEdit.h"
 #include "debugger_logger.h"
 #include "plugin.h"
-#include "dap.hpp"
+#include "DAP_Debugger_State.h"
+#include "DAP_Breakpoints.h"
 
-//XML file root tag for data
-static const char * XML_CFG_ROOT_TAG = "Debugger_layout_file";
+// DAP protocol includes
+#include "dap.hpp"
 
 namespace
 {
+//XML file root tag for data
+static const char * XML_CFG_ROOT_TAG = "Debugger_layout_file";
+
 int const id_gdb_poll_timer = wxNewId();
-int const id_menu_info_command_stream = wxNewId();
 
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
 // this auto-registers the plugin
 PluginRegistrant<Debugger_DAP> reg("debugger_dap");
-}
 
-
-namespace
-{
 wxString GetLibraryPath(const wxString & oldLibPath, Compiler * compiler, ProjectBuildTarget * target, cbProject * project)
 {
     if (compiler && target)
@@ -92,22 +91,20 @@ BEGIN_EVENT_TABLE(Debugger_DAP, cbDebuggerPlugin)
     EVT_IDLE(Debugger_DAP::OnIdle)
     EVT_TIMER(id_gdb_poll_timer, Debugger_DAP::OnTimer)
 
-    EVT_MENU(id_menu_info_command_stream, Debugger_DAP::OnMenuInfoCommandStream)
 END_EVENT_TABLE()
 
 // constructor
 Debugger_DAP::Debugger_DAP() :
     cbDebuggerPlugin("DAP", "debugger_dap"),
     m_pProject(nullptr),
-    m_dapPid(0),
-    m_debuggee(wxEmptyString),
-    DAPDebuggerState(eDAPState::NotConnected)
+    m_dapPid(0)
 {
     if (!Manager::LoadResource("debugger_dap.zip"))
     {
         NotifyMissingFile("debugger_dap.zip");
     }
 
+    Debugger_State::SetState(Debugger_State::eDAPState::NotConnected);
     m_pLogger = new dbg_DAP::LogPaneLogger(this);
     // bind the client events
     m_dapClient.Bind(wxEVT_DAP_STOPPED_EVENT,                   &Debugger_DAP::OnStopped,               this);
@@ -128,13 +125,16 @@ Debugger_DAP::Debugger_DAP() :
     m_dapClient.Bind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,                this);
     m_dapClient.Bind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,        this);
     m_dapClient.Bind(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE,    &Debugger_DAP::OnConfigurationDoneResponse,  this);
-    m_dapClient.Bind(wxEVT_DAP_THREADS_RESPONSE,                &Debugger_DAP::OnTreadResponse,         this);
+    m_dapClient.Bind(wxEVT_DAP_THREADS_RESPONSE,                &Debugger_DAP::OnThreadResponse,         this);
     m_dapClient.Bind(wxEVT_DAP_STOPPED_ON_ENTRY_EVENT,          &Debugger_DAP::OnStopOnEntryEvent,      this);
     m_dapClient.Bind(wxEVT_DAP_PROCESS_EVENT,                   &Debugger_DAP::OnProcessEvent,          this);
     m_dapClient.Bind(wxEVT_DAP_BREAKPOINT_EVENT,                &Debugger_DAP::OnBreakpointEvent,       this);
-    m_dapClient.Bind(wxEVT_DAP_CONTINUED_EVENT,                 &Debugger_DAP::OnCcontinuedEvent,       this);
+    m_dapClient.Bind(wxEVT_DAP_CONTINUED_EVENT,                 &Debugger_DAP::OnContinuedEvent,       this);
     m_dapClient.Bind(wxEVT_DAP_DEBUGPYWAITINGFORSERVER_EVENT,   &Debugger_DAP::OnDebugPYWaitingForServerEvent,  this);
     m_dapClient.SetWantsLogEvents(true); // send use log events
+    pDAPBreakpoints = new DBG_DAP_Breakpoints(this, m_pLogger, &m_dapClient);
+    pDAPCallStack = new DBG_DAP_CallStack(this, m_pLogger);
+    pDAPWatches = new DBG_DAP_Watches(this, m_pLogger, &m_dapClient);
 }
 
 // destructor
@@ -159,11 +159,11 @@ Debugger_DAP::~Debugger_DAP()
     m_dapClient.Unbind(wxEVT_DAP_LOG_EVENT,                       &Debugger_DAP::OnDapLog,                  this);
     m_dapClient.Unbind(wxEVT_DAP_MODULE_EVENT,                    &Debugger_DAP::OnDapModuleEvent,          this);
     m_dapClient.Unbind(wxEVT_DAP_CONFIGURARIONE_DONE_RESPONSE,    &Debugger_DAP::OnConfigurationDoneResponse,  this);
-    m_dapClient.Unbind(wxEVT_DAP_THREADS_RESPONSE,                &Debugger_DAP::OnTreadResponse,           this);
+    m_dapClient.Unbind(wxEVT_DAP_THREADS_RESPONSE,                &Debugger_DAP::OnThreadResponse,           this);
     m_dapClient.Unbind(wxEVT_DAP_STOPPED_ON_ENTRY_EVENT,          &Debugger_DAP::OnStopOnEntryEvent,        this);
     m_dapClient.Unbind(wxEVT_DAP_PROCESS_EVENT,                   &Debugger_DAP::OnProcessEvent,            this);
     m_dapClient.Unbind(wxEVT_DAP_BREAKPOINT_EVENT,                &Debugger_DAP::OnBreakpointEvent,         this);
-    m_dapClient.Unbind(wxEVT_DAP_CONTINUED_EVENT,                 &Debugger_DAP::OnCcontinuedEvent,         this);
+    m_dapClient.Unbind(wxEVT_DAP_CONTINUED_EVENT,                 &Debugger_DAP::OnContinuedEvent,         this);
     m_dapClient.Unbind(wxEVT_DAP_DEBUGPYWAITINGFORSERVER_EVENT,   &Debugger_DAP::OnDebugPYWaitingForServerEvent,  this);
 
     if (m_dapPid != 0)
@@ -177,6 +177,7 @@ void Debugger_DAP::OnAttachReal()
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__));
     m_timer_poll_debugger.SetOwner(this, id_gdb_poll_timer);
+    pDAPBreakpoints->OnAttachReal();
     // Do no use cbEVT_PROJECT_OPEN as the project may not be active!!!!
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,  new cbEventFunctor<Debugger_DAP, CodeBlocksEvent>(this, &Debugger_DAP::OnProjectOpened));
 }
@@ -184,22 +185,13 @@ void Debugger_DAP::OnAttachReal()
 void Debugger_DAP::OnReleaseReal(bool appShutDown)
 {
     // Do not log anything as we are closing
-    DAPDebuggerResetData(true);
-    //    if (m_command_stream_dialog)
-    //    {
-    //        m_command_stream_dialog->Destroy();
-    //        m_command_stream_dialog = nullptr;
-    //    }
+    DAPDebuggerResetData(dbg_DAP::ResetDataType::ResetData_All);
+    pDAPBreakpoints->OnReleaseReal(appShutDown);
 }
 
 void Debugger_DAP::GetCurrentPosition(wxString & filename, int & line)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-}
-
-void Debugger_DAP::SetupToolsMenu(wxMenu & menu)
-{
-    menu.Append(id_menu_info_command_stream, _("Show command stream"));
 }
 
 bool Debugger_DAP::SupportsFeature(cbDebuggerFeature::Flags flag)
@@ -239,7 +231,6 @@ cbConfigurationPanel * Debugger_DAP::GetProjectConfigurationPanel(wxWindow * par
     return dlg;
 }
 
-
 void Debugger_DAP::OnIdle(wxIdleEvent & event)
 {
     event.Skip();
@@ -250,43 +241,11 @@ void Debugger_DAP::OnTimer(wxTimerEvent & /*event*/)
     wxWakeUpIdle();
 }
 
-void Debugger_DAP::OnMenuInfoCommandStream(wxCommandEvent & /*event*/)
-{
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    //    if (m_command_stream_dialog)
-    //    {
-    //        m_command_stream_dialog->SetText(full);
-    //        m_command_stream_dialog->Show();
-    //    }
-    //    else
-    //    {
-    //        m_command_stream_dialog = new dbg_DAP::DAPTextInfoWindow(Manager::Get()->GetAppWindow(), _T("Command stream"), full);
-    //        m_command_stream_dialog->Show();
-    //    }
-}
-
 void Debugger_DAP::UpdateDebugDialogs(bool bClearAllData)
 {
-    cbBacktraceDlg * pDialogBacktrace = Manager::Get()->GetDebuggerManager()->GetBacktraceDialog();
-
-    if (pDialogBacktrace)
-    {
-        pDialogBacktrace->Reload();
-    }
-
-    cbBreakpointsDlg * pDialogBreakpoint = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-
-    if (pDialogBreakpoint)
-    {
-        if (bClearAllData)
-        {
-            pDialogBreakpoint->RemoveAllBreakpoints();
-        }
-        else
-        {
-            pDialogBreakpoint->Reload();
-        }
-    }
+    pDAPBreakpoints->UpdateDebugDialogs(bClearAllData);
+    pDAPCallStack->UpdateDebugDialogs(bClearAllData);
+    pDAPWatches->UpdateDebugDialogs(bClearAllData);
 
     if (bClearAllData)
     {
@@ -297,34 +256,14 @@ void Debugger_DAP::UpdateDebugDialogs(bool bClearAllData)
             pDialogExamineMemory->SetBaseAddress("");
             pDialogExamineMemory->Clear();
         }
-    }
 
-    cbThreadsDlg * pDialogThreads = Manager::Get()->GetDebuggerManager()->GetThreadsDialog();
-
-    if (pDialogThreads)
-    {
-        pDialogThreads->Reload();
-    }
-
-    cbWatchesDlg * pDialogWatches = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
-
-    if (pDialogWatches)
-    {
-        pDialogWatches->RefreshUI();
-    }
-
-    if (bClearAllData)
-    {
         cbCPURegistersDlg * pDialogCPURegisters = Manager::Get()->GetDebuggerManager()->GetCPURegistersDialog();
 
         if (pDialogCPURegisters)
         {
             pDialogCPURegisters->Clear();
         }
-    }
 
-    if (bClearAllData)
-    {
         cbDisassemblyDlg * pDialogDisassembly = Manager::Get()->GetDebuggerManager()->GetDisassemblyDialog();
 
         if (pDialogDisassembly)
@@ -338,7 +277,6 @@ void Debugger_DAP::UpdateDebugDialogs(bool bClearAllData)
 bool Debugger_DAP::Debug(bool breakOnEntry)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("starting debugger"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    m_hasStartUpError = false;
     StartType start_type = breakOnEntry ? StartTypeStepInto : StartTypeRun;
     return !EnsureBuildUpToDate(start_type);
 }
@@ -351,7 +289,6 @@ bool Debugger_DAP::Debug(bool breakOnEntry)
 // "  \____|  \___/  |_|  |_| |_|     |___| |_____| |_____| |_| \_\     |___| /_/    |_|      "
 // "                                                                                          "
 // "=========================================================================================="
-
 
 bool Debugger_DAP::SelectCompiler(cbProject & project, Compiler *& compiler,
                                   ProjectBuildTarget *& target, long pid_to_attach)
@@ -404,11 +341,9 @@ bool Debugger_DAP::SelectCompiler(cbProject & project, Compiler *& compiler,
 
 bool Debugger_DAP::CompilerFinished(bool compilerFailed, StartType startType)
 {
-    if (compilerFailed || startType == StartTypeUnknown)
-    {
-        m_temporary_breakpoints.clear();
-    }
-    else
+    pDAPBreakpoints->CompilerFinished(compilerFailed, startType);
+
+    if (!compilerFailed && (startType != StartTypeUnknown))
     {
         ProjectManager & project_manager = *Manager::Get()->GetProjectManager();
         cbProject * project = project_manager.GetActiveProject();
@@ -435,16 +370,6 @@ bool Debugger_DAP::CompilerFinished(bool compilerFailed, StartType startType)
 // "                                                                                    "
 // "===================================================================================="
 
-struct BreakpointMatchProject
-{
-    BreakpointMatchProject(cbProject * project) : project(project) {}
-    bool operator()(cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp) const
-    {
-        return bp->GetProject() == project;
-    }
-    cbProject * project;
-};
-
 void Debugger_DAP::OnProjectOpened(CodeBlocksEvent & event)
 {
     // allow others to catch this
@@ -463,28 +388,9 @@ void Debugger_DAP::CleanupWhenProjectClosed(cbProject * project)
         SaveStateToFile(project);
     }
 
-    m_breakpoints.clear();
-    m_map_filebreakpoints.clear();
-    m_map_fileSystemDap.clear();
-    m_backtrace.clear();
-    cbBreakpointsDlg * dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-    dlg->Reload();
-
-    for (dbg_DAP::DAPWatchesContainer::iterator it = m_watches.begin(); it != m_watches.end();)
-    {
-        cb::shared_ptr<dbg_DAP::DAPWatch> watch = *it;
-
-        if (watch->GetProject() == project)
-        {
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Remove watch for \"%s\"", watch->GetSymbol()), dbg_DAP::LogPaneLogger::LineType::Debug);
-            cbWatchesDlg * dialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
-            dialog->RemoveWatch(watch);  // This call removed the watch from the GUI and debugger
-        }
-        else
-        {
-            it++;
-        }
-    }
+    pDAPBreakpoints->CleanupWhenProjectClosed(project);
+    pDAPCallStack->CleanupWhenProjectClosed(project);
+    pDAPWatches->CleanupWhenProjectClosed(project);
 
     if (!project)
     {
@@ -512,14 +418,12 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
     if (!compiler)
     {
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Cannot debug as no compiler found!"), dbg_DAP::LogPaneLogger::LineType::Error);
-        m_hasStartUpError = true;
         return 2;
     }
 
     if (!target)
     {
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Cannot debug as no target found!"), dbg_DAP::LogPaneLogger::LineType::Error);
-        m_hasStartUpError = true;
         return 3;
     }
 
@@ -529,7 +433,6 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
     if (!wxFileExists(dap_debugger))
     {
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Cannot find dap_debugger. Currently set to: %s"), dap_debugger), dbg_DAP::LogPaneLogger::LineType::Error);
-        m_hasStartUpError = true;
         return 4;
     }
 
@@ -545,7 +448,6 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
     if (!GetDebuggee(debuggee, working_dir, target))
     {
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Cannot find debuggee!"), dbg_DAP::LogPaneLogger::LineType::Error);
-        m_hasStartUpError = true;
         return 6;
     }
 
@@ -556,13 +458,13 @@ int Debugger_DAP::StartDebugger(cbProject * project, StartType start_type)
 
     if (res != 0)
     {
-        m_hasStartUpError = true;
         return res;
     }
 
+    pDAPBreakpoints->SetDebuggee(debuggee);
     m_pProject = project;
-    m_hasStartUpError = false;
-    m_debuggee = debuggee;
+    pDAPBreakpoints->SetProject(project);
+    pDAPWatches->SetProject(project);
     return 0;
 }
 
@@ -648,9 +550,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
                                  StartType start_type)
 {
     // Reset the client and data
-    DAPDebuggerResetData(false);
-    m_map_filebreakpoints.clear();
-    m_map_fileSystemDap.clear();
+    DAPDebuggerResetData(dbg_DAP::ResetDataType::ResetData_Startup);
 
     if (dap_debugger.IsEmpty())
     {
@@ -713,11 +613,11 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
         return 1;
     }
 
-    DAPDebuggerState = eDAPState::Connected;
+    Debugger_State::SetState(Debugger_State::eDAPState::Connected);
     // construct new client with the transport
     m_dapClient.SetTransport(transport);
     // This part is done in mode **sync**
-    DAPDebuggerState = eDAPState::Running;
+    Debugger_State::SetState(Debugger_State::eDAPState::Running);
     // Create the DAP debuggee command line including any parameters
     Compiler * compiler;
     ProjectBuildTarget * target;
@@ -768,31 +668,17 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
 // "                                                                                                     "
 // "====================================================================================================="
 
-bool Debugger_DAP::RunToCursor(const wxString & filename, int line, const wxString & /*line_text*/)
+bool Debugger_DAP::RunToCursor(const wxString & filename, int line, const wxString & line_text)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
+    pDAPBreakpoints->RunToCursor(filename, line, line_text);
 
-    if (IsRunning())
+    if (Debugger_State::IsRunning())
     {
-        //        if (IsStopped())
-        //        {
-        //            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("=>-exec-until %s:%d<=", filename, line), dbg_DAP::LogPaneLogger::LineType::Command);
-        //            CommitRunCommand(wxString::Format("-exec-until %s:%d", filename.c_str(), line));
-        //            return true;
-        //        }
-        //        else
-        //        {
-        //            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("filename:%s line:%d", filename, line), dbg_DAP::LogPaneLogger::LineType::Debug);
-        //        }
-        //
         return false;
     }
     else
     {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("RunToCursor %s:%d", filename, line), dbg_DAP::LogPaneLogger::LineType::Command);
-        cbProject * project = Manager::Get()->GetProjectManager()->FindProjectForFile(filename, nullptr, false, false);
-        cb::shared_ptr<dbg_DAP::DAPBreakpoint> ptr(new dbg_DAP::DAPBreakpoint(project, m_pLogger, filename, line, -1));
-        m_temporary_breakpoints.push_back(ptr);
         return Debug(false);
     }
 }
@@ -860,23 +746,28 @@ void Debugger_DAP::Stop()
     }
 
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("stop debugger"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    DAPDebuggerResetData(false);
+    DAPDebuggerResetData(dbg_DAP::ResetDataType::ResetData_Normal);
     UpdateDebugDialogs(false);
 }
 
 bool Debugger_DAP::IsRunning() const
 {
-    return (DAPDebuggerState != eDAPState::NotConnected);
+    return (Debugger_State::IsRunning());
 }
 
 bool Debugger_DAP::IsStopped() const
 {
-    return (DAPDebuggerState == eDAPState::Stopped);
+    return (Debugger_State::IsStopped());
 }
 
 bool Debugger_DAP::IsBusy() const
 {
-    return (DAPDebuggerState != eDAPState::Stopped);
+    return (Debugger_State::IsBusy());
+}
+
+void Debugger_DAP::SetExitCode(int code)
+{
+    m_exit_code = code;
 }
 
 int Debugger_DAP::GetExitCode() const
@@ -894,636 +785,59 @@ int Debugger_DAP::GetExitCode() const
 //  "                                                                                                "
 //  "================================================================================================"
 
-void Debugger_DAP::CreateStartBreakpoints(bool force)
-{
-    long lineNumBrk;
-
-    for (dbg_DAP::DAPBreakpointsContainer::iterator itBP = m_breakpoints.begin(); itBP != m_breakpoints.end(); ++itBP)
-    {
-        if ((*itBP)->GetLineString().ToLong(&lineNumBrk))
-        {
-            wxString brkFileName = (*itBP)->GetFilename();
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("File: %s  Line: %ld from m_breakpoints", brkFileName, lineNumBrk), dbg_DAP::LogPaneLogger::LineType::Debug);
-            UpdateMapFileBreakPoints(brkFileName, (*itBP), true);
-        }
-    }
-
-    for (dbg_DAP::DAPBreakpointsContainer::const_iterator itTBP = m_temporary_breakpoints.begin(); itTBP != m_temporary_breakpoints.end(); ++itTBP)
-    {
-        if ((*itTBP)->GetLineString().ToLong(&lineNumBrk))
-        {
-            wxString brkFileName = (*itTBP)->GetFilename();
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("File: %s  Line: %ld from m_temporary_breakpoints", brkFileName, lineNumBrk), dbg_DAP::LogPaneLogger::LineType::Debug);
-            UpdateMapFileBreakPoints(brkFileName, (*itTBP), true);
-        }
-    }
-
-    for (std::map<wxString, dbg_DAP::DAPBreakpointsContainer>::const_iterator itMFP = m_map_filebreakpoints.begin(); itMFP != m_map_filebreakpoints.end(); ++itMFP)
-    {
-        UpdateDAPSetBreakpointsByFileName(itMFP->first);
-    }
-
-    m_temporary_breakpoints.clear();
-}
-
 int Debugger_DAP::GetBreakpointsCount() const
 {
-    return m_breakpoints.size();
+    return pDAPBreakpoints->GetBreakpointsCount();
 }
 
 cb::shared_ptr<cbBreakpoint> Debugger_DAP::GetBreakpoint(int index)
 {
-    return cb::static_pointer_cast<cbBreakpoint>(m_breakpoints[index]);
+    return pDAPBreakpoints->GetBreakpoint(index);
 }
 
 cb::shared_ptr<const cbBreakpoint> Debugger_DAP::GetBreakpoint(int index) const
 {
-    return cb::static_pointer_cast<const cbBreakpoint>(m_breakpoints[index]);
-}
-
-
-cb::shared_ptr<cbBreakpoint> Debugger_DAP::GetBreakpointByID(int id)
-{
-    for (dbg_DAP::DAPBreakpointsContainer::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it)
-    {
-        if ((*it)->GetID() == id)
-        {
-            return *it;
-        }
-    }
-
-    return cb::shared_ptr<cbBreakpoint>();
-}
-
-cb::shared_ptr<dbg_DAP::DAPBreakpoint> Debugger_DAP::FindBreakpoint(const cbProject * project, const wxString & filename, const int line)
-{
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("filename: %s ,  Line %d"), filename, line), dbg_DAP::LogPaneLogger::LineType::Debug);
-
-    for (dbg_DAP::DAPBreakpointsContainer::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it)
-    {
-        if (
-            ((*it)->GetProject() == project)
-            &&
-            ((*it)->GetFilename() == filename)
-            &&
-            ((*it)->GetLine() == line)
-        )
-        {
-            return *it;
-        }
-    }
-
-    return cb::shared_ptr<dbg_DAP::DAPBreakpoint>();
-}
-
-void Debugger_DAP::UpdateMapFileBreakPoints(const wxString & filename, cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp, bool bAddBreakpoint)
-{
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("filename: %s ,  BP: %s Line %d  , bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
-    std::map<wxString, dbg_DAP::DAPBreakpointsContainer>::iterator mapit;
-    mapit = m_map_filebreakpoints.find(filename);
-
-    if (mapit == m_map_filebreakpoints.end())
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints includes filename %s"), filename), dbg_DAP::LogPaneLogger::LineType::Debug);
-
-        if (bAddBreakpoint == true)
-        {
-            std::vector<cb::shared_ptr<dbg_DAP::DAPBreakpoint>> vecFileBPreakpoints;
-            vecFileBPreakpoints.push_back(bp);
-            m_map_filebreakpoints.insert(std::pair<wxString, std::vector<cb::shared_ptr<dbg_DAP::DAPBreakpoint>>>(filename, vecFileBPreakpoints));
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints insert for filename %s ,  BP %s Line %d bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
-        }
-        else
-        {
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Trying to remove a break point line, but it is not in m_map_filebreakpoints!"), dbg_DAP::LogPaneLogger::LineType::Error);
-        }
-    }
-    else
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints does not include filename %s"), filename), dbg_DAP::LogPaneLogger::LineType::Debug);
-        bool bFoundLine = false;
-        int lineBP = bp->GetLine();
-        dbg_DAP::DAPBreakpointsContainer::iterator itFBrk;
-
-        for (itFBrk = (*mapit).second.begin(); itFBrk != (*mapit).second.end(); ++itFBrk)
-        {
-            if ((*itFBrk)->GetLine() == lineBP)
-            {
-                bFoundLine = true;
-                break;
-            }
-        }
-
-        if (bFoundLine)
-        {
-            if (bAddBreakpoint)
-            {
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Trying to add a break point line that is allready in m_map_filebreakpoints!"), dbg_DAP::LogPaneLogger::LineType::Error);
-            }
-            else
-            {
-                if ((*mapit).second.size() == 1)
-                {
-                    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints erase filename %s ,  BP %s Line %d bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
-
-                    if (m_map_filebreakpoints.size() == 1)
-                    {
-                        m_map_filebreakpoints.clear();
-                    }
-                    else
-                    {
-                        m_map_filebreakpoints.erase(mapit);
-                    }
-                }
-                else
-                {
-                    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints erase for filename %s ,  BP %s Line %d bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
-                    (*mapit).second.erase(itFBrk);
-                }
-            }
-        }
-        else
-        {
-            if (bAddBreakpoint == true)
-            {
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_filebreakpoints add filename %s ,  BP %s Line %d bAddBreakpoint: %s"), filename, bp->GetFilename(), bp->GetLine(), bAddBreakpoint ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::Debug);
-                (*mapit).second.push_back(bp);
-            }
-            else
-            {
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Trying to remove a break point line, but it is not in m_map_filebreakpoints!"), dbg_DAP::LogPaneLogger::LineType::Error);
-            }
-        }
-    }
-}
-
-void Debugger_DAP::UpdateDAPSetBreakpointsByFileName(const wxString & filename)
-{
-    if (IsRunning())
-    {
-        std::vector<dap::SourceBreakpoint> vlines;
-        wxString sLineInfo = wxEmptyString;
-
-        if (m_map_filebreakpoints.size() > 0)
-        {
-            std::map<wxString, dbg_DAP::DAPBreakpointsContainer>::iterator mapit;
-            mapit = m_map_filebreakpoints.find(filename);
-            dbg_DAP::DAPBreakpointsContainer filebreakpoints = mapit->second;
-
-            for (dbg_DAP::DAPBreakpointsContainer::iterator it = filebreakpoints.begin(); it != filebreakpoints.end(); ++it)
-            {
-                if ((*it)->GetIsEnabled())
-                {
-                    int line = static_cast<int>((*it)->GetLine());
-                    sLineInfo.Append(wxString::Format("%d ", line));
-                    vlines.push_back({ line, wxEmptyString });
-                }
-            }
-        }
-
-        wxString fn;
-        dbg_DAP::DebuggerConfiguration::eDebugTestingOptions debugtest = GetActiveConfigEx().GetDebugTestingChoiceOption();
-
-        switch (debugtest)
-        {
-            default:
-            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseNativePaths:
-                fn = UnixFilename(filename);
-                break;
-
-            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseLinuxPathsOnWindowsWithDriveLetter:
-                fn = UnixFilename(filename, wxPATH_UNIX);
-                break;
-
-            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseLinuxPathsOnWindowsWithNoCollen:
-            {
-                fn = UnixFilename(filename, wxPATH_UNIX);
-                int  ColonLocation = fn.Find(':');
-
-                if (ColonLocation == 1)
-                {
-                    fn.Remove(ColonLocation, 1);
-                    fn.Prepend("/");
-                }
-            }
-            break;
-
-            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseLinuxPathsOnWindowsWithNoDriveLetter:
-            {
-                fn = UnixFilename(filename, wxPATH_UNIX);
-                int  ColonLocation = fn.Find(':');
-
-                if (ColonLocation == 1)
-                {
-                    fn.Remove(0, ColonLocation + 1);
-                }
-            }
-            break;
-
-            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseWindowsPathsWithDriveLetterRemoved:
-            {
-                fn = UnixFilename(filename);
-                int  ColonLocation = fn.Find(':');
-
-                if (ColonLocation == 1)
-                {
-                    fn.Remove(0, ColonLocation + 1);
-                }
-            }
-            break;
-
-            case dbg_DAP::DebuggerConfiguration::eDebugTestingOptions::UseRelativePathComparedToTheExecutable:
-            {
-                fn = UnixFilename(filename);
-                wxFileName fnFileName(fn);
-
-                if (fnFileName.Exists())
-                {
-                    wxFileName fnDebuggee(m_debuggee);
-                    fnFileName.MakeRelativeTo(fnDebuggee.GetPath());
-                    fn = fnFileName.GetFullPath();
-                }
-            }
-            break;
-        }
-
-        std::map<wxString, wxString>::iterator mapit;
-        mapit = m_map_fileSystemDap.find(filename);
-
-        if (mapit == m_map_fileSystemDap.end())
-        {
-            m_map_fileSystemDap.insert(std::pair<wxString, wxString>(filename, fn));
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_map_fileSystemDap insert for filename %s DAP filename %s"), filename, fn), dbg_DAP::LogPaneLogger::LineType::Debug);
-        }
-
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("m_dapClient.SetBreakpointsFile(%s , [%s]", fn, sLineInfo), dbg_DAP::LogPaneLogger::LineType::Debug);
-        m_dapClient.SetBreakpointsFile(fn, vlines);
-    }
+    return pDAPBreakpoints->GetBreakpoint(index);
 }
 
 cb::shared_ptr<cbBreakpoint> Debugger_DAP::AddBreakpoint(const wxString & filename, int line)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("AddBreakpoint %s:%d enabled"), filename, line), dbg_DAP::LogPaneLogger::LineType::Debug);
-    return UpdateOrAddBreakpoint(filename, line, true, -1);
+    return pDAPBreakpoints->AddBreakpoint(filename, line);
 }
 
 cb::shared_ptr<cbBreakpoint> Debugger_DAP::UpdateOrAddBreakpoint(const wxString & filename, const int line, const bool bEnable, const int id)
 {
-    wxString filenameBRK(filename);
-
-    for (std::map<wxString, wxString>::const_iterator itMFSP = m_map_fileSystemDap.begin(); itMFSP != m_map_fileSystemDap.end(); ++itMFSP)
-    {
-        if (itMFSP->second.IsSameAs(filename))
-        {
-            filenameBRK = itMFSP->first;
-            break;
-        }
-    }
-
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Filename: %s Line: %d %s, ID: %d", filenameBRK, line, bEnable ? "Enable" : "Disable", id), dbg_DAP::LogPaneLogger::LineType::Debug);
-
-    if (id != -1)
-    {
-        // Check if BP allready by ID
-        for (dbg_DAP::DAPBreakpointsContainer::iterator itBP = m_breakpoints.begin(); itBP != m_breakpoints.end(); ++itBP)
-        {
-            if ((*itBP)->GetID() == id)
-            {
-                if ((*itBP)->GetIsEnabled() != bEnable)
-                {
-                    (*itBP)->SetIsEnabled(bEnable);
-                    UpdateDAPSetBreakpointsByFileName(filenameBRK);
-                }
-
-                return *itBP;
-            }
-        }
-    }
-
-    cbProject * project = Manager::Get()->GetProjectManager()->FindProjectForFile(filenameBRK, nullptr, false, false);
-    cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp = FindBreakpoint(project, filenameBRK, line);
-
-    if (bp)
-    {
-        if (id != -1)
-        {
-            bp->SetID(id);
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Update %s:%d set ID %d"), filenameBRK, line, id), dbg_DAP::LogPaneLogger::LineType::Debug);
-        }
-
-        if (bp->GetIsEnabled() != bEnable)
-        {
-            bp->SetIsEnabled(bEnable);
-            UpdateDAPSetBreakpointsByFileName(filenameBRK);
-        }
-
-        return bp;
-    }
-    else
-    {
-        cb::shared_ptr<dbg_DAP::DAPBreakpoint> newDAPBreakpoint(new dbg_DAP::DAPBreakpoint(project, m_pLogger, filenameBRK, line, id));
-        UpdateMapFileBreakPoints(filenameBRK, newDAPBreakpoint, true);
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("m_breakpoints push_back %s:%d"), filenameBRK, line), dbg_DAP::LogPaneLogger::LineType::Debug);
-        m_breakpoints.push_back(newDAPBreakpoint);
-        UpdateDAPSetBreakpointsByFileName(filenameBRK);
-        return newDAPBreakpoint;
-    }
+    return pDAPBreakpoints->UpdateOrAddBreakpoint(filename, line, bEnable, id);
 }
 
 void Debugger_DAP::DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 {
-    cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp = cb::static_pointer_cast<dbg_DAP::DAPBreakpoint>(breakpoint);
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("%s:%d"), bp->GetLocation(), bp->GetLine()), dbg_DAP::LogPaneLogger::LineType::Debug);
-    dbg_DAP::DAPBreakpointsContainer::iterator it = std::find(m_breakpoints.begin(), m_breakpoints.end(), bp);
-
-    if (it != m_breakpoints.end())
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Found %s:%d"), bp->GetLocation(), bp->GetLine()), dbg_DAP::LogPaneLogger::LineType::Debug);
-        cb::shared_ptr<dbg_DAP::DAPBreakpoint> pBrkPt = *it;
-        dbg_DAP::DAPBreakpoint::BreakpointType bpType = pBrkPt->GetType();
-
-        switch (bpType)
-        {
-            case dbg_DAP::DAPBreakpoint::bptCode:
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Found dbg_DAP::DAPBreakpoint::bptCode breakpoint type")), dbg_DAP::LogPaneLogger::LineType::Debug);
-                break;
-
-            case dbg_DAP::DAPBreakpoint::bptData:
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Found dbg_DAP::DAPBreakpoint::bptData breakpoint type")), dbg_DAP::LogPaneLogger::LineType::Debug);
-                return;
-
-            case dbg_DAP::DAPBreakpoint::bptFunction:
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Found dbg_DAP::DAPBreakpoint::bptFunction breakpoint type")), dbg_DAP::LogPaneLogger::LineType::Debug);
-                // #ifdef __MINGW32__
-                //                 if (IsDebuggerPresent())
-                //                 {
-                //                     DebugBreak();
-                //                 }
-                //
-                // #endif // __MINGW32__
-                return;
-
-            default:
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Unknown breakpoint type: %d",  bpType), dbg_DAP::LogPaneLogger::LineType::Error);
-                // #ifdef __MINGW32__
-                //
-                //                 if (IsDebuggerPresent())
-                //                 {
-                //                     DebugBreak();
-                //                 }
-                //
-                // #endif // __MINGW32__
-                return;
-        }
-
-        wxString brkFileName = bp->GetLocation();
-        UpdateMapFileBreakPoints(brkFileName, (*it), false);
-
-        if (m_breakpoints.size() == 1)
-        {
-            m_breakpoints.clear(); // Delete after you have finished using *it
-        }
-        else
-        {
-            m_breakpoints.erase(it); // Delete after you have finished using *it
-        }
-
-        UpdateDAPSetBreakpointsByFileName(brkFileName);
-    }
-
-    cbBreakpointsDlg * dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-    dlg->Reload();
+    pDAPBreakpoints->DeleteBreakpoint(breakpoint);
 }
 
 void Debugger_DAP::DeleteAllBreakpoints()
 {
-    if (IsRunning())
-    {
-        std::vector<dap::SourceBreakpoint> vlines;
-        vlines.clear();
-
-        for (std::map<wxString, std::vector<cb::shared_ptr<dbg_DAP::DAPBreakpoint>>>::iterator it = m_map_filebreakpoints.begin(); it != m_map_filebreakpoints.end(); ++it)
-        {
-            m_dapClient.SetBreakpointsFile(it->first, vlines);
-        }
-    }
-
-    m_map_filebreakpoints.clear();
-    m_map_fileSystemDap.clear();
-    m_breakpoints.clear();
-    cbBreakpointsDlg * dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-    dlg->Reload();
+    pDAPBreakpoints->DeleteAllBreakpoints();
 }
 
 cb::shared_ptr<cbBreakpoint> Debugger_DAP::AddDataBreakpoint(const wxString & dataExpression)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    //    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("dataExpression : %s", dataExpression), dbg_DAP::LogPaneLogger::LineType::Warning);
-    //
-    //    dbg_DAP::DataBreakpointDlg dlg(Manager::Get()->GetAppWindow(), dataExpression, true, 1);
-    //    PlaceWindow(&dlg);
-    //    if (dlg.ShowModal() == wxID_OK)
-    //    {
-    //        bool enabled = dlg.IsBreakpointEnabled();
-    //        const wxString& newDataExpression = dlg.GetDataExpression();
-    //        int sel = dlg.GetSelection();
-    //
-    //        cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp(new dbg_DAP::DAPBreakpoint(m_pProject, m_pLogger));
-    //        bp->SetType(dbg_DAP::DAPBreakpoint::BreakpointType::bptData);
-    //        bp->SetIsEnabled(enabled);
-    //        bp->SetBreakAddress(newDataExpression);
-    //        bp->SetIsBreakOnRead(sel != 1);
-    //        bp->SetIsBreakOnWrite(sel != 0);
-    //
-    //        AddBreakpoint(bp);
-    //
-    //        return bp;
-    //    }
-    //    else
-    //    {
-    return cb::shared_ptr<cbBreakpoint>();
-    //    }
+    return pDAPBreakpoints->AddDataBreakpoint(dataExpression);
 }
 
 void Debugger_DAP::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    //    dbg_DAP::DAPBreakpointsContainer::iterator it = std::find(m_breakpoints.begin(), m_breakpoints.end(), breakpoint);
-    //
-    //    if (it == m_breakpoints.end())
-    //    {
-    //        return;
-    //    }
-    //
-    //    cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp = cb::static_pointer_cast<dbg_DAP::DAPBreakpoint>(breakpoint);
-    //    bool reset = false;
-    //    switch (bp->GetType())
-    //    {
-    //        case dbg_DAP::DAPBreakpoint::bptCode:
-    //        {
-    //            dbg_DAP::EditBreakpointDlg dlg(*bp, Manager::Get()->GetAppWindow());
-    //            PlaceWindow(&dlg);
-    //            if (dlg.ShowModal() == wxID_OK)
-    //            {
-    //                *bp = dlg.GetBreakpoint();
-    //                reset = true;
-    //            }
-    //            break;
-    //        }
-    //        case dbg_DAP::DAPBreakpoint::bptData:
-    //        {
-    //            int old_sel = 0;
-    //            if (bp->GetIsBreakOnRead() && bp->GetIsBreakOnWrite())
-    //            {
-    //                old_sel = 2;
-    //            }
-    //            else if (!bp->GetIsBreakOnRead() && bp->GetIsBreakOnWrite())
-    //            {
-    //                old_sel = 1;
-    //            }
-    //
-    //            dbg_DAP::DataBreakpointDlg dlg(Manager::Get()->GetAppWindow(), bp->GetBreakAddress(), bp->GetIsEnabled(), old_sel);
-    //            PlaceWindow(&dlg);
-    //            if (dlg.ShowModal() == wxID_OK)
-    //            {
-    //                bp->SetIsEnabled(dlg.IsEnabled());
-    //                bp->SetIsBreakOnRead(dlg.GetSelection() != 1);
-    //                bp->SetIsBreakOnWrite(dlg.GetSelection() != 0);
-    //                bp->SetBreakAddress(dlg.GetDataExpression());
-    //                reset = true;
-    //            }
-    //            break;
-    //        }
-    //        case dbg_DAP::DAPBreakpoint::bptFunction:
-    //            return;
-    //
-    //        default:
-    //            return;
-    //    }
-    //
-    //    if (reset)
-    //    {
-    //        bool debuggerIsRunning = !IsStopped();
-    //        if (debuggerIsRunning)
-    //        {
-    //            m_executor.Interupt(true);
-    //        }
-    //
-    //        DeleteBreakpoint(bp);
-    //        AddBreakpoint(bp);
-    //
-    //        if (debuggerIsRunning)
-    //        {
-    //            Continue();
-    //        }
-    //    }
+    pDAPBreakpoints->UpdateBreakpoint(breakpoint);
 }
 
 bool Debugger_DAP::ShiftAllFileBreakpoints(const wxString & editorFilename, int startline, int lines)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Filename: %s startline: %d lines move: %d", editorFilename, startline, lines), dbg_DAP::LogPaneLogger::LineType::Debug);
-    wxString filenameBRK(editorFilename);
-
-    for (std::map<wxString, wxString>::const_iterator itMFSP = m_map_fileSystemDap.begin(); itMFSP != m_map_fileSystemDap.end(); ++itMFSP)
-    {
-        if (itMFSP->second.IsSameAs(editorFilename))
-        {
-            filenameBRK = itMFSP->first;
-            break;
-        }
-    }
-
-    cbProject * project = Manager::Get()->GetProjectManager()->FindProjectForFile(filenameBRK, nullptr, false, false);
-    bool bBrksUpdated = false;
-    std::vector<cb::shared_ptr<dbg_DAP::DAPBreakpoint>> brksToRemove;
-
-    for (dbg_DAP::DAPBreakpointsContainer::iterator itBP = m_breakpoints.begin(); itBP != m_breakpoints.end(); ++itBP)
-    {
-        int brkline = (*itBP)->GetLine();
-
-        if (
-            ((*itBP)->GetProject() == project)
-            &&
-            ((*itBP)->GetFilename() == filenameBRK)
-            &&
-            (brkline >= startline)
-        )
-        {
-            if (lines < 0)
-            {
-                int endline = startline - lines - 1;
-
-                if (brkline > endline)
-                {
-                    (*itBP)->SetShiftLines(lines);
-                    bBrksUpdated = true;;
-                }
-                else
-                {
-                    if ((brkline >= startline) && (brkline <= endline))
-                    {
-                        brksToRemove.push_back(*itBP);
-                        bBrksUpdated = true;;
-                    }
-                }
-            }
-            else
-            {
-                (*itBP)->SetShiftLines(lines);
-                bBrksUpdated = true;;
-            }
-        }
-    }
-
-    for (std::vector<cb::shared_ptr<dbg_DAP::DAPBreakpoint>>::iterator it = brksToRemove.begin(); it != brksToRemove.end(); ++it)
-    {
-        DeleteBreakpoint(*it);
-    }
-
-    if (IsRunning() && bBrksUpdated)
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Cannot move debugger Breakpoints as the debugger is running!!", editorFilename, startline, lines), dbg_DAP::LogPaneLogger::LineType::Error);
-        //        UpdateDAPSetBreakpointsByFileName(filenameBRK);
-    }
-
-    return true;
+    return pDAPBreakpoints->ShiftAllFileBreakpoints(editorFilename, startline, lines);
 }
 
 void Debugger_DAP::EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool bEnable)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("%s:%d %s"), breakpoint->GetLocation(), breakpoint->GetLine(), bEnable ? "Enable" : "Disable"), dbg_DAP::LogPaneLogger::LineType::Debug);
-    dbg_DAP::DAPBreakpointsContainer::iterator it = std::find(m_breakpoints.begin(), m_breakpoints.end(), breakpoint);
-
-    if (it != m_breakpoints.end())
-    {
-        if ((*it)->IsEnabled() == bEnable)
-        {
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
-                                     __LINE__,
-                                     wxString::Format(_("breakpoint found but no change needed: %s:%d"), breakpoint->GetLocation(), breakpoint->GetLine()),
-                                     dbg_DAP::LogPaneLogger::LineType::Debug);
-            return;
-        }
-
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
-                                 __LINE__,
-                                 wxString::Format(_("breakpoint found and change needed: %s:%d"), breakpoint->GetLocation(), breakpoint->GetLine()),
-                                 dbg_DAP::LogPaneLogger::LineType::Debug);
-
-        if (IsRunning())
-        {
-            UpdateOrAddBreakpoint(breakpoint->GetLocation(), breakpoint->GetLine(), bEnable, (*it)->GetID());
-        }
-
-        (*it)->SetEnabled(bEnable);
-    }
-    else
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
-                                 __LINE__,
-                                 wxString::Format(_("Breakpoint NOT FOUND: %s:%d"), breakpoint->GetLocation(), breakpoint->GetLine()),
-                                 dbg_DAP::LogPaneLogger::LineType::Error);
-    }
+    pDAPBreakpoints->EnableBreakpoint(breakpoint, bEnable);
 }
 
 // "=============================================================================================="
@@ -1535,265 +849,59 @@ void Debugger_DAP::EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, boo
 // "                                                                                              "
 // "=============================================================================================="
 
-void Debugger_DAP::CreateStartWatches()
-{
-    if (m_watches.empty())
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("No watches"), dbg_DAP::LogPaneLogger::LineType::Debug);
-    }
-
-    for (dbg_DAP::DAPWatchesContainer::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Watch clear for symbol %s", (*it)->GetSymbol()), dbg_DAP::LogPaneLogger::LineType::Debug);
-        (*it)->Reset();
-    }
-
-    if (!m_watches.empty())
-    {
-        CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
-        event.SetInt(int(cbDebuggerPlugin::DebugWindows::Watches));
-        Manager::Get()->ProcessEvent(event);
-    }
-}
-
 void Debugger_DAP::UpdateDAPWatches(int updateType)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("updating watches"), dbg_DAP::LogPaneLogger::LineType::Debug);
-    CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
-    event.SetInt(updateType);
-    Manager::Get()->ProcessEvent(event);
+    pDAPWatches->UpdateDAPWatches(updateType);
 }
 
-cb::shared_ptr<cbWatch> Debugger_DAP::AddWatch(const wxString & symbol, cb_unused bool update)
+cb::shared_ptr<cbWatch> Debugger_DAP::AddWatch(const wxString & symbol, bool update)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Add watch for \"%s\"", symbol), dbg_DAP::LogPaneLogger::LineType::Debug);
-    cb::shared_ptr<dbg_DAP::DAPWatch> watch(new dbg_DAP::DAPWatch(m_pProject, m_pLogger, symbol, false));
-
-    for (const dap::Variable & var : m_stackdapvariables)
-    {
-        if (symbol.IsSameAs(var.name))
-        {
-#ifdef DAP_DEBUG_ENABLE
-            wxString value = var.value.empty() ? "\"\"" : var.value;
-            wxString attributes = wxEmptyString;
-
-            for (const auto & attrib : var.presentationHint.attributes)
-            {
-                attributes += " " + attrib;
-            }
-
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
-                                     __LINE__,
-                                     wxString::Format(_("Var: %s = %s , variablesReference: %d  Type: %s, Hint: kind: %s , attributes %s , visibility: %s "),
-                                                      var.name,
-                                                      value,
-                                                      var.variablesReference,
-                                                      var.type,
-                                                      var.presentationHint.kind,
-                                                      attributes,
-                                                      var.presentationHint.visibility
-                                                     ),
-                                     dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-#endif
-            watch->SetValue(var.value);
-            watch->SetDAPVariableReference(var.variablesReference);
-            watch->SetType(var.type);
-
-            if (var.variablesReference > 0)
-            {
-                watch->SetHasBeenExpanded(false);
-                watch->SetRangeArray(0, var.variablesReference);
-                cbWatch::AddChild(watch, cb::shared_ptr<cbWatch>(new dbg_DAP::DAPWatch(m_pProject, m_pLogger, "updating...", false)));
-            }
-
-            break;
-        }
-    }
-
-    m_watches.push_back(watch);
-    return watch;
+    return pDAPWatches->AddWatch(symbol, update);
 }
 
 cb::shared_ptr<cbWatch> Debugger_DAP::AddWatch(dbg_DAP::DAPWatch * watch, cb_unused bool update)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Add watch for \"%s\"", watch->GetSymbol()), dbg_DAP::LogPaneLogger::LineType::Debug);
-    cb::shared_ptr<dbg_DAP::DAPWatch> w(watch);
-    m_watches.push_back(w);
-
-    if (IsRunning())
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Need to wire up watch.", dbg_DAP::LogPaneLogger::LineType::Error);
-    }
-
-    return w;
+    return pDAPWatches->AddWatch(watch, update);
 }
 
 void Debugger_DAP::DeleteWatch(cb::shared_ptr<cbWatch> watch)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "", dbg_DAP::LogPaneLogger::LineType::Debug);
-    cb::shared_ptr<cbWatch> root_watch = cbGetRootWatch(watch);
-    dbg_DAP::DAPWatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), root_watch);
-
-    if (it == m_watches.end())
-    {
-        return;
-    }
-
-    if (m_watches.size() == 1)
-    {
-        m_watches.clear();
-    }
-    else
-    {
-        m_watches.erase(it);
-    }
+    pDAPWatches->DeleteWatch(watch);
 }
 
 bool Debugger_DAP::HasWatch(cb::shared_ptr<cbWatch> watch)
 {
-    if (watch == m_WatchLocalsandArgs)
-    {
-        return true;
-    }
-
-    dbg_DAP::DAPWatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
-    return it != m_watches.end();
+    return pDAPWatches->HasWatch(watch);
 }
 
 void Debugger_DAP::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 {
-    // not supported for child nodes or memory ranges!
-    if (watch->GetParent() || IsMemoryRangeWatch(watch))
-    {
-        return;
-    }
-
-    cb::shared_ptr<dbg_DAP::DAPWatch> real_watch = cb::static_pointer_cast<dbg_DAP::DAPWatch>(watch);
-    dbg_DAP::EditWatchDlg dlg(real_watch, nullptr);
-    PlaceWindow(&dlg);
-
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        DoWatches();
-    }
+    pDAPWatches->ShowWatchProperties(watch);
 }
 
 bool Debugger_DAP::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString & value)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-
-    if (!IsStopped() || !IsRunning())
-    {
-        return false;
-    }
-
-    cb::shared_ptr<cbWatch> root_watch = cbGetRootWatch(watch);
-    dbg_DAP::DAPWatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), root_watch);
-
-    if (it == m_watches.end())
-    {
-        return false;
-    }
-
-    cb::shared_ptr<dbg_DAP::DAPWatch> real_watch = cb::static_pointer_cast<dbg_DAP::DAPWatch>(watch);
-    //    AddStringCommand("-var-assign " + real_watch->GetID() + " " + value);
-    //    m_actions.Add(new dbg_DAP::DAPWatchSetValueAction(*it, static_cast<dbg_DAP::DAPWatch*>(watch), value, m_pLogger));
-    //    dbg_DAP::Action * update_action = new dbg_DAP::DAPWatchesUpdateAction(m_watches, m_pLogger);
-    //    update_action->SetWaitPrevious(true);
-    //    m_actions.Add(update_action);
-    return true;
+    return pDAPWatches->SetWatchValue(watch, value);
 }
 
 void Debugger_DAP::ExpandWatch(cb::shared_ptr<cbWatch> watch)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "", dbg_DAP::LogPaneLogger::LineType::Debug);
-
-    if (!IsStopped() || !IsRunning())
-    {
-        return;
-    }
-
-    cb::shared_ptr<cbWatch> root_watch = cbGetRootWatch(watch);
-    dbg_DAP::DAPWatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), root_watch);
-
-    if (it != m_watches.end())
-    {
-        cb::shared_ptr<dbg_DAP::DAPWatch> real_watch = cb::static_pointer_cast<dbg_DAP::DAPWatch>(watch);
-
-        if (!real_watch->HasBeenExpanded())
-        {
-            real_watch->RemoveChildren();
-            real_watch->SetDAPChildVariableRequestSequence(m_dapClient.GetChildrenVariables(real_watch->GetDAPVariableReference(), dap::EvaluateContext::VARIABLES, 0));
-        }
-    }
+    pDAPWatches->ExpandWatch(watch);
 }
 
 void Debugger_DAP::CollapseWatch(cb::shared_ptr<cbWatch> watch)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not completed yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-
-    if (!IsStopped() || !IsRunning())
-    {
-        return;
-    }
-
-    cb::shared_ptr<cbWatch> root_watch = cbGetRootWatch(watch);
-    dbg_DAP::DAPWatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), root_watch);
-
-    if (it != m_watches.end())
-    {
-        cb::shared_ptr<dbg_DAP::DAPWatch> real_watch = cb::static_pointer_cast<dbg_DAP::DAPWatch>(watch);
-
-        if (real_watch->HasBeenExpanded() && real_watch->DeleteOnCollapse())
-        {
-            // m_actions.Add(new dbg_DAP::DAPWatchCollapseAction(*it, real_watch, m_watches, m_pLogger));
-        }
-    }
+    pDAPWatches->CollapseWatch(watch);
 }
 
 void Debugger_DAP::UpdateWatch(cb_unused cb::shared_ptr<cbWatch> watch)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    dbg_DAP::DAPWatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
-
-    if (it == m_watches.end())
-    {
-        return;
-    }
-
-    if (IsRunning())
-    {
-        //        m_actions.Add(new dbg_DAP::DAPWatchCreateAction(*it, m_watches, m_pLogger, false));
-    }
+    pDAPWatches->UpdateWatch(watch);
 }
 
 void Debugger_DAP::DoWatches()
 {
-    if (!IsRunning())
-    {
-        return;
-    }
-
-    dbg_DAP::DebuggerConfiguration & config = GetActiveConfigEx();
-    bool bWatchFuncLocalsArgs = config.GetFlag(dbg_DAP::DebuggerConfiguration::WatchFuncLocalsArgs);
-
-    if (bWatchFuncLocalsArgs)
-    {
-        if (m_WatchLocalsandArgs == nullptr)
-        {
-            m_WatchLocalsandArgs = cb::shared_ptr<dbg_DAP::DAPWatch>(new dbg_DAP::DAPWatch(m_pProject, m_pLogger, "Function locals and arguments", false));
-            m_WatchLocalsandArgs->Expand(true);
-            m_WatchLocalsandArgs->MarkAsChanged(false);
-            cbWatchesDlg * watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
-            watchesDialog->AddSpecialWatch(m_WatchLocalsandArgs, true);
-        }
-    }
-
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, "Need to wire up DoWatches.", dbg_DAP::LogPaneLogger::LineType::Error);
-    // Update watches now
-    CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
-    event.SetInt(int(cbDebuggerPlugin::DebugWindows::Watches));
-    Manager::Get()->ProcessEvent(event);
+    pDAPWatches->DoWatches();
 }
 
 // "================================================================================================"
@@ -1807,37 +915,7 @@ void Debugger_DAP::DoWatches()
 
 cb::shared_ptr<cbWatch> Debugger_DAP::AddMemoryRange(uint64_t llAddress, uint64_t llSize, const wxString & symbol, bool update)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    cb::shared_ptr<dbg_DAP::DAPMemoryRangeWatch> watch(new dbg_DAP::DAPMemoryRangeWatch(m_pProject, m_pLogger, llAddress, llSize, symbol));
-    //
-    //    watch->SetSymbol(symbol);
-    //    watch->SetAddress(llAddress);
-    //
-    //    m_memoryRanges.push_back(watch);
-    //    m_mapWatchesToType[watch] = dbg_DAP::DAPWatchType::MemoryRange;
-    //
-    //    if (IsRunning())
-    //    {
-    //        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Adding watch for: address: %#018llx  size:%lld", llAddress, llSize), dbg_DAP::LogPaneLogger::LineType::Warning);
-    //        m_actions.Add(new dbg_DAP::DAPMemoryRangeWatchCreateAction(watch, m_pLogger));
-    //    }
-    //
-    return watch;
-}
-
-
-bool Debugger_DAP::IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch)
-{
-    dbg_DAP::DAPMapWatchesToType::const_iterator it = m_mapWatchesToType.find(watch);
-
-    if (it == m_mapWatchesToType.end())
-    {
-        return false;
-    }
-    else
-    {
-        return (it->second == dbg_DAP::DAPWatchType::MemoryRange);
-    }
+    return pDAPWatches->AddMemoryRange(llAddress, llSize, symbol, update);
 }
 
 // "===================================================================================================="
@@ -1851,32 +929,23 @@ bool Debugger_DAP::IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch)
 
 int Debugger_DAP::GetStackFrameCount() const
 {
-    return m_backtrace.size();
+    return pDAPCallStack->GetStackFrameCount();
 }
 
 cb::shared_ptr<const cbStackFrame> Debugger_DAP::GetStackFrame(int index) const
 {
-    return m_backtrace[index];
+    return pDAPCallStack->GetStackFrame(index);
 }
 
 void Debugger_DAP::SwitchToFrame(int number)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("SwitchToFrame: %d"), number), dbg_DAP::LogPaneLogger::LineType::Debug);
-
-    if (IsRunning() && IsStopped() && (number < static_cast<int>(m_backtrace.size())))
-    {
-        cb::shared_ptr<const cbStackFrame> frameToSwitch = m_backtrace[number];
-        wxString sFileName = frameToSwitch->GetFilename();
-        long int lineNumber;;
-        frameToSwitch->GetLine().ToLong(&lineNumber);
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("SyncEditor: %s %ld"), sFileName, lineNumber), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-        SyncEditor(sFileName, lineNumber, true);
-    }
+    pDAPCallStack->SwitchToFrame(number);
 }
 
 int Debugger_DAP::GetActiveStackFrame() const
 {
-    return m_current_frame.GetStackFrame();
+    return pDAPCallStack->GetActiveStackFrame();
 }
 
 // "==============================================================================================="
@@ -1890,33 +959,18 @@ int Debugger_DAP::GetActiveStackFrame() const
 
 int Debugger_DAP::GetThreadsCount() const
 {
-    return m_threads.size();
+    return pDAPCallStack->GetThreadsCount();
 }
 
 cb::shared_ptr<const cbThread> Debugger_DAP::GetThread(int index) const
 {
-    return m_threads[index];
+    return pDAPCallStack->GetThread(index);
 }
 
 bool Debugger_DAP::SwitchToThread(int thread_number)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Functionality not supported yet!"), dbg_DAP::LogPaneLogger::LineType::Error);
-    //    if (IsStopped())
-    //    {
-    //        dbg_DAP::DAPSwitchToThread<Notifications> * a;
-    //        a = new dbg_DAP::DAPSwitchToThread<Notifications>(thread_number,
-    //                                                      m_pLogger,
-    //                                                      Notifications(this, m_executor, true)
-    //                                                     );
-    //        m_actions.Add(a);
-    //        return true;
-    //    }
-    //    else
-    {
-        return false;
-    }
+    return pDAPCallStack->SwitchToThread(thread_number);
 }
-
 
 // "==============================================================================================="
 // "     _____                   _     _____   _                                                   "
@@ -2135,21 +1189,13 @@ void Debugger_DAP::StripQuotes(wxString & str)
     }
 }
 
-void Debugger_DAP::DAPDebuggerResetData(bool bClearAllData)
+void Debugger_DAP::DAPDebuggerResetData(dbg_DAP::ResetDataType bClearAllData)
 {
-    DAPDebuggerState = eDAPState::NotConnected;
+    Debugger_State::SetState(Debugger_State::eDAPState::NotConnected);
     m_timer_poll_debugger.Stop();
-
-    if (bClearAllData)
-    {
-        m_breakpoints.clear();
-        m_map_filebreakpoints.clear();
-        m_map_fileSystemDap.clear();
-    }
-
-    m_backtrace.clear();
+    pDAPCallStack->DAPDebuggerResetData(bClearAllData);
+    pDAPBreakpoints->DAPDebuggerResetData(bClearAllData);
     m_dapClient.Reset();
-    m_current_frame.Reset();
 
     if (m_dapPid != 0)
     {
@@ -2490,49 +1536,9 @@ bool Debugger_DAP::SaveStateToFile(cbProject * pProject)
     // dbg_DAP::AddChildNode(pCompilerNode, "Make",  pCompilerProgsp.MAKE);
     dbg_DAP::AddChildNode(pCompilerNode, "DBGconfig",  pCompilerProgsp.DBGconfig);
     // ******************** Save breakpoints ********************
-    tinyxml2::XMLElement * pElementBreakpointList = doc.NewElement("BreakpointsList");
-    pElementBreakpointList->SetAttribute("count", static_cast<int64_t>(m_breakpoints.size()));
-    tinyxml2::XMLNode * pBreakpointMasterNode = rootnode->InsertEndChild(pElementBreakpointList);
-
-    for (dbg_DAP::DAPBreakpointsContainer::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it)
-    {
-        dbg_DAP::DAPBreakpoint & bp = **it;
-
-        if (bp.GetProject() == pProject)
-        {
-            bp.SaveBreakpointToXML(pBreakpointMasterNode);
-        }
-    }
-
-    // ********************  Save Watches ********************
-    tinyxml2::XMLElement * pElementWatchesList = doc.NewElement("WatchesList");
-    pElementWatchesList->SetAttribute("count", static_cast<int64_t>(m_watches.size()));
-    tinyxml2::XMLNode * pWatchesMasterNode = rootnode->InsertEndChild(pElementWatchesList);
-
-    for (dbg_DAP::DAPWatchesContainer::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
-    {
-        dbg_DAP::DAPWatch & watch = **it;
-
-        if (watch.GetProject() == pProject)
-        {
-            watch.SaveWatchToXML(pWatchesMasterNode);
-        }
-    }
-
-    // ********************  Save Memory Range Watches ********************
-    //    tinyxml2::XMLElement* pElementMemoryRangeList = doc.NewElement("MemoryRangeList");
-    //    pElementMemoryRangeList->SetAttribute("count", m_memoryRanges.size());
-    //    tinyxml2::XMLNode* pMemoryRangeMasterNode = rootnode->InsertEndChild(pElementMemoryRangeList);
-    //
-    //    for (dbg_DAP::DAPMemoryRangeWatchesContainer::iterator it = m_memoryRanges.begin(); it != m_memoryRanges.end(); ++it)
-    //    {
-    //        dbg_DAP::DAPMemoryRangeWatch& memoryRange = **it;
-    //
-    //        if (memoryRange.GetProject() == pProject)
-    //        {
-    //            memoryRange.SaveWatchToXML(pMemoryRangeMasterNode);
-    //        }
-    //    }
+    pDAPBreakpoints->SaveStateToFile(pProject);
+    // ********************  Save Watches and Memory Range Watches ********************
+    pDAPWatches->SaveStateToFile(pProject);
     // ********************  Save XML to disk ********************
     return doc.SaveFile(cbU2C(fname.GetFullPath()), false);
 }
@@ -2572,132 +1578,11 @@ bool Debugger_DAP::LoadStateFromFile(cbProject * pProject)
     }
 
     // ******************** Load breakpoints ********************
-    tinyxml2::XMLElement * pBreakpointList = root->FirstChildElement("BreakpointsList");
-
-    if (pBreakpointList)
-    {
-        for (tinyxml2::XMLElement * pBreakpointElement = pBreakpointList->FirstChildElement("Breakpoint");
-                pBreakpointElement;
-                pBreakpointElement = pBreakpointElement->NextSiblingElement())
-        {
-            dbg_DAP::DAPBreakpoint * bpNew = new dbg_DAP::DAPBreakpoint(pProject, m_pLogger);
-            bpNew->LoadBreakpointFromXML(pBreakpointElement, this);
-
-            // Find new breakpoint in the m_breakpoints
-            for (dbg_DAP::DAPBreakpointsContainer::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it)
-            {
-                dbg_DAP::DAPBreakpoint & bpSearch = **it;
-
-                if (
-                    (bpSearch.GetProject() == bpNew->GetProject())   &&
-                    (bpSearch.GetFilename() == bpNew->GetFilename()) &&
-                    (bpSearch.GetLine() == bpNew->GetLine())
-                )
-                {
-                    // Found breakpoint, so update it!!!
-                    bpSearch.SetEnabled(bpNew->GetIsEnabled());
-                    bpSearch.SetIsUseIgnoreCount(bpNew->GetIsUseIgnoreCount());
-                    bpSearch.SetIgnoreCount(bpNew->GetIgnoreCount());
-                    bpSearch.SetIsUseCondition(bpNew->GetIsUseCondition());
-                    bpSearch.SetCondition(bpNew->GetCondition());
-                }
-            }
-        }
-
-        cbBreakpointsDlg * dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-        dlg->Reload();
-    }
-
-    // ******************** Load watches ********************
-    tinyxml2::XMLElement * pElementWatchesList = root->FirstChildElement("WatchesList");
-
-    if (pElementWatchesList)
-    {
-        for (tinyxml2::XMLElement * pWatchElement = pElementWatchesList->FirstChildElement("Watch");
-                pWatchElement;
-                pWatchElement = pWatchElement->NextSiblingElement())
-        {
-            wxString DAPWatchClassName = dbg_DAP::ReadChildNodewxString(pWatchElement, "DAPWatchClassName");
-
-            if (DAPWatchClassName.IsSameAs("DAPWatch"))
-            {
-                dbg_DAP::DAPWatch * watch = new dbg_DAP::DAPWatch(pProject, m_pLogger, "", false);
-                watch->LoadWatchFromXML(pWatchElement, this);
-            }
-        }
-    }
-
-    // ******************** Load Memory Range Watches ********************
-    //    tinyxml2::XMLElement* pElementMemoryRangeList = root->FirstChildElement("MemoryRangeList");
-    //    if (pElementMemoryRangeList)
-    //    {
-    //        for(    tinyxml2::XMLElement* pWatchElement = pElementMemoryRangeList->FirstChildElement("MemoryRangeWatch");
-    //                pWatchElement;
-    //                pWatchElement = pWatchElement->NextSiblingElement())
-    //        {
-    //            wxString DAPMemoryRangeWatchName = dbg_DAP::ReadChildNodewxString(pWatchElement, "DAPMemoryRangeWatch");
-    //            if (DAPMemoryRangeWatchName.IsSameAs("DAPMemoryRangeWatch"))
-    //            {
-    //                dbg_DAP::DAPMemoryRangeWatch* memoryRangeWatch = new dbg_DAP::DAPMemoryRangeWatch(pProject, m_pLogger, 0, 0, wxEmptyString );
-    //                memoryRangeWatch->LoadWatchFromXML(pWatchElement, this);
-    //            }
-    //        }
-    //    }
+    pDAPBreakpoints->LoadStateFromFile(pProject);
+    // ********************  Load Watches and Memory Range Watches ********************
+    pDAPWatches->LoadStateFromFile(pProject);
     // ******************** Finished Load ********************
     return true;
-}
-
-// "======================================================================================================================="
-// "         ____       _      ____        ____    _   _   ____    ____     ___    ____    _____                           "
-// "        |  _ \     / \    |  _ \      / ___|  | | | | |  _ \  |  _ \   / _ \  |  _ \  |_   _|                          "
-// "        | | | |   / _ \   | |_) |     \___ \  | | | | | |_) | | |_) | | | | | | |_) |   | |                            "
-// "        | |_| |  / ___ \  |  __/       ___) | | |_| | |  __/  |  __/  | |_| | |  _ <    | |                            "
-// "        |____/  /_/   \_\ |_|         |____/   \___/  |_|     |_|      \___/  |_| \_\   |_|                            "
-// "                                                                                                                       "
-// "     _____   _   _   _   _    ____   _____   ___    ___    _   _   ____      ____    _____      _      ____    _____   "
-// "    |  ___| | | | | | \ | |  / ___| |_   _| |_ _|  / _ \  | \ | | / ___|    / ___|  |_   _|    / \    |  _ \  |_   _|  "
-// "    | |_    | | | | |  \| | | |       | |    | |  | | | | |  \| | \___ \    \___ \    | |     / _ \   | |_) |   | |    "
-// "    |  _|   | |_| | | |\  | | |___    | |    | |  | |_| | | |\  |  ___) |    ___) |   | |    / ___ \  |  _ <    | |    "
-// "    |_|      \___/  |_| \_|  \____|   |_|   |___|  \___/  |_| \_| |____/    |____/    |_|   /_/   \_\ |_| \_\   |_|    "
-// "                                                                                                                       "
-// "======================================================================================================================="
-
-void Debugger_DAP::OnProcessBreakpointData(const wxString & brkDescription)
-{
-    if (!brkDescription.IsEmpty())
-    {
-        wxString::size_type brkLookupIndexStart = brkDescription.find(' ');
-        wxString brkLookup = brkDescription.substr(brkLookupIndexStart);
-
-        if (!brkLookup.IsEmpty())
-        {
-            wxString::size_type brkLookupIndexEnd = brkLookup.find('.');
-            wxString brkID = brkLookup.substr(0, brkLookupIndexEnd);
-
-            if (!brkID.IsEmpty())
-            {
-                long id;
-
-                if (brkID.ToLong(&id, 10))
-                {
-                    cb::shared_ptr<cbBreakpoint> breakpoint = Debugger_DAP::GetBreakpointByID(id);
-
-                    if (breakpoint)
-                    {
-                        cb::shared_ptr<dbg_DAP::DAPBreakpoint> bp = cb::static_pointer_cast<dbg_DAP::DAPBreakpoint>(breakpoint);
-
-                        if (bp && !bp->GetFilename().IsEmpty())
-                        {
-                            //GetDAPCurrentFrame().SetPosition(bp.GetFilename(), bp.GetLine());
-                            SyncEditor(bp->GetFilename(), bp->GetLine() + 1, true);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    m_dapClient.GetFrames();
 }
 
 // "======================================================================================================================="
@@ -2733,7 +1618,7 @@ void Debugger_DAP::OnLaunchResponse(DAPEvent & event)
             // launch failed!
             wxMessageBox("Failed to launch debuggee: " + resp->message, "DAP", wxICON_ERROR | wxOK | wxOK_DEFAULT | wxCENTRE);
             // Reset plugin back to default state!!!!
-            DAPDebuggerResetData(false);
+            DAPDebuggerResetData(dbg_DAP::ResetDataType::ResetData_Normal);
         }
     }
 }
@@ -2743,44 +1628,8 @@ void Debugger_DAP::OnInitializedEvent(DAPEvent & event)
 {
     // got initialized event, place breakpoints and continue
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    // Setup initial breakpoints
-    CreateStartBreakpoints(true);
-    // Setup initial data watches
-    CreateStartWatches();
-
-    // Set breakpoint on "main"
-    if (GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::StopOnMain))
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Placing breakpoint at main..."), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-        m_dapClient.SetFunctionBreakpoints({ { "main" } });
-    }
-
-    // Check for exception handling
-    bool bExceptionCatch =  GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::ExceptionCatch);
-    bool bExceptionThrow =  GetActiveConfigEx().GetFlag(dbg_DAP::DebuggerConfiguration::ExceptionThrow);
-
-    if (bExceptionCatch  || bExceptionThrow)
-    {
-        std::vector<wxString> vExceptionFilters;
-
-        // Available exception filter options for the 'setExceptionBreakpoints' request.
-        for (std::vector<dap::ExceptionBreakpointsFilter>::iterator it = vExceptionBreakpointFilters.begin(); it != vExceptionBreakpointFilters.end(); ++it)
-        {
-            if (
-                ((*it).filter.IsSameAs("cpp_catch", false) && bExceptionCatch) ||
-                ((*it).filter.IsSameAs("cpp_throw", false) && bExceptionThrow)
-            )
-            {
-                vExceptionFilters.push_back((*it).filter);
-            }
-        }
-
-        if (vExceptionFilters.size() > 0)
-        {
-            m_dapClient.SetExceptionBreakpoints(vExceptionFilters);
-        }
-    }
-
+    pDAPBreakpoints->OnInitializedEvent(event);
+    pDAPWatches->OnInitializedEvent(event);
     // Let DAP server know that we have completed the configuration required
     m_dapClient.ConfigurationDone();
 }
@@ -2798,6 +1647,7 @@ void Debugger_DAP::OnInitializedEvent(DAPEvent & event)
 void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    pDAPBreakpoints->OnInitializeResponse(event);
     dap::InitializeResponse * response_data = event.GetDapResponse()->As<dap::InitializeResponse>();
 
     if (response_data)
@@ -2843,24 +1693,6 @@ void Debugger_DAP::OnInitializeResponse(DAPEvent & event)
             SHOW_RESPONSE_DATA(_("supportsWriteMemoryRequest: %s"), response_data->capabilities.supportsWriteMemoryRequest, supportsWriteMemoryRequest);
             SHOW_RESPONSE_DATA(_("supportTerminateDebuggee: %s"), response_data->capabilities.supportTerminateDebuggee, supportTerminateDebuggee);
 
-            if (!response_data->capabilities.exceptionBreakpointFilters.IsNull())
-            {
-                // Available exception filter options for the 'setExceptionBreakpoints' request.
-                vExceptionBreakpointFilters = response_data->capabilities.exceptionBreakpointFilters.As<std::vector<dap::ExceptionBreakpointsFilter>>();
-
-                for (std::vector<dap::ExceptionBreakpointsFilter>::iterator it = vExceptionBreakpointFilters.begin(); it != vExceptionBreakpointFilters.end(); ++it)
-                {
-                    if (!(*it).default_value.IsNull())
-                    {
-                        m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("exceptionBreakpointFilters - filter:\"%s\"  label:\"%s\" value:%s"), (*it).filter, (*it).label, (*it).default_value.As<bool>() ? "True" : "False"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-                    }
-                    else
-                    {
-                        m_pLogger->LogDAPMsgType("", -1, wxString::Format(_("exceptionBreakpointFilters - filter:\"%s\"  label:\"%s\" value:missing"), (*it).filter, (*it).label), dbg_DAP::LogPaneLogger::LineType::Error);
-                    }
-                }
-            }
-
             if (!response_data->capabilities.completionTriggerCharacters.IsNull())
             {
                 // The set of characters that should trigger completion in a REPL. If not specified, the UI should assume the '.' character.
@@ -2901,7 +1733,7 @@ void Debugger_DAP::OnConfigurationDoneResponse(DAPEvent & event)
 void Debugger_DAP::OnStopped(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    DAPDebuggerState = eDAPState::Stopped;
+    Debugger_State::SetState(Debugger_State::eDAPState::Stopped);
     // got stopped event
     dap::StoppedEvent * stopped_data = event.GetDapEvent()->As<dap::StoppedEvent>();
 
@@ -2921,7 +1753,7 @@ void Debugger_DAP::OnStopped(DAPEvent & event)
             * Values: 'step', 'breakpoint', 'goto',
             */
             m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Stopped reason: %s"), stopped_data->reason), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-            OnProcessBreakpointData(stopped_data->description);
+            pDAPBreakpoints->OnProcessBreakpointData(stopped_data->description);
         }
         else
         {
@@ -2951,165 +1783,26 @@ void Debugger_DAP::OnStopped(DAPEvent & event)
 void Debugger_DAP::OnScopes(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    dap::ScopesResponse * resp = event.GetDapResponse()->As<dap::ScopesResponse>();
-
-    if (resp)
-    {
-        m_stackdapvariables.clear();
-
-        for (const dap::Scope & scope : resp->scopes)
-        {
-            if (
-                //(scope.name.IsSameAs("Locals", false) /* &&  scope.presentationHint.IsSameAs("Locals", false) */)
-                //||
-                (scope.name.IsSameAs("Globals", false))
-                ||
-                (scope.name.IsSameAs("Registers", false) /*&&  scope.presentationHint.IsSameAs("Registers", false)*/)
-            )
-            {
-                m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Do not request variables for %s."), scope.name), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-            }
-            else
-            {
-                m_dapClient.GetChildrenVariables(scope.variablesReference, dap::EvaluateContext::VARIABLES, 0);
-            }
-        }
-    }
-}
-
-bool Debugger_DAP::AddWatchChildByReqestSequence(cb::shared_ptr<dbg_DAP::DAPWatch> pWatch, int requestSeq, const dap::Variable & var)
-{
-    if (pWatch->GetDAPChildVariableRequestSequence() == requestSeq)
-    {
-#ifdef DAP_DEBUG_ENABLE
-        wxString attributes = wxEmptyString;
-
-        for (const auto & attrib : var.presentationHint.attributes)
-        {
-            attributes += " " + attrib;
-        }
-
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
-                                 __LINE__,
-                                 wxString::Format(_("Child found for request #%d   Var: %s  (%d) = %s , Type: %s, Hint: kind: %s , attributes %s , visibility: %s "),
-                                                  requestSeq,
-                                                  var.name,
-                                                  var.variablesReference,
-                                                  var.value,
-                                                  var.type,
-                                                  var.presentationHint.kind,
-                                                  attributes,
-                                                  var.presentationHint.visibility
-                                                 ),
-                                 dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-#endif
-        cb::shared_ptr<dbg_DAP::DAPWatch> childWatch(new dbg_DAP::DAPWatch(m_pProject, m_pLogger, var.name, false));
-        childWatch->SetValue(var.value);
-        childWatch->SetDAPVariableReference(var.variablesReference);
-        childWatch->SetType(var.type);
-
-        if (var.variablesReference > 0)
-        {
-            childWatch->SetHasBeenExpanded(false);
-            childWatch->SetRangeArray(0, var.variablesReference);
-            cbWatch::AddChild(childWatch, cb::shared_ptr<cbWatch>(new dbg_DAP::DAPWatch(m_pProject, m_pLogger, "updating...", false)));
-        }
-
-        cbWatch::AddChild(pWatch, childWatch);
-        return true;
-    }
-    else
-    {
-        if (pWatch->GetChildCount() > 0)
-        {
-            int childcount = pWatch->GetChildCount();
-
-            for (int child = 0; child < childcount; ++child)
-            {
-                cb::shared_ptr<dbg_DAP::DAPWatch> cWatch = cb::static_pointer_cast<dbg_DAP::DAPWatch>(pWatch->GetChild(child));
-
-                if (AddWatchChildByReqestSequence(cWatch, requestSeq, var))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
+    pDAPWatches->OnScopes(event);
 }
 
 void Debugger_DAP::OnVariables(DAPEvent & event)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    dap::VariablesResponse * resp = event.GetDapResponse()->As<dap::VariablesResponse>();
-
-    if (resp)
-    {
-        for (const dap::Variable & var : resp->variables)
-        {
-            m_stackdapvariables.push_back(var);
-#ifdef DAP_DEBUG_ENABLE
-            wxString button = (var.variablesReference > 0 ? "> " : "  ");
-            wxString value = var.value.empty() ? "\"\"" : var.value;
-            wxString attributes = wxEmptyString;
-
-            for (const auto & attrib : var.presentationHint.attributes)
-            {
-                attributes += " " + attrib;
-            }
-
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
-                                     __LINE__,
-                                     wxString::Format(_("Var: %s  (%d) %s = %s , Type: %s, Hint: kind: %s , attributes %s , visibility: %s "),
-                                                      button,
-                                                      var.variablesReference,
-                                                      var.name,
-                                                      value,
-                                                      var.type,
-                                                      var.presentationHint.kind,
-                                                      attributes,
-                                                      var.presentationHint.visibility
-                                                     ),
-                                     dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-#endif
-        }
-
-        for (dbg_DAP::DAPWatchesContainer::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
-        {
-            wxString symbol = (*it)->GetSymbol();
-
-            for (const dap::Variable & var : resp->variables)
-            {
-                if (symbol.IsSameAs(var.name))
-                {
-                    wxString value = var.value.empty() ? "\"\"" : var.value;
-                    (*it)->SetValue(value);
-                    (*it)->SetType(var.type);
-                }
-                else
-                {
-                    AddWatchChildByReqestSequence(*it, resp->request_seq, var);
-                }
-            }
-        }
-
-        UpdateDAPWatches(int(cbDebuggerPlugin::DebugWindows::Watches));
-    }
+    // m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    pDAPWatches->OnVariables(event);
 }
 
 /// Received a response to `GetFrames()` call
 void Debugger_DAP::OnStackTrace(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    pDAPCallStack->OnStackTrace(event);
     dap::StackTraceResponse * stack_trace_data = event.GetDapResponse()->As<dap::StackTraceResponse>();
 
     if (stack_trace_data)
     {
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received stack trace event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-        int stackID = 0;
         bool bFileFound = false;
-        m_backtrace.clear();
 
         for (const auto & stack : stack_trace_data->stackFrames)
         {
@@ -3140,21 +1833,6 @@ void Debugger_DAP::OnStackTrace(DAPEvent & event)
                     m_dapClient.GetScopes(stack.id);
                 }
             }
-
-            cbStackFrame s;
-            s.SetNumber(stackID++);
-            s.SetFile(stack.source.path, wxString::Format("%d", stack.line));
-            s.SetSymbol(stack.name);
-            s.SetAddress(stack.id);
-            s.MakeValid(true);
-            m_backtrace.push_back(cb::shared_ptr<cbStackFrame>(new cbStackFrame(s)));
-        }
-
-        cbBacktraceDlg * pDialogBacktrace = Manager::Get()->GetDebuggerManager()->GetBacktraceDialog();
-
-        if (pDialogBacktrace)
-        {
-            pDialogBacktrace->Reload();
         }
     }
 }
@@ -3162,9 +1840,8 @@ void Debugger_DAP::OnStackTrace(DAPEvent & event)
 /// Debuggee process exited, print the exit code
 void Debugger_DAP::OnExited(DAPEvent & event)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    DAPDebuggerState = eDAPState::NotConnected;
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Debuggee exited. Exit code: %d"), event.GetDapEvent()->As<dap::ExitedEvent>()->exitCode));
+    Debugger_State::SetState(Debugger_State::eDAPState::NotConnected);
 }
 
 /// Debug session terminated
@@ -3173,7 +1850,7 @@ void Debugger_DAP::OnTerminated(DAPEvent & event)
     wxUnusedVar(event);
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event for debugger terminated!"), dbg_DAP::LogPaneLogger::LineType::Warning);
     // Reset the client and data
-    DAPDebuggerResetData(false);
+    DAPDebuggerResetData(dbg_DAP::ResetDataType::ResetData_Normal);
 }
 
 void Debugger_DAP::OnOutput(DAPEvent & event)
@@ -3210,44 +1887,16 @@ void Debugger_DAP::OnBreakpointLocations(DAPEvent & event)
 
 void Debugger_DAP::OnConnectionError(DAPEvent & event)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    wxUnusedVar(event);
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("OnConnectionError!")), dbg_DAP::LogPaneLogger::LineType::Error);
     wxMessageBox(_("Lost connection to dap server"));
     event.Skip();
-    DAPDebuggerResetData(false);
+    DAPDebuggerResetData(dbg_DAP::ResetDataType::ResetData_Normal);
 }
 
 void Debugger_DAP::OnBreakpointDataSet(DAPEvent & event)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-    dap::SetBreakpointsResponse * resp = event.GetDapResponse()->As<dap::SetBreakpointsResponse>();
-
-    if (resp)
-    {
-        m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Got reply for setBreakpoint command for file: "), resp->originSource), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
-
-        for (const auto & bp : resp->breakpoints)
-        {
-            dbg_DAP::LogPaneLogger::LineType logType = dbg_DAP::LogPaneLogger::LineType::UserDisplay;
-
-            if ((bp.line == -1) || !bp.verified) //  || bp.source.path.IsEmpty())
-            {
-                logType = dbg_DAP::LogPaneLogger::LineType::Error;
-            }
-
-            m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__,
-                                     __LINE__,
-                                     wxString::Format(_("ID %d , Verified: %s , File: %s , Line: %d, Message: %s"), bp.id, bp.verified ? "True" : "False", bp.source.path, bp.line, bp.message),
-                                     logType
-                                    );
-
-            if ((bp.line != -1) && bp.verified && !bp.source.path.IsEmpty())
-            {
-                UpdateOrAddBreakpoint(bp.source.path, bp.line, true, bp.id);
-            }
-        }
-    }
+    //m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received response"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    pDAPBreakpoints->OnBreakpointDataSet(event);
 }
 
 void Debugger_DAP::OnBreakpointFunctionSet(DAPEvent & event)
@@ -3275,7 +1924,7 @@ void Debugger_DAP::OnDapLog(DAPEvent & event)
 
 void Debugger_DAP::OnDapModuleEvent(DAPEvent & event)
 {
-    m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+    // m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
     dap::ModuleEvent * event_data = event.GetDapEvent()->As<dap::ModuleEvent>();
 
     if (event_data)
@@ -3304,25 +1953,32 @@ void Debugger_DAP::OnRunInTerminalRequest(DAPEvent & event)
     }
 
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Starting process: %s"), command), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+#if 1
+    wxString consoleTty;
+    int m_DAPTerminalProcessID = RunNixConsole(consoleTty);
+#else
     m_DAPTerminalProcess = dap::ExecuteProcess(command);
+#endif
     dap::RunInTerminalResponse response = m_dapClient.MakeRequest<dap::RunInTerminalResponse>();
     response.request_seq = request->seq;
 
-    if (!m_DAPTerminalProcess)
+    //    if (!m_DAPTerminalProcess)
+    if (m_DAPTerminalProcessID == 0)
     {
         response.success = false;
-        response.processId = 0;
+        //        response.processId = m_DAPTerminalProcessID;
     }
     else
     {
         response.success = true;
-        response.processId = m_DAPTerminalProcess->GetProcessId();
+        //        response.processId = m_DAPTerminalProcess->GetProcessId();
     }
 
+    response.processId = m_DAPTerminalProcessID;
     m_dapClient.SendResponse(response);
 }
 
-void Debugger_DAP::OnTreadResponse(DAPEvent & event)
+void Debugger_DAP::OnThreadResponse(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
@@ -3342,7 +1998,7 @@ void Debugger_DAP::OnBreakpointEvent(DAPEvent & event)
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
 
-void Debugger_DAP::OnCcontinuedEvent(DAPEvent & event)
+void Debugger_DAP::OnContinuedEvent(DAPEvent & event)
 {
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event"), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
 }
