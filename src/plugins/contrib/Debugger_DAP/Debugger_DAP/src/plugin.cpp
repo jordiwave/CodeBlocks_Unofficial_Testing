@@ -104,6 +104,7 @@ Debugger_DAP::Debugger_DAP() :
         NotifyMissingFile("debugger_dap.zip");
     }
 
+    m_pTerminalMgr = nullptr;
     Debugger_State::SetState(Debugger_State::eDAPState::NotConnected);
     m_pLogger = new dbg_DAP::LogPaneLogger(this);
     // bind the client events
@@ -180,6 +181,25 @@ void Debugger_DAP::OnAttachReal()
     pDAPBreakpoints->OnAttachReal();
     // Do no use cbEVT_PROJECT_OPEN as the project may not be active!!!!
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,  new cbEventFunctor<Debugger_DAP, CodeBlocksEvent>(this, &Debugger_DAP::OnProjectOpened));
+
+#ifndef __WXMSW__
+    // Windows spawns a command window and as such does not require the terminal manager
+    if (!m_pTerminalMgr)
+    {
+        m_pTerminalMgr = new DAPTerminalManager(Manager::Get()->GetAppWindow(), wxID_ANY , _("DAP Terminal I/O"));
+
+        CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+        evt.name = _T("DAPWindow");
+        evt.title = _("DAP Terminal Display");
+        evt.pWindow = m_pTerminalMgr;
+        evt.dockSide = CodeBlocksDockEvent::dsFloating;
+        evt.desiredSize.Set(400, 300);
+        evt.floatingSize.Set(400, 300);
+        evt.minimumSize.Set(200, 150);
+        evt.stretch = true;
+        Manager::Get()->ProcessEvent(evt);
+    }
+#endif //__WXMSW__
 }
 
 void Debugger_DAP::OnReleaseReal(bool appShutDown)
@@ -187,6 +207,16 @@ void Debugger_DAP::OnReleaseReal(bool appShutDown)
     // Do not log anything as we are closing
     DAPDebuggerResetData(dbg_DAP::ResetDataType::ResetData_All);
     pDAPBreakpoints->OnReleaseReal(appShutDown);
+
+    if (m_pTerminalMgr) //remove the Shell Terminals Notebook from its dockable window and delete it
+    {
+//        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+//        evt.pWindow = m_pTerminalMgr;
+//        Manager::Get()->ProcessEvent(evt);
+        m_pTerminalMgr->Destroy();
+
+        m_pTerminalMgr = nullptr;
+    }
 }
 
 void Debugger_DAP::GetCurrentPosition(wxString & filename, int & line)
@@ -613,6 +643,13 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
         return 1;
     }
 
+    if (m_pTerminalMgr)
+    {
+//    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+//    evt.pWindow = m_pTerminalMgr;
+//    Manager::Get()->ProcessEvent(evt);
+    }
+
     Debugger_State::SetState(Debugger_State::eDAPState::Connected);
     // construct new client with the transport
     m_dapClient.SetTransport(transport);
@@ -642,6 +679,7 @@ int Debugger_DAP::LaunchDebugger(cbProject * project,
     initArgs.linesStartAt1 = true;
     initArgs.clientID = "CB_DAP_Plugin";
     initArgs.clientName = "CB_DAP_Plugin";
+    initArgs.supportsRunInTerminalRequest = true;
     m_dapClient.Initialize(&initArgs);
     //    wxString directorySearchPaths = wxEmptyString;
     //    const wxArrayString& pdirs = ParseSearchDirs(project);
@@ -1851,6 +1889,13 @@ void Debugger_DAP::OnTerminated(DAPEvent & event)
     m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, _("Received event for debugger terminated!"), dbg_DAP::LogPaneLogger::LineType::Warning);
     // Reset the client and data
     DAPDebuggerResetData(dbg_DAP::ResetDataType::ResetData_Normal);
+
+    if (m_pTerminalMgr)
+    {
+//        CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
+//        evt.pWindow = m_pTerminalMgr;
+//        Manager::Get()->ProcessEvent(evt);
+    }
 }
 
 void Debugger_DAP::OnOutput(DAPEvent & event)
@@ -1862,6 +1907,13 @@ void Debugger_DAP::OnOutput(DAPEvent & event)
         wxString msg(output_data->output);
         msg.Replace("\r\n", "");
         m_pLogger->LogDAPMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("%s - %s", output_data->category, msg), dbg_DAP::LogPaneLogger::LineType::UserDisplay);
+
+        if (m_pTerminalMgr)
+        {
+            // The output category. If not specified, 'console' is assumed.
+            // Values: 'console', 'stdout', 'stderr', 'telemetry', etc.
+            m_pTerminalMgr->AppendString(output_data->output);
+        }
     }
     else
     {

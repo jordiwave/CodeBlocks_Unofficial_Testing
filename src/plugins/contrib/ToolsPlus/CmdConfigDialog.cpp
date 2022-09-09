@@ -193,9 +193,7 @@ CmdConfigDialog::CmdConfigDialog(wxWindow * parent, ToolsPlus * plugin) : wxDial
     wxBoxSizer * env_sizer = new wxBoxSizer(wxHORIZONTAL);
     m_staticText1111 = new wxStaticText(m_prop_panel, wxID_ANY, _("Environment Vars:"), wxDefaultPosition, wxDefaultSize, 0);
     env_sizer->Add(m_staticText1111, 0, wxALIGN_LEFT | wxALL, 5);
-    wxString m_envvarsChoices[] = {  };
-    int m_envvarsNChoices = sizeof(m_envvarsChoices) / sizeof(wxString);
-    m_envvars = new wxChoice(m_prop_panel, ID_ENVVARS, wxDefaultPosition, wxDefaultSize, m_envvarsNChoices, m_envvarsChoices, 0);
+    m_envvars = new wxChoice(m_prop_panel, ID_ENVVARS, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
     m_envvars->SetToolTip(_("Not implemented."));
     env_sizer->Add(m_envvars, 0, wxALL | wxEXPAND, 1);
     prop_sizer->Add(env_sizer, 0, wxEXPAND, 5);

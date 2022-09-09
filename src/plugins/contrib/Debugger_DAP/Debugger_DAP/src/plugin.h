@@ -14,7 +14,7 @@
 #include <wx/wxprec.h>
 
 // CB includes
-#include <cbplugin.h> // for "class cbPlugin"
+#include <cbplugin.h>
 #include <tinyxml2.h>
 
 // DAP debugger includes
@@ -28,6 +28,9 @@
 // DAP protocol includes
 #include "Client.hpp"
 #include "Process.hpp"
+
+// Shell Dialog
+#include "DAP_Terminal_Panel.h"
 
 class TextCtrlLogger;
 class Compiler;
@@ -365,6 +368,8 @@ class Debugger_DAP : public cbDebuggerPlugin
         DBG_DAP_Breakpoints * pDAPBreakpoints;
         DBG_DAP_CallStack * pDAPCallStack;
         DBG_DAP_Watches * pDAPWatches;
+
+        DAPTerminalManager * m_pTerminalMgr;
 };
 
 #endif // __DEBUGGER_DAP_PLUGIN_H__

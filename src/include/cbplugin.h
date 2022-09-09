@@ -547,7 +547,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         virtual void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) = 0;
         virtual void DeleteAllBreakpoints() = 0;
         virtual void ShiftBreakpoint(int index, int lines_to_shift) = 0;
-        virtual bool ShiftAllFileBreakpoints(const wxString & editorFilename, int startline, int lines)
+        virtual bool ShiftAllFileBreakpoints(cb_unused const wxString & editorFilename, cb_unused int startline, cb_unused int lines)
         {
             return false;
         }

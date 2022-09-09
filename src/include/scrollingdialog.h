@@ -29,7 +29,7 @@ class wxBoxSizer;
 class wxButton;
 class wxScrolledWindow;
 
-/*!
+/*
  * A class that makes its content scroll if necessary
  */
 

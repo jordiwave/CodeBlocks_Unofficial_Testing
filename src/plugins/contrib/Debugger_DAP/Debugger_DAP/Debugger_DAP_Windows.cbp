@@ -86,6 +86,8 @@
 		<Unit filename="src/DAP_CallStack.h" />
 		<Unit filename="src/DAP_Debugger_State.cpp" />
 		<Unit filename="src/DAP_Debugger_State.h" />
+		<Unit filename="src/DAP_Terminal_Panel.cpp" />
+		<Unit filename="src/DAP_Terminal_Panel.h" />
 		<Unit filename="src/DAP_Watches.cpp" />
 		<Unit filename="src/DAP_Watches.h" />
 		<Unit filename="src/debugger_logger.cpp" />

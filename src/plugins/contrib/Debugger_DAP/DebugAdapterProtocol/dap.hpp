@@ -525,30 +525,80 @@ struct WXDLLIMPEXP_DAP InitializeRequestArguments : public Any {
      * The ID of the (frontend) client using this adapter.
      */
     wxString clientID;
+
     /**
      * The human readable name of the (frontend) client using this adapter.
      */
     wxString clientName;
+
     /**
      * The ID of the debug adapter.
      */
     wxString adapterID;
+
     /**
      * The ISO-639 locale of the (frontend) client using this adapter, e.g.
      * en-US or de-CH.
      */
     wxString locale = "en-US";
-    bool linesStartAt1 = false;
-    bool columnsStartAt1 = false;
+
     /**
-     * Client supports the invalidated event.
-     */
-    bool supportsInvalidatedEvent = false;
+    * If true all line numbers are 1-based (default).
+    */
+    bool linesStartAt1 = false;
+
+    /**
+    * If true all column numbers are 1-based (default).
+    */
+    bool columnsStartAt1 = false;
+
     /**
      * Determines in what format paths are specified. The default is 'path',
      * which is the native format. Values: 'path', 'uri', etc.
      */
     wxString pathFormat = "path";
+
+    /**
+    * Client supports the `type` attribute for variables.
+    */
+    bool supportsVariableType = false;
+
+    /**
+    * Client supports the paging of variables.
+    */
+    bool supportsVariablePaging = false;
+
+    /**
+     * Client supports the runInTerminal request.
+     */
+    bool supportsRunInTerminalRequest = false;
+
+    /**
+     * Client supports memory references.
+     */
+    bool supportsMemoryReferences = false;
+
+    /**
+    * Client supports progress reporting.
+    */
+    bool supportsProgressReporting = false;
+
+    /**
+     * Client supports the invalidated event.
+     */
+    bool supportsInvalidatedEvent = false;
+
+    /**
+     * Client supports the memory event.
+     */
+    bool supportsMemoryEvent = false;
+
+    /**
+     * Client supports the `argsCanBeInterpretedByShell` attribute on the
+     * `runInTerminal` request.
+     */
+    bool supportsArgsCanBeInterpretedByShell = false;
+    
     ANY_CLASS(InitializeRequestArguments);
     JSON_SERIALIZE();
 };

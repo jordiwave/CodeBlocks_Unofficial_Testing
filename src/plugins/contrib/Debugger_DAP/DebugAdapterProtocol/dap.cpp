@@ -565,7 +565,14 @@ Json InitializeRequestArguments::To() const
     json.Add("linesStartAt1", linesStartAt1);
     json.Add("columnsStartAt1", columnsStartAt1);
     json.Add("pathFormat", pathFormat);
+    json.Add("supportsVariableType", supportsVariableType);
+    json.Add("supportsVariablePaging", supportsVariablePaging);
+    json.Add("supportsRunInTerminalRequest", supportsRunInTerminalRequest);
+    json.Add("supportsMemoryReferences", supportsMemoryReferences);
+    json.Add("supportsProgressReporting", supportsProgressReporting);
     json.Add("supportsInvalidatedEvent", supportsInvalidatedEvent);
+    json.Add("supportsMemoryEvent", supportsMemoryEvent);
+    json.Add("supportsArgsCanBeInterpretedByShell", supportsArgsCanBeInterpretedByShell);
     return json;
 }
 
@@ -578,7 +585,14 @@ void InitializeRequestArguments::From(const Json & json)
     linesStartAt1 = json["linesStartAt1"].GetBool();
     columnsStartAt1 = json["columnsStartAt1"].GetBool();
     pathFormat = json["pathFormat"].GetString();
+    supportsVariableType = json["supportsVariableType"].GetBool();
+    supportsVariablePaging = json["supportsVariablePaging"].GetBool();
+    supportsRunInTerminalRequest = json["supportsRunInTerminalRequest"].GetBool();
+    supportsMemoryReferences = json["supportsMemoryReferences"].GetBool();
+    supportsProgressReporting = json["supportsProgressReporting"].GetBool();
     supportsInvalidatedEvent = json["supportsInvalidatedEvent"].GetBool();
+    supportsMemoryEvent = json["supportsMemoryEvent"].GetBool();;
+    supportsArgsCanBeInterpretedByShell = json["supportsArgsCanBeInterpretedByShell"].GetBool();
 }
 
 // ----------------------------------------

@@ -551,10 +551,12 @@ Token * ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayN
     if ((not tree) or tree->empty())
     {
         if (not callerHasLock)
+        {
             // ---------------------------------------------
             CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex) //UNlock TokenTree
             // ---------------------------------------------
-            return nullptr;
+        }
+        return nullptr;
     }
     else
     {

@@ -119,11 +119,11 @@ enum PCHMode
 
 struct ProjectGlobalVariableEntry
 {
-    ProjectGlobalVariableEntry(const wxString & name, const wxString & description, const wxString defaultValue)
+    ProjectGlobalVariableEntry(const wxString & nameParm, const wxString & descriptionParm, const wxString defaultValueParm)
     {
-        this->name = name;
-        this->description = description;
-        this->defaultValue = defaultValue;
+        this->name = nameParm;
+        this->description = descriptionParm;
+        this->defaultValue = defaultValueParm;
     }
 
     bool operator<(const ProjectGlobalVariableEntry & r)
