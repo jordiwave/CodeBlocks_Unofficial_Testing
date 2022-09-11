@@ -1,23 +1,27 @@
+// System include files
 #include <wx/process.h>
 #include <wx/regex.h>
 
-#include <cbdebugger_interfaces.h>
-#include <cbeditor.h>
-#include <cbstyledtextctrl.h>
-#include <configurationpanel.h>
-#include <editormanager.h>
-#include <logmanager.h>
+// CB include files (not Python)
+#include "cbdebugger_interfaces.h"
+#include "cbplugin.h"
+#include "cbeditor.h"
+#include "cbstyledtextctrl.h"
+#include "configurationpanel.h"
+#include "editormanager.h"
+#include "logmanager.h"
 //#include <watchesdlg.h>
 
+// Python debugger includes
 #include "PythonDebugger.h"
 
-// Register the plugin with Code::Blocks.
-// We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
+// Register the plugin with Code::Blocks.
+// We are using an anonymous namespace so we don't litter the global one.
+// this auto-registers the plugin
 PluginRegistrant<PythonDebugger> reg(_T("PythonDebugger"));
 }
-
 
 
 bool WildCardListMatch(wxString list, wxString name)
@@ -380,8 +384,13 @@ void PythonDebugger::OnTimer(wxTimerEvent & event)
                         }
                     }
 
-                    DebuggerManager & dbg_manager = *Manager::Get()->GetDebuggerManager();
-                    dbg_manager.GetWatchesDialog()->UpdateWatches();
+                    cbWatchesDlg * pDialogWatches = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+
+                    if (pDialogWatches)
+                    {
+                        pDialogWatches->RefreshUI();
+                    }
+
                     break;
                 }
 
@@ -484,8 +493,13 @@ void PythonDebugger::OnTimer(wxTimerEvent & event)
                         RemoveMissingChildren(m_modules_watch, foundsyms);
                     }
 
-                    DebuggerManager & dbg_manager = *Manager::Get()->GetDebuggerManager();
-                    dbg_manager.GetWatchesDialog()->UpdateWatches();
+                    cbWatchesDlg * pDialogWatches = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+
+                    if (pDialogWatches)
+                    {
+                        pDialogWatches->RefreshUI();
+                    }
+
                     break;
                 }
 
@@ -707,7 +721,7 @@ bool PythonDebugger::Debug(bool breakOnEntry)
 
         wxString s = ed->GetFilename();
 
-        if (!ed->GetControl()->GetLexer() == wxSCI_LEX_PYTHON)
+        if (ed->GetControl()->GetLexer() != wxSCI_LEX_PYTHON)
         {
             if (!(wxFileName(s).FileExists() && IsPythonFile(s)))
             {
@@ -893,6 +907,15 @@ void PythonDebugger::SetNextStatement(const wxString & filename, int line)
     }
 }
 
+//  "================================================================================================"
+//  "      ____                          _                      _           _                        "
+//  "     | __ )   _ __    ___    __ _  | | __  _ __     ___   (_)  _ __   | |_   ___                "
+//  "     |  _ \  | '__|  / _ \  / _` | | |/ / | '_ \   / _ \  | | | '_ \  | __| / __|               "
+//  "     | |_) | | |    |  __/ | (_| | |   <  | |_) | | (_) | | | | | | | | |_  \__ \               "
+//  "     |____/  |_|     \___|  \__,_| |_|\_\ | .__/   \___/  |_| |_| |_|  \__| |___/               "
+//  "                                          |_|                                                   "
+//  "                                                                                                "
+//  "================================================================================================"
 
 cb::shared_ptr<cbBreakpoint>  PythonDebugger::GetBreakpoint(int index)
 {
@@ -996,8 +1019,16 @@ void PythonDebugger::DeleteAllBreakpoints()
     }
 }
 
+// "=============================================================================================="
+// "    __        __          _            _                                                      "
+// "    \ \      / /   __ _  | |_    ___  | |__     ___   ___                                     "
+// "     \ \ /\ / /   / _` | | __|  / __| | '_ \   / _ \ / __|                                    "
+// "      \ V  V /   | (_| | | |_  | (__  | | | | |  __/ \__ \                                    "
+// "       \_/\_/     \__,_|  \__|  \___| |_| |_|  \___| |___/                                    "
+// "                                                                                              "
+// "=============================================================================================="
 
-cb::shared_ptr<cbWatch> PythonDebugger::AddWatch(const wxString & symbol)
+cb::shared_ptr<cbWatch> PythonDebugger::AddWatch(const wxString & symbol,  cb_unused  bool update)
 {
     wxString sym(symbol);
     sym = sym.Trim().Trim(false);
@@ -1105,7 +1136,30 @@ void PythonDebugger::OnWatchesContextMenu(wxMenu & menu, const cbWatch & watch, 
 {
 }
 
+// "================================================================================================"
+// "     __  __                                               ____                                  "
+// "    |  \/  |   ___   _ __ ___     ___    _ __   _   _    |  _ \    __ _   _ __     __ _    ___  "
+// "    | |\/| |  / _ \ | '_ ` _ \   / _ \  | '__| | | | |   | |_) |  / _` | | '_ \   / _` |  / _ \ "
+// "    | |  | | |  __/ | | | | | | | (_) | | |    | |_| |   |  _ <  | (_| | | | | | | (_| | |  __/ "
+// "    |_|  |_|  \___| |_| |_| |_|  \___/  |_|     \__, |   |_| \_\  \__,_| |_| |_|  \__, |  \___| "
+// "                                                |___/                             |___/         "
+// "================================================================================================"
 
+cb::shared_ptr<cbWatch> PythonDebugger::AddMemoryRange(uint64_t llAddress, uint64_t llSize, const wxString & symbol, bool update)
+{
+    m_DebugLog->Append(_T("\nAddMemoryRange Functionality not supported yet!"));
+    return nullptr;
+}
+
+
+// "===================================================================================================="
+// "     ____    _____      _       ____   _  __       __    _____   ____       _      __  __   _____   "
+// "    / ___|  |_   _|    / \     / ___| | |/ /      / /   |  ___| |  _ \     / \    |  \/  | | ____|  "
+// "    \___ \    | |     / _ \   | |     | ' /      / /    | |_    | |_) |   / _ \   | |\/| | |  _|    "
+// "     ___) |   | |    / ___ \  | |___  | . \     / /     |  _|   |  _ <   / ___ \  | |  | | | |___   "
+// "    |____/    |_|   /_/   \_\  \____| |_|\_\   /_/      |_|     |_| \_\ /_/   \_\ |_|  |_| |_____|  "
+// "                                                                                                    "
+// "===================================================================================================="
 
 int PythonDebugger::GetStackFrameCount() const
 {
@@ -1235,7 +1289,12 @@ void PythonDebugger::OnAttachReal()
     m_modules_watch->MarkAsChanged(false);
     cbWatch::AddChild(m_locals_watch, m_modules_watch);
     m_locals_watch->Expand(true);
-    Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->UpdateWatches();
+    cbWatchesDlg * pDialogWatches = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+
+    if (pDialogWatches)
+    {
+        pDialogWatches->RefreshUI();
+    }
 }
 
 void PythonDebugger::OnReleaseReal(bool appShutDown)

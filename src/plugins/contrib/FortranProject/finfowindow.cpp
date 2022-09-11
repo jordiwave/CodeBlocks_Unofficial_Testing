@@ -38,12 +38,14 @@ FInfoWindow::FInfoWindow()
     SetFoldingIndicator();
     // Creates log image
     const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
+    wxString prefix(ConfigManager::GetDataFolder() + "/FortranProject.zip#zip:/images/");
+#if wxCHECK_VERSION(3, 1, 6)
+    wxBitmapBundle * bmp = new wxBitmapBundle(cbLoadBitmapBundle(prefix, "info_f.png", uiSize, wxBITMAP_TYPE_PNG));
+#else
     const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
-    const wxString imgFile = ConfigManager::GetDataFolder()
-                             + wxString::Format(_T("/FortranProject.zip#zip:/images/%dx%d/info_f.png"),
-                                                uiSize, uiSize);
-    wxBitmap * bmp = new wxBitmap(cbLoadBitmapScaled(imgFile, wxBITMAP_TYPE_PNG,
-                                                     uiScaleFactor));
+    prefix << wxString::Format("%dx%d/", uiSize, uiSize);
+    wxBitmap * bmp = new wxBitmap(cbLoadBitmapScaled(prefix + "info_f.png", wxBITMAP_TYPE_PNG, uiScaleFactor));
+#endif
     CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, this, _("Fortran info"), bmp);
     Manager::Get()->ProcessEvent(evtAdd);
 }

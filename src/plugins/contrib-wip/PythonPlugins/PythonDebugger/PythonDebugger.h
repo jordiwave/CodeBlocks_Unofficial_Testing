@@ -101,8 +101,14 @@ class PythonWatch : public cbWatch
 {
     public:
         PythonWatch(wxString const & symbol) :
+            m_id(wxEmptyString),
             m_symbol(symbol),
-            m_has_been_expanded(false)
+            m_address(0),
+            m_value(wxEmptyString),
+            m_type(wxEmptyString),
+            m_debug_string(wxEmptyString),
+            m_has_been_expanded(false),
+            m_ValueErrorMessage(false)
         {
         }
         typedef cb::shared_ptr<PythonWatch> Pointer;
@@ -137,6 +143,23 @@ class PythonWatch : public cbWatch
         {
             symbol = m_symbol;
         }
+
+        wxString GetSymbol() const
+        {
+            return m_symbol;
+        }
+        virtual void SetSymbol(const wxString & symbol)
+        {
+            m_symbol = symbol;
+        }
+        virtual uint64_t GetAddress() const
+        {
+            return m_address;
+        }
+        virtual void SetAddress(uint64_t address)
+        {
+            m_address = address;
+        }
         virtual void GetValue(wxString & value) const
         {
             value = m_value;
@@ -145,6 +168,14 @@ class PythonWatch : public cbWatch
         {
             m_value = value;
             return true;
+        }
+        bool GetIsValueErrorMessage()
+        {
+            return m_ValueErrorMessage;
+        }
+        void SetIsValueErrorMessage(bool value)
+        {
+            m_ValueErrorMessage = value;
         }
         virtual void GetFullWatchString(wxString & full_watch) const
         {
@@ -159,7 +190,7 @@ class PythonWatch : public cbWatch
             m_type = type;
         }
 
-        virtual wxString const & GetDebugString() const
+        virtual wxString GetDebugString() const
         {
             m_debug_string = m_id + wxT("->") + m_symbol + wxT(" = ") + m_value;
             return m_debug_string;
@@ -169,10 +200,12 @@ class PythonWatch : public cbWatch
     private:
         wxString m_id;
         wxString m_symbol;
+        uint64_t m_address;
         wxString m_value;
         wxString m_type;
         mutable wxString m_debug_string;
         bool m_has_been_expanded;
+        bool m_ValueErrorMessage;   // True if the m_value is a message instead of data
 };
 
 typedef std::vector<PythonWatch::Pointer> PythonWatchesContainer;
@@ -261,7 +294,8 @@ class PythonDebugger : public cbDebuggerPlugin
         }
 
         // watches
-        virtual cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol);
+        virtual cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol, cb_unused bool update);
+        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update);
         virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch);
         virtual bool HasWatch(cb::shared_ptr<cbWatch> watch);
         virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch);

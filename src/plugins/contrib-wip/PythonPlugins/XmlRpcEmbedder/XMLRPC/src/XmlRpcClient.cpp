@@ -272,7 +272,7 @@ std::string XmlRpcClient::generateHeader(std::string const & body)
     sprintf(buff, ":%d\r\n", _port);
     header += buff;
     header += "Content-Type: text/xml\r\nContent-length: ";
-    sprintf(buff, "%d\r\n\r\n", body.size());
+    sprintf(buff, "%d\r\n\r\n", static_cast<int>(body.size()));
     return header + buff;
 }
 
@@ -432,9 +432,10 @@ bool XmlRpcClient::parseResponse(XmlRpcValue & result)
     }
 
     // Expect either <params><param>... or <fault>...
-    if ((XmlRpcUtil::nextTagIs(PARAMS_TAG, _response, &offset) &&
-            XmlRpcUtil::nextTagIs(PARAM_TAG, _response, &offset)) ||
-            XmlRpcUtil::nextTagIs(FAULT_TAG, _response, &offset) && (_isFault = true))
+    if ((XmlRpcUtil::nextTagIs(PARAMS_TAG, _response, &offset) && XmlRpcUtil::nextTagIs(PARAM_TAG, _response, &offset))
+            ||
+            (XmlRpcUtil::nextTagIs(FAULT_TAG,  _response, &offset) && (_isFault = true))
+       )
     {
         if (! result.fromXml(_response, &offset))
         {

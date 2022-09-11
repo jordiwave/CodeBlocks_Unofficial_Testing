@@ -23,12 +23,12 @@ fi
 # ----------------------------------------------------------------------------
 CurrentDir=${PWD}
 # MUST configure soft link for wx-config
-WXWIDGET_VERSION=3.2.0
-WXWIDGET_DIR=32
+#WXWIDGET_VERSION=3.2.0
+#WXWIDGET_DIR=32
 #WXWIDGET_VERSION=3.1.7
 #WXWIDGET_DIR=31
-#WXWIDGET_VERSION=3.0.5
-#WXWIDGET_DIR=30
+WXWIDGET_VERSION=3.0.5
+WXWIDGET_DIR=30
 # MUST configure soft link for wx-config
 failureDetected="no"
 
@@ -115,19 +115,25 @@ CB_ROOT_DIR=${PWD}
 
 case "$(uname)" in
   Darwin*)
-    CB_WORKSPACE_FILENAME=CodeBlocks_MacOS.workspace
+    CB_WORKSPACE_FILENAME=CodeBlocks_Unix_MacOS.workspace
     CB_VARIABLE_SET=cb_mac64
     BUILD_BITS=64
+    EXEEXT=""
+    LIBEXT="dylib"
     OSDetected="OSX"
     ;;
   Linux*)
-    CB_WORKSPACE_FILENAME=CodeBlocks_Unix.workspace
+    CB_WORKSPACE_FILENAME=CodeBlocks_Unix_MacOS.workspace
     CB_VARIABLE_SET=cb_linux64
     BUILD_BITS=64
+    EXEEXT=""
+    LIBEXT="so"
     OSDetected="Linux"
     ;;
   MINGW*)
     CB_WORKSPACE_FILENAME=CodeBlocks_Windows.workspacee
+    EXEEXT=".exe"
+    LIBEXT="dll" 
     OSDetected="Windows"
     if [ "${MSYSTEM}" == "MINGW32" ] ; then 
         CB_VARIABLE_SET=cb_win32
@@ -303,9 +309,6 @@ OUTPUT_DIR_COUNT=$(ls -1q ${CB_SRC_DIR}/output3* 2>/dev/null | wc -l 2>/dev/null
 if  [ ${OBJS_DIR_COUNT}   -gt 0 ] || 
     [ ${DEVEL_DIR_COUNT}  -gt 0 ] || 
     [ ${OUTPUT_DIR_COUNT} -gt 0 ]  ; then
-    echo     OBJS_DIR_COUNT=${OBJS_DIR_COUNT}
-    echo     DEVEL_DIR_COUNT=${DEVEL_DIR_COUNT}
-    echo     OUTPUT_DIR_COUNT=${OUTPUT_DIR_COUNT}
     read -r -p 'Do you want to delete the previous build directories [Y/N]?'
     if [ "${REPLY}" == "y" ] || [ "${REPLY}" == "Y" ]; then
         TMP_DIR=${PWD}
@@ -371,22 +374,16 @@ fi
 END_SECONDS=${SECONDS}
 DIFF_SECONDS=$(( ${END_SECONDS} - ${START_SECONDS} ))
 
+CODEBLOCKS_NAME=codeblocks
+if [ -f "devel${WXWIDGET_DIR}_${BUILD_BITS}/CodeBlocks${EXEEXT}" ] ; then
+    CODEBLOCKS_NAME=CodeBlocks
+fi
+echo "CODEBLOCKS_NAME=${CODEBLOCKS_NAME}"
+
 if  [[
-        ( 
-            "${OSDetected}" == "Windows" &&
-            (
-                ! -f "devel${WXWIDGET_DIR}_${BUILD_BITS}/codeblocks.exe"  || 
-                ! -f  "devel${WXWIDGET_DIR}_${BUILD_BITS}/Addr2LineUI.exe"  || 
-                ! -f "devel${WXWIDGET_DIR}_${BUILD_BITS}/share/codeblocks/plugins/ToolsPlus.dll" 
-            )
-        ) ||
-        ( 
-            "${OSDetected}" == "Linux" &&
-            (
-                ! -f "devel${WXWIDGET_DIR}_${BUILD_BITS}/codeblocks"  || 
-                ! -f "devel${WXWIDGET_DIR}_${BUILD_BITS}/share/CodeBlocks/plugins/libToolsPlus.so" 
-            )
-        )
+        ! -f "devel${WXWIDGET_DIR}_${BUILD_BITS}/${CODEBLOCKS_NAME}${EXEEXT}"
+        &&
+        ! -f "devel${WXWIDGET_DIR}_${BUILD_BITS}/share/${CODEBLOCKS_NAME}/plugins/ToolsPlus.${LIBEXT}"
     ]]; then
     echo
     echo

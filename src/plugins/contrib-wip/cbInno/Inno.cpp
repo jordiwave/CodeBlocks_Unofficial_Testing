@@ -77,7 +77,12 @@ void Inno::OnAttach()
     {
         m_log_pos = Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger());
         Manager::Get()->GetLogManager()->Slot(m_log_pos).title = L"Inno";
+#if wxCHECK_VERSION(3, 1, 6)
+        wxBitmapBundle  * innobmp = new wxBitmapBundle(Inno_xpm);
+        CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_log_pos, Manager::Get()->GetLogManager()->Slot(m_log_pos).title, innobmp);
+#else
         CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_log_pos, Manager::Get()->GetLogManager()->Slot(m_log_pos).title, new wxBitmap(Inno_xpm));
+#endif // wxCHECK_VERSION
         Manager::Get()->ProcessEvent(evt);
         AddFileMasksToProjectManager();
     }

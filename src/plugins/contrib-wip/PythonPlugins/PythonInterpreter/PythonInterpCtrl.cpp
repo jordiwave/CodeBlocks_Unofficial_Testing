@@ -2,8 +2,9 @@
 #include <wx/textctrl.h>
 #include <wx/regex.h>
 #include <wx/fontutil.h>
-
+#include <wx/tokenzr.h>
 #include <wx/wxscintilla.h>
+
 #include <cbcolourmanager.h>
 #include <configmanager.h>
 #include <editorcolourset.h>
@@ -12,6 +13,7 @@
 #include <logmanager.h>
 
 #include "PythonInterpCtrl.h"
+#include "ShellCtrlBase.h"
 
 
 //DECLARE_LOCAL_EVENT_TYPE(wxEVT_PY_NOTIFY_UI_CODEOK, -1)
@@ -37,7 +39,7 @@ PythonIOCtrl::PythonIOCtrl(wxWindow * parent, PythonInterpCtrl * py)
     m_pyctrl = py;
     m_line_entry_mode = false;
     // setting the default editor font size to 10 point
-    wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     ConfigManager * mgr = Manager::Get()->GetConfigManager(_T("editor"));
     wxString fontstring = mgr->Read(_T("/font"), wxEmptyString);
 
@@ -137,7 +139,7 @@ PythonCodeCtrl::PythonCodeCtrl(wxWindow * parent, PythonInterpCtrl * py)
     //    Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(PythonCodeCtrl::OnUserInput));
     ConfigManager * mgr = Manager::Get()->GetConfigManager(_T("editor"));
     //MOST OF THIS STUFF IS TAKEN FROM CB EDITOR
-    wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     wxString fontstring = mgr->Read(_T("/font"), wxEmptyString);
 
     if (!fontstring.IsEmpty())
@@ -438,6 +440,108 @@ PythonInterpCtrl::PythonInterpCtrl(wxWindow * parent, int id, const wxString & n
 
 PortAllocator PythonInterpCtrl::m_portalloc;
 
+// ----------------------------------------------------------------------------
+wxArrayString PythonInterpCtrl::GetEnvPaths()
+{
+    wxString path;
+
+    if (!::wxGetEnv("PATH", &path))
+    {
+        //-clWARNING() << "Could not read environment variable PATH";
+        wxString msg;
+        msg << "GetEnvPaths() Could not read environment variable PATH";
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return {};
+    }
+
+    wxArrayString mergedPaths;
+    wxArrayString paths = ::wxStringTokenize(path, wxPATH_SEP, wxTOKEN_STRTOK);
+    return paths;
+}
+
+size_t PythonInterpCtrl::ScanForFiles(wxString path, wxArrayString & foundFiles, wxString mask)
+{
+#if defined(__WXGTK__)
+    // Windows sublayer for unix places the entire windows path into the Linux $PATH environment as mount points
+    // like:
+    //    /mnt/c/Program Files/WindowsApps/Microsoft.WindowsTerminal_1.11.2921.0_x64__8wekyb3d8bbwe:
+    //    /mnt/f/User/Programs/VMWare/bin/:
+    //    /mnt/c/usr/bin:
+    //    /mnt/c/Program Files (x86)/Intel/iCLS Client/:
+    //    /mnt/c/Program Files/Intel/iCLS Client/:
+    //    /mnt/c/WINDOWS/system32:
+    //        ,,, nmany, many more ...
+    //    /mnt/c/Users/Pecan/AppData/Local/Microsoft/WindowsApps:
+    //    /mnt/f/user/Programs/LLVM/bin:
+    //    /mnt/c/usr/bin:/snap/bin
+
+    // Eliminate WSL windows mount points, else the search takes forever..
+    if (path.Matches("/mnt/?/*"))
+    {
+        return 0;    //eliminate massive number of wsl windows paths
+    }
+
+#endif
+
+    if (not wxDirExists(path))
+    {
+        return 0;
+    }
+
+    wxString filename = wxFindFirstFile(path + wxFILE_SEP_PATH + mask, wxFILE);
+
+    while (filename.Length())
+    {
+        wxFileName file(path + wxFILE_SEP_PATH + filename);
+        file.MakeAbsolute();
+        foundFiles.Add(file.GetFullPath());
+        filename = wxFindNextFile();
+
+        if (filename.empty())
+        {
+            break;
+        }
+    }
+
+    return foundFiles.GetCount();
+}
+
+
+// ----------------------------------------------------------------------------
+wxString PythonInterpCtrl::LocateFilenameInPath(wxString findFileName)
+{
+    wxString location = wxEmptyString;
+    wxArrayString clangLocations;
+    wxArrayString envPaths = GetEnvPaths();
+
+    for (wxString path : envPaths)
+    {
+        wxLogNull nolog; //turn off 'not found' messages
+        size_t cnt = ScanForFiles(path, clangLocations, findFileName);
+
+        for (size_t ii = 0; ii < cnt; ++ii)
+        {
+            if (wxFileExists(clangLocations[ii]))
+            {
+                wxString endBin = _(wxFILE_SEP_PATH) + "bin";
+
+                if (clangLocations[ii].EndsWith(endBin))
+                {
+                    wxFileName fnLocation(clangLocations[ii]);
+                    location = fnLocation.GetPath();        // This removes the "bin" directory
+                    break;
+                }
+            }
+        }
+
+        if (!location.empty())
+        {
+            break;
+        }
+    }
+
+    return location;
+}
 long PythonInterpCtrl::LaunchProcess(const wxString & processcmd, const wxArrayString & options) // bool ParseLinks, bool LinkClicks, const wxString &LinkRegex
 {
     if (!IsDead())
@@ -451,35 +555,45 @@ long PythonInterpCtrl::LaunchProcess(const wxString & processcmd, const wxArrayS
     //        return -1;
     m_port = -1; //Use XmlRpc over pipe
     //TODO: get the command and working dir from config
-#ifdef __WXMSW__
     //    wxString cmd=_T("cmd /c interp.py ")+wxString::Format(_T(" %i"),m_port); //TODO: this could have process destruction issues on earlier version of wxWidgets (kills cmd, but not python)
-    wxString cmd = _T("python -u interp.py ") + wxString::Format(_T(" %i"), m_port); //TODO: this could have process destruction issues on earlier version of wxWidgets (kills cmd, but not python)
-    wxString python = _T("\\python");
-    wxString interp = _T("\\interp.py");
+#ifdef __WXMSW__
+    wxString pythonLocation = LocateFilenameInPath("python.exe");
 #else
-    wxString cmd = _T("python -u interp.py ") + wxString::Format(_T(" %i"), m_port);
-    wxString python = _T("/python");
-    wxString interp = _T("/interp.py");
+    wxString pythonLocation = LocateFilenameInPath("python");
 #endif
-    wxString gpath = ConfigManager::GetDataFolder(true) + python;
-    wxString lpath = ConfigManager::GetDataFolder(false) + python;
-    bool global = false, local = false;
+    wxString cmd = _T("python -u interp.py ") + wxString::Format(_T(" %i"), m_port);
+    wxString python = _T("python");
+    wxString interp = _T("interp.py");
+    wxString gpath = ConfigManager::GetDataFolder(true) + wxFILE_SEP_PATH + python;
+    wxString lpath = ConfigManager::GetDataFolder(false) + wxFILE_SEP_PATH + python;
+    bool foundPython = false;
 
-    if (wxFileName::FileExists(gpath + interp))
+    if (wxFileName::FileExists(gpath + wxFILE_SEP_PATH + interp))
     {
         wxSetWorkingDirectory(gpath);
-        global = true;
+        foundPython = true;
+    }
+    else
+    {
+        if (wxFileName::FileExists(lpath +  wxFILE_SEP_PATH + interp))
+        {
+            wxSetWorkingDirectory(lpath);
+            foundPython = true;
+        }
+        else
+        {
+            if (!pythonLocation.IsEmpty() && (wxFileName::FileExists(pythonLocation + wxFILE_SEP_PATH + interp)))
+            {
+                wxSetWorkingDirectory(pythonLocation);
+                foundPython = true;
+            }
+        }
     }
 
-    if (wxFileName::FileExists(lpath + interp))
+    if (!foundPython) //No interpreter script found, return failure.
     {
-        wxSetWorkingDirectory(lpath);
-        local = true;
-    }
-
-    if (!global && !local) //No interpreter script found, return failure.
-    {
-        return -2;    //TODO: Return meaningful messages (or at least use the codeblocks logger)
+        Manager::Get()->GetLogManager()->LogError(_("Cannot find the python executable!!"));
+        return -99;    //TODO: Return meaningful messages (or at least use the codeblocks logger)
     }
 
     m_pyinterp = new XmlRpcInstance(cmd, m_port, _T("localhost"), this);
@@ -617,7 +731,7 @@ void PythonInterpCtrl::OnPyNotify(XmlRpcResponseEvent & event)
 
 void PythonInterpCtrl::OnLineInputRequest(wxCommandEvent & event)
 {
-    m_ioctrl->ProcessEvent(event);
+    m_ioctrl->GetEventHandler()->ProcessEvent(event);
 }
 
 

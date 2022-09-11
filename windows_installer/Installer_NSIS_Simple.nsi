@@ -330,6 +330,7 @@ ${!defineifexist} CBNSIS_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\cbNSIS.
 ${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   "${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll"
 ${!defineifexist} DEBUGGER_DAP_PLUGIN_FOUND     "${CB_BASE}${CB_PLUGINS}\debugger_dap.dll"
 ${!defineifexist} PROJECT_EXPORTER_PLUGIN_FOUND "${CB_BASE}${CB_PLUGINS}\ProjectExporter.dll"
+${!defineifexist} PYTHON_PLUGIN_FOUND           "${CB_BASE}${CB_PLUGINS}\PythonInterpreter.dll"
 
 ${!defineifexist} PRETTYPRINTERS_FOUND          "${CB_BASE}${CB_GDB_PRETTYPRINTERS}\helper.py"
 ${!defineifexist} WINDOWS_MAKE_BUILD_FOUND      "${CB_BASE}\libcodeblocks.dll"
@@ -1354,6 +1355,26 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             SetOutPath $INSTDIR${CB_PLUGINS}
             File ${CB_BASE}${CB_PLUGINS}\debugger_dap.dll
             WriteRegStr HKCU "${REGKEY}\Components" "debugger_dap plugin" 1
+        SectionEnd
+!endif
+
+!ifdef PYTHON_PLUGIN_FOUND
+        Section "Python plugins" SEC_PYTHON_PLUGIN
+            SectionIn 1
+            SetOverwrite on
+            SetOutPath $INSTDIR
+            File ${CB_BASE}\XmlRpcEmbedder.dll
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            File ${CB_BASE}${CB_SHARE_CB}\PythonCodeChecker.zip
+            File ${CB_BASE}${CB_SHARE_CB}\PythonCodeCompletion.zip
+            File ${CB_BASE}${CB_SHARE_CB}\PythonDebugger.zip
+            File ${CB_BASE}${CB_SHARE_CB}\PythonInterpreter.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\PythonCodeChecker.dll
+            File ${CB_BASE}${CB_PLUGINS}\PythonCodeCompletion.dll
+            File ${CB_BASE}${CB_PLUGINS}\PythonDebugger.dll
+            File ${CB_BASE}${CB_PLUGINS}\PythonInterpreter.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "Python plugins" 1
         SectionEnd
 !endif
 
@@ -2613,6 +2634,21 @@ Section "-un.debugger_dap plugin" UNSEC_DEBUGGER_DAP_PLUGIN
 SectionEnd
 !endif
 
+!ifdef PYTHON_PLUGIN_FOUND
+Section "-un.Python plugins" UNSEC_PYTHON_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\PythonCodeChecker.dll
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\PythonCodeCompletion.dll
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\PythonDebugger.dll
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\PythonInterpreter.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\PythonCodeChecker.zip
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\PythonCodeCompletion.zip
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\PythonDebugger.zip
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\PythonInterpreter.zip
+    Delete /REBOOTOK $INSTDIR\XmlRpcEmbedder.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "Python plugins"
+SectionEnd
+!endif
+
 Section "-un.headerguard plugin" UNSEC_HEADERGUARD_PLUGIN
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\headerguard.dll
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\headerguard.zip
@@ -3604,6 +3640,9 @@ CheckUserTypeDone:
 !ifdef DEBUGGER_DAP_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "debugger_dap plugin"               ${UNSEC_DEBUGGER_DAP_PLUGIN}
 !endif
+!ifdef PYTHON_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "Python plugins"                      ${UNSEC_PYTHON_PLUGIN}
+!endif
     !insertmacro SELECT_UNSECTION "headerguard plugin"                  ${UNSEC_HEADERGUARD_PLUGIN}
     !insertmacro SELECT_UNSECTION "loghacker plugin"                    ${UNSEC_LOGHACKER_PLUGIN}
     !insertmacro SELECT_UNSECTION "ModPoller plugin"                    ${UNSEC_MODPOLLER_PLUGIN}
@@ -3731,6 +3770,9 @@ FunctionEnd
 !endif
 !ifdef DEBUGGER_DAP_PLUGIN_FOUND
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER_DAP_PLUGIN}    "debugger_dap plugin"
+!endif
+!ifdef PYTHON_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PYTHON_PLUGIN}    "Python plugins"
 !endif
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HEADERGUARD_PLUGIN}  "headerguard plugin"
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LOGHACKER_PLUGIN}    "loghacker plugin"

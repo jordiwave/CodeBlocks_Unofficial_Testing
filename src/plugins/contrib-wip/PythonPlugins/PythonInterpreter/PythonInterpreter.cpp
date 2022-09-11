@@ -10,17 +10,17 @@
 
 #include "PythonInterpreter.h"
 
-// Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
+// Register the plugin with Code::Blocks.
 PluginRegistrant<PythonInterpreter> reg(_T("PythonInterpreter"));
 }
 
 
 bool WildCardListMatch(wxString list, wxString name)
 {
-    if (list == _T("")) //any empty list matches everything by default
+    if (list == "") //any empty list matches everything by default
     {
         return true;
     }
@@ -28,9 +28,9 @@ bool WildCardListMatch(wxString list, wxString name)
     wxString wildlist = list;
     wxString wild = list.BeforeFirst(';');
 
-    while (wildlist != _T(""))
+    while (wildlist != "")
     {
-        if (wild != _T("") && ::wxMatchWild(wild, name))
+        if ((wild != "") && ::wxMatchWild(wild, name))
         {
             return true;
         }
@@ -119,14 +119,14 @@ void PythonInterpreter::OnAttach()
     Manager::Get()->ProcessEvent(evt);
     //TODO: Add UI to open a terminal instead of opening on attach
     //    wxArrayString as;
-    //    m_shellmgr->LaunchProcess(_T(""),_T("Python"),_("Python Interpreter"),as);
+    //    m_shellmgr->LaunchProcess("", "Python", _("Python Interpreter"),as);
 #endif
 }
 
 void PythonInterpreter::AddNewInterpreter(wxCommandEvent & event)
 {
     wxArrayString as;
-    m_shellmgr->LaunchProcess(_T(""), _T("Python"), _("Python Interpreter"), as);
+    m_shellmgr->LaunchProcess("", "Python", _("Python Interpreter"), as);
 }
 
 
@@ -154,7 +154,7 @@ int PythonInterpreter::Execute()
 
     if (tp && tp->IsAttached())
     {
-        return tp->LaunchProcess(_T(""), _T("Python"), _T("Python Interpreter"), as);
+        return tp->LaunchProcess("", "Python", _T("Python Interpreter"), as);
     }
     else
     {
@@ -166,7 +166,7 @@ int PythonInterpreter::Execute()
     evt.pWindow = m_shellmgr;
     Manager::Get()->ProcessEvent(evt);
     wxArrayString as;
-    return m_shellmgr->LaunchProcess(_T(""), _T("Python"), _("Python Interpreter"), as);
+    return m_shellmgr->LaunchProcess("", "Python", _("Python Interpreter"), as);
 #endif
 }
 

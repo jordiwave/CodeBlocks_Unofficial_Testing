@@ -96,7 +96,6 @@
 		<Project filename="plugins/contrib/envvars/EnvVars_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
-		<!-- DOES NOT BUILD DUE TO MISSING GAMIn LIBRARY ON MACOS -->
 		<Project filename="plugins/contrib/FileManager/FileManager_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
@@ -169,9 +168,7 @@
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
 
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE ADDITIONAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
 		<Project filename="plugins/contrib-wip/cbDiff/CBDiff_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
@@ -206,21 +203,23 @@
 		<Project filename="plugins/contrib-wip/cbSystemView/CBSystemView_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXPERIMENTAL WIP PLUGINS <=<=<=<=<=<=<=<=<=<= -->
-
 		<Project filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Unix_MacOS.cbp" />
 		<Project filename="plugins/contrib/Debugger_DAP/Debugger_DAP/Debugger_DAP_Unix_MacOS.cbp" >
 			<Depends filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Unix_MacOS.cbp" />
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
-		<!-- Project filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol_CliDemo/dbgcli_codeblocks_demo_Unix_MacOS.cbp" >
-			<Depends filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Unix_MacOS.cbp" />
-		</Project -->
 
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXPERIMENTAL WIP PLUGINS <=<=<=<=<=<=<=<=<=<= -->
+		<!-- https://github.com/spillz/codeblocks-python/compare/master...crobarcro:codeblocks-python:master -->
+		<Project filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Unix_MacOS.cbp" />
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonCodeCompletion/PythonCodeCompletion_Unix_MacOS.cbp" >
+			<Depends filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonInterpreter/PythonInterpreter_Unix_MacOS.cbp" >
+			<Depends filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonDebugger/PythonDebugger_Unix_MacOS.cbp" />
+		<Project filename="plugins/contrib-wip/PythonPlugins/codecheck/PythonCodeChecker_Unix_MacOS.cbp" />
+
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE ADDITIONAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
 	</Workspace>
 </CodeBlocks_workspace_file>

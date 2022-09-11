@@ -9,9 +9,11 @@
 # include <winsock2.h>
 //# pragma lib(WS2_32.lib)
 
-# define EINPROGRESS	WSAEINPROGRESS
-# define EWOULDBLOCK	WSAEWOULDBLOCK
-# define ETIMEDOUT	    WSAETIMEDOUT
+#ifndef EINPROGRESS
+    #define EINPROGRESS	WSAEINPROGRESS
+    #define EWOULDBLOCK	WSAEWOULDBLOCK
+    #define ETIMEDOUT	    WSAETIMEDOUT
+#endif
 #else
 extern "C" {
 # include <unistd.h>

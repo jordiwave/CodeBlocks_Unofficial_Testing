@@ -22,7 +22,11 @@ IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLogEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksThreadEvent, wxCommandEvent)
 
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger * logger_in, const wxString & title_in, wxBitmap * icon_in)
+#if wxCHECK_VERSION(3, 1, 6)
+    CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger * logger_in, const wxString & title_in, wxBitmapBundle * icon_in)
+#else
+    CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger * logger_in, const wxString & title_in, wxBitmap * icon_in)
+#endif
     : wxEvent(wxID_ANY, commandType),
       logger(logger_in), logIndex(-1), icon(icon_in), title(title_in), window(nullptr)
 {
@@ -42,16 +46,24 @@ CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger * logger_
     logIndex = Manager::Get()->GetLogManager()->FindIndex(logger);
 }
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex_in, const wxString & title_in, wxBitmap * icon_in)
-    : wxEvent(wxID_ANY, commandType),
-      logger(nullptr), logIndex(logIndex_in), icon(icon_in), title(title_in), window(nullptr)
+#if wxCHECK_VERSION(3, 1, 6)
+    CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex_in, const wxString & title_in, wxBitmapBundle * icon_in)
+#else
+    CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex_in, const wxString & title_in, wxBitmap * icon_in)
+#endif
+: wxEvent(wxID_ANY, commandType),
+logger(nullptr), logIndex(logIndex_in), icon(icon_in), title(title_in), window(nullptr)
 {
     logger = Manager::Get()->GetLogManager()->Slot(logIndex).GetLogger();
 }
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow * window_in, const wxString & title_in, wxBitmap * icon_in)
-    : wxEvent(wxID_ANY, commandType),
-      logger(nullptr), logIndex(-1), icon(icon_in), title(title_in), window(window_in)
+#if wxCHECK_VERSION(3, 1, 6)
+    CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow * window_in, const wxString & title_in, wxBitmapBundle * icon_in)
+#else
+    CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow * window_in, const wxString & title_in, wxBitmap * icon_in)
+#endif
+: wxEvent(wxID_ANY, commandType),
+logger(nullptr), logIndex(-1), icon(icon_in), title(title_in), window(window_in)
 {
 }
 

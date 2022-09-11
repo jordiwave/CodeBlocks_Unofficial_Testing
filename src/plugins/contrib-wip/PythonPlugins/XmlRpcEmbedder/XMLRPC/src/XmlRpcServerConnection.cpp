@@ -404,9 +404,9 @@ std::string XmlRpcServerConnection::generateHeader(std::string const & body)
     header += "\r\n"
               "Content-Type: text/xml\r\n"
               "Content-length: ";
-    char buffLen[40];
-    sprintf(buffLen, "%d\r\n\r\n", body.size());
-    return header + buffLen;
+    char buff[40];
+    sprintf(buff, "%d\r\n\r\n", static_cast<int>(body.size()));
+    return header + buff;
 }
 
 

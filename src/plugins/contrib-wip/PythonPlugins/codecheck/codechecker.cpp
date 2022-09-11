@@ -1,13 +1,23 @@
-#include <sdk.h> // Code::Blocks SDK
-#include <cbstyledtextctrl.h>
-#include <configurationpanel.h>
-#include "codechecker.h"
+// System include files
+#include <wx/regex.h>
 
+// CB include files (not codechecker)
+#include "sdk.h"
+#include "cbstyledtextctrl.h"
+#include "configurationpanel.h"
+#include "cbeditor.h"
+#include "editorbase.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "logmanager.h"
+
+// codechecker include files
+#include "codechecker.h"
 
 //#define CHECK_MARKER        6
 //#define CHECK_STYLE         wxSCI_MARK_MINUS
 #define CHECK_MARKER        1
-#define CHECK_STYLE            wxSCI_MARK_SMALLRECT
+#define CHECK_STYLE         wxSCI_MARK_SMALLRECT
 
 
 inline void LogMessage(const wxString & msg)
@@ -20,7 +30,7 @@ inline void LogMessage(const wxString & msg)
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-PluginRegistrant<CodeChecker> reg(_T("CodeChecker"));
+PluginRegistrant<CodeChecker> reg(_T("PythonCodeChecker"));
 }
 
 
@@ -37,9 +47,9 @@ CodeChecker::CodeChecker()
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
-    if (!Manager::LoadResource(_T("codechecker.zip")))
+    if (!Manager::LoadResource(_T("PythonCodeChecker.zip")))
     {
-        NotifyMissingFile(_T("codechecker.zip"));
+        NotifyMissingFile(_T("PythonCodeChecker.zip"));
     }
 }
 
@@ -55,7 +65,7 @@ void CodeChecker::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP, new cbEventFunctor<CodeChecker, CodeBlocksEvent>(this, &CodeChecker::OnTooltip));
     m_process = new AsyncProcess(this);
     LangData ld1, ld2;
-    ld1.command = _T("c:\\python25\\python -m py_compile $file");
+    ld1.command = _T("C:\\msys64\\mingw64\\bin\\python -m py_compile $file");
     ld1.regexp = _T("File \"([^\\n]+)\", line (\\d+)\\n(.*)");
     m_commands[wxSCI_LEX_PYTHON] = ld1;
     ld2.command = _T("php -l $file");

@@ -1,25 +1,19 @@
-
-
 //  base64.hpp
 //  Autor Konstantin Pilipchuk
 //  mailto:lostd@ukr.net
-//
-//
 
-#if !defined(__BASE64_H_INCLUDED__)
-#define __BASE64_H_INCLUDED__ 1
+#ifndef __BASE64_H_INCLUDED__
+#define __BASE64_H_INCLUDED__
 
 #ifndef MAKEDEPEND
     #include <iterator>
 #endif
 
-static
-int _base64Chars[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                      '+', '/'
-                     };
-
+static int _base64Chars[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                             '+', '/'
+                            };
 
 #define _0000_0011 0x03
 #define _1111_1100 0xFC
@@ -437,6 +431,5 @@ __end:
 
 
 };
-
 
 #endif

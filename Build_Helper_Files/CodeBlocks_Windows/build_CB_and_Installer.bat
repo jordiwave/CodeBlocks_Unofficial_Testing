@@ -5,23 +5,8 @@ setlocal
 
 @SET CurrentDirectory="%CD%"
 
-set WXWIDGET_VERSION=3.2.0
-set WX_DIR_VERSION=32
-@rem set WXWIDGET_VERSION=3.1.7
-@rem set WX_DIR_VERSION=31
-
-set BUILD_BITS=%1
-if "%BUILD_BITS%" == "32" goto BuildBits_Okay
-if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-if exist "..\..\src\devel3*_32" set BUILD_BITS=32
-if exist "..\..\src\devel3*_64" set BUILD_BITS=64
-if exist "..\src\devel3*_32" set BUILD_BITS=32
-if exist "..\src\devel3*_64" set BUILD_BITS=64
-if exist "src\devel3*_32" set BUILD_BITS=32
-if exist "src\devel3*_64" set BUILD_BITS=64
-if "%BUILD_BITS%" == "32" goto BuildBits_Okay
-if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-set BUILD_BITS=64
+@rem setup global variables
+call build_set_WXWidget_variables.bat
 
 :BuildBits_Okay
 set BUILD_OUTPUT_DIR=devel%WX_DIR_VERSION%_%BUILD_BITS%

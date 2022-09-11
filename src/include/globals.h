@@ -150,8 +150,8 @@ enum ProjectTreeVisualState
     ptvsCategorize     = 0x01, //!< If true, use virtual folders like "Sources", "Headers", etc.
     ptvsUseFolders     = 0x02, //!< If true, create folders as needed. If false, the list is flat (not compatible with "hie folder name")
     ptvsHideFolderName = 0x04, //!< If true, the folder name will be hidden and only the file name will be shown (not compatible with "use folders")
-    ptvsDefault        = 0x08, //!< Just here for convenience, "categorise" + "use folders" ON
-    ptvsSortAlpha      = 0x10  //!< Sort projects alphabetically
+    ptvsDefault        = 0x03, //!< Just here for convenience, "categorise" + "use folders" ON
+    ptvsSortAlpha      = 0x08  //!< Sort projects alphabetically
 };
 
 /** Template output types. */
@@ -298,6 +298,15 @@ extern DLLIMPORT bool UsesCommonControls6();
 extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString & filename,
                                        wxBitmapType bitmapType = wxBITMAP_TYPE_PNG,
                                        wxFileSystem * fs = nullptr);
+
+#if wxCHECK_VERSION(3, 1, 6)
+/// This function loads a bitmap bundle from disk.
+/// @param fs File system used to load the image from. If nullptr the default would be used.
+extern DLLIMPORT wxBitmapBundle cbLoadBitmapBundle(const wxString & prefix, const wxString & filename,
+                                                   int minSize,
+                                                   wxBitmapType bitmapType = wxBITMAP_TYPE_PNG,
+                                                   wxFileSystem * fs = nullptr);
+#endif
 
 /// Loads bitmap from this. Use it when you need a bitmap which takes into account the scaling
 /// factor of the wx toolkit used. Toolkits which need this are GTK+3 and Cocoa.

@@ -16,9 +16,6 @@
     #define vsnprintf    _vsnprintf
     #define strcasecmp	  _stricmp
     #define strncasecmp	_strnicmp
-#elif defined(__BORLANDC__)
-    #define strcasecmp stricmp
-    #define strncasecmp strnicmp
 #endif
 
 namespace XmlRpc

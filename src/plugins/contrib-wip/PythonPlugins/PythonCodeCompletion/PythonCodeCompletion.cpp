@@ -24,14 +24,15 @@
 #include <wx/imaglist.h>
 
 
-int ID_EDITOR_HOOKS = wxNewId();
-int ID_COMPLETE_PHRASE = wxNewId();
-int ID_CALLTIP = wxNewId();
-int ID_GOTO_DECLARATION = wxNewId();
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
+int ID_EDITOR_HOOKS = wxNewId();
+int ID_COMPLETE_PHRASE = wxNewId();
+int ID_CALLTIP = wxNewId();
+int ID_GOTO_DECLARATION = wxNewId();
+
 PluginRegistrant<PythonCodeCompletion> reg(_T("PythonCodeCompletion"));
 }
 
@@ -51,9 +52,6 @@ PythonCodeCompletion::PythonCodeCompletion() : m_ActiveCalltipDef(_(""))
     m_comp_position.line = 0;
     m_comp_position.column = 0;
 
-    // Make sure our resources are available.
-    // In the generated boilerplate code we have no resources but when
-    // we add some, it will be nice that this code is in place already ;)
     if (!Manager::LoadResource(_T("PythonCodeCompletion.zip")))
     {
         NotifyMissingFile(_T("PythonCodeCompletion.zip"));
@@ -84,6 +82,35 @@ wxString PythonCodeCompletion::GetExtraFile(const wxString & short_name)
     return wxEmptyString;
 }
 
+void PythonCodeCompletion::AddToImageList(wxImageList * list, const wxString & path)
+{
+    wxBitmap bmp = cbLoadBitmap(path, wxBITMAP_TYPE_PNG);
+
+    if (!bmp.IsOk())
+    {
+        Manager::Get()->GetLogManager()->LogError(wxString::Format(_("Failed to cbLoadBitmap(%s)\n"), path));
+    }
+
+    list->Add(bmp);
+}
+
+wxImageList * PythonCodeCompletion::LoadImageList(int size)
+{
+    const wxString prefix = ConfigManager::GetDataFolder() + wxString::Format(_T("/PythonCodeCompletion.zip#zip:images/%dx%d/"), size, size);
+    // bitmaps must be added by order of PARSER_IMG_* consts
+    wxImageList * list = new wxImageList(size, size);
+    AddToImageList(list, prefix + "class_folder.png");
+    AddToImageList(list, prefix + "class.png");
+    AddToImageList(list, prefix + "class_public.png");
+    AddToImageList(list, prefix + "typedef.png");
+    AddToImageList(list, prefix + "var_public.png");
+    AddToImageList(list, prefix + "method_public.png");
+    AddToImageList(list, prefix + "method_protected.png");
+    AddToImageList(list, prefix + "method_protected.png");
+    AddToImageList(list, prefix + "method_private.png");
+    return list;
+}
+
 void PythonCodeCompletion::OnAttach()
 {
     // do whatever initialization you need for your plugin
@@ -98,7 +125,7 @@ void PythonCodeCompletion::OnAttach()
     m_request_completed_count = 0;
     py_server = NULL;
     m_pImageList = NULL;
-    ConfigManager * mgr = Manager::Get()->GetConfigManager(_T("PythonCC"));
+    // ConfigManager * mgr = Manager::Get()->GetConfigManager(_T("PythonCC"));
     wxString server_config_module = ConfigManager::GetFolder(sdDataUser) + _T("/python/python_completion_config.py");
     wxString script = GetExtraFile(_T("/python/python_completion_server.py"));
 
@@ -126,28 +153,7 @@ void PythonCodeCompletion::OnAttach()
         return;
     }
 
-    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/codecompletion/");
-    // bitmaps must be added by order of PARSER_IMG_* consts
-    m_pImageList = new wxImageList(16, 16);
-    wxBitmap bmp;
-    bmp = cbLoadBitmap(prefix + _T("class_folder.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // Module
-    bmp = cbLoadBitmap(prefix + _T("class.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // Class
-    bmp = cbLoadBitmap(prefix + _T("class_public.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // Class Object
-    bmp = cbLoadBitmap(prefix + _T("typedef.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // Type
-    bmp = cbLoadBitmap(prefix + _T("var_public.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // Type Instance
-    bmp = cbLoadBitmap(prefix + _T("method_public.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // BuiltinFunctionType
-    bmp = cbLoadBitmap(prefix + _T("method_protected.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // BuiltinMethodType
-    bmp = cbLoadBitmap(prefix + _T("method_protected.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // Method
-    bmp = cbLoadBitmap(prefix + _T("method_private.png"), wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // Function
+    m_pImageList = LoadImageList(16);
     const wxString ctChars = wxT(",\n()"); // default set
     const wxString alChars = wxT("."); // default set
     Manager::Get()->GetCCManager()->RegisterCallTipChars(ctChars, this);
@@ -392,7 +398,7 @@ std::vector<PythonCodeCompletion::CCToken> PythonCodeCompletion::GetAutocompList
             return tokens;
         }
 
-        for (int i = 0; i < m_comp_results.Count(); ++i)
+        for (size_t i = 0; i < m_comp_results.Count(); ++i)
         {
             long int category = -1;
             wxString cat = m_comp_results[i].AfterFirst('?');
@@ -664,7 +670,14 @@ void PythonCodeCompletion::GetCalltipPositions(cbEditor * editor, int pos, int &
         cpos--;
     }
 
-    if (cpos < minpos || control->BraceMatch(cpos) < pos && control->BraceMatch(cpos) != -1)
+    if ((cpos < minpos)
+            ||
+            (
+                (control->BraceMatch(cpos) < pos)
+                &&
+                (control->BraceMatch(cpos) != -1)
+            )
+       )
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("PYCC: Not in function scope"));
         argsStartPos = -1;

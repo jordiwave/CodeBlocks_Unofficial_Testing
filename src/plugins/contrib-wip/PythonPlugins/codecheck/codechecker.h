@@ -10,14 +10,14 @@
 #ifndef CODE_ANALYZER_H_INCLUDED
 #define CODE_ANALYZER_H_INCLUDED
 
+#include <list>
 // For compilers that support precompilation, includes <wx/wx.h>
-#include "asyncprocess.h"
-#include <wx/wxprec.h>
-
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/wxprec.h>
 
+#include "asyncprocess.h"
 #include <cbplugin.h> // for "class cbPlugin"
 
 struct LangData

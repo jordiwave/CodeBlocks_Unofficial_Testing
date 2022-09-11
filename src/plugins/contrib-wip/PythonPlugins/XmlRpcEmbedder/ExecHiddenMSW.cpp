@@ -4,10 +4,6 @@
 #ifdef __WXMSW__
 #include <wx/wxprec.h>
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
 #ifndef WX_PRECOMP
     #include <wx/utils.h>
     #include <wx/app.h>
@@ -17,15 +13,12 @@
 #endif
 
 #include <wx/process.h>
-
 #include <wx/apptrait.h>
-
-
 #include <wx/msw/private.h>
 
 #include <ctype.h>
 
-#if !defined(__GNUWIN32__) && !defined(__SALFORDC__) && !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
+#if !defined(__GNUWIN32__) && !defined(__SALFORDC__) && !defined(__WXMICROWIN__)
     #include <direct.h>
     #ifndef __MWERKS__
         #include <dos.h>
@@ -37,7 +30,7 @@
     #include <sys/stat.h>
 #endif
 
-#if !defined(__WXMICROWIN__) && !defined(__WXWINCE__)
+#if !defined(__WXMICROWIN__)
     #ifndef __UNIX__
         #include <io.h>
     #endif
@@ -50,10 +43,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef __WATCOMC__
-    #if !(defined(_MSC_VER) && (_MSC_VER > 800))
-        #include <errno.h>
-    #endif
+#if !(defined(_MSC_VER) && (_MSC_VER > 800))
+    #include <errno.h>
 #endif
 #include <stdarg.h>
 
@@ -87,8 +78,10 @@ struct wxExecuteData2
         bool       state;         // set to false when the process finishes
 };
 
-LRESULT APIENTRY _EXPORT wxExecuteWindowCbk2(HWND hWnd, UINT message,
-                                             WPARAM wParam, LPARAM lParam)
+//LRESULT APIENTRY _EXPORT wxExecuteWindowCbk2(HWND hWnd, UINT message,
+//                                             WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK wxExecuteWindowCbk2(HWND hWnd, UINT message,
+                                     WPARAM wParam, LPARAM lParam)
 {
     if (message == wxWM_PROC_TERMINATED)
     {
@@ -184,35 +177,19 @@ long wxExecuteHidden(const wxString & cmd, int flags, wxProcess * handler)
     //END DM ADDED CODE HERE
     PROCESS_INFORMATION pi;
     DWORD dwFlags = CREATE_SUSPENDED;
-#ifndef __WXWINCE__
     dwFlags |= CREATE_DEFAULT_ERROR_MODE ;
-#else
-    // we are assuming commands without spaces for now
-    wxString moduleName = command.BeforeFirst(wxT(' '));
-    wxString arguments = command.AfterFirst(wxT(' '));
-#endif
     bool ok = ::CreateProcess
               (
-                  // WinCE requires appname to be non null
-                  // Win32 allows for null
-#ifdef __WXWINCE__
-                  (wxChar *)
-                  moduleName.c_str(), // application name
-                  (wxChar *)
-                  arguments.c_str(),  // arguments
-#else
-                  NULL,               // application name (use only cmd line)
-                  (wxChar *)
-                  command.c_str(),    // full command line
-#endif
-                  NULL,               // security attributes: defaults for both
-                  NULL,               //   the process and its main thread
-                  redirect,           // inherit handles if we use pipes
-                  dwFlags,            // process creation flags
-                  NULL,               // environment (use the same)
-                  NULL,               // current directory (use the same)
-                  &si,                // startup info (unused here)
-                  &pi                 // process info
+                  NULL,         // application name (use only cmd line)
+                  command.wchar_str(),  // full command line
+                  NULL,         // security attributes: defaults for both
+                  NULL,         //   the process and its main thread
+                  redirect,     // inherit handles if we use pipes
+                  dwFlags,      // process creation flags
+                  NULL,         // environment (use the same)
+                  NULL,         // current directory (use the same)
+                  &si,          // startup info (unused here)
+                  &pi           // process info
               ) != 0;
 
     if (!ok)
@@ -281,8 +258,6 @@ long wxExecuteHidden(const wxString & cmd, int flags, wxProcess * handler)
     }
 
     ::CloseHandle(hThread);
-#if wxUSE_IPC && !defined(__WXWINCE__)
-#endif // wxUSE_IPC
 
     if (!(flags & wxEXEC_SYNC))
     {
@@ -308,7 +283,8 @@ long wxExecuteHidden(const wxString & cmd, int flags, wxProcess * handler)
         // real async IO which we don't have for the moment
         ::Sleep(50);
         // we must process messages or we'd never get wxWM_PROC_TERMINATED
-        traits->AlwaysYield();
+        //traits->AlwaysYield();
+        wxYield();
     }
 
     if (!(flags & wxEXEC_NODISABLE))

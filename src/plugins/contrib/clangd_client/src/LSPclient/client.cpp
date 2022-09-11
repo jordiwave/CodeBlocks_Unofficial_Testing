@@ -4362,17 +4362,21 @@ void ProcessLanguageClient::CreateDiagnosticsLog()
         widths.Add(48);
         widths.Add(640);
         const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
-        const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
+#if wxCHECK_VERSION(3, 1, 6)
+        wxString prefix(ConfigManager::GetDataFolder() + wxString::Format("/resources.zip#zip:/images/%dx%d/", uiSize, uiSize));
+        wxBitmapBundle  * logbmp = new wxBitmapBundle(cbLoadBitmapBundle(prefix, "filefind.png", uiSize, wxBITMAP_TYPE_PNG));
+#else
         const wxString imgFile = ConfigManager::GetDataFolder()
-                                 + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/filefind.png"),
-                                                    uiSize, uiSize);
+                                 + wxString::Format("/resources.zip#zip:/images/%dx%d/filefind.png", uiSize, uiSize);
+        const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
         wxBitmap * logbmp = new wxBitmap(cbLoadBitmapScaled(imgFile, wxBITMAP_TYPE_PNG, uiScaleFactor));
+#endif
         m_pDiagnosticsLog = new LSPDiagnosticsResultsLog(titles, widths, GetLSP_IgnoredDiagnostics());
         CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pDiagnosticsLog, _("LSP messages"), logbmp);
         Manager::Get()->ProcessEvent(evt);
         // Ask DragScroll plugin to apply its support for this log
         wxWindow * pWindow = m_pDiagnosticsLog->m_pControl;
-        cbPlugin * pPlgn = Manager::Get()->GetPluginManager()->FindPluginByName(_T("cbDragScroll"));
+        cbPlugin * pPlgn = Manager::Get()->GetPluginManager()->FindPluginByName("cbDragScroll");
 
         if (pWindow && pPlgn)
         {

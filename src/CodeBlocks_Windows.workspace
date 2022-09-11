@@ -158,25 +158,14 @@
 		<Project filename="plugins/contrib/FortranProject/FortranProject_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE ADDITIONAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<Project filename="plugins/contrib-wip/cbBuildTools/cbBuildTools_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
 		<Project filename="plugins/contrib-wip/cbDiff/cbDiff_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/contrib-wip/GitBlocks/GitBlocks_Windows.cbp">
-			<Depends filename="CodeBlocks_Windows.cbp" />
-		</Project>
 		<Project filename="plugins/contrib-wip/cbInno/cbInno_Windows.cbp">
-			<Depends filename="CodeBlocks_Windows.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbNSIS/cbNSIS_Windows.cbp">
-			<Depends filename="CodeBlocks_Windows.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_Windows.cbp">
-			<Depends filename="CodeBlocks_Windows.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Windows.cbp">
-			<Depends filename="CodeBlocks_Windows.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbBuildTools/cbBuildTools_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/cbMarkdown/cbMarkdown_Windows.cbp">
@@ -185,7 +174,19 @@
 		<Project filename="plugins/contrib-wip/cbMemoryView/cbMemoryView_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
+		<Project filename="plugins/contrib-wip/cbNSIS/cbNSIS_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
 		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/GitBlocks/GitBlocks_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
@@ -193,5 +194,18 @@
 			<Depends filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
+
+		<!-- https://github.com/spillz/codeblocks-python/compare/master...crobarcro:codeblocks-python:master -->
+		<Project filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows.cbp" />
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonCodeCompletion/PythonCodeCompletion_Windows.cbp" >
+			<Depends filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonInterpreter/PythonInterpreter_Windows.cbp" >
+			<Depends filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonDebugger/PythonDebugger_Windows.cbp" />
+		<Project filename="plugins/contrib-wip/PythonPlugins/codecheck/PythonCodeChecker_Windows.cbp" />
+
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE ADDITIONAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
 	</Workspace>
 </CodeBlocks_workspace_file>

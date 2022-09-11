@@ -57,8 +57,7 @@ bool ShellRegistry::Deregister(const wxString & name)
 
 ShellCtrlBase * ShellRegistry::CreateControl(const wxString & type, wxWindow * parent, int id, const wxString & windowname, ShellManager * shellmgr)
 {
-    std::map<wxString, ShellRegInfo>::iterator it
-        = m_reginfo.find(type);
+    std::map<wxString, ShellRegInfo>::iterator it = m_reginfo.find(type);
 
     if (it == m_reginfo.end())
     {
@@ -183,7 +182,11 @@ long ShellManager::LaunchProcess(const wxString & processcmd, const wxString & n
     }
     else
     {
-        cbMessageBox(_("process launch failed."));
+        if (procid != -99)
+        {
+            cbMessageBox(wxString::Format(_("process launch failed for %s. Name: %s, type: %s"), processcmd, name, type));
+        }
+
         delete shell; //TODO: GlobalShellRegistry.FreeControl() ???
         return -1;
     }

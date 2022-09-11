@@ -19,6 +19,7 @@ class PythonCodeCtrl: public cbStyledTextCtrl
         wxArrayString m_history_commands;
         wxString m_history_working;
         int m_history_position;
+
     private:
         void OnUserInput(wxKeyEvent & ke);
         void OnCharAdded(wxScintillaEvent & ke);
@@ -173,6 +174,9 @@ class PythonInterpCtrl : public ShellCtrlBase
         int m_killlevel;
         int m_port;
 
+        wxArrayString GetEnvPaths();
+        size_t ScanForFiles(wxString path, wxArrayString & foundFiles, wxString mask);
+        wxString LocateFilenameInPath(wxString findFileName);
         //        void OnEndProcess(wxProcessEvent &event);
         DECLARE_DYNAMIC_CLASS(PythonInterpCtrl)
         DECLARE_EVENT_TABLE()

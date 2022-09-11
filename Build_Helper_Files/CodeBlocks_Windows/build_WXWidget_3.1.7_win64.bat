@@ -15,11 +15,9 @@
 @rem Hopefully these variables are the only changed when you need to configure for your Code::Blocks source build
 @rem ------------------------------------------------------------------------------------------------------------
 
-set WXWIDGET_VERSION=3.1.7
-@rem set BUILD_BITS=32
-set BUILD_BITS=64
-set BUILD_TYPE=debug
-@rem set BUILD_TYPE=release
+@rem setup global variables
+call build_set_WXWidget_variables.bat
+
 
 set BUILD_FLAGS=SHARED=1 MONOLITHIC=1 BUILD=%BUILD_TYPE% UNICODE=1 VENDOR=cb CFLAGS="-m%BUILD_BITS%" CXXFLAGS="-std=gnu++17 -m%BUILD_BITS%" CPPFLAGS="-m%BUILD_BITS%" LDFLAGS="-m%BUILD_BITS%"
 

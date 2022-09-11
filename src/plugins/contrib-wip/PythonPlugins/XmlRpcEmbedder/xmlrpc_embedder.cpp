@@ -150,6 +150,7 @@ class XmlRpcPipeClient
         bool clear_error()
         {
             m_error_lock = false;
+            return false;
         }
         bool execute(const char * method, XmlRpc::XmlRpcValue const & params, XmlRpc::XmlRpcValue & result)
         {
@@ -198,12 +199,13 @@ class XmlRpcPipeClient
             //NOW WAIT FOR THE REPLY
             //FIRST RETRIEVE A SINGLE CHARACTER "M" THAT DENOTES THE START OF THE REPLY
             //TODO: CHANGE 'M' TO 0 AND ACTUALLY CHECK IT!!!
-            char ch;
+            //char ch;
             bool eof;
 
             do
             {
-                ch = m_istream->GetC();
+                //ch = m_istream->GetC();
+                m_istream->GetC();
                 eof = m_istream->GetLastError() == wxSTREAM_EOF;
 
                 if (eof)
@@ -289,7 +291,7 @@ class XmlRpcPipeClient
             // Expect either <params><param>... or <fault>...
             if ((XmlRpcUtil::nextTagIs(PARAMS_TAG, _response, &offset) &&
                     XmlRpcUtil::nextTagIs(PARAM_TAG, _response, &offset)) ||
-                    XmlRpcUtil::nextTagIs(FAULT_TAG, _response, &offset) && (_isFault = true))
+                    (XmlRpcUtil::nextTagIs(FAULT_TAG, _response, &offset) && (_isFault = true)))
             {
                 if (! result.fromXml(_response, &offset))
                 {
@@ -552,7 +554,7 @@ void XmlRpcInstance::OnEndProcess(wxProcessEvent & event)
 
     if (m_parent)
     {
-        m_parent->AddPendingEvent(ce);
+        m_parent->GetEventHandler()->AddPendingEvent(ce);
     }
 
     if (m_jobrunning)

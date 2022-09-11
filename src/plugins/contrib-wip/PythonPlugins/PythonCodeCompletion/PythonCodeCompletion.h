@@ -153,12 +153,16 @@ class PythonCodeCompletion : public cbCodeCompletionPlugin
         wxString RequestDocString(int id);
 
     private:
+        wxString GetExtraFile(const wxString & short_name);
+        void AddToImageList(wxImageList * list, const wxString & path);
+        wxImageList * LoadImageList(int size);
+
         int m_state; // takes one of the values of the StateType enum (used to report current state of the engine)
         int m_request_submitted_count; // m_request_id is used to keep track of the active request and is used to prevent responses from stale requests from propagating
         int m_request_completed_count; // m_request_id is used to keep track of the active request and is used to prevent responses from stale requests from propagating
         int m_argsPos; // position of the call args in the active editor
         int m_argNumber; // zero-based numerical position of the cursor within the function call spec
-        wxString GetExtraFile(const wxString & short_name);
+
         XmlRpcInstance * py_server; //Code Completion Server (a python process running an XMLRPC server)
         wxImageList * m_pImageList; //Type icons displayed in the code completion popup
         CCCallTip m_ActiveCalltipDef; //contains the call tip definition retrieved from the server
@@ -168,6 +172,7 @@ class PythonCodeCompletion : public cbCodeCompletionPlugin
             int line;
             int column;
         } m_comp_position;
+
         DECLARE_EVENT_TABLE();
 };
 
