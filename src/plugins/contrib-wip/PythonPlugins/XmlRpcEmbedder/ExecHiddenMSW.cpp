@@ -72,9 +72,15 @@ struct wxExecuteData2
 
         HWND       hWnd;          // window to send wxWM_PROC_TERMINATED to
         HANDLE     hProcess;      // handle of the process
+#ifdef __WXMSW__
         DWORD      dwProcessId;   // pid of the process
         wxProcess * handler;
         DWORD      dwExitCode;    // the exit code of the process
+#else
+        uint32_t      dwProcessId;   // pid of the process
+        wxProcess * handler;
+        uint32_t      dwExitCode;    // the exit code of the process
+#endif
         bool       state;         // set to false when the process finishes
 };
 
@@ -116,7 +122,11 @@ LRESULT CALLBACK wxExecuteWindowCbk2(HWND hWnd, UINT message,
 
 
 // thread function for the thread monitoring the process termination
-static DWORD __stdcall wxExecuteThread2(void * arg)
+#ifdef __WXMSW__
+    static DWORD __stdcall wxExecuteThread2(void * arg)
+#else
+    static uint32_t __stdcall wxExecuteThread2(void * arg)
+#endif
 {
     wxExecuteData2 * const data = (wxExecuteData2 *)arg;
 
@@ -176,7 +186,7 @@ long wxExecuteHidden(const wxString & cmd, int flags, wxProcess * handler)
 
     //END DM ADDED CODE HERE
     PROCESS_INFORMATION pi;
-    DWORD dwFlags = CREATE_SUSPENDED;
+    uint32_t dwFlags = CREATE_SUSPENDED;
     dwFlags |= CREATE_DEFAULT_ERROR_MODE ;
     bool ok = ::CreateProcess
               (
@@ -226,7 +236,11 @@ long wxExecuteHidden(const wxString & cmd, int flags, wxProcess * handler)
         data->handler = handler;
     }
 
+#ifdef __WXMSW__
     DWORD tid;
+#else
+    uint32_t tid;
+#endif
     HANDLE hThread = ::CreateThread(NULL,
                                     0,
                                     wxExecuteThread2,
@@ -236,7 +250,7 @@ long wxExecuteHidden(const wxString & cmd, int flags, wxProcess * handler)
 
     // resume process we created now - whether the thread creation succeeded or
     // not
-    if (::ResumeThread(pi.hThread) == (DWORD) -1)
+    if (::ResumeThread(pi.hThread) == (uint32_t) -1)
     {
         // ignore it - what can we do?
         wxLogLastError(wxT("ResumeThread in wxExecute"));
@@ -293,7 +307,7 @@ long wxExecuteHidden(const wxString & cmd, int flags, wxProcess * handler)
         traits->AfterChildWaitLoop(cookie);
     }
 
-    DWORD dwExitCode = data->dwExitCode;
+    uint32_t dwExitCode = data->dwExitCode;
     delete data;
     // return the exit code
     return dwExitCode;

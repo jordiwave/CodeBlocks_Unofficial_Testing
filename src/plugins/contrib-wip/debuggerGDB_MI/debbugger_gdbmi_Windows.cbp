@@ -2,8 +2,8 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Debbugger GDB MI" />
-		<Option default_target="debbugger_gdb_mi_cbplugin" />
+		<Option title="Debbugger GDB MI Windows" />
+		<Option default_target="debbugger_gdb_mi" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debbugger_gdb_mi">
@@ -19,50 +19,14 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<!-- Delete old files  -->
-					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).cbplugin del $(TARGET_OUTPUT_BASENAME).cbplugin" />
-					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip      del $(TARGET_OUTPUT_BASENAME).zip" />
-					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll      del $(TARGET_OUTPUT_BASENAME).dll" />
-					<Add before="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
-
 					<!-- Create plugin zip file-->
 					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.xml resources/*.xrc" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-			<Target title="debbugger_gdb_mi_cbplugin">
-				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\debugger_gdbmi" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\debugger_gdbmi" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option parameters="-p debug -ns -ni --debug-log --multiple-instance " />
-				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<ExtraCommands>
-					<!-- Create output directory if it does not exist -->
-					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-
-					<!-- Delete old files  -->
-					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).cbplugin del $(TARGET_OUTPUT_BASENAME).cbplugin" />
-					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip      del $(TARGET_OUTPUT_BASENAME).zip" />
-					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll      del $(TARGET_OUTPUT_BASENAME).dll" />
-					<Add before="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
-
-					<!-- Create plugin zip file-->
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.xml resources/*.xrc" />
-
-					<!-- Create cbplugin file-->
-					<Add after="cmd /c copy $(TARGET_OUTPUT_FILE) ." />
-					<Add after="zip -jq9 $(TARGET_OUTPUT_BASENAME).cbplugin $(TARGET_OUTPUT_BASENAME).dll  ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll      del $(TARGET_OUTPUT_BASENAME).dll" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="debbugger_gdb_mi_cbplugin;" />
-			<Add alias="Nocbplugin" targets="debbugger_gdb_mi;" />
+			<Add alias="All" targets="debbugger_gdb_mi;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />

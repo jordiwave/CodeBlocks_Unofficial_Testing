@@ -6,14 +6,18 @@
 //* License:   GPL
 //******************************************************************************
 
+#include <wx/filename.h>
+
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "editormanager.h"
+#include "logmanager.h"
+
 #include "CBTortoiseSVN.h"
 #include "ConfigDialog.h"
 #include "TwoPaneSelectionDialog.h"
 #include "CustomConfigDialog.h"
 
-#include <cbeditor.h>
-#include <cbproject.h>
-#include <editormanager.h>
 
 using namespace CBTSVN;
 
@@ -755,21 +759,33 @@ void CBTortoiseSVN::Properties(const IMenuCmd & menu)
 {
     wxString filename = menu.GetFilename();
 
-    if (filename != _(""))
+    if (!filename.IsEmpty())
     {
-        if (menu.GetProjectBased() ||
-                menu.GetWorkspaceBased())
+        if (menu.GetProjectBased() || menu.GetWorkspaceBased())
         {
             filename = CBTSVN::GetBaseDir(filename);
         }
 
-        SHELLEXECUTEINFO sei;
-        ZeroMemory(&sei, sizeof(sei));
-        sei.cbSize = sizeof(sei);
-        sei.lpFile = filename.c_str();
-        sei.lpVerb = L"properties";
-        sei.fMask  = SEE_MASK_INVOKEIDLIST;
-        ShellExecuteEx(&sei);
+        if (!filename.IsEmpty())
+        {
+            wxArrayString output;
+            wxString command = wxString::Format("%s properties", filename);
+            Manager::Get()->GetLogManager()->Log(command);
+            wxExecute(command, output);
+
+            for (unsigned int i = 0; i < output.size(); i++)
+            {
+                Manager::Get()->GetLogManager()->Log(output[i]);
+            }
+
+            //        SHELLEXECUTEINFO sei;
+            //        ZeroMemory(&sei, sizeof(sei));
+            //        sei.cbSize = sizeof(sei);
+            //        sei.lpFile = filename.c_str();
+            //        sei.lpVerb = L"properties";
+            //        sei.fMask  = SEE_MASK_INVOKEIDLIST;
+            //        ShellExecuteEx(&sei);
+        }
     }
 }
 
@@ -779,7 +795,7 @@ void CBTortoiseSVN::Explore(const IMenuCmd & menu)
 {
     wxString filename = menu.GetFilename();
 
-    if (filename != _(""))
+    if (!filename.IsEmpty())
     {
         if (menu.GetProjectBased() ||
                 menu.GetWorkspaceBased())
@@ -789,7 +805,7 @@ void CBTortoiseSVN::Explore(const IMenuCmd & menu)
 
         unsigned long exit_code;
         wxString commandline = _("explorer.exe ") + filename;
-        CBTSVN::Logger::GetInstance().log(_("Executing: ") + commandline);
+        Manager::Get()->GetLogManager()->DebugLog(_("Executing: ") + commandline);
         Run(false, false, commandline, exit_code);
     }
 }
@@ -798,9 +814,9 @@ void CBTortoiseSVN::Explore(const IMenuCmd & menu)
 
 void CBTortoiseSVN::OnSettings(wxCommandEvent & event)
 {
-    DWORD exit_code;
+    unsigned long int exit_code;
     wxString commandline = _("\"") + CBSvnPluginManager::GetInstance().GetTortoiseproc() + _("\"") + _(" /command:settings");
-    CBTSVN::Logger::GetInstance().log(_("Executing: ") + commandline);
+    Manager::Get()->GetLogManager()->DebugLog(_("Executing: ") + commandline);
 
     if (!Run(false, false, commandline, exit_code))
         wxMessageBox(_("Command \"") + commandline + _("\" failed"), _("Info"),
@@ -813,9 +829,9 @@ void CBTortoiseSVN::OnMakeReadonly(wxCommandEvent & event)
 {
     wxString filename = MAIN_MENU.GetFilename();
 
-    if (filename != _(""))
+    if (!filename.IsEmpty())
     {
-        MakeReadonly(filename.c_str());
+        MakeReadonly(filename);
     }
 }
 
@@ -825,7 +841,7 @@ void CBTortoiseSVN::OnMakeReadWrite(wxCommandEvent & event)
 {
     wxString filename = MAIN_MENU.GetFilename();
 
-    if (filename != _(""))
+    if (!filename.IsEmpty())
     {
         MakeReadWrite(filename.c_str());
     }
@@ -952,33 +968,18 @@ void CBTortoiseSVN::OnAbout(wxCommandEvent & event)
 
 //******************************************************************************
 
-void CBTortoiseSVN::MakeReadonly(LPCTSTR lpFileName)
+void CBTortoiseSVN::MakeReadonly(wxString sfname)
 {
-    DWORD dwFileAttributes = GetFileAttributes(lpFileName);
-    long mask = dwFileAttributes;
-
-    if (dwFileAttributes & FILE_ATTRIBUTE_READONLY)
-    {
-        return;
-    }
-
-    mask = dwFileAttributes | FILE_ATTRIBUTE_READONLY;
-    SetFileAttributes(lpFileName, mask);
+    wxFileName fileName(sfname);
+    fileName.SetPermissions(wxPOSIX_USER_READ | wxPOSIX_GROUP_READ);
 }
 
 //******************************************************************************
 
-void CBTortoiseSVN::MakeReadWrite(LPCTSTR lpFileName)
+void CBTortoiseSVN::MakeReadWrite(wxString sfname)
 {
-    DWORD dwFileAttributes = GetFileAttributes(lpFileName);
-
-    if (!(dwFileAttributes & FILE_ATTRIBUTE_READONLY))
-    {
-        return;
-    }
-
-    long mask = dwFileAttributes & (~FILE_ATTRIBUTE_READONLY);
-    SetFileAttributes(lpFileName, mask);
+    wxFileName fileName(sfname);
+    fileName.SetPermissions(wxPOSIX_USER_READ | wxPOSIX_USER_WRITE | wxPOSIX_GROUP_READ | wxPOSIX_GROUP_WRITE);
 }
 
 //******************************************************************************

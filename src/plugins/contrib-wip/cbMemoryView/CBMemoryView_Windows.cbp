@@ -2,11 +2,11 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="cbMemoryView" />
-		<Option default_target="cbMemoryView_create_plugin" />
+		<Option title="cbMemoryView Windows" />
+		<Option default_target="cbMemoryView" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="cbMemoryView_create_plugin">
+			<Target title="cbMemoryView">
 				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbMemoryView" prefix_auto="0" extension_auto="1" />
 				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbMemoryView" />
 				<Option type="3" />
@@ -17,28 +17,16 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).cbplugin del $(TARGET_OUTPUT_BASENAME).cbplugin" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip      del $(TARGET_OUTPUT_BASENAME).zip" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_FILENAME)          del $(TARGET_OUTPUT_FILENAME)" />
-					
+					<!-- Create plugin zip file-->
 					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
-					<Add after="zip -qj9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml *.xrc" />
-					<Add after="zip -qr9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip images" />
-
-					<Add after="zip -qj9 $(TARGET_OUTPUT_BASENAME).zip manifest.xml *.xrc" />
-					<Add after="zip -qr9 $(TARGET_OUTPUT_BASENAME).zip images" />
-					<Add after="cmd /c copy $(TARGET_OUTPUT_FILE)" />
-					<Add after="strip $(TARGET_OUTPUT_FILENAME)" />
-					<Add after="zip -qj9 $(TARGET_OUTPUT_BASENAME).cbplugin $(TARGET_OUTPUT_FILENAME) $(TARGET_OUTPUT_BASENAME).zip" />
-
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip del $(TARGET_OUTPUT_BASENAME).zip" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_FILENAME) del $(TARGET_OUTPUT_FILENAME)" />
+					<Add after="zip -qj9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.* resources/*.xrc" />
+					<Add after="cmd /c &quot;cd resources &amp; zip -rq9 ..\..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip images &quot;" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cbMemoryView_create_plugin;" />
+			<Add alias="All" targets="cbMemoryView;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -57,7 +45,6 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add directory="./include" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/tinyxml" />
@@ -81,12 +68,12 @@
 		<Unit filename="MemoryPanel.h" />
 		<Unit filename="cbMemoryView.cpp" />
 		<Unit filename="cbMemoryView.h" />
-		<Unit filename="include/cbmvwindow.h" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
+		<Unit filename="cbmvwindow.cpp" />
+		<Unit filename="cbmvwindow.h" />
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="src/cbmvwindow.cpp" />
 		<Unit filename="wxsmith/MemoryPanel.wxs" />
 		<Extensions>
 			<wxsmith version="1">

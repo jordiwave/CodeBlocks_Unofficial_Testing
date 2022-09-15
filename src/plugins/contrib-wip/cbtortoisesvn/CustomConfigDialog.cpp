@@ -5,16 +5,12 @@
 
 #include <wx/dirdlg.h>
 #include <wx/filename.h>
-
-#ifndef WX_PRECOMP
-    //(*InternalHeadersPCH(CustomConfigDialog)
-    #include <wx/intl.h>
-    #include <wx/string.h>
-    //*)
-#endif
-//(*InternalHeaders(CustomConfigDialog)
+#include <wx/intl.h>
+#include <wx/string.h>
 #include <wx/settings.h>
-//*)
+
+#include "logmanager.h"
+
 
 using namespace CBTSVN;
 
@@ -147,7 +143,7 @@ void CustomConfigDialog::OnButtonOKClick(wxCommandEvent & event)
 {
     if (GetProjectFilename() != _("") && MAIN_MENU.GetProjectBased())
     {
-        CBTSVN::Logger::GetInstance().log(_("Saving: ") + GetProjectIniFile(plugin_name));
+        Manager::Get()->GetLogManager()->DebugLog(_("Saving: ") + GetProjectIniFile(plugin_name));
         WriteStringToProjectInifile(plugin_name, project_custom_location, TextCtrlCustomProject->GetValue());
         wxString val;
         CheckBoxCustomProjectRelative->GetValue() ?  val = _("1") : val = _("0");
@@ -156,7 +152,7 @@ void CustomConfigDialog::OnButtonOKClick(wxCommandEvent & event)
 
     if (GetWorkspaceFilename() != _("") && !MAIN_MENU.GetWorkspaceBased())
     {
-        CBTSVN::Logger::GetInstance().log(_("Saving: ") + GetWorkspaceIniFile(plugin_name));
+        Manager::Get()->GetLogManager()->DebugLog(_("Saving: ") + GetWorkspaceIniFile(plugin_name));
         WriteStringToWorkspaceInifile(plugin_name, workspace_custom_location, TextCtrlCustomWorkspace->GetValue());
         wxString val;
         CheckBoxCustomWorkspaceRelative->GetValue() ?  val = _("1") : val = _("0");
@@ -199,7 +195,7 @@ void CustomConfigDialog::OnButtonCustomProjectClick(wxCommandEvent & event)
 
     if (GetDir(newdir, TextCtrlCustomProject->GetValue(), GetBaseDir(GetProjectFilename())))
     {
-        CBTSVN::Logger::GetInstance().log(_("new dir: ") + newdir);
+        Manager::Get()->GetLogManager()->DebugLog(_("new dir: ") + newdir);
         TextCtrlCustomProject->SetValue(newdir);
         TextCtrlCustomProjectAbsolute->SetValue(newdir);
         bool relative = CheckBoxCustomProjectRelative->GetValue();
@@ -216,7 +212,7 @@ void CustomConfigDialog::OnButtonCustomWorkspaceClick(wxCommandEvent & event)
 
     if (GetDir(newdir, TextCtrlCustomWorkspace->GetValue(), GetBaseDir(GetWorkspaceFilename())))
     {
-        CBTSVN::Logger::GetInstance().log(_("new dir: ") + newdir);
+        Manager::Get()->GetLogManager()->DebugLog(_("new dir: ") + newdir);
         TextCtrlCustomWorkspace->SetValue(newdir);
         TextCtrlCustomWorkspaceAbsolute->SetValue(newdir);
         bool relative = CheckBoxCustomWorkspaceRelative->GetValue();

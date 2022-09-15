@@ -1,4 +1,5 @@
 #include "textProvider.h"
+#include "wx/string.h"
 
 TextProvider::TextProvider()
 {

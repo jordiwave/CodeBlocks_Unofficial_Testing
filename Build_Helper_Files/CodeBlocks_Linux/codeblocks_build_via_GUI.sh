@@ -23,7 +23,7 @@ fi
 # ----------------------------------------------------------------------------
 CurrentDir=${PWD}
 # MUST configure soft link for wx-config
-#WXWIDGET_VERSION=3.2.0
+#WXWIDGET_VERSION=3.2.1
 #WXWIDGET_DIR=32
 #WXWIDGET_VERSION=3.1.7
 #WXWIDGET_DIR=31

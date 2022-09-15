@@ -118,8 +118,8 @@ class CBTortoiseSVN : public cbPlugin
         void BuildMenuEntryList();
         void RebuildMainMenu();
 
-        void MakeReadonly(LPCTSTR lpFileName);
-        void MakeReadWrite(LPCTSTR lpFileName);
+        void MakeReadonly(wxString sfname);
+        void MakeReadWrite(wxString sfname);
     private:
         std::vector<CBTSVN::MenuEntry> m_menu;
         std::vector<wxString> m_popup_menu;

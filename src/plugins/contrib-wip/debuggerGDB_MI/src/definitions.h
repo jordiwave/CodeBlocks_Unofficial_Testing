@@ -11,12 +11,13 @@
 #include <deque>
 #include <tinyxml2.h>
 #include <memory>
+#include <unordered_map>
 #include <wx/sizer.h>
 #include <wx/string.h>
-#include <scrollingdialog.h>
 
 // CB includes
 #include <debuggermanager.h>
+#include <scrollingdialog.h>
 
 // GDB include files
 #include "gdb_logger.h"

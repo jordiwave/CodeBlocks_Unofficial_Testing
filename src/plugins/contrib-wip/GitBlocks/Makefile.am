@@ -1,16 +1,59 @@
 .rc.lo:
-	$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
+			$(LIBTOOL) --tag=RC --mode=compile $(WX_RESCOMP) $< -o $@
 
-cb_plugin_lib_LTLIBRARIES = \
-			GitBlocks.la
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include \
+			-I$(top_srcdir)/src/include/tinyxml \
+			-I./include
 
-cb_plugin_data_DATA = \
-			GitBlocks.zip GitBlocks.cbplugin
+if CODEBLOCKS_NT
+AM_CXXFLAGS = \
+			-DBUILDING_PLUGIN \
+			-DCC_NO_COLLAPSE_ITEM \
+			-DLOGGING \
+			-DDONT_SHOW_SERVER_CONSOLE
+			-m64 \
+			-pipe \
+			-fmessage-length=0 \
+			-fexceptions \
+			-fno-keep-inline-dllexport \
+			-DHAVE_W32API_H \
+			-D__WXMSW__ \
+			-DWXUSINGDLL \
+			-DcbDEBUG \
+			-DwxUSE_UNICODE \
+			-D_WIN64
+endif
 
-CLEANFILES = \
-			GitBlocks.zip GitBlocks.cbplugin
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
+pluginlibdir = $(pkglibdir)/plugins
+endif
 
-GitBlocks_la_SOURCES = \
+pluginlib_LTLIBRARIES = \
+			libGitBlocks.la
+
+libGitBlocks_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-no-undefined \
+			-avoid-version
+
+if CODEBLOCKS_NT
+libGitBlocks_la_LDFLAGS += \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
+
+libGitBlocks_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
+			$(WX_LIBS)
+
+libGitBlocks_la_SOURCES = \
 			src/CloneDialog.cpp \
 			src/CommitAllDialog.cpp \
 			src/CommitDialog.cpp \
@@ -21,7 +64,7 @@ GitBlocks_la_SOURCES = \
 			src/SetUserDialog.cpp
 
 if CODEBLOCKS_NT
-GitBlocks_la_SOURCES += \
+libGitBlocks_la_SOURCES += \
 			manifest.rc
 endif
 
@@ -35,29 +78,21 @@ noinst_HEADERS = \
 			include/SwitchBranchDialog.h \
 			include/SetUserDialog.h
 
-GitBlocks_la_CPPFLAGS = \
-			$(WX_CFLAGS) \
-			$(CB_CFLAGS) \
-			-Iinclude
+pkgdata_DATA = \
+			GitBlocks.zip
 
-GitBlocks_la_LDFLAGS = \
-			@MODULE_SHARED_LDFLAGS@ \
-			-no-undefined \
-			-avoid-version \
-			$(WX_LIBS) \
-			$(CB_LIBS)
+CLEANFILES = \
+			$(pkgdata_DATA)
 
-GitBlocks_zip_RESOURCES = \
-			manifest.xml
+resources_forZIP = \
+			manifest.* \
+			*.xrc
 
-GitBlocks.zip: $(GitBlocks_zip_RESOURCES)
-	cd $(srcdir)
-	zip -j9 GitBlocks.zip manifest.xml
+EXTRA_DIST = \
+			*.cbp \
+			wxsmith/cbDiffConfigPanel.wxs \
+			wxsmith/cbDiffSelectFiles.wxs \
+			$(resources_forZIP)
 
-GitBlocks_cbplugin_RESOURCES = \
-			cb_plugin_lib_LTLIBRARIES) GitBlocks.zip
-
-GitBlocks.cbplugin: $(GitBlocks_cbplugin_RESOURCES)
-	cd $(srcdir)
-	zip -j9 GitBlocks.cbplugin .libs/GitBlocks.so GitBlocks.zip
-
+GitBlocks.zip: $(resources_forZIP)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/GitBlocks.zip $(resources_forZIP) > /dev/null

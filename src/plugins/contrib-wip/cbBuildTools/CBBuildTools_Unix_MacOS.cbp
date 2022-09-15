@@ -3,10 +3,10 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="cbBuildTools Unix_MacOS" />
-		<Option default_target="cbBuildTools_cbplugin" />
+		<Option default_target="cbBuildTools" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="cbBuildTools_cbplugin">
+			<Target title="cbBuildTools">
 				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbBuildTools" prefix_auto="0" extension_auto="1" />
 				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/cbBuildTools" />
 				<Option type="3" />
@@ -17,16 +17,16 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
+					<!-- Create the cbBuildTools.zip file -->
 					<Add after="if [ -f $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ] ; then rm $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip; fi" />
-					<Add after="zip -qj9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip manifest.xml res/*" />
-					<Add after="zip -qr9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ./images" />
-
+					<Add after="zip -qj9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip resources/manifest.* resources/*" />
+					<Add after="cd resources &amp;&amp; zip -rq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip images" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cbBuildTools_cbplugin;" />
+			<Add alias="All" targets="cbBuildTools;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-fPIC" />
@@ -42,7 +42,6 @@
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/tinyxml" />
-			<Add directory="./include" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
@@ -51,9 +50,15 @@
 		</Linker>
 		<Unit filename="cbBuildTools.cpp" />
 		<Unit filename="cbBuildTools.h" />
-		<Unit filename="include/buildtargetswindow.h" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="src/buildtargetswindow.cpp" />
+		<Unit filename="buildtargetswindow.cpp" />
+		<Unit filename="buildtargetswindow.h" />
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="resources/dummy.xrc" />
 		<Extensions>
 			<code_completion />
 			<envvars />

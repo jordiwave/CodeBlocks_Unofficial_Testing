@@ -621,25 +621,29 @@ AC_CONFIG_FILES([Makefile
     codeblocks.pc
     codeblocks.spec.fedora
     codeblocks.spec
-    src/plugins/contrib-wip/Makefile
-    src/plugins/contrib-wip/cbDiff/Makefile
     src/plugins/contrib/Debugger_DAP/DebugAdapterProtocol/Makefile
     src/plugins/contrib/Debugger_DAP/Debugger_DAP/Makefile
     src/plugins/contrib/Debugger_DAP/Debugger_DAP/resources/Makefile
+    src/plugins/contrib-wip/Makefile
+    src/plugins/contrib-wip/cbBuildTools/Makefile
+    src/plugins/contrib-wip/cbDiff/Makefile
+    src/plugins/contrib-wip/cbInno/Makefile
+    src/plugins/contrib-wip/cbMarkdown/Makefile
+    src/plugins/contrib-wip/cbMemoryView/Makefile
+    src/plugins/contrib-wip/cbMemoryView/resources/Makefile
+    src/plugins/contrib-wip/cbNSIS/Makefile
+    src/plugins/contrib-wip/cbSystemView/Makefile
+    src/plugins/contrib-wip/cbSystemView/resources/Makefile
+    src/plugins/contrib-wip/cbtortoisesvn/Makefile
+    src/plugins/contrib-wip/debuggerGDB_MI/Makefile
+    src/plugins/contrib-wip/GitBlocks/Makefile
+    src/plugins/contrib-wip/PythonPlugins/Makefile
+    src/plugins/contrib-wip/PythonPlugins/codecheck/Makefile
+    src/plugins/contrib-wip/PythonPlugins/PythonCodeCompletion/Makefile
+    src/plugins/contrib-wip/PythonPlugins/PythonDebugger/Makefile
+    src/plugins/contrib-wip/PythonPlugins/PythonInterpreter/Makefile
+    src/plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/Makefile
 ])
-
-# no Makefile.am    src/plugins/contrib-wip/cbInno/Makefile
-# no Makefile.am    src/plugins/contrib-wip/cbMarkdown/Makefile
-# no Makefile.am    src/plugins/contrib-wip/cbMemoryView/Makefile
-# no Makefile.am    src/plugins/contrib-wip/cbNSIS/Makefile
-# no Makefile.am    src/plugins/contrib-wip/cbSystemView/Makefile
-# no Makefile.am    src/plugins/contrib-wip/cbtortoisesvn/Makefile
-# no Makefile.am    src/plugins/contrib-wip/PythonPlugins/Makefile
-# no Makefile.am    src/plugins/contrib-wip/cbBuildTools/Makefile
-# no Makefile.am    src/plugins/contrib-wip/debuggerGDB_MI/Makefile
-# no Makefile.am    src/plugins/contrib-wip/GitBlocks/Makefile
-# no Makefile.am    src/plugins/contrib-wip/cbDiff/Makefile
-
 
 AC_OUTPUT
 

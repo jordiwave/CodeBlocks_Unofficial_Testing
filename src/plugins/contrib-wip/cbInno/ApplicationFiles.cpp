@@ -9,7 +9,7 @@
 //*)
 #include <cbproject.h>
 
-#include "Images/LinksOben.xpm"
+#include "resources/Images/LinksOben.xpm"
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ArrayFile);

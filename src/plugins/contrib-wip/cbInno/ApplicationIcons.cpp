@@ -10,7 +10,7 @@
 
 #include <prep.h>
 
-#include "Images/LinksOben.xpm"
+#include "resources/Images/LinksOben.xpm"
 
 //(*IdInit(ApplicationIcons)
 const long ApplicationIcons::ID_STATICTEXT2 = wxNewId();

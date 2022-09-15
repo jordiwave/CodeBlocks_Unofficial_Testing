@@ -12,7 +12,7 @@
 					</content>
 					<style>wxRA_SPECIFY_ROWS</style>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -21,17 +21,17 @@
 						<object class="wxStaticText" name="ID_STATICTEXT2">
 							<label>Command Line:</label>
 						</object>
-						<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="CommandLine" />
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -42,7 +42,7 @@
 						<object class="wxTextCtrl" name="InitCommands">
 							<style>wxTE_MULTILINE</style>
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -50,11 +50,11 @@
 							<label>These commands will be sent to the debugger on each session start</label>
 							<fg>#800000</fg>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_LEFT</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 				<border>5</border>
 			</object>
 		</object>

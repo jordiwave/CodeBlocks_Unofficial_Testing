@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Python_XmlRpcEmbedder Windows" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="wxEmbedder">
+				<Option output="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/XmlRpcEmbedder" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="../../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/XmlRpcEmbedder" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-D__GNUWIN32__" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DcbDEBUG" />
+			<Add option="-Wall" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="-pipe" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-m$(#CB_BUILD.OSBITS)" />
+			<Add option="-DNOPCH" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-D_WINDOWS" />
+			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../../../include" />
+			<Add directory="../../../../include/tinyxml" />
+			<Add directory="../../../../sdk/wxscintilla/include" />
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="XMLRPC/include" />
+			<Add directory="." />
+		</Compiler>
+		<Linker>
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
+			<Add directory="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add library="Ws2_32" />
+		</Linker>
+		<VirtualTargets>
+			<Add alias="All" targets="wxEmbedder;" />
+		</VirtualTargets>
+		<Unit filename="ExecHiddenMSW.cpp" />
+		<Unit filename="ExecHiddenMSW.h" />
+		<Unit filename="XMLRPC/include/XmlRpc.h" />
+		<Unit filename="XMLRPC/include/XmlRpcClient.h" />
+		<Unit filename="XMLRPC/include/XmlRpcDispatch.h" />
+		<Unit filename="XMLRPC/include/XmlRpcException.h" />
+		<Unit filename="XMLRPC/include/XmlRpcServer.h" />
+		<Unit filename="XMLRPC/include/XmlRpcServerConnection.h" />
+		<Unit filename="XMLRPC/include/XmlRpcServerMethod.h" />
+		<Unit filename="XMLRPC/include/XmlRpcSocket.h" />
+		<Unit filename="XMLRPC/include/XmlRpcSource.h" />
+		<Unit filename="XMLRPC/include/XmlRpcUtil.h" />
+		<Unit filename="XMLRPC/include/XmlRpcValue.h" />
+		<Unit filename="XMLRPC/include/base64.h" />
+		<Unit filename="XMLRPC/src/XmlRpcClient.cpp" />
+		<Unit filename="XMLRPC/src/XmlRpcDispatch.cpp" />
+		<Unit filename="XMLRPC/src/XmlRpcServer.cpp" />
+		<Unit filename="XMLRPC/src/XmlRpcServerConnection.cpp" />
+		<Unit filename="XMLRPC/src/XmlRpcServerMethod.cpp" />
+		<Unit filename="XMLRPC/src/XmlRpcSocket.cpp" />
+		<Unit filename="XMLRPC/src/XmlRpcSource.cpp" />
+		<Unit filename="XMLRPC/src/XmlRpcUtil.cpp" />
+		<Unit filename="XMLRPC/src/XmlRpcValue.cpp" />
+		<Unit filename="XmlRpcEvents.cpp" />
+		<Unit filename="XmlRpcEvents.h" />
+		<Unit filename="xmlrpc_embedder.cpp" />
+		<Unit filename="xmlrpc_embedder.h" />
+	</Project>
+</CodeBlocks_project_file>

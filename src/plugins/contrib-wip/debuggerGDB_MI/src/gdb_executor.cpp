@@ -24,7 +24,7 @@ namespace
 #if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0501)
 #include "Tlhelp32.h"
 typedef BOOL WINAPI(*DebugBreakProcessApiCall)(HANDLE);
-typedef HANDLE WINAPI(*CreateToolhelp32SnapshotApiCall)(DWORD  dwFlags,   DWORD             th32ProcessID);
+typedef HANDLE WINAPI(*CreateToolhelp32SnapshotApiCall)(uint32_t  dwFlags,   uint32_t             th32ProcessID);
 typedef BOOL WINAPI(*Process32FirstApiCall)(HANDLE hSnapshot, LPPROCESSENTRY32W lppe);
 typedef BOOL WINAPI(*Process32NextApiCall)(HANDLE hSnapshot, LPPROCESSENTRY32W lppe);
 
@@ -76,7 +76,7 @@ void InteruptChild(int child_pid)
 
     if (DebugBreakProcessFunc)
     {
-        HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)child_pid);
+        HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (uint32_t)child_pid);
 
         if (proc)
         {

@@ -24,27 +24,32 @@ if [ ! -f "bootstrap" ]; then
     fi
 fi
 
-
 if [ -d "${PWD}/src/devel30" ]; then
     CB_DEV_DIR=${PWD}/src/devel30
-fi
-if [ -d "${PWD}/src/devel30_64" ]; then
-    CB_DEV_DIR=${PWD}/src/devel30_64
-fi
-if [ -d "${PWD}/src/devel30" ]; then
-    CB_DEV_DIR=${PWD}/src/devel30
-fi
-if [ -d "${PWD}/src/devel31_64" ]; then
-    CB_DEV_DIR=${PWD}/src/devel31_64
-fi
-if [ -d "${PWD}/src/devel31" ]; then
-    CB_DEV_DIR=${PWD}/src/devel31
-fi
-if [ -d "${PWD}/src/devel32_64" ]; then
-    CB_DEV_DIR=${PWD}/src/devel32_64
-fi
-if [ -d "${PWD}/src/devel32" ]; then
-    CB_DEV_DIR=${PWD}/src/devel32
+else
+    if [ -d "${PWD}/src/devel30_64" ]; then
+        CB_DEV_DIR=${PWD}/src/devel30_64
+    else
+        if [ -d "${PWD}/src/devel30" ]; then
+            CB_DEV_DIR=${PWD}/src/devel30
+        else
+            if [ -d "${PWD}/src/devel31_64" ]; then
+                CB_DEV_DIR=${PWD}/src/devel31_64
+            else
+                if [ -d "${PWD}/src/devel31" ]; then
+                    CB_DEV_DIR=${PWD}/src/devel31
+                else
+                    if [ -d "${PWD}/src/devel32_64" ]; then
+                        CB_DEV_DIR=${PWD}/src/devel32_64
+                    else
+                        if [ -d "${PWD}/src/devel32" ]; then
+                            CB_DEV_DIR=${PWD}/src/devel32
+                        fi
+                    fi
+                fi
+            fi
+        fi
+    fi
 fi
 if [ ! -d "$CB_DEV_DIR" ]; then
     echo Could not find ${PWD}/src/devel3* directory.

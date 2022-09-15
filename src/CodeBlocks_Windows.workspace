@@ -180,7 +180,7 @@
 		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_Windows.cbp">
+		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbTortoiseSVN_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Windows.cbp">

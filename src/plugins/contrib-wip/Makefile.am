@@ -1,15 +1,19 @@
 SUBDIRS = \
-		cbDiff 
+        cbBuildTools \
+		cbDiff \
+        cbMemoryView \
+        cbSystemView \
+        GitBlocks \
+        PythonPlugins
+
+#        debuggerGDB_MI
+#        cbTortoisesvn
+#        cbMarkdown
+
+if CODEBLOCKS_NT
+SUBDIRS += \
+        cbInno \
+        cbNSIS
+endif
 
 DIST_SUBDIRS = $(SUBDIRS)
-
-# no Makefile.am    cbBuildTools
-# no Makefile.am    cbInno
-# no Makefile.am    cbMarkdown
-# no Makefile.am    cbMemoryView
-# no Makefile.am    cbNSIS
-# no Makefile.am    cbSystemView
-# no Makefile.am    cbtortoisesvn
-# no Makefile.am    PythonPlugins
-# no Makefile.am    debuggerGDB_MI
-# no Makefile.am    GitBlocks

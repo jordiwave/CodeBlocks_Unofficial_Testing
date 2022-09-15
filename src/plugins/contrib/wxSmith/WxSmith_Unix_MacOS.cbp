@@ -12,12 +12,6 @@
 				<Option type="3" />
 				<Option parameters="--debug-log --multiple-instance -ns -p debug" />
 				<Option createStaticLib="1" />
-				<Compiler>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-				</Compiler>
-				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid,richtext`" />
-				</Linker>
 			</Target>
 			<Target title="wxSmith">
 				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/wxsmith" prefix_auto="1" extension_auto="1" />
@@ -26,17 +20,20 @@
 				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
 				<Option host_application="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
-				<Compiler>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-				</Compiler>
 				<Linker>
-					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,propgrid,richtext`" />
 					<Add library="wxsmithlib" />
 				</Linker>
 				<ExtraCommands>
+					<!-- Create output directory -->
 					<Add before="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks ; fi" />
-					<Add after="zip $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip manifest.xml" />
-					<Mode before="always" />
+					<Add before="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith ; fi" />
+
+					<!-- Create the plugin zip file -->
+					<Add after="if [ -f $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip ] ; then rm $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip ; fi" />
+					<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip manifest.xml" />
+
+					<!-- Copy PNG files  -->
+					<Add after="cp -f ./wxwidgets/icons/*.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith/ > /dev/null 2> /dev/null" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -47,26 +44,22 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
-			<Add option="-fPIC" />
-			<Add option='[[if (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;)) print(_T(&quot;-Wno-attributes&quot;));]]' />
-			<Add option="-DcbDEBUG" />
-			<Add option="-DCB_PRECOMP" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-fPIC" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/scripting/include" />
 		</Compiler>
-		<ExtraCommands>
-			<Add before="if [ ! -d $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith ] ; then mkdir -p $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith ; fi" />
-			<Mode before="always" />
-			<Add after="cp ./wxwidgets/icons/*.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith/ > /dev/null 2> /dev/null" />
-			<Mode after="always" />
-		</ExtraCommands>
 		<Linker>
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid,richtext`" />
 			<Add library="codeblocks" />
 			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
@@ -1260,7 +1253,6 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Extensions>
-			<code_completion />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>

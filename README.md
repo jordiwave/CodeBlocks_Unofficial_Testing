@@ -18,7 +18,7 @@
         * cbMemoryView
         * cbNSIS
         * cbSystemView
-        * cbtortoisesvn
+        * cbtortoisesvn   - not initiative and no docs!!!
         * GDB/MI debugger
         * GitBlocks
 11. Many other minor/medium changes to help developers out.
@@ -29,3 +29,7 @@
         * Python Code Check
 
 If you know or find or see a Code::Blocks plugin that is useful and it is not included in this repo's source please riase an issue and I will have a look to see if it can be included without allot of work.
+
+Potential future plugins:
+  * https://github.com/LETARTARE/CB_Collector
+  * https://github.com/LETARTARE/CB_AddonForQt

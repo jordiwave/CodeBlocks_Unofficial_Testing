@@ -78,7 +78,7 @@ void CBTSVN::LogMenu(const IMenuCmd & menu)
         _(", Projectbased: ") << wxString::Format(_("%d"), menu.GetProjectBased()) <<
         _(", Workspacebased: ") << wxString::Format(_("%d"), menu.GetWorkspaceBased()) <<
         _(", Custom: ") << wxString::Format(_("%d"), menu.GetCustom());
-    Logger::GetInstance().log(log);
+    Manager::Get()->GetLogManager()->DebugLog(log);
 };
 
 //******************************************************************************
@@ -308,8 +308,8 @@ bool CBSvnPluginManager::FileUnderVersionControl(const wxString & filename)
     wxString output;
     wxString command = wxString(_(" status \"")) + filename + wxString(_("\""));
     int exit_code = Run(GetSvn(), _("c:\\"), command, output);
-    Logger::GetInstance().log(_("Executed: ") + GetSvn() + command);
-    Logger::GetInstance().log(_("Output: ") + output);
+    Manager::Get()->GetLogManager()->DebugLog(_("Executed: ") + GetSvn() + command);
+    Manager::Get()->GetLogManager()->DebugLog(_("Output: ") + output);
     return (exit_code == 0) && (output.Find(_("is not a working copy")) == -1) && (output.Find(_("?")) == -1);
 }
 
@@ -369,14 +369,13 @@ void CBSvnPluginManager::RunSimpleTortoiseSVNCommand(const IMenuCmd & menu, cons
         commandline += special_command;
     }
 
-    Logger::GetInstance().log(_("Executing: ") + commandline);
-    DWORD exit_code;
+    Manager::Get()->GetLogManager()->DebugLog(_("Executing: ") + commandline);
+    unsigned long exit_code;
 
     if (!Run(false, false, commandline, exit_code))
     {
         wxString msg = _("Command \"") + commandline + _("\" failed") + _("\r\n\r\nTry reconfiguring this plugin.");
-        wxMessageBox(msg, _("Info"),
-                     wxOK | wxICON_ERROR);
+        wxMessageBox(msg, _("Info"), wxOK | wxICON_ERROR);
     }
 }
 
@@ -384,14 +383,12 @@ void CBSvnPluginManager::RunSimpleTortoiseSVNCommand(const IMenuCmd & menu, cons
 
 void CBSvnPluginManager::Initialise()
 {
-    Logger::GetInstance().Subscribe(*this);
 }
 
 //******************************************************************************
 
 void CBSvnPluginManager::Shutdown()
 {
-    Logger::GetInstance().Unsubscribe(*this);
 }
 
 //******************************************************************************

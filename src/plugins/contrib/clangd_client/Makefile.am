@@ -22,7 +22,7 @@ AM_CXXFLAGS = \
 			-DBUILDING_PLUGIN \
 			-DCC_NO_COLLAPSE_ITEM \
 			-DLOGGING \
-			-DDONT_SHOW_SERVER_CONSOLE
+			-DDONT_SHOW_SERVER_CONSOLE \
 			-m64 \
 			-pipe \
 			-fmessage-length=0 \

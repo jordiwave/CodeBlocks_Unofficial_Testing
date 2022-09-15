@@ -2,8 +2,8 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="cbSystemView" />
-		<Option default_target="cbSystemView_plugin" />
+		<Option title="cbSystemView Windows" />
+		<Option default_target="cbSystemView" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="cbSystemView_plugin">
@@ -19,29 +19,16 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).cbplugin del $(TARGET_OUTPUT_BASENAME).cbplugin" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip del $(TARGET_OUTPUT_BASENAME).zip" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll del $(TARGET_OUTPUT_BASENAME).dll" />
-
+					<!-- Create plugin zip file-->
 					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbSystemView.zip" />
-					<Add after="zip -jq9  ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml res/*.xrc" />
-					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip images" />
-
-
-					<Add after="zip -jq9 $(TARGET_OUTPUT_BASENAME).zip manifest.xml res/*.xrc" />
-					<Add after="zip -rq9 $(TARGET_OUTPUT_BASENAME).zip images" />
-					<Add after="cmd /c copy $(TARGET_OUTPUT_FILE)" />
-					<Add after="strip $(TARGET_OUTPUT_BASENAME).dll" />
-					<Add after="zip -jq9 $(TARGET_OUTPUT_BASENAME).cbplugin $(TARGET_OUTPUT_BASENAME).dll $(TARGET_OUTPUT_BASENAME).zip" />
-
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip del $(TARGET_OUTPUT_BASENAME).zip" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll del $(TARGET_OUTPUT_BASENAME).dll" />
+					<Add after="zip -jq9  ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip  resources/manifest.* resources/*.xrc" />
+					<Add after="cmd /c &quot;cd resources &amp; zip -rq9 ..\..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip images &quot;" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cbSystemView_plugin;" />
+			<Add alias="All" targets="cbSystemView;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -87,8 +74,8 @@
 		<Unit filename="include/cbSVDFileReader.h" />
 		<Unit filename="include/cbSVPGProperties.h" />
 		<Unit filename="include/cbSVWindow.h" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="src/cbSVProjectConfigPanel.cpp" />

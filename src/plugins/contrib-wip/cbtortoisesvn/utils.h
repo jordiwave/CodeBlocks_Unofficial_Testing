@@ -47,34 +47,12 @@ class Noncopyable
         {}
 };
 
-// logging
-class ILogSink : public IInterfaceBase
-{
-    public:
-        virtual void OnLogEvent(const wxString & msg) = 0;
-};
-
-//logging
-class Logger : public IInterfaceBase, Noncopyable
-{
-    public:
-        static Logger & GetInstance();
-        void log(const wxString & log);
-        void Subscribe(ILogSink & client);
-        void Unsubscribe(ILogSink & client);
-    private:
-        Logger() {}
-        ~Logger() {}
-        typedef std::vector<ILogSink *> event_subscribers;
-        event_subscribers m_subscribers;
-};
-
 // conversions
 std::vector<int> convert(const wxString & s);
 wxString convert(const std::vector<int> & vec);
 
 // generic os
-int  Run(const wxString & app, const wxString & dir, const wxString & command, wxString & output);
+int  Run(const wxString & app, const wxString & dir, const wxString & params, wxString & output);
 bool Run(bool blocked, bool hidden, const wxString & command, unsigned long & exit_code);
 
 // generic wxWidgets

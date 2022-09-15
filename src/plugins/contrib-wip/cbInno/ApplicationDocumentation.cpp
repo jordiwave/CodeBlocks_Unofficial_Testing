@@ -11,7 +11,7 @@
 #include <prep.h>
 #include <string>
 
-#include "Images/LinksOben.xpm"
+#include "resources/Images/LinksOben.xpm"
 
 //(*IdInit(ApplicationDocumentation)
 const long ApplicationDocumentation::ID_STATICTEXT2 = wxNewId();

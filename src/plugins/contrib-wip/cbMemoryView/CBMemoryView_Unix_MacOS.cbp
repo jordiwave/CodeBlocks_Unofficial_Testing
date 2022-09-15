@@ -3,10 +3,10 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="cbMemoryView Unix_MacOS" />
-		<Option default_target="cbMemoryView_build" />
+		<Option default_target="cbMemoryView" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="cbMemoryView_build">
+			<Target title="cbMemoryView">
 				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbMemoryView" prefix_auto="0" extension_auto="1" />
 				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/cbMemoryView" />
 				<Option type="3" />
@@ -14,15 +14,16 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
+					<!-- Create plugin zip file-->
 					<Add after="if [ -f $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ] ; then rm $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip; fi" />
-					<Add after="zip -qj9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip manifest.xml *.xrc" />
-					<Add after="zip -qr9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ./images*" />
+					<Add after="zip -qj9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip resources/manifest.* resources/*.xrc" />
+					<Add after="cd resources &amp;&amp; zip -rq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ./images*" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cbMemoryView_build;" />
+			<Add alias="All" targets="cbMemoryView;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -34,7 +35,6 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="./include" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/tinyxml" />
@@ -48,9 +48,14 @@
 		<Unit filename="MemoryPanel.h" />
 		<Unit filename="cbMemoryView.cpp" />
 		<Unit filename="cbMemoryView.h" />
-		<Unit filename="include/cbmvwindow.h" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="src/cbmvwindow.cpp" />
+		<Unit filename="cbmvwindow.cpp" />
+		<Unit filename="cbmvwindow.h" />
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="wxsmith/MemoryPanel.wxs" />
 		<Extensions>
 			<wxsmith version="1">

@@ -58,7 +58,6 @@ class IMenuCmd : public IInterfaceBase
 };
 
 class CBSvnPluginManager :
-    ILogSink,
     Noncopyable
 {
     public:

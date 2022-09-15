@@ -1154,7 +1154,7 @@ void GDBDisassemble::ParseASMInsmLine(cbDisassemblyDlg * dialog, const ResultVal
 
     if (pAddress && pFunctionName && pOffset && pASMInstruction)
     {
-        uint64_t llAddrStart = 0;
+        unsigned  long long llAddrStart = 0;
         wxString sAddress = pAddress->GetSimpleValue();
 
         if (sAddress.ToULongLong(&llAddrStart, 16))
@@ -1219,7 +1219,7 @@ void GDBDisassemble::OnCommandOutput(CommandID const & id, ResultParser const & 
 
                 if (pAddress && pFunctionName && pFileName && pLine)
                 {
-                    uint64_t llAddrStart = 0;
+                    unsigned long long  llAddrStart = 0;
                     wxString sAddress = pAddress->GetSimpleValue();
 
                     if (sAddress.ToULongLong(&llAddrStart, 16))
@@ -1979,7 +1979,7 @@ void GDBMemoryRangeWatchCreateAction::OnCommandOutput(CommandID const & id, Resu
                         wxString sAddressOffset = pMemoryAddressOffset->GetSimpleValue();
                         wxString sAddressEnd    = pMemoryAddressEnd->GetSimpleValue();
                         wxString sMemoryContents = pMemoryContents->GetSimpleValue();
-                        uint64_t llAddrbegin, llAddrOffset, llAddrEnd;
+                        unsigned long long llAddrbegin, llAddrOffset, llAddrEnd;
 
                         if (
                             (sAddressBegin.ToULongLong(&llAddrbegin, 16)) &&

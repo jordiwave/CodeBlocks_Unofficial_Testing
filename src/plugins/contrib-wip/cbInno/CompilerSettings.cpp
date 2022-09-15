@@ -10,7 +10,7 @@
 
 #include <prep.h>
 
-#include "Images/LinksOben.xpm"
+#include "resources/Images/LinksOben.xpm"
 
 //(*IdInit(CompilerSettings)
 const long CompilerSettings::ID_STATICTEXT2 = wxNewId();

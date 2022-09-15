@@ -10,7 +10,7 @@
 			<CPP_STD>gnu++17</CPP_STD>
 		</cb_build>
 		<wxwidgets>
-			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.0_win64</BASE>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.1_win64</BASE>
 			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
 			<LIB>$(#WXWIDGETS)\lib</LIB>
 			<WX_CFG>""</WX_CFG>
@@ -45,7 +45,7 @@
 			<CPP_STD>gnu++17</CPP_STD>
 		</cb_build>
 		<wxwidgets>
-			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.0_win$(#CB_BUILD.OSBITS)</BASE>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.1_win$(#CB_BUILD.OSBITS)</BASE>
 			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
 			<LIB>$(#WXWIDGETS)\lib</LIB>
 			<WX_CFG>""</WX_CFG>
@@ -72,7 +72,7 @@
 			<CPP_STD>gnu++17</CPP_STD>
 		</cb_build>
 		<wxwidgets>
-			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.0_win$(#CB_BUILD.OSBITS)</BASE>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.2.1_win$(#CB_BUILD.OSBITS)</BASE>
 			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
 			<LIB>$(#WXWIDGETS)\lib</LIB>
 			<WX_CFG>""</WX_CFG>

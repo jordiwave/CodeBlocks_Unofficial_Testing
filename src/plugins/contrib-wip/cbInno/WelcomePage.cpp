@@ -16,7 +16,7 @@ const long WelcomePage::ID_CHECKBOX1 = wxNewId();
 
 #include <prep.h>
 
-#include "Images/Wizard.xpm"
+#include "resources/Images/Wizard.xpm"
 
 BEGIN_EVENT_TABLE(WelcomePage, wxWizardPageSimple)
     //(*EventTable(WelcomePage)

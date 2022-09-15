@@ -17,7 +17,7 @@ fi
 # ----------------------------------------------------------------------------
 #DEBUG_SCRIPT="No"
 DEBUG_SCRIPT="Yes"
-WX_VERSION=3.2.0
+WX_VERSION=3.2.1
 WX_VER_DIR=320
 WX_PREFIX_INSTALL=/opt/wx
 WX_DEB_OUTPUT_NAME=wxwidgetsTrunk

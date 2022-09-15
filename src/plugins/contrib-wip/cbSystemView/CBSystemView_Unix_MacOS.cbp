@@ -3,7 +3,7 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="cbSystemView Unix_MacOS" />
-		<Option default_target="cbSystemView_plugin" />
+		<Option default_target="cbSystemView" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="cbSystemView_plugin">
@@ -18,16 +18,16 @@
 					<!-- Create output directory if it does not exist -->
 					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
 
+					<!-- Create plugin zip file-->
 					<Add after="if [ -f $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ] ; then rm $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip; fi" />
-					<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip manifest.xml res/*.xrc" />
-					<Add after="zip -rq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ./images*" />
-
+					<Add after="zip -qj9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip resources/manifest.* resources/*.xrc" />
+					<Add after="cd resources &amp;&amp; zip -rq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/$(TARGET_OUTPUT_BASENAME).zip ./images*" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cbSystemView_plugin" />
+			<Add alias="All" targets="cbSystemView" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-fPIC" />
@@ -57,7 +57,12 @@
 		<Unit filename="include/cbSVDFileReader.h" />
 		<Unit filename="include/cbSVPGProperties.h" />
 		<Unit filename="include/cbSVWindow.h" />
-		<Unit filename="manifest.xml" />
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="res/ProjectConfig.xrc" />
 		<Unit filename="src/cbSVProjectConfigPanel.cpp" />
 		<Unit filename="src/cbSVDFileReader.cpp" />

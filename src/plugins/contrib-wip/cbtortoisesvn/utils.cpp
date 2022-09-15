@@ -6,16 +6,19 @@
 //* License:   GPL
 //******************************************************************************
 
+#include <wx/fileconf.h>
+
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "cbworkspace.h"
+#include "ConfigManager.h"
+#include "logManager.h"
+#include "editormanager.h"
+#include "projectmanager.h"
+
 #include "utils.h"
 
-#include <cbeditor.h>
-#include <cbproject.h>
-#include <cbworkspace.h>
-#include <ConfigManager.h>
-#include <editormanager.h>
-#include <projectmanager.h>
 
-#include <wx/fileconf.h>
 
 //******************************************************************************
 
@@ -25,51 +28,6 @@
 using namespace CBTSVN;
 //******************************************************************************
 
-CBTSVN::Logger & CBTSVN::Logger::GetInstance()
-{
-    static CBTSVN::Logger logger;
-    return logger;
-}
-
-//******************************************************************************
-
-void CBTSVN::Logger::log(const wxString & log)
-{
-    for (event_subscribers::const_iterator it =
-                m_subscribers.begin(); it != m_subscribers.end(); ++it)
-    {
-        (*it)->OnLogEvent(log);
-    }
-}
-
-//******************************************************************************
-
-void CBTSVN::Logger::Subscribe(ILogSink & client)
-{
-    if (std::find(m_subscribers.begin(),
-                  m_subscribers.end(), &client) == m_subscribers.end())
-    {
-        m_subscribers.push_back(&client);
-    }
-}
-
-//******************************************************************************
-
-void CBTSVN::Logger::Unsubscribe(ILogSink & client)
-{
-    event_subscribers::iterator it =
-        std::find(m_subscribers.begin(), m_subscribers.end(),
-                  &client);
-
-    if (it != m_subscribers.end())
-    {
-        m_subscribers.erase(it);
-    }
-}
-
-//******************************************************************************
-//******************************************************************************
-//******************************************************************************
 
 wxString CBTSVN::GetBaseDir(const wxString & filename)
 {
@@ -143,36 +101,7 @@ wxString CBTSVN::convert(const std::vector<int> & vec)
 
 //******************************************************************************
 
-bool IsWinNT()  //check if we're running NT
-{
-    OSVERSIONINFO osv;
-    osv.dwOSVersionInfoSize = sizeof(osv);
-    GetVersionEx(&osv);
-    return (osv.dwPlatformId == VER_PLATFORM_WIN32_NT);
-}
-
-//******************************************************************************
-
-void ErrorMessage(const wxString & str) //display detailed error info
-{
-    LPWSTR msg;
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-        NULL,
-        GetLastError(),
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-        (LPWSTR) &msg,
-        0,
-        NULL);
-    wxString message(msg);
-    message.Replace(_("\r"), _(""));
-    message.Replace(_("\n"), _(""));
-    CBTSVN::Logger::GetInstance().log(str + _(" --> ") + message);
-    LocalFree(msg);
-}
-
-//******************************************************************************
-
+#if 0
 int CBTSVN::Run(const wxString & app, const wxString & dir, const wxString & command, wxString & output)
 {
     char buf[1024]; //i/o buffer
@@ -181,30 +110,21 @@ int CBTSVN::Run(const wxString & app, const wxString & dir, const wxString & com
     SECURITY_DESCRIPTOR sd; //security information for pipes
     PROCESS_INFORMATION pi;
     HANDLE newstdin, newstdout, read_stdout, write_stdin; //pipe handles
-
-    if (IsWinNT()) //initialize security descriptor (Windows NT)
-    {
-        InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
-        SetSecurityDescriptorDacl(&sd, true, NULL, false);
-        sa.lpSecurityDescriptor = &sd;
-    }
-    else
-    {
-        sa.lpSecurityDescriptor = NULL;
-    }
-
+    InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
+    SetSecurityDescriptorDacl(&sd, true, NULL, false);
+    sa.lpSecurityDescriptor = &sd;
     sa.nLength = sizeof(SECURITY_ATTRIBUTES);
     sa.bInheritHandle = true;         //allow inheritable handles
 
     if (!CreatePipe(&newstdin, &write_stdin, &sa, 0)) //create stdin pipe
     {
-        ErrorMessage(_("Error: CreatePipe"));
+        Manager::Get()->GetLogManager()->LogError(_("Error: CreatePipe"));
         return -1;
     }
 
     if (!CreatePipe(&read_stdout, &newstdout, &sa, 0)) //create stdout pipe
     {
-        ErrorMessage(_("Error: CreatePipe"));
+        Manager::Get()->GetLogManager()->LogError(_("Error: CreatePipe"));
         CloseHandle(newstdin);
         CloseHandle(write_stdin);
         return -1;
@@ -235,7 +155,7 @@ int CBTSVN::Run(const wxString & app, const wxString & dir, const wxString & com
                 &si,                            // lpStartupInfo,
                 &pi))                           // lpProcessInformation
     {
-        ErrorMessage(_("Error: CreateProcess (creating \"") + app + _("\")"));
+        Manager::Get()->GetLogManager()->LogError(_("Error: CreateProcess (creating \"") + app + _("\")"));
         CloseHandle(newstdin);
         CloseHandle(newstdout);
         CloseHandle(read_stdout);
@@ -250,7 +170,7 @@ int CBTSVN::Run(const wxString & app, const wxString & dir, const wxString & com
 
     for (;;)     //main program loop
     {
-        DWORD result = WaitForSingleObject(pi.hProcess, 1);
+        uint32_t result = WaitForSingleObject(pi.hProcess, 1);
         PeekNamedPipe(read_stdout, buf, 1023, &bread, &avail, NULL);
 
         //check to see if there is any data to read from stdout
@@ -297,11 +217,36 @@ int CBTSVN::Run(const wxString & app, const wxString & dir, const wxString & com
     CloseHandle(write_stdin);
     return exit;
 }
+#else
+int CBTSVN::Run(const wxString & app, const wxString & dir, const wxString & params, wxString & output)
+{
+    wxArrayString aOutput;
+    wxArrayString aErrors;
+    wxString command = wxString::Format("%s %s", app, params);
+    Manager::Get()->GetLogManager()->Log(command);
+    int result = wxExecute(command, aOutput, aErrors, wxEXEC_SYNC);
+    output.Clear();
+
+    for (unsigned int i = 0; i < aOutput.size(); i++)
+    {
+        Manager::Get()->GetLogManager()->Log(aOutput[i]);
+        output.append(aOutput[i]);
+    }
+
+    for (unsigned int i = 0; i < aErrors.size(); i++)
+    {
+        Manager::Get()->GetLogManager()->LogError(aErrors[i]);
+    }
+
+    return (result);
+}
+#endif
 
 //******************************************************************************
 
 bool CBTSVN::Run(bool blocked, bool hidden, const wxString & command, unsigned long & exit_code)
 {
+#if 0
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
     ZeroMemory(&si, sizeof(si));
@@ -333,6 +278,31 @@ bool CBTSVN::Run(bool blocked, bool hidden, const wxString & command, unsigned l
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
     return result;
+#else
+    wxArrayString output;
+    wxArrayString errors;
+    int flags = wxEXEC_ASYNC ;
+
+    if (blocked)
+    {
+        flags = wxEXEC_SYNC ;
+    }
+
+    Manager::Get()->GetLogManager()->Log(command);
+    wxExecute(command, output, errors, flags);
+
+    for (unsigned int i = 0; i < output.size(); i++)
+    {
+        Manager::Get()->GetLogManager()->Log(output[i]);
+    }
+
+    for (unsigned int i = 0; i < errors.size(); i++)
+    {
+        Manager::Get()->GetLogManager()->LogError(errors[i]);
+    }
+
+    return (errors.size() == 0);
+#endif
 }
 
 //******************************************************************************

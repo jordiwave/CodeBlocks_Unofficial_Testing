@@ -63,7 +63,7 @@ Inno::~Inno()
     m_consume = nullptr;
 }
 
-#include "Images/Inno.xpm"
+#include "resources/Images/Inno.xpm"
 
 void Inno::OnAttach()
 {

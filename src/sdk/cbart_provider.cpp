@@ -93,28 +93,30 @@ wxBitmapBundle cbArtProvider::CreateBitmapBundle(const wxArtID & id, const wxArt
         return wxBitmapBundle();
     }
 
-    Manager::UIComponent uiComponent;
+    Manager::UIComponent component;
 
-    if (client == wxT("wxART_MENU_C"))
+    if (client == wxART_MENU)
     {
-        uiComponent = Manager::UIComponent::Menus;
+        component = Manager::UIComponent::Menus;
     }
     else
-        if (client == wxT("wxART_BUTTON_C"))
+        if (client == wxART_BUTTON)
         {
-            uiComponent = Manager::UIComponent::Main;
+            component = Manager::UIComponent::Main;
         }
         else
-            if (client == wxT("wxART_TOOLBAR_C"))
+            if (client == wxART_TOOLBAR)
             {
-                uiComponent = Manager::UIComponent::Toolbars;
+                component = Manager::UIComponent::Toolbars;
             }
             else
             {
                 return wxBitmapBundle();
             }
 
-    const int componentSize = Manager::Get()->GetImageSize(uiComponent);
+    // Get component size undoing scaling
+    const double scaleFactor = Manager::Get()->GetUIScaleFactor(component);
+    const int componentSize = wxRound(Manager::Get()->GetImageSize(component) / scaleFactor);
     wxVector <wxBitmap> bitmaps;
 
     for (const int sz : imageSize)

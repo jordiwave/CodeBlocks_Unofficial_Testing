@@ -8,7 +8,7 @@
 #include <wx/string.h>
 //*)
 
-#include "Images/LinksOben.xpm"
+#include "resources/Images/LinksOben.xpm"
 
 //(*IdInit(ApplicationInformation)
 const long ApplicationInformation::ID_STATICTEXT2 = wxNewId();

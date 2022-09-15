@@ -11,7 +11,7 @@
 const long FinishWizard::ID_STATICTEXT1 = wxNewId();
 //*)
 
-#include "Images/Wizard.xpm"
+#include "resources/Images/Wizard.xpm"
 
 BEGIN_EVENT_TABLE(FinishWizard, wxWizardPageSimple)
     //(*EventTable(FinishWizard)

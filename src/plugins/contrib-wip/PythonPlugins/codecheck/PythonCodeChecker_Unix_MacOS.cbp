@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Python CodeChecker Unix_Macos" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="PythonCodeChecker">
+				<Option output="$(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/PythonCodeChecker" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="$(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(PROJECT_DIR)../../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/PythonCodeChecker" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="$(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="if [ ! -d $(TARGET_OUTPUT_DIR) ] ; then mkdir -p $(TARGET_OUTPUT_DIR) ; fi" />
+					<Mode before="always" />
+
+					<!-- Create the zip file -->
+					<Add after="if [ -f $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/PythonCodeChecker.zip ] ; then rm $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/PythonCodeChecker.zip; fi" />
+					<Add after="zip -jq9 $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/PythonCodeChecker.zip resources/manifest.xml resources/*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="PythonCodeChecker;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-DcbDEBUG" />
+			<Add option="-Wall" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="-pipe" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-m$(#CB_BUILD.OSBITS)" />
+			<Add option="-fPIC" />
+			<Add option="-DNOPCH" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="$(PROJECT_DIR)../../../../include" />
+			<Add directory="$(PROJECT_DIR)../../../../include/tinyxml" />
+			<Add directory="$(PROJECT_DIR)../../../../sdk/wxscintilla/include" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
+			<Add directory="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add library="codeblocks" />
+		</Linker>
+		<Unit filename="asyncprocess.cpp" />
+		<Unit filename="asyncprocess.h" />
+		<Unit filename="codechecker.cpp" />
+		<Unit filename="codechecker.h" />
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
+			<Option compilerVar="WINDRES" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

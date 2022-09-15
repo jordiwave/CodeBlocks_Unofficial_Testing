@@ -3,11 +3,12 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="cbInno Windows" />
+		<Option default_target="cbInno" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Option platforms="Windows;" />
 		<Build>
-			<Target title="default">
+			<Target title="cbInno">
 				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbInno" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbInno" />
@@ -17,14 +18,14 @@
 				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
+					<!-- Create output directory -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Mode before="always" />
 
-					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip" />
-					<Add after="cmd /c if exist cbInno.zip del cbInno.zip" />
+					<!-- Create the cbInno.zip file -->
+					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip   del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip" />
 
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip InnoSettings.xrc" />
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip manifest.xml" />
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip inno*.png" />
+					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip resources\*.xrc resources\manifest.* resources\inno*.png" />
 					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip lexers/lexer_inno.*" />
 					<Add after="xcopy /Y /Q lexers\lexer_inno.* ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers\ " />
 					<!-- Add after="xcopy /Y /Q inno*.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ " -->
@@ -34,7 +35,7 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="default;" />
+			<Add alias="All" targets="cbInno;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -112,27 +113,27 @@
 		<Unit filename="FinishWizard.h" />
 		<Unit filename="Icons.cpp" />
 		<Unit filename="Icons.h" />
-		<Unit filename="Images/Inno.xpm" />
-		<Unit filename="Images/LinksOben.xpm" />
-		<Unit filename="Images/Wizard.xpm" />
-		<Unit filename="Images/custom_msg.xpm" />
-		<Unit filename="Images/files.xpm" />
-		<Unit filename="Images/folder.xpm" />
-		<Unit filename="Images/icon.xpm" />
-		<Unit filename="Images/ini.xpm" />
-		<Unit filename="Images/install.xpm" />
-		<Unit filename="Images/install_del.xpm" />
-		<Unit filename="Images/language.xpm" />
-		<Unit filename="Images/msg.xpm" />
-		<Unit filename="Images/pas.xpm" />
-		<Unit filename="Images/registry.xpm" />
-		<Unit filename="Images/run.xpm" />
-		<Unit filename="Images/script.xpm" />
-		<Unit filename="Images/steps.xpm" />
-		<Unit filename="Images/tasks.xpm" />
-		<Unit filename="Images/types.xpm" />
-		<Unit filename="Images/uninstall.xpm" />
-		<Unit filename="Images/uninstall_del.xpm" />
+		<Unit filename="resources/Images/Inno.xpm" />
+		<Unit filename="resources/Images/LinksOben.xpm" />
+		<Unit filename="resources/Images/Wizard.xpm" />
+		<Unit filename="resources/Images/custom_msg.xpm" />
+		<Unit filename="resources/Images/files.xpm" />
+		<Unit filename="resources/Images/folder.xpm" />
+		<Unit filename="resources/Images/icon.xpm" />
+		<Unit filename="resources/Images/ini.xpm" />
+		<Unit filename="resources/Images/install.xpm" />
+		<Unit filename="resources/Images/install_del.xpm" />
+		<Unit filename="resources/Images/language.xpm" />
+		<Unit filename="resources/Images/msg.xpm" />
+		<Unit filename="resources/Images/pas.xpm" />
+		<Unit filename="resources/Images/registry.xpm" />
+		<Unit filename="resources/Images/run.xpm" />
+		<Unit filename="resources/Images/script.xpm" />
+		<Unit filename="resources/Images/steps.xpm" />
+		<Unit filename="resources/Images/tasks.xpm" />
+		<Unit filename="resources/Images/types.xpm" />
+		<Unit filename="resources/Images/uninstall.xpm" />
+		<Unit filename="resources/Images/uninstall_del.xpm" />
 		<Unit filename="Ini.cpp" />
 		<Unit filename="Ini.h" />
 		<Unit filename="Inno.cpp" />
@@ -175,8 +176,8 @@
 		<Unit filename="inno.xpm" />
 		<Unit filename="lexers/lexer_inno.sample" />
 		<Unit filename="lexers/lexer_inno.xml" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="wxsmith/ApplicationDocumentation.wxs" />

@@ -16,8 +16,8 @@ DEBUG_SCRIPT="Yes"
 #WX_VERSION=3.1.7
 #WX_GITHUB_TAG=3.1.7
 #WX_DIR_VERSION=31
-WX_VERSION=3.2.0
-WX_GITHUB_TAG=3.2.0
+WX_VERSION=3.2.1
+WX_GITHUB_TAG=3.2.1
 WX_DIR_VERSION=32
 
 InitialDir=${PWD}
@@ -201,12 +201,12 @@ function setup_variables()
     fi
     CB_DEV_OUTPUT_DIR=${CB_ROOT_DIR}/src/devel${WX_DIR_VERSION}
 
-    cd "${BUILD_ROOT_DIR}"
-    if [ -d "${BUILD_ROOT_DIR}/wxwidgets-code_${WX_VERSION}" ]; then
-        WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code_${WX_VERSION}"
-    else
-        ErrNowxWidget
-    fi
+    #cd "${BUILD_ROOT_DIR}"
+    #if [ -d "${BUILD_ROOT_DIR}/wxwidgets-code_${WX_VERSION}" ]; then
+    #    WX_ROOT_DIR="${BUILD_ROOT_DIR}/wxwidgets-code_${WX_VERSION}"
+    #else
+    #    ErrNowxWidget
+    #fi
 
     if [ "${DEBUG_SCRIPT}" == "Yes" ]; then
         echo BUILD_ROOT_DIR = ${BUILD_ROOT_DIR}
@@ -228,11 +228,11 @@ function setup_variables()
     # set CB_PARAMS=${CB_PARAMS} --no-batch-window-close
     # FUTURE: set CB_PARAMS=${CB_PARAMS}  --batch-headless-build
 
-    if [ ! -f "${CB_ROOT_DIR}/src/CodeBlocks_MacOS.workspace" ]; then
+    if [ ! -f "${CB_ROOT_DIR}/src/CodeBlocks_Unix_MacOS.workspace" ]; then
         ErrProjectFile
     fi
 
-    CB_TARGET="--target=All ${BUILD_TYPE} CodeBlocks_MacOS.workspace"
+    CB_TARGET="--target=All ${BUILD_TYPE} CodeBlocks_Unix_MacOS.workspace"
     CB_RUN_COMMAND_LINE="${CB_EXE} ${CB_PARAMS} ${CB_TARGET}"
 
     if [ "${DEBUG_SCRIPT}" == "Yes" ]; then

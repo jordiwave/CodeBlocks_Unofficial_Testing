@@ -53,6 +53,6 @@ libwxsmith_la_SOURCES = \
 
 if CODEBLOCKS_NT
 libwxsmith_la_SOURCES += \
-			manifest.rc
+			../manifest.rc
 endif
 

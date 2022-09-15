@@ -172,27 +172,27 @@
 		<Project filename="plugins/contrib-wip/cbDiff/CBDiff_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
-<!-- LATER
 		<Project filename="plugins/contrib-wip/GitBlocks/GitBlocks_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
+		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbTortoiseSVN_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Unix_MacOS.cbp">
+			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
+		</Project>
+<!-- Windows only Projects
 		<Project filename="plugins/contrib-wip/cbInno/cbInno_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/cbNSIS/cbNSIS_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
-		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_Unix_MacOS.cbp">
-			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Unix_MacOS.cbp">
-			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
-		</Project>
 -->
 		<Project filename="plugins/contrib-wip/cbBuildTools/CBBuildTools_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
-<!-- LATER
+<!-- Need some linker work
 		<Project filename="plugins/contrib-wip/cbMarkdown/cbMarkdown_Unix_MacOS.cbp">
 			<Depends filename="CodeBlocks_Unix_MacOS.cbp" />
 		</Project>
