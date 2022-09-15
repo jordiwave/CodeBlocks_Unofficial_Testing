@@ -7,22 +7,22 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\lib_finder.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\lib_finder" />
-				<Option external_deps="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\wxflatnotebook.dll;" />
+				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\lib_finder.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\lib_finder" />
+				<Option external_deps="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\wxflatnotebook.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbSystemView.zip" />
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml" />
-					<Add before="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lib_finder mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lib_finder" />
-					<Add after="xcopy /Y /S /Q lib_finder\*.xml $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lib_finder\ " />
+					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbSystemView.zip" />
+					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml" />
+					<Add before="cmd /c if not exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lib_finder mkdir ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lib_finder" />
+					<Add after="xcopy /Y /S /Q lib_finder\*.xml ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lib_finder\ " />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -48,11 +48,11 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
-			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
-			<Add directory="$(#CB_BUILD.INCLUDE)\scripting\include" />
-			<Add directory="..\wxContribItems\wxFlatNotebook\include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/scripting/include" />
+			<Add directory="../wxContribItems/wxFlatNotebook/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
@@ -63,7 +63,7 @@
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 			<Add library="codeblocks" />
 			<Add library="wxflatnotebook" />
-			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="defsdownloaddlg.cpp" />
 		<Unit filename="defsdownloaddlg.h" />

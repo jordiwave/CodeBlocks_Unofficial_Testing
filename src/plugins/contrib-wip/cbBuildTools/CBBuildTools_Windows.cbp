@@ -27,7 +27,7 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cbBuildTools" />
+			<Add alias="All" targets="cbBuildTools;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />

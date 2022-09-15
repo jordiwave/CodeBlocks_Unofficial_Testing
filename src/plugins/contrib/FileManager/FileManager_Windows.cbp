@@ -31,9 +31,9 @@
 					<Add option="-DwxUSE_UNICODE" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-					<Add directory="../../../include" />
-					<Add directory="../../../include/tinyxml" />
-					<Add directory="../../../sdk/wxscintilla/include" />
+			        <Add directory="../../../include" />
+			        <Add directory="../../../include/tinyxml" />
+			        <Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="$(#WXWIDGETS.include)" />
 					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 				</Compiler>
@@ -48,6 +48,10 @@
 					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
+					<!-- Create output directory if it does not exist -->
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+
+					<!-- Create plugin zip file -->
 					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml Resources/*.xrc" />
 				</ExtraCommands>
 			</Target>

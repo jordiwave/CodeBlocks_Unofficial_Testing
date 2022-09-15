@@ -29,7 +29,6 @@
 					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip lexers/lexer_inno.*" />
 					<Add after="xcopy /Y /Q lexers\lexer_inno.* ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers\ " />
 					<!-- Add after="xcopy /Y /Q inno*.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ " -->
-
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -59,7 +58,6 @@
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/tinyxml" />
-			<Add directory="../../../include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />

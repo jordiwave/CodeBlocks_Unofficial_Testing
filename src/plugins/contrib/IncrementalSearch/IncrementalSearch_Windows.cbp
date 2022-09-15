@@ -30,9 +30,9 @@
 					<Add option="-Winvalid-pch" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="../../../include" />
-					<Add directory="../../../include/tinyxml" />
-					<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="$(#WXWIDGETS.include)" />
 					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 				</Compiler>
@@ -50,7 +50,7 @@
 					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\IncrementalSearch.zip ./images" />
 
 					<Add after="cmd /c if not exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings" />
-					<Add after="cmd /c copy *.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ >nul" />
+					<Add after="cmd /c copy *.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ &gt; $CMD_NULL 2&gt; $CMD_NULL" />
 
 					<Mode after="always" />
 				</ExtraCommands>

@@ -54,7 +54,6 @@
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../src" />
-			<Add directory="../../../include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />

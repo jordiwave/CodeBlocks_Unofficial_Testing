@@ -72,7 +72,7 @@
 			<Add before="cmd /c if not exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings" />
 			<Mode before="always" />
 
-			<Add after="cmd /c xcopy /Y /Q .\resources\*.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\  >nul 2>&amp;1" />
+			<Add after="cmd /c xcopy /Y /Q .\resources\*.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\  &gt; $CMD_NULL 2&gt; $CMD_NULL" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="DirectoryParamsPanel.cpp" />

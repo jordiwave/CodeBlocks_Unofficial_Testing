@@ -38,6 +38,7 @@
 					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\wxsmith.zip manifest.xml" />
 
 					<!-- Copy PNG files  -->
+					<Add after="cmd /c if not exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith mkdir ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith" />
 					<Add after="xcopy /Y /S /Q wxwidgets\icons\*.png    ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith\ " />
 					<Mode after="always" />
 				</ExtraCommands>

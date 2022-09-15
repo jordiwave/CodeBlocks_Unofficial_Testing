@@ -7,13 +7,13 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debbugger_gdb_mi">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\debugger_gdbmi" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\debugger_gdbmi" />
+				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\debugger_gdbmi" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\debugger_gdbmi" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="-p debug -ns -ni --debug-log --multiple-instance " />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
@@ -22,20 +22,20 @@
 					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).cbplugin del $(TARGET_OUTPUT_BASENAME).cbplugin" />
 					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip      del $(TARGET_OUTPUT_BASENAME).zip" />
 					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll      del $(TARGET_OUTPUT_BASENAME).dll" />
-					<Add before="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
+					<Add before="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
 					<!-- Create plugin zip file-->
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.xml resources/*.xrc" />
+					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.xml resources/*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="debbugger_gdb_mi_cbplugin">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\debugger_gdbmi" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\debugger_gdbmi" />
+				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\debugger_gdbmi" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\debugger_gdbmi" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="-p debug -ns -ni --debug-log --multiple-instance " />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
@@ -44,12 +44,12 @@
 					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).cbplugin del $(TARGET_OUTPUT_BASENAME).cbplugin" />
 					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip      del $(TARGET_OUTPUT_BASENAME).zip" />
 					<Add before="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll      del $(TARGET_OUTPUT_BASENAME).dll" />
-					<Add before="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
+					<Add before="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
 					<!-- Create plugin zip file-->
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.xml resources/*.xrc" />
+					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.xml resources/*.xrc" />
 					<!-- Create cbplugin file-->
 					<Add after="cmd /c copy $(TARGET_OUTPUT_FILE) ." />
-					<Add after="zip -jq9 $(TARGET_OUTPUT_BASENAME).cbplugin $(TARGET_OUTPUT_BASENAME).dll  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
+					<Add after="zip -jq9 $(TARGET_OUTPUT_BASENAME).cbplugin $(TARGET_OUTPUT_BASENAME).dll  ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
 					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll      del $(TARGET_OUTPUT_BASENAME).dll" />
 					<Mode after="always" />
 				</ExtraCommands>
@@ -78,9 +78,9 @@
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 			<Add directory=".\src" />
 			<Add directory=".\tinyxml2" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
-			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
 		</Compiler>
 		<ResourceCompiler>
@@ -95,7 +95,7 @@
 			<Add option="-Wl,--no-undefined" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add library="codeblocks" />
-			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="Makefile.am" />
 		<Unit filename="Readme.md" />

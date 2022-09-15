@@ -4,55 +4,29 @@
 	<Project>
 		<Option title="cbMarkdown" />
 		<Option pch_mode="0" />
-		<Option default_target="cbMarkdown_to_codeblocks" />
+		<Option default_target="cbMarkdown" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="cbMarkdown_create_plugin">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbMarkdown" prefix_auto="0" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbMarkdown" />
+			<Target title="cbMarkdown">
+				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbMarkdown" prefix_auto="0" extension_auto="1" />
+				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbMarkdown" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME.zip" />
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME.zip manifest.xml res/*.xrc" />
-					<!-- Add after="zip -rq9  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME.zip ./images" \ -->
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME.zip del  		$(TARGET_OUTPUT_BASENAME.zip" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME.dll del  		$(TARGET_OUTPUT_BASENAME.sll" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME.cbplugin del $(TARGET_OUTPUT_BASENAME.cbplugin" />
-					<Add after="cmd /c copy $(TARGET_OUTPUT_FILE)" />
-					<Add after="strip $(TARGET_OUTPUT_BASENAME.dll" />
-					<Add after="zip -jq9 $(TARGET_OUTPUT_BASENAME.zip manifest.xml res/*" />
-					<!-- Add after="zip -jq9  $(TARGET_OUTPUT_BASENAME.zip images\*" -->
-					<Add after="zip -jq9 $(TARGET_OUTPUT_BASENAME.cbplugin $(TARGET_OUTPUT_BASENAME.dll $(TARGET_OUTPUT_BASENAME.zip" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME.zip del  		$(TARGET_OUTPUT_BASENAME.zip" />
-					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME.dll del  		$(TARGET_OUTPUT_BASENAME.sll" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-			<Target title="cbMarkdown_to_codeblocks">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbMarkdown" prefix_auto="0" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbMarkdown" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance --no-splash-screen --verbose -p debug --no-dde --no-check-associations " />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<ExtraCommands>
-					<Add after="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbMarkdown.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbMarkdown.zip" />
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbMarkdown.zip manifest.xml" />
-					<!-- Add after="zip -rq9  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbMarkdown.zip ./images" \ -->
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbMarkdown.zip res/*.xrc" />
+
+					<!-- Create zip file -->
+					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
+					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources\manifest.xml resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cbMarkdown_to_codeblocks" />
+			<Add alias="All" targets="cbMarkdown" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -72,11 +46,11 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
-			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="$(#discount.INCLUDE)" />
-			<Add directory=".\include" />
+			<Add directory="./include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
@@ -85,7 +59,7 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-Wl,--no-undefined" />
 			<Add option="-mthreads" />
-			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add library="codeblocks" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid,webview`" />
 			<Add directory="$(#discount.LIB)" />
@@ -97,18 +71,18 @@
 		<Unit filename="cbMarkdown.h" />
 		<Unit filename="cbmarkdownview.cpp" />
 		<Unit filename="cbmarkdownview.h" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="textProvider.cpp" />
 		<Unit filename="textProvider.h" />
-		<Unit filename="wxsmith\MarkdownConfigPanel.wxs" />
+		<Unit filename="wxsmith/MarkdownConfigPanel.wxs" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 			<wxsmith version="1">
 				<resources>
-					<wxPanel wxs="wxsmith\MarkdownConfigPanel.wxs" src="MarkdownConfigPanel.cpp" hdr="MarkdownConfigPanel.h" fwddecl="0" i18n="1" name="MarkdownConfigPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/MarkdownConfigPanel.wxs" src="MarkdownConfigPanel.cpp" hdr="MarkdownConfigPanel.h" fwddecl="0" i18n="1" name="MarkdownConfigPanel" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

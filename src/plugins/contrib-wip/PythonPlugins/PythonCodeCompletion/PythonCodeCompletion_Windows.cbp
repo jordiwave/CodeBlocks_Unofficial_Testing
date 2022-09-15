@@ -16,7 +16,7 @@
 				<Option host_application="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add directory="../XmlRpcEmbedder/XMLRPC\include" />
+					<Add directory="../XmlRpcEmbedder/XMLRPC/include" />
 					<Add directory="../XmlRpcEmbedder" />
 				</Compiler>
 				<Linker>

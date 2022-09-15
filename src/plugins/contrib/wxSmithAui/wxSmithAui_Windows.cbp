@@ -16,7 +16,7 @@
 				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
-					<Add after="zip -jq9 ..\..\..\\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\wxSmithAui.zip manifest.xml" />
+					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\wxSmithAui.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

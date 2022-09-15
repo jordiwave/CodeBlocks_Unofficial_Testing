@@ -3,35 +3,38 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="cbInno Windows" />
+		<Option default_target="cbInno" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Option platforms="Windows;" />
 		<Build>
-			<Target title="default">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbInno" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbInno" />
+			<Target title="cbInno">
+				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbInno" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbInno" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
+					<!-- Create output directory -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip" />
-					<Add after="cmd /c if exist cbInno.zip del cbInno.zip" />
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip InnoSettings.xrc" />
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip manifest.xml" />
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip inno*.png" />
-					<Add after="zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip lexers/lexer_inno.*" />
-					<Add after="xcopy /Y /Q lexers\lexer_inno.* $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers\ " />
-					<!-- Add after="xcopy /Y /Q inno*.png $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ " -->
+					<Mode before="always" />
+
+					<!-- Create the cbInno.zip file -->
+					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip   del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip" />
+
+					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip resources\*.xrc resources\manifest.* resources\inno*.png" />
+					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbInno.zip lexers/lexer_inno.*" />
+					<Add after="xcopy /Y /Q lexers\lexer_inno.* ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\lexers\ " />
+					<!-- Add after="xcopy /Y /Q inno*.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ " -->
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="default;" />
+			<Add alias="All" targets="cbInno;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -51,10 +54,9 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
-			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
@@ -63,7 +65,7 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-Wl,--no-undefined" />
 			<Add option="-mthreads" />
-			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add library="codeblocks" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add library="ole32" />
@@ -106,27 +108,27 @@
 		<Unit filename="FinishWizard.h" />
 		<Unit filename="Icons.cpp" />
 		<Unit filename="Icons.h" />
-		<Unit filename="Images\Inno.xpm" />
-		<Unit filename="Images\LinksOben.xpm" />
-		<Unit filename="Images\Wizard.xpm" />
-		<Unit filename="Images\custom_msg.xpm" />
-		<Unit filename="Images\files.xpm" />
-		<Unit filename="Images\folder.xpm" />
-		<Unit filename="Images\icon.xpm" />
-		<Unit filename="Images\ini.xpm" />
-		<Unit filename="Images\install.xpm" />
-		<Unit filename="Images\install_del.xpm" />
-		<Unit filename="Images\language.xpm" />
-		<Unit filename="Images\msg.xpm" />
-		<Unit filename="Images\pas.xpm" />
-		<Unit filename="Images\registry.xpm" />
-		<Unit filename="Images\run.xpm" />
-		<Unit filename="Images\script.xpm" />
-		<Unit filename="Images\steps.xpm" />
-		<Unit filename="Images\tasks.xpm" />
-		<Unit filename="Images\types.xpm" />
-		<Unit filename="Images\uninstall.xpm" />
-		<Unit filename="Images\uninstall_del.xpm" />
+		<Unit filename="resources/Images/Inno.xpm" />
+		<Unit filename="resources/Images/LinksOben.xpm" />
+		<Unit filename="resources/Images/Wizard.xpm" />
+		<Unit filename="resources/Images/custom_msg.xpm" />
+		<Unit filename="resources/Images/files.xpm" />
+		<Unit filename="resources/Images/folder.xpm" />
+		<Unit filename="resources/Images/icon.xpm" />
+		<Unit filename="resources/Images/ini.xpm" />
+		<Unit filename="resources/Images/install.xpm" />
+		<Unit filename="resources/Images/install_del.xpm" />
+		<Unit filename="resources/Images/language.xpm" />
+		<Unit filename="resources/Images/msg.xpm" />
+		<Unit filename="resources/Images/pas.xpm" />
+		<Unit filename="resources/Images/registry.xpm" />
+		<Unit filename="resources/Images/run.xpm" />
+		<Unit filename="resources/Images/script.xpm" />
+		<Unit filename="resources/Images/steps.xpm" />
+		<Unit filename="resources/Images/tasks.xpm" />
+		<Unit filename="resources/Images/types.xpm" />
+		<Unit filename="resources/Images/uninstall.xpm" />
+		<Unit filename="resources/Images/uninstall_del.xpm" />
 		<Unit filename="Ini.cpp" />
 		<Unit filename="Ini.h" />
 		<Unit filename="Inno.cpp" />
@@ -167,25 +169,25 @@
 		<Unit filename="WizardFile.cpp" />
 		<Unit filename="WizardFile.h" />
 		<Unit filename="inno.xpm" />
-		<Unit filename="lexers\lexer_inno.sample" />
-		<Unit filename="lexers\lexer_inno.xml" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
+		<Unit filename="lexers/lexer_inno.sample" />
+		<Unit filename="lexers/lexer_inno.xml" />
+		<Unit filename="resources/manifest.xml" />
+		<Unit filename="resources/manifest.rc" >
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="wxsmith\ApplicationDocumentation.wxs" />
-		<Unit filename="wxsmith\ApplicationFiles.wxs" />
-		<Unit filename="wxsmith\ApplicationFolder.wxs" />
-		<Unit filename="wxsmith\ApplicationIcons.wxs" />
-		<Unit filename="wxsmith\ApplicationInformation.wxs" />
-		<Unit filename="wxsmith\CompilerSettings.wxs" />
-		<Unit filename="wxsmith\CreateDialog.wxs" />
-		<Unit filename="wxsmith\FinishWizard.wxs" />
-		<Unit filename="wxsmith\InnoEditor.wxs" />
-		<Unit filename="wxsmith\InnoSettings.wxs" />
-		<Unit filename="wxsmith\SetupLanguages.wxs" />
-		<Unit filename="wxsmith\WelcomePage.wxs" />
-		<Unit filename="wxsmith\WizardFile.wxs" />
+		<Unit filename="wxsmith/ApplicationDocumentation.wxs" />
+		<Unit filename="wxsmith/ApplicationFiles.wxs" />
+		<Unit filename="wxsmith/ApplicationFolder.wxs" />
+		<Unit filename="wxsmith/ApplicationIcons.wxs" />
+		<Unit filename="wxsmith/ApplicationInformation.wxs" />
+		<Unit filename="wxsmith/CompilerSettings.wxs" />
+		<Unit filename="wxsmith/CreateDialog.wxs" />
+		<Unit filename="wxsmith/FinishWizard.wxs" />
+		<Unit filename="wxsmith/InnoEditor.wxs" />
+		<Unit filename="wxsmith/InnoSettings.wxs" />
+		<Unit filename="wxsmith/SetupLanguages.wxs" />
+		<Unit filename="wxsmith/WelcomePage.wxs" />
+		<Unit filename="wxsmith/WizardFile.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
@@ -194,19 +196,19 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxPanel wxs="wxsmith\ApplicationDocumentation.wxs" src="ApplicationDocumentation.cpp" hdr="ApplicationDocumentation.h" fwddecl="0" i18n="1" name="ApplicationDocumentation" language="CPP" />
-					<wxPanel wxs="wxsmith\ApplicationFiles.wxs" src="ApplicationFiles.cpp" hdr="ApplicationFiles.h" fwddecl="0" i18n="1" name="ApplicationFiles" language="CPP" />
-					<wxPanel wxs="wxsmith\ApplicationFolder.wxs" src="ApplicationFolder.cpp" hdr="ApplicationFolder.h" fwddecl="0" i18n="1" name="ApplicationFolder" language="CPP" />
-					<wxPanel wxs="wxsmith\ApplicationIcons.wxs" src="ApplicationIcons.cpp" hdr="ApplicationIcons.h" fwddecl="0" i18n="1" name="ApplicationIcons" language="CPP" />
-					<wxPanel wxs="wxsmith\ApplicationInformation.wxs" src="ApplicationInformation.cpp" hdr="ApplicationInformation.h" fwddecl="0" i18n="1" name="ApplicationInformation" language="CPP" />
-					<wxPanel wxs="wxsmith\CompilerSettings.wxs" src="CompilerSettings.cpp" hdr="CompilerSettings.h" fwddecl="0" i18n="1" name="CompilerSettings" language="CPP" />
-					<wxDialog wxs="wxsmith\CreateDialog.wxs" src="CreateDialog.cpp" hdr="CreateDialog.h" fwddecl="0" i18n="1" name="CreateDialog" language="CPP" />
-					<wxPanel wxs="wxsmith\FinishWizard.wxs" src="FinishWizard.cpp" hdr="FinishWizard.h" fwddecl="0" i18n="1" name="FinishWizard" language="CPP" />
-					<wxPanel wxs="wxsmith\SetupLanguages.wxs" src="SetupLanguages.cpp" hdr="SetupLanguages.h" fwddecl="0" i18n="1" name="SetupLanguages" language="CPP" />
-					<wxPanel wxs="wxsmith\WelcomePage.wxs" src="WelcomePage.cpp" hdr="WelcomePage.h" fwddecl="0" i18n="1" name="WelcomePage" language="CPP" />
-					<wxPanel wxs="wxsmith\WizardFile.wxs" src="WizardFile.cpp" hdr="WizardFile.h" fwddecl="0" i18n="1" name="WizardFile" language="CPP" />
-					<wxPanel wxs="wxsmith\InnoSettings.wxs" src="InnoSettings.cpp" hdr="InnoSettings.h" xrc="InnoSettings.xrc" fwddecl="0" i18n="1" name="InnoSettings" language="CPP" />
-					<wxPanel wxs="wxsmith\InnoEditor.wxs" src="InnoEditor.cpp" hdr="InnoEditor.h" fwddecl="0" i18n="1" name="InnoEditor" language="CPP" />
+					<wxPanel wxs="wxsmith/ApplicationDocumentation.wxs" src="ApplicationDocumentation.cpp" hdr="ApplicationDocumentation.h" fwddecl="0" i18n="1" name="ApplicationDocumentation" language="CPP" />
+					<wxPanel wxs="wxsmith/ApplicationFiles.wxs" src="ApplicationFiles.cpp" hdr="ApplicationFiles.h" fwddecl="0" i18n="1" name="ApplicationFiles" language="CPP" />
+					<wxPanel wxs="wxsmith/ApplicationFolder.wxs" src="ApplicationFolder.cpp" hdr="ApplicationFolder.h" fwddecl="0" i18n="1" name="ApplicationFolder" language="CPP" />
+					<wxPanel wxs="wxsmith/ApplicationIcons.wxs" src="ApplicationIcons.cpp" hdr="ApplicationIcons.h" fwddecl="0" i18n="1" name="ApplicationIcons" language="CPP" />
+					<wxPanel wxs="wxsmith/ApplicationInformation.wxs" src="ApplicationInformation.cpp" hdr="ApplicationInformation.h" fwddecl="0" i18n="1" name="ApplicationInformation" language="CPP" />
+					<wxPanel wxs="wxsmith/CompilerSettings.wxs" src="CompilerSettings.cpp" hdr="CompilerSettings.h" fwddecl="0" i18n="1" name="CompilerSettings" language="CPP" />
+					<wxDialog wxs="wxsmith/CreateDialog.wxs" src="CreateDialog.cpp" hdr="CreateDialog.h" fwddecl="0" i18n="1" name="CreateDialog" language="CPP" />
+					<wxPanel wxs="wxsmith/FinishWizard.wxs" src="FinishWizard.cpp" hdr="FinishWizard.h" fwddecl="0" i18n="1" name="FinishWizard" language="CPP" />
+					<wxPanel wxs="wxsmith/SetupLanguages.wxs" src="SetupLanguages.cpp" hdr="SetupLanguages.h" fwddecl="0" i18n="1" name="SetupLanguages" language="CPP" />
+					<wxPanel wxs="wxsmith/WelcomePage.wxs" src="WelcomePage.cpp" hdr="WelcomePage.h" fwddecl="0" i18n="1" name="WelcomePage" language="CPP" />
+					<wxPanel wxs="wxsmith/WizardFile.wxs" src="WizardFile.cpp" hdr="WizardFile.h" fwddecl="0" i18n="1" name="WizardFile" language="CPP" />
+					<wxPanel wxs="wxsmith/InnoSettings.wxs" src="InnoSettings.cpp" hdr="InnoSettings.h" xrc="InnoSettings.xrc" fwddecl="0" i18n="1" name="InnoSettings" language="CPP" />
+					<wxPanel wxs="wxsmith/InnoEditor.wxs" src="InnoEditor.cpp" hdr="InnoEditor.h" fwddecl="0" i18n="1" name="InnoEditor" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

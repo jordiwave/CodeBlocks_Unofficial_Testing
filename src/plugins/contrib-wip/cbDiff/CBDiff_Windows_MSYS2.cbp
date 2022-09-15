@@ -6,19 +6,19 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="cbDiff">
-				<Option output="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbDiff" prefix_auto="0" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbDiff" />
+				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbDiff" prefix_auto="0" extension_auto="1" />
+				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbDiff" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
-				<Option host_application="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
+				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<ExtraCommands>
 					<!-- Create output directory if it does not exist -->
 					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
-					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml *.xrc" />
-					<Add after="zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip images" />
+					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
+					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip manifest.xml *.xrc" />
+					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip images" />
 					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).cbplugin del $(TARGET_OUTPUT_BASENAME).cbplugin" />
 					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).zip      del $(TARGET_OUTPUT_BASENAME).zip" />
 					<Add after="cmd /c if exist $(TARGET_OUTPUT_BASENAME).dll      del $(TARGET_OUTPUT_BASENAME).dll" />
@@ -54,12 +54,12 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add directory=".\dtl" />
-			<Add directory=".\src" />
+			<Add directory="./dtl" />
+			<Add directory="./src" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-			<Add directory="$(#CB_BUILD.INCLUDE)" />
-			<Add directory="$(#CB_BUILD)\sdk\wxscintilla\include" />
-			<Add directory="$(#CB_BUILD.INCLUDE)\tinyxml" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
@@ -68,7 +68,7 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-Wl,--no-undefined" />
 			<Add option="-mthreads" />
-			<Add directory="$(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 			<Add library="codeblocks" />
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add library="wxscintilla_cb" />
@@ -79,36 +79,36 @@
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="open.txt" />
-		<Unit filename="src\cbDiff.cpp" />
-		<Unit filename="src\cbDiff.h" />
-		<Unit filename="src\cbDiffConfigPanel.cpp" />
-		<Unit filename="src\cbDiffConfigPanel.h" />
-		<Unit filename="src\cbDiffCtrl.cpp" />
-		<Unit filename="src\cbDiffCtrl.h" />
-		<Unit filename="src\cbDiffEditor.cpp" />
-		<Unit filename="src\cbDiffEditor.h" />
-		<Unit filename="src\cbDiffMenu.cpp" />
-		<Unit filename="src\cbDiffMenu.h" />
-		<Unit filename="src\cbDiffSelectFiles.cpp" />
-		<Unit filename="src\cbDiffSelectFiles.h" />
-		<Unit filename="src\cbDiffUtils.cpp" />
-		<Unit filename="src\cbDiffUtils.h" />
-		<Unit filename="src\cbSideBySideCtrl.cpp" />
-		<Unit filename="src\cbSideBySideCtrl.h" />
-		<Unit filename="src\cbTableCtrl.cpp" />
-		<Unit filename="src\cbTableCtrl.h" />
-		<Unit filename="src\cbUnifiedCtrl.cpp" />
-		<Unit filename="src\cbUnifiedCtrl.h" />
-		<Unit filename="src\wxDiff.cpp" />
-		<Unit filename="src\wxDiff.h" />
-		<Unit filename="wxsmith\cbDiffConfigPanel.wxs" />
-		<Unit filename="wxsmith\cbDiffSelectFiles.wxs" />
+		<Unit filename="src/cbDiff.cpp" />
+		<Unit filename="src/cbDiff.h" />
+		<Unit filename="src/cbDiffConfigPanel.cpp" />
+		<Unit filename="src/cbDiffConfigPanel.h" />
+		<Unit filename="src/cbDiffCtrl.cpp" />
+		<Unit filename="src/cbDiffCtrl.h" />
+		<Unit filename="src/cbDiffEditor.cpp" />
+		<Unit filename="src/cbDiffEditor.h" />
+		<Unit filename="src/cbDiffMenu.cpp" />
+		<Unit filename="src/cbDiffMenu.h" />
+		<Unit filename="src/cbDiffSelectFiles.cpp" />
+		<Unit filename="src/cbDiffSelectFiles.h" />
+		<Unit filename="src/cbDiffUtils.cpp" />
+		<Unit filename="src/cbDiffUtils.h" />
+		<Unit filename="src/cbSideBySideCtrl.cpp" />
+		<Unit filename="src/cbSideBySideCtrl.h" />
+		<Unit filename="src/cbTableCtrl.cpp" />
+		<Unit filename="src/cbTableCtrl.h" />
+		<Unit filename="src/cbUnifiedCtrl.cpp" />
+		<Unit filename="src/cbUnifiedCtrl.h" />
+		<Unit filename="src/wxDiff.cpp" />
+		<Unit filename="src/wxDiff.h" />
+		<Unit filename="wxsmith/cbDiffConfigPanel.wxs" />
+		<Unit filename="wxsmith/cbDiffSelectFiles.wxs" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 			<wxsmith version="1">
 				<resources>
-					<wxPanel wxs="wxsmith\cbDiffConfigPanel.wxs" src="src\cbDiffConfigPanel.cpp" hdr="src\cbDiffConfigPanel.h" fwddecl="1" i18n="1" name="cbDiffConfigPanel" language="CPP" />
-					<wxDialog wxs="wxsmith\cbDiffSelectFiles.wxs" src="src\cbDiffSelectFiles.cpp" hdr="src\cbDiffSelectFiles.h" fwddecl="1" i18n="1" name="cbDiffSelectFiles" language="CPP" />
+					<wxPanel wxs="wxsmith/cbDiffConfigPanel.wxs" src="src/cbDiffConfigPanel.cpp" hdr="src/cbDiffConfigPanel.h" fwddecl="1" i18n="1" name="cbDiffConfigPanel" language="CPP" />
+					<wxDialog wxs="wxsmith/cbDiffSelectFiles.wxs" src="src/cbDiffSelectFiles.cpp" hdr="src/cbDiffSelectFiles.h" fwddecl="1" i18n="1" name="cbDiffSelectFiles" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

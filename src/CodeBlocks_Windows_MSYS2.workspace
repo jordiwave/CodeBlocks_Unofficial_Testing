@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="CodeBlocks Workspace Windows MSYS2">
-		<Project filename="CodeBlocks_Windows_MSYS2.cbp" />
+		<Project filename="build_tools/wx-config-msys2/CB_wx-config_MSYS2.cbp" />
+		<Project filename="CodeBlocks_Windows_MSYS2.cbp" >
+			<Depends filename="build_tools/wx-config-msys2/CB_wx-config_MSYS2.cbp" />
+		</Project>
 		<Project filename="tools/Addr2LineUI/Addr2LineUI_Windows_MSYS2.cbp">
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
@@ -158,25 +161,14 @@
 		<Project filename="plugins/contrib/FortranProject/FortranProject_Windows_MSYS2.cbp">
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE ADDITIONAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<Project filename="plugins/contrib-wip/cbBuildTools/cbBuildTools_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
 		<Project filename="plugins/contrib-wip/cbDiff/cbDiff_Windows_MSYS2.cbp">
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
-		<Project filename="plugins/contrib-wip/GitBlocks/GitBlocks_Windows_MSYS2.cbp">
-			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
-		</Project>
 		<Project filename="plugins/contrib-wip/cbInno/cbInno_Windows_MSYS2.cbp">
-			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbNSIS/cbNSIS_Windows_MSYS2.cbp">
-			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_Windows_MSYS2.cbp">
-			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Windows_MSYS2.cbp">
-			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbBuildTools/cbBuildTools_Windows_MSYS2.cbp">
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/cbMarkdown/cbMarkdown_Windows_MSYS2.cbp">
@@ -185,7 +177,19 @@
 		<Project filename="plugins/contrib-wip/cbMemoryView/cbMemoryView_Windows_MSYS2.cbp">
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
+		<Project filename="plugins/contrib-wip/cbNSIS/cbNSIS_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
 		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbTortoiseSVN_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Windows_MSYS2.cbp">
+			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/GitBlocks/GitBlocks_Windows_MSYS2.cbp">
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Windows_MSYS2.cbp" />
@@ -193,5 +197,18 @@
 			<Depends filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Windows_MSYS2.cbp" />
 			<Depends filename="CodeBlocks_Windows_MSYS2.cbp" />
 		</Project>
+
+		<!-- https://github.com/spillz/codeblocks-python/compare/master...crobarcro:codeblocks-python:master -->
+		<Project filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows_MSYS2.cbp" />
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonCodeCompletion/PythonCodeCompletion_Windows_MSYS2.cbp" >
+			<Depends filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonInterpreter/PythonInterpreter_Windows_MSYS2.cbp" >
+			<Depends filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows_MSYS2.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonDebugger/PythonDebugger_Windows_MSYS2.cbp" />
+		<Project filename="plugins/contrib-wip/PythonPlugins/codecheck/PythonCodeChecker_Windows_MSYS2.cbp" />
+
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE ADDITIONAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
 	</Workspace>
 </CodeBlocks_workspace_file>
