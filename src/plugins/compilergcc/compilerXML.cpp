@@ -46,7 +46,12 @@ AutoDetectResult CompilerXML::AutoDetectInstallationDir()
 
     if (!m_MasterPath.IsEmpty())
     {
-        path += wxPATH_SEP + m_MasterPath;
+        if (wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C) || wxFileExists(m_MasterPath + wxFILE_SEP_PATH + m_Programs.C))
+        {
+            return adrDetected;
+        }
+
+        path = m_MasterPath + wxPATH_SEP + path;
         wxSetEnv(wxT("PATH"), path);
         m_MasterPath.Clear();
     }
