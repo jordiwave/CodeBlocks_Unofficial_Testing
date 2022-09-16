@@ -1,83 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="cbMemoryView Windows" />
-		<Option default_target="cbMemoryView" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="cbMemoryView">
-				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbMemoryView" prefix_auto="0" extension_auto="1" />
-				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbMemoryView" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<ExtraCommands>
-					<!-- Create output directory if it does not exist -->
-					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-
-					<!-- Create plugin zip file-->
-					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />
-					<Add after="zip -qj9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.* resources/*.xrc" />
-					<Add after="cmd /c &quot;cd resources &amp; zip -rq9 ..\..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip images &quot;" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-		</Build>
-		<VirtualTargets>
-			<Add alias="All" targets="cbMemoryView;" />
-		</VirtualTargets>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="-pipe" />
-			<Add option="-fmessage-length=0" />
-			<Add option="-fexceptions" />
-			<Add option="-mthreads" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add option="-m$(#CB_BUILD.OSBITS)" />
-			<Add option="-fno-keep-inline-dllexport" />
-			<Add option="-DBUILDING_PLUGIN" />
-			<Add option="-DHAVE_W32API_H" />
-			<Add option="-D__WXMSW__" />
-			<Add option="-DWXUSINGDLL" />
-			<Add option="-DcbDEBUG" />
-			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add directory="../../../include" />
-			<Add directory="../../../sdk/wxscintilla/include" />
-			<Add directory="../../../include/tinyxml" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-		</Compiler>
-		<ResourceCompiler>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-		</ResourceCompiler>
-		<Linker>
-			<Add option="-Wl,--enable-auto-import" />
-			<Add option="-Wl,--no-undefined" />
-			<Add option="-mthreads" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add library="codeblocks" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
-		</Linker>
-		<Unit filename="MemoryPanel.cpp" />
-		<Unit filename="MemoryPanel.h" />
-		<Unit filename="cbMemoryView.cpp" />
-		<Unit filename="cbMemoryView.h" />
-		<Unit filename="cbmvwindow.cpp" />
-		<Unit filename="cbmvwindow.h" />
-		<Unit filename="resources/manifest.xml" />
-		<Unit filename="resources/manifest.rc" >
-			<Option compilerVar="WINDRES" />
-		</Unit>
-		<Unit filename="wxsmith/MemoryPanel.wxs" />
-		<Extensions>
-			<wxsmith version="1">
-				<resources>
-					<wxPanel wxs="wxsmith/MemoryPanel.wxs" src="MemoryPanel.cpp" hdr="MemoryPanel.h" xrc="MemoryPanel.xrc" fwddecl="0" i18n="1" name="MemoryPanel" language="CPP" />
-				</resources>
-			</wxsmith>
-		</Extensions>
-	</Project>
-</CodeBlocks_project_file>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CodeBlocks_project_file>	<FileVersion major="1" minor="6" />	<Project>		<Option title="cbMemoryView Windows" />		<Option default_target="cbMemoryView" />		<Option compiler="gcc" />		<Build>			<Target title="cbMemoryView">				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbMemoryView" prefix_auto="0" extension_auto="1" />				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/cbMemoryView" />				<Option type="3" />				<Option compiler="gcc" />				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />				<Option run_host_application_in_terminal="0" />				<ExtraCommands>					<!-- Create output directory if it does not exist -->					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />					<!-- Create plugin zip file-->					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip" />					<Add after="zip -qj9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip resources/manifest.* resources/*.xrc" />					<Add after="cmd /c &quot;cd resources &amp; zip -rq9 ..\..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\$(TARGET_OUTPUT_BASENAME).zip images &quot;" />					<Mode after="always" />				</ExtraCommands>			</Target>		</Build>		<VirtualTargets>			<Add alias="All" targets="cbMemoryView;" />		</VirtualTargets>		<Compiler>			<Add option="-Wall" />			<Add option="$(#CB_BUILD.CFLAGS)" />			<Add option="-pipe" />			<Add option="-fmessage-length=0" />			<Add option="-fexceptions" />			<Add option="-mthreads" />			<Add option="-std=$(#CB_BUILD.CPP_STD)" />			<Add option="-m$(#CB_BUILD.OSBITS)" />			<Add option="-fno-keep-inline-dllexport" />			<Add option="-DBUILDING_PLUGIN" />			<Add option="-DHAVE_W32API_H" />			<Add option="-D__WXMSW__" />			<Add option="-DWXUSINGDLL" />			<Add option="-DcbDEBUG" />			<Add option="-DwxUSE_UNICODE" />			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />			<Add directory="../../../include" />			<Add directory="../../../sdk/wxscintilla/include" />			<Add directory="../../../include/tinyxml" />			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />		</Compiler>		<ResourceCompiler>			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />		</ResourceCompiler>		<Linker>			<Add option="-Wl,--enable-auto-import" />			<Add option="-Wl,--no-undefined" />			<Add option="-mthreads" />			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />			<Add library="codeblocks" />			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />		</Linker>		<Unit filename="MemoryPanel.cpp" />		<Unit filename="MemoryPanel.h" />		<Unit filename="cbMemoryView.cpp" />		<Unit filename="cbMemoryView.h" />		<Unit filename="cbmvwindow.cpp" />		<Unit filename="cbmvwindow.h" />		<Unit filename="resources/manifest.xml" />		<Unit filename="resources/manifest.rc" >			<Option compilerVar="WINDRES" />		</Unit>		<Unit filename="wxsmith/MemoryPanel.wxs" />		<Extensions>			<wxsmith version="1">				<resources>					<wxPanel wxs="wxsmith/MemoryPanel.wxs" src="MemoryPanel.cpp" hdr="MemoryPanel.h" xrc="MemoryPanel.xrc" fwddecl="0" i18n="1" name="MemoryPanel" language="CPP" />				</resources>			</wxsmith>		</Extensions>	</Project></CodeBlocks_project_file>

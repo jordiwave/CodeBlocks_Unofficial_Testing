@@ -1,105 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="GitBlocks Windows" />
-		<Option pch_mode="2" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="default">
-				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\GitBlocks" prefix_auto="0" extension_auto="1" />
-				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\GitBlocks" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<ExtraCommands>
-					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-
-					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\GitBlocks.zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\GitBlocks.zip" />
-					<Add after="cmd /c if exist GitBlocks.cbplugin del GitBlocks.cbplugin" />
-					<Add after="cmd /c if exist GitBlocks.zip del GitBlocks.zip" />
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\GitBlocks.zip manifest.xml" />
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\GitBlocks.zip dummy.xrc" />
-
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-		</Build>
-		<VirtualTargets>
-			<Add alias="All" targets="default;" />
-		</VirtualTargets>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="-pipe" />
-			<Add option="-fmessage-length=0" />
-			<Add option="-fexceptions" />
-			<Add option="-mthreads" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add option="-m$(#CB_BUILD.OSBITS)" />
-			<Add option="-fno-keep-inline-dllexport" />
-			<Add option="-DBUILDING_PLUGIN" />
-			<Add option="-DHAVE_W32API_H" />
-			<Add option="-D__WXMSW__" />
-			<Add option="-DWXUSINGDLL" />
-			<Add option="-DcbDEBUG" />
-			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
-			<Add directory="../../../include" />
-			<Add directory="../../../sdk/wxscintilla/include" />
-			<Add directory="../../../include/tinyxml" />
-			<Add directory="./include" />
-		</Compiler>
-		<ResourceCompiler>
-			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
-		</ResourceCompiler>
-		<Linker>
-			<Add option="-Wl,--enable-auto-import" />
-			<Add option="-Wl,--no-undefined" />
-			<Add option="-mthreads" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add library="codeblocks" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
-			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-		</Linker>
-		<Unit filename="include/CloneDialog.h" />
-		<Unit filename="include/CommitAllDialog.h" />
-		<Unit filename="include/CommitDialog.h" />
-		<Unit filename="include/GitBlocks.h" />
-		<Unit filename="include/NewBranchDialog.h" />
-		<Unit filename="include/RemoveDialog.h" />
-		<Unit filename="include/RenameDialog.h" />
-		<Unit filename="include/SetUserDialog.h" />
-		<Unit filename="include/SwitchBranchDialog.h" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
-			<Option compilerVar="WINDRES" />
-		</Unit>
-		<Unit filename="src/CloneDialog.cpp" />
-		<Unit filename="src/CommitAllDialog.cpp" />
-		<Unit filename="src/CommitDialog.cpp" />
-		<Unit filename="src/GitBlocks.cpp" />
-		<Unit filename="src/NewBranchDialog.cpp" />
-		<Unit filename="src/RemoveDialog.cpp" />
-		<Unit filename="src/SetUserDialog.cpp" />
-		<Unit filename="src/SwitchBranchDialog.cpp" />
-		<Unit filename="wxsmith/CloneDialog.wxs" />
-		<Unit filename="wxsmith/CommitAllDialog.wxs" />
-		<Unit filename="wxsmith/CommitDialog.wxs" />
-		<Unit filename="wxsmith/NewBranchDialog.wxs" />
-		<Unit filename="wxsmith/RemoveDialog.wxs" />
-		<Unit filename="wxsmith/RenameDialog.wxs" />
-		<Unit filename="wxsmith/SetUserDialog.wxs" />
-		<Unit filename="wxsmith/SwitchBranchDialog.wxs" />
-		<Extensions>
-			<lib_finder disable_auto="1" />
-			<wxsmith version="1">
-				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
-			</wxsmith>
-		</Extensions>
-	</Project>
-</CodeBlocks_project_file>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CodeBlocks_project_file>	<FileVersion major="1" minor="6" />	<Project>		<Option title="GitBlocks Windows" />		<Option pch_mode="2" />		<Option compiler="gcc" />		<Build>			<Target title="default">				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/GitBlocks" prefix_auto="0" extension_auto="1" />				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/GitBlocks" />				<Option type="3" />				<Option compiler="gcc" />				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />				<Option run_host_application_in_terminal="0" />				<ExtraCommands>					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\GitBlocks.zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\GitBlocks.zip" />					<Add after="cmd /c if exist GitBlocks.cbplugin del GitBlocks.cbplugin" />					<Add after="cmd /c if exist GitBlocks.zip del GitBlocks.zip" />					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\GitBlocks.zip manifest.xml" />					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\GitBlocks.zip dummy.xrc" />					<Mode after="always" />				</ExtraCommands>			</Target>		</Build>		<VirtualTargets>			<Add alias="All" targets="default;" />		</VirtualTargets>		<Compiler>			<Add option="-Wall" />			<Add option="$(#CB_BUILD.CFLAGS)" />			<Add option="-pipe" />			<Add option="-fmessage-length=0" />			<Add option="-fexceptions" />			<Add option="-mthreads" />			<Add option="-std=$(#CB_BUILD.CPP_STD)" />			<Add option="-m$(#CB_BUILD.OSBITS)" />			<Add option="-fno-keep-inline-dllexport" />			<Add option="-DBUILDING_PLUGIN" />			<Add option="-DHAVE_W32API_H" />			<Add option="-D__WXMSW__" />			<Add option="-DWXUSINGDLL" />			<Add option="-DcbDEBUG" />			<Add option="-DwxUSE_UNICODE" />			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />			<Add directory="$(#WXWIDGETS.include)" />			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />			<Add directory="../../../include" />			<Add directory="../../../sdk/wxscintilla/include" />			<Add directory="../../../include/tinyxml" />			<Add directory="./include" />		</Compiler>		<ResourceCompiler>			<Add directory="$(#WXWIDGETS.include)" />			<Add directory="$(#WXWIDGETS)/lib/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />		</ResourceCompiler>		<Linker>			<Add option="-Wl,--enable-auto-import" />			<Add option="-Wl,--no-undefined" />			<Add option="-mthreads" />			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />			<Add library="codeblocks" />			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />		</Linker>		<Unit filename="include/CloneDialog.h" />		<Unit filename="include/CommitAllDialog.h" />		<Unit filename="include/CommitDialog.h" />		<Unit filename="include/GitBlocks.h" />		<Unit filename="include/NewBranchDialog.h" />		<Unit filename="include/RemoveDialog.h" />		<Unit filename="include/RenameDialog.h" />		<Unit filename="include/SetUserDialog.h" />		<Unit filename="include/SwitchBranchDialog.h" />		<Unit filename="manifest.xml" />		<Unit filename="manifest.rc" >			<Option compilerVar="WINDRES" />		</Unit>		<Unit filename="src/CloneDialog.cpp" />		<Unit filename="src/CommitAllDialog.cpp" />		<Unit filename="src/CommitDialog.cpp" />		<Unit filename="src/GitBlocks.cpp" />		<Unit filename="src/NewBranchDialog.cpp" />		<Unit filename="src/RemoveDialog.cpp" />		<Unit filename="src/SetUserDialog.cpp" />		<Unit filename="src/SwitchBranchDialog.cpp" />		<Unit filename="wxsmith/CloneDialog.wxs" />		<Unit filename="wxsmith/CommitAllDialog.wxs" />		<Unit filename="wxsmith/CommitDialog.wxs" />		<Unit filename="wxsmith/NewBranchDialog.wxs" />		<Unit filename="wxsmith/RemoveDialog.wxs" />		<Unit filename="wxsmith/RenameDialog.wxs" />		<Unit filename="wxsmith/SetUserDialog.wxs" />		<Unit filename="wxsmith/SwitchBranchDialog.wxs" />		<Extensions>			<lib_finder disable_auto="1" />			<wxsmith version="1">				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />			</wxsmith>		</Extensions>	</Project></CodeBlocks_project_file>

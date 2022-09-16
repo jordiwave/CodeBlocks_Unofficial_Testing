@@ -1,80 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="IncrementalSearch Windows" />
-		<Option pch_mode="2" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="default">
-				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\IncrementalSearch" prefix_auto="0" extension_auto="1" />
-				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\IncrementalSearch" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<Compiler>
-					<Add option="-Wall" />
-					<Add option="$(#CB_BUILD.CFLAGS)" />
-					<Add option="-pipe" />
-					<Add option="-mthreads" />
-					<Add option="-fmessage-length=0" />
-					<Add option="-fexceptions" />
-					<Add option="-DHAVE_W32API_H" />
-					<Add option="-D__WXMSW__" />
-					<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-					<Add option="-DWXUSINGDLL" />
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DcbDEBUG" />
-					<Add option="-Winvalid-pch" />
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="../../../include" />
-					<Add directory="../../../include/tinyxml" />
-			<Add directory="../../../sdk/wxscintilla/include" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-				</Compiler>
-				<Linker>
-					<Add option="-mthreads" />
-					<Add library="codeblocks" />
-					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
-					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				</Linker>
-				<ExtraCommands>
-					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\IncrementalSearch.zip manifest.xml *.xrc" />
-					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\IncrementalSearch.zip ./images" />
-					<Add after="cmd /c if not exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings" />
-					<Add after="cmd /c copy *.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ &gt; $CMD_NULL 2&gt; $CMD_NULL" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-		</Build>
-		<VirtualTargets>
-			<Add alias="All" targets="default;" />
-		</VirtualTargets>
-		<Compiler>
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-		</Compiler>
-		<ResourceCompiler>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-		</ResourceCompiler>
-		<Unit filename="IncrementalSearch.cpp" />
-		<Unit filename="IncrementalSearch.h" />
-		<Unit filename="IncrementalSearchConfDlg.cpp" />
-		<Unit filename="IncrementalSearchConfDlg.h" />
-		<Unit filename="IncrementalSearchConfDlg.xrc" />
-		<Unit filename="IncrementalSearchToolbar.xrc" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
-			<Option compilerVar="WINDRES" />
-		</Unit>
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-			<lib_finder disable_auto="1" />
-		</Extensions>
-	</Project>
-</CodeBlocks_project_file>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CodeBlocks_project_file>	<FileVersion major="1" minor="6" />	<Project>		<Option title="IncrementalSearch Windows" />		<Option pch_mode="2" />		<Option compiler="gcc" />		<Build>			<Target title="default">				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/IncrementalSearch" prefix_auto="0" extension_auto="1" />				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/IncrementalSearch" />				<Option type="3" />				<Option compiler="gcc" />				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />				<Option run_host_application_in_terminal="0" />				<Compiler>					<Add option="-Wall" />					<Add option="$(#CB_BUILD.CFLAGS)" />					<Add option="-pipe" />					<Add option="-mthreads" />					<Add option="-fmessage-length=0" />					<Add option="-fexceptions" />					<Add option="-DHAVE_W32API_H" />					<Add option="-D__WXMSW__" />					<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />					<Add option="-DWXUSINGDLL" />					<Add option="-DBUILDING_PLUGIN" />					<Add option="-DcbDEBUG" />					<Add option="-Winvalid-pch" />					<Add option="-DCB_PRECOMP" />					<Add option="-DwxUSE_UNICODE" />					<Add directory="../../../include" />					<Add directory="../../../include/tinyxml" />			<Add directory="../../../sdk/wxscintilla/include" />					<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />				</Compiler>				<Linker>					<Add option="-mthreads" />					<Add library="codeblocks" />					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />					<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />				</Linker>				<ExtraCommands>					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\IncrementalSearch.zip manifest.xml *.xrc" />					<Add after="zip -rq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\IncrementalSearch.zip ./images" />					<Add after="cmd /c if not exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings mkdir ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings" />					<Add after="cmd /c copy *.png ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\settings\ &gt; $CMD_NULL 2&gt; $CMD_NULL" />					<Mode after="always" />				</ExtraCommands>			</Target>		</Build>		<VirtualTargets>			<Add alias="All" targets="default;" />		</VirtualTargets>		<Compiler>			<Add option="-std=$(#CB_BUILD.CPP_STD)" />		</Compiler>		<ResourceCompiler>			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />		</ResourceCompiler>		<Unit filename="IncrementalSearch.cpp" />		<Unit filename="IncrementalSearch.h" />		<Unit filename="IncrementalSearchConfDlg.cpp" />		<Unit filename="IncrementalSearchConfDlg.h" />		<Unit filename="IncrementalSearchConfDlg.xrc" />		<Unit filename="IncrementalSearchToolbar.xrc" />		<Unit filename="manifest.xml" />		<Unit filename="manifest.rc" >			<Option compilerVar="WINDRES" />		</Unit>		<Extensions>			<code_completion />			<envvars />			<debugger />			<lib_finder disable_auto="1" />		</Extensions>	</Project></CodeBlocks_project_file>

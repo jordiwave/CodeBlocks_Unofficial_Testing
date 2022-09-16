@@ -1,96 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="cbNSIS Windows" />
-		<Option pch_mode="2" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="default">
-				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\cbNSIS" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\cbNSIS" />
-				<Option platforms="Windows;" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<ExtraCommands>
-					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add before="cmd /c if exist $(TARGET_OUTPUT_FILE) del $(TARGET_OUTPUT_FILE)" />
-					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip" />
-					<Add after="cmd /c if exist cbNSIS.zip del cbNSIS.zip" />
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip manifest.xml" />
-					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip dummy.xrc" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-		</Build>
-		<VirtualTargets>
-			<Add alias="All" targets="default;" />
-		</VirtualTargets>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add option="-m$(#CB_BUILD.OSBITS)" />
-			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="-pipe" />
-			<Add option="-fmessage-length=0" />
-			<Add option="-fexceptions" />
-			<Add option="-mthreads" />
-			<Add option="-fno-keep-inline-dllexport" />
-			<Add option="-DBUILDING_PLUGIN" />
-			<Add option="-DHAVE_W32API_H" />
-			<Add option="-D__WXMSW__" />
-			<Add option="-DWXUSINGDLL" />
-			<Add option="-DcbDEBUG" />
-			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-			<Add directory="../../../include" />
-			<Add directory="../../../sdk/wxscintilla/include" />
-			<Add directory="../../../include/tinyxml" />
-			<Add directory="../../../src" />
-			<Add directory="../../../include" />
-		</Compiler>
-		<ResourceCompiler>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-		</ResourceCompiler>
-		<Linker>
-			<Add option="-m$(#CB_BUILD.OSBITS)" />
-			<Add option="-Wl,--enable-auto-import" />
-			<Add option="-Wl,--no-undefined" />
-			<Add option="-mthreads" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add library="codeblocks" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
-		</Linker>
-		<Unit filename="AddComp.cpp" />
-		<Unit filename="AddComp.h" />
-		<Unit filename="CompMap.cpp" />
-		<Unit filename="CompMap.h" />
-		<Unit filename="CompTreeCtrl.cpp" />
-		<Unit filename="CompTreeCtrl.h" />
-		<Unit filename="NSIFile.cpp" />
-		<Unit filename="NSIFile.h" />
-		<Unit filename="NSISGUIFile.cpp" />
-		<Unit filename="NSISGUIFile.h" />
-		<Unit filename="NSISGUIMain.cpp" />
-		<Unit filename="NSISGUIMain.h" />
-		<Unit filename="cbNSIS.cpp" />
-		<Unit filename="cbNSIS.h" />
-		<Unit filename="manifest.xml" />
-		<Unit filename="manifest.rc" >
-			<Option compilerVar="WINDRES" />
-		</Unit>
-		<Unit filename="wx_pch.h" />
-		<Extensions>
-			<cbSystemView>
-				<target name="#project#">
-					<svdFile path="" />
-				</target>
-			</cbSystemView>
-			<lib_finder disable_auto="1" />
-		</Extensions>
-	</Project>
-</CodeBlocks_project_file>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CodeBlocks_project_file>	<FileVersion major="1" minor="6" />	<Project>		<Option title="cbNSIS Windows" />		<Option pch_mode="2" />		<Option compiler="gcc" />		<Build>			<Target title="default">				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/cbNSIS" prefix_auto="0" extension_auto="1" />				<Option working_dir="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/cbNSIS" />				<Option platforms="Windows;" />				<Option type="3" />				<Option compiler="gcc" />				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />				<Option run_host_application_in_terminal="0" />				<ExtraCommands>					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />					<Add before="cmd /c if exist $(TARGET_OUTPUT_FILE) del $(TARGET_OUTPUT_FILE)" />					<Add after="cmd /c if exist ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip del ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip" />					<Add after="cmd /c if exist cbNSIS.zip del cbNSIS.zip" />					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip manifest.xml" />					<Add after="zip -jq9 ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\cbNSIS.zip dummy.xrc" />					<Mode after="always" />				</ExtraCommands>			</Target>		</Build>		<VirtualTargets>			<Add alias="All" targets="default;" />		</VirtualTargets>		<Compiler>			<Add option="-Wall" />			<Add option="-std=$(#CB_BUILD.CPP_STD)" />			<Add option="-m$(#CB_BUILD.OSBITS)" />			<Add option="$(#CB_BUILD.CFLAGS)" />			<Add option="-pipe" />			<Add option="-fmessage-length=0" />			<Add option="-fexceptions" />			<Add option="-mthreads" />			<Add option="-fno-keep-inline-dllexport" />			<Add option="-DBUILDING_PLUGIN" />			<Add option="-DHAVE_W32API_H" />			<Add option="-D__WXMSW__" />			<Add option="-DWXUSINGDLL" />			<Add option="-DcbDEBUG" />			<Add option="-DwxUSE_UNICODE" />			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />			<Add directory="../../../include" />			<Add directory="../../../sdk/wxscintilla/include" />			<Add directory="../../../include/tinyxml" />			<Add directory="../../../src" />			<Add directory="../../../include" />		</Compiler>		<ResourceCompiler>			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />		</ResourceCompiler>		<Linker>			<Add option="-m$(#CB_BUILD.OSBITS)" />			<Add option="-Wl,--enable-auto-import" />			<Add option="-Wl,--no-undefined" />			<Add option="-mthreads" />			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />			<Add library="codeblocks" />			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />		</Linker>		<Unit filename="AddComp.cpp" />		<Unit filename="AddComp.h" />		<Unit filename="CompMap.cpp" />		<Unit filename="CompMap.h" />		<Unit filename="CompTreeCtrl.cpp" />		<Unit filename="CompTreeCtrl.h" />		<Unit filename="NSIFile.cpp" />		<Unit filename="NSIFile.h" />		<Unit filename="NSISGUIFile.cpp" />		<Unit filename="NSISGUIFile.h" />		<Unit filename="NSISGUIMain.cpp" />		<Unit filename="NSISGUIMain.h" />		<Unit filename="cbNSIS.cpp" />		<Unit filename="cbNSIS.h" />		<Unit filename="manifest.xml" />		<Unit filename="manifest.rc" >			<Option compilerVar="WINDRES" />		</Unit>		<Unit filename="wx_pch.h" />		<Extensions>			<cbSystemView>				<target name="#project#">					<svdFile path="" />				</target>			</cbSystemView>			<lib_finder disable_auto="1" />		</Extensions>	</Project></CodeBlocks_project_file>
