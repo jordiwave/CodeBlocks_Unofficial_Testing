@@ -1451,7 +1451,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement * parentNode, CompileOptionsBase 
 
 bool ProjectLoader::PlatformValid(const wxString & platforms)
 {
-    int platformsdecoded = GetPlatformsFromString(cbC2U(platforms));
+    int platformsdecoded = GetPlatformsFromString(platforms);
 
     if (platform::windows)
     {

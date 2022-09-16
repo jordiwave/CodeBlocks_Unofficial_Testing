@@ -364,7 +364,7 @@ class ClgdCompletion : public cbCodeCompletionPlugin
 
         /** delayed for toolbar update */
         void OnToolbarTimer(wxTimerEvent & event);
-        void OnToolbarTimer(wxCommandEvent & event);
+        void InvokeToolbarTimer(wxCommandEvent & event); //(ph 2022/08/31)
 
         /** delayed running of editor activated event, only the last activated editor should be considered */
         //-old- void OnEditorActivatedTimer(wxTimerEvent& event);
@@ -372,7 +372,7 @@ class ClgdCompletion : public cbCodeCompletionPlugin
 
         std::vector<ClgdCCToken> * GetCompletionTokens()
         {
-            return &m_CompletionTokens;   //(ph 2022/07/09)
+            return &m_CompletionTokens;
         }
 
         /** Indicates CC's initialization is done */
@@ -573,7 +573,7 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         // ----------------------------------------------------------------------------
         /// Language Service Process ( LSP client )
         // ----------------------------------------------------------------------------
-        static std::vector<ClgdCCToken> m_CompletionTokens; //(ph 2022/07/11) changed to static
+        static std::vector<ClgdCCToken> m_CompletionTokens; //cache
         std::vector<ClgdCCToken> m_HoverTokens;
         std::vector<CCCallTip> m_SignatureTokens;
         bool m_OnEditorOpenEventOccured = false;

@@ -459,7 +459,7 @@ END_EVENT_TABLE()
 // static members
 // ----------------------------------------------------------------------------
 bool ClgdCompletion::m_CCHasTreeLock; // static member
-std::vector<ClgdCCToken> ClgdCompletion::m_CompletionTokens; //(ph 2022/07/11) changed to static
+std::vector<ClgdCCToken> ClgdCompletion::m_CompletionTokens; // cached tokens
 
 // ----------------------------------------------------------------------------
 ClgdCompletion::ClgdCompletion() :
@@ -490,26 +490,35 @@ ClgdCompletion::ClgdCompletion() :
     //m_DocHelper(GetParseManager())
 {
     m_CCHasTreeLock = false;
-    // We cannot run if the old CodeCompletion is enabled
+    // We cannot run if the old CodeCompletion is enabled and its Dll exists.
     m_CC_initDeferred = true;
-    // We cannot run if the old CodeCompletion plugin is loaded and enabled
-    PluginManager * pPlgnMgr = Manager::Get()->GetPluginManager();
-    const PluginInfo * pCCinfo = pPlgnMgr->GetPluginInfo("CodeCompletion");
+    m_OldCC_enabled = Manager::Get()->GetConfigManager("plugins")->ReadBool("/CodeCompletion", true);
+    wxString ccDllFolder = ConfigManager::GetPluginsFolder(true); //Get global plugins folder
+#if defined(_WIN32)
+    bool ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion.dll").Exists();
+#else
+    bool ccDllExists =  wxFileName(ccDllFolder + sep + "libcodecompletion.so").Exists();
+#endif
 
-    if (pCCinfo)
+    if (not ccDllExists) // Check if local plugins folder has codecompletion.dll
     {
-        const bool bCCEnabled = Manager::Get()->GetConfigManager("plugins")->ReadBool("/CodeCompletion", true);
-
-        if (bCCEnabled)
-        {
-            m_OldCC_enabled = true;
-            //Clangd_client must not run when old CodeCompletion is enabled or Dll is loaded.
-            SetClangdClient_Disabled();
-            return;
-        }
+        ccDllFolder = ConfigManager::GetPluginsFolder(false); //Get local plugins folder
+#if defined(_WIN32)
+        ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion.dll").Exists();
+#else
+        ccDllExists =  wxFileName(ccDllFolder + sep + "libcodecompletion.so").Exists();
+#endif
     }
 
-    m_OldCC_enabled = false;
+    if (m_OldCC_enabled and ccDllExists)
+    {
+        //Clangd_client must not run when old CodeCompletion is enabled or Dll is loaded.
+        SetClangdClient_Disabled();
+        return;
+    }
+
+    // Read the initial condition for Clangd_client from the ctor;
+    m_ClgdClientStartupStatusEnabled = Manager::Get()->GetConfigManager("plugins")->ReadBool("/Clangd_Client", false);
     // get top window to use as cbMessage parent, else message boxes will hide behind dialog and main window
     wxWindow * topWindow = wxFindWindowByName(_("Manage plugins"));
 
@@ -539,8 +548,8 @@ ClgdCompletion::ClgdCompletion() :
     Connect(g_idCCErrorLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCLogger));
     Connect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
     Connect(g_idCCDebugErrorLogger,      wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
-    Connect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::OnToolbarTimer));                  //(ph 2021/07/27)
-    Connect(idToolbarTimer,         wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ClgdCompletion::OnToolbarTimer));//(ph 2021/09/11)
+    Connect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::OnToolbarTimer));           //(ph 2021/07/27)
+    Connect(XRCID("idToolbarTimer"), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ClgdCompletion::InvokeToolbarTimer)); //(ph 2022/08/31)
     //-Connect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
     Connect(idStartupDelayTimer, wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::DoParseOpenedProjectAndActiveEditor));
     Connect(XRCID("idLSP_Process_Terminated"), wxEVT_COMMAND_MENU_SELECTED, //(ph 2021/06/28)
@@ -561,7 +570,7 @@ ClgdCompletion::~ClgdCompletion()
     Disconnect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
     Disconnect(g_idCCDebugErrorLogger,      wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(ClgdCompletion::OnCCDebugLogger));
     Disconnect(idToolbarTimer,         wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::OnToolbarTimer));
-    Disconnect(idToolbarTimer,         wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ClgdCompletion::OnToolbarTimer)); //(ph 2021/09/11)
+    Disconnect(idToolbarTimer,         wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ClgdCompletion::InvokeToolbarTimer)); //(ph 2022/08/31)
     //-Disconnect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
     Disconnect(idStartupDelayTimer,    wxEVT_TIMER, wxTimerEventHandler(ClgdCompletion::DoParseOpenedProjectAndActiveEditor));  //(ph 2022/04/19)
     Disconnect(XRCID("idLSP_Process_Terminated"), wxEVT_COMMAND_MENU_SELECTED, //(ph 2021/06/28)
@@ -573,53 +582,57 @@ void ClgdCompletion::OnAttach()
 {
     AppVersion appVersion;
     appVersion.m_AppName = "clangd_client";
-    PluginManager * pPlgnMgr = Manager::Get()->GetPluginManager();
     // Set current plugin version
-    PluginInfo * pInfo = (PluginInfo *)(pPlgnMgr->GetPluginInfo(this));
+    PluginInfo * pInfo = (PluginInfo *)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
     pInfo->version = appVersion.GetVersion();
-    // We cannot run if the old CodeCompletion plugin is loaded and enabled
-    const PluginInfo * pCCinfo = pPlgnMgr->GetPluginInfo("CodeCompletion");
+    m_OldCC_enabled = Manager::Get()->GetConfigManager("plugins")->ReadBool("/CodeCompletion", true);;
+    wxString ccDllFolder = ConfigManager::GetPluginsFolder(true); //Get global plugins folder
+    bool ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion.dll").Exists();
 
-    if (pCCinfo)
+    if (not ccDllExists) // Check if local plugins folder has codecompletion.dll
     {
-        const bool bCCEnabled = Manager::Get()->GetConfigManager("plugins")->ReadBool("/CodeCompletion", true);
-
-        if (bCCEnabled)
-        {
-            m_OldCC_enabled = true;
-            wxString msg = _("The Clangd client plugin cannot run while the \"Code completion\" plugin is enabled.");
-            msg << _("\nThe Clangd client plugin will now inactivate itself. :-(");
-            msg << _("\n\nIf you wish to use the Clangd_client rather than the older CodeCompletion plugin,");
-            msg << _("\nnavigate to Plugins->Manage plugins... and disable CodeCompletion, then enable Clangd_client.");
-            msg << _("\n\nRestart CodeBlocks after closing the \"Manage plugins\" dialog.");
-            msg << ("\n\n-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.\n");
-            msg << ("Only one (Clangd_Client or CodeCompletion) should be enabled.");
-            wxWindow * pTopWindow = GetTopWxWindow();
-            //avoid later assert in PluginManager if user changes selection in parent window
-            pTopWindow->Freeze();
-            cbMessageBox(msg, "Clangd_client plugin", wxOK, pTopWindow);
-            pTopWindow->Thaw();
-            pTopWindow = Manager::Get()->GetAppWindow();
-
-            if (pTopWindow)
-            {
-                // Disable ourself from the application's event handling chain...
-                // which cbPlugin.cpp just placed before calling OnAttach()
-                if (GetParseManager()->FindEventHandler(this))
-                {
-                    GetParseManager()->FindEventHandler(this)->SetEvtHandlerEnabled(false);
-                }
-            }
-
-            pInfo->version = appVersion.GetVersion().BeforeFirst(' ') + " Inactive";
-            //-SetClangdClient_Disabled(); <- overridden when "Manager plugins" dialog closes, doesnt work
-            return;
-        }
+        ccDllFolder = ConfigManager::GetPluginsFolder(false); //Get local plugins folder
+        ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion.dll").Exists();
     }
 
-    m_OldCC_enabled = false;
+    //PluginManager* pPlgnMgr = Manager::Get()->GetPluginManager();
+    //const PluginInfo* pCCinfo = pPlgnMgr->GetPluginInfo("CodeCompletion");
+    if (m_OldCC_enabled and ccDllExists)
+    {
+        // Old CodeCompletion is loaded and running
+        wxString msg = _("The Clangd client plugin cannot run while the \"Code completion\" plugin is enabled.");
+        msg << _("\nThe Clangd client plugin will now inactivate itself. :-(");
+        msg << _("\n\nIf you wish to use the Clangd_client rather than the older CodeCompletion plugin,");
+        msg << _("\nnavigate to Plugins->Manage plugins... and disable CodeCompletion, then enable Clangd_client.");
+        msg << _("\n\nRestart CodeBlocks after closing the \"Manage plugins\" dialog.");
+        msg << ("\n\n-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.\n");
+        msg << ("Only one (Clangd_Client or CodeCompletion) should be enabled.");
+        wxWindow * pTopWindow = GetTopWxWindow();
+        //avoid later assert in PluginManager if user changes selection in parent window
+        pTopWindow->Freeze();
+        cbMessageBox(msg, "Clangd_client plugin", wxOK, pTopWindow);
+        pTopWindow->Thaw();
+        pTopWindow = Manager::Get()->GetAppWindow();
 
-    if (m_CC_initDeferred)
+        if (pTopWindow)
+        {
+            // Disable ourself from the application's event handling chain...
+            // which cbPlugin.cpp just placed before calling OnAttach()
+            if (GetParseManager()->FindEventHandler(this))
+            {
+                GetParseManager()->FindEventHandler(this)->SetEvtHandlerEnabled(false);
+            }
+        }
+
+        pInfo->version = appVersion.GetVersion().BeforeFirst(' ') + " Inactive";
+        return;
+    }//endif Old CC is running
+
+    // If oldCC is enabled but the dll is missing, behave like oldCC is disabled.
+    m_OldCC_enabled = m_OldCC_enabled and ccDllExists;
+
+    // Restart CB when ctor Init was defered or when we just enabled it.
+    if (((not m_OldCC_enabled) and m_CC_initDeferred) /* or (not m_ClgdClientEnabled)*/)
     {
         // Old CC is disabled but we haven't initialize ourself.
         cbMessageBox(_("Clang_Client plugin needs you to restart CodeBlocks before it can function properly."),
@@ -808,6 +821,16 @@ void ClgdCompletion::OnRelease(bool appShutDown)
         // or that it doesn't exist. Thus the nullLog.
         wxLogNull nullLog;
         wxRemoveFile(compileCommandsFilename);
+    }
+
+    // If the plugins is being disabled only (ie., CB is NOT shutting down)
+    // emit a warning that CB should be reloaded to clear out resouces that may
+    // conflict with enabling old CodeCompletion.
+    if (not appShutDown)
+    {
+        wxString msg = _("You should RESTART Code::Blocks to remove Clangd_Client resource");
+        msg += _("\n  if you intend to re-enable the older CodeCompletion plugin.");
+        cbMessageBox(msg, _("RESTART required"), wxOK, GetTopWxWindow());
     }
 }
 // ----------------------------------------------------------------------------
@@ -1191,7 +1214,7 @@ void ClgdCompletion::OnPluginAttached(CodeBlocksEvent & event)
         {
             wxString msg = _("The old CodeCompletion plugin should not be enabled when 'Clangd_client' is running.");
             msg << _("\nThey are not compatible with one another.");
-            msg << _("\n\nPlease restart Code::Blocks to avoid the effects of these incompatibilities.");
+            msg << _("\n\nPlease RESTART Code::Blocks to avoid the effects of these incompatibilities.");
             cbMessageBox(msg, _("ERROR"), wxOK, GetTopWxWindow());
         }
 
@@ -1416,7 +1439,8 @@ std::vector<ClgdCompletion::CCToken> ClgdCompletion::GetAutocompList(bool isAuto
                 return tokens;    //return empty tokens
             }
 
-            m_CompletionTokens.clear(); //clear to use next time and return the token //(ph 2022/07/10)
+            //- m_CompletionTokens.clear(); //clear to use next time and return the token //(ph 2022/07/10)
+            // ^^ Don't clear; a call to show html documentation popup may need them.  //(ph 2022/09/12)
             GetLSPclient(ed)->LSP_CompletionRequest(ed);
         }
         else
@@ -1595,6 +1619,11 @@ wxString ClgdCompletion::GetDocumentation(const CCToken & token)
         return wxString();
     }
 
+    if (GetCompletionTokens()->empty())
+    {
+        return wxString();
+    }
+
     // The token id is actually an index into m_CompletionTokens
     ClgdCCToken cccToken = GetCompletionTokens()->at(token.id);
     return pParser->GetCompletionPopupDocumentation(cccToken);
@@ -1695,7 +1724,8 @@ void ClgdCompletion::LSP_DoAutocomplete(const CCToken & token, cbEditor * ed)   
                 CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex);
             }
 
-            m_CompletionTokens.clear(); //Say we're done with the completion list
+            //-m_CompletionTokens.clear(); //Say we're done with the completion list
+            // Don't clear the cache, user may ask for html documentation //(ph 2022/09/12)
         }
 
     } unlockTokenTree;
@@ -1832,7 +1862,7 @@ void ClgdCompletion::LSP_DoAutocomplete(const CCToken & token, cbEditor * ed)   
         if ((token.id >= 0) and (int(m_CompletionTokens.size()) > token.id))
         {
             clgdCCTokenIdx = token.id;
-            cccToken = m_CompletionTokens[clgdCCTokenIdx]; //crashes
+            cccToken = m_CompletionTokens[clgdCCTokenIdx];
         }
 
         wxString tokenArgs;
@@ -2596,9 +2626,22 @@ void ClgdCompletion::OnRenameSymbols(cb_unused wxCommandEvent & event)
         return;
     }
 
+    // If any active editors are modified emit warning message
+    EditorManager * pEdMgr = Manager::Get()->GetEditorManager();
+
+    for (int ii = 0; ii < pEdMgr->GetEditorsCount(); ++ii)
+    {
+        if (pEdMgr->GetEditor(ii)->GetModified())
+        {
+            wxString msg = _("Some editors may need saving\n before refactoring can be successful.");
+            InfoWindow::Display("Some editors modified", msg, 6000);
+            break;
+        }
+    }
+
     const int pos = pEditor->GetControl()->GetCurrentPos();
-    //const int start = pEditor->GetControl()->WordStartPosition(pos, true);
-    //const int end = pEditor->GetControl()->WordEndPosition(pos, true);
+    //-const int start = pEditor->GetControl()->WordStartPosition(pos, true);
+    //-const int end = pEditor->GetControl()->WordEndPosition(pos, true);
     wxString replaceText = cbGetTextFromUser(_("Rename symbols under cursor"),
                                              _("Code Refactoring"),
                                              targetText,
@@ -3150,7 +3193,6 @@ void ClgdCompletion::OnAppStartupDone(CodeBlocksEvent & event)
             if (cbMessageBox(msg, _("ERROR: Clangd client"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
             {
                 cfg->Write(_T("/LLVM_MasterPath"), fnClangdPath.GetFullPath());
-                cfg->Flush();
             }
         }
         else
@@ -3623,7 +3665,7 @@ bool ClgdCompletion::DoUnlockClangd_CacheAccess(cbProject * pcbProject)
     wxString lineItemExe = wxString();
     success = false;
 
-    for (size_t ii = lockFile.GetLineCount(); ii-- > 0;)
+    for (size_t ii = lockFile.GetLineCount(); ii-- > 0;) //loop from last line to first
     {
         wxString lineItem = lockFile.GetLine(ii);
         lineItem.BeforeFirst(';').ToLong(&lineItemPid);
@@ -6262,7 +6304,7 @@ void ClgdCompletion::UpdateEditorSyntax(cbEditor * ed)
     ed->GetControl()->Colourise(0, -1);
 }
 // ----------------------------------------------------------------------------
-void ClgdCompletion::OnToolbarTimer(wxCommandEvent & event)
+void ClgdCompletion::InvokeToolbarTimer(wxCommandEvent & event) //(ph 2022/08/31)
 // ----------------------------------------------------------------------------
 {
     // Allow others to call OnToolbarTimer() via event.     //(ph 2021/09/11)
@@ -6625,11 +6667,6 @@ wxString ClgdCompletion::VerifyEditorParsed(cbEditor * pEd)
         return msg;
     }
 
-    ////    if (pProject == GetParseManager()->GetProxyProject())
-    ////    {
-    ////        msg += _("\nAssociated with ProxyProject");
-    ////        return msg;
-    ////    }
     ProcessLanguageClient * pClient = GetLSPclient(pProject);
 
     if (not GetLSPclient(pProject))
@@ -6642,30 +6679,23 @@ wxString ClgdCompletion::VerifyEditorParsed(cbEditor * pEd)
     bool isEditorOpen         = isEditorInitialized ? GetLSPclient(pEd)->GetLSP_EditorIsOpen(pEd) : false;
     bool isFileParsing        = pClient ? pClient->IsServerFilesParsing(pEd->GetFilename()) : false;
     bool isEditorParsed       = isEditorOpen ? GetLSP_IsEditorParsed(pEd) : false;
-    //-bool hasDocSymbols        = pClient ? pClient->GetLSP_EditorHasSymbols(pEd) : false;
     msg.Clear();
 
     if (not isEditorInitialized)
-    {
-        msg = wxString::Format(_("Try again...\nEditor is NOT fully INITIALIZED.\n%s"), pEd->GetFilename());
-    }
+        msg = wxString::Format(_("Try again...\nEditor is NOT fully INITIALIZED.\n%s"),
+                               wxFileName(pEd->GetFilename()).GetFullName());
     else
         if (not isEditorOpen)
-        {
-            msg = wxString::Format(_("Try again...\nEditor is queued for PARSING.\n%s"), pEd->GetFilename());
-        }
+            msg = wxString::Format(_("Try again...\nEditor is queued for PARSING.\n%s"),
+                                   wxFileName(pEd->GetFilename()).GetFullName());
         else
             if (isFileParsing or (not isEditorParsed))
-            {
-                msg = wxString::Format(_("Try again...\nEditor is BEING PARSED.\n%s"), pEd->GetFilename());
-            }
-
-    //-else if (not hasDocSymbols)
-    //-   msg = wxString::Format(_("Try again...\nEditor symbols DOWN LOADING. \n%s"), pEd->GetFilename() );
+                msg = wxString::Format(_("Try again...\nEditor is BEING PARSED.\n%s"),
+                                       wxFileName(pEd->GetFilename()).GetFullName());
 
     if (isEditorOpen and (not isFileParsing) and (not isEditorParsed))
     {
-        //somethings wrong
+        //something is wrong
         msg = _("Error: Something went wrong.\n Editor is opened for clangd_client. But...");
 
         if (not isFileParsing)
@@ -6678,6 +6708,9 @@ wxString ClgdCompletion::VerifyEditorParsed(cbEditor * pEd)
             msg += "\n Editor is not parsed.";
         }
 
+        msg += "\n" + pEd->GetFilename();
+        msg += "\nProject:";
+        pProject ? msg += pProject->GetTitle() : "none";
         CCLogger::Get()->DebugLogError(msg);
         cbMessageBox(msg, "ERROR: VerifyEditorParsed()");
     }

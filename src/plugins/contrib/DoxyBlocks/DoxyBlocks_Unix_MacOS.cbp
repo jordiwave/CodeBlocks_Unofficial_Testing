@@ -25,7 +25,7 @@
 					<Add option="-DcbDEBUG" />
 					<Add directory="../../../include" />
 					<Add directory="../../../include/tinyxml" />
-					<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
@@ -42,7 +42,7 @@
 					<Add after="zip -rq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/DoxyBlocks.zip images" />
 
 					<!-- copy images -->
-					<Add after="cp *.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/ > nul" />
+					<Add after="cp *.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/settings/ &gt; $CMD_NULL 2&gt; $CMD_NULL" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

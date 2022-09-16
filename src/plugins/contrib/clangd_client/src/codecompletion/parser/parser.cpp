@@ -741,6 +741,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
             if (pEditor and (pEditor->GetFilename() == filename))
             {
                 wxCommandEvent toolBarTimerEvt(wxEVT_COMMAND_MENU_SELECTED, XRCID("idToolbarTimer"));
+                //-wxCommandEvent toolBarTimerEvt(wxEVT_TIMER, XRCID("idToolbarTimer"));
                 AddPendingEvent(toolBarTimerEvt);
             }
         }

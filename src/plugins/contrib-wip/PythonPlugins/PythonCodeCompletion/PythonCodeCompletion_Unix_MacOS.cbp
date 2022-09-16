@@ -33,7 +33,7 @@
 					<Add after="cd resources &amp;&amp; zip -rq9 $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/PythonCodeCompletion.zip images" />
 
 					<!-- copy other files  -->
-					<Add after="cp ./python/python_completion_server.py $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/python &gt; /dev/null 2&gt; /dev/null" />
+					<Add after="cp ./python/python_completion_server.py $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/python &gt; $CMD_NULL 2&gt; $CMD_NULL" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

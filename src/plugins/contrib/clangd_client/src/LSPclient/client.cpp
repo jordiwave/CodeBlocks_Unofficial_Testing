@@ -2319,7 +2319,10 @@ void ProcessLanguageClient::LSP_DidSave(cbEditor * pcbEd)
 
     if (not GetLSP_IsEditorParsed(pcbEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pcbEd->GetFilename()));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pcbEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pcbEd).Length() ? GetEditorsProjectTitle(pcbEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -2386,7 +2389,10 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor * pcbEd, int argCaretPos
 
     if (not GetLSP_IsEditorParsed(pcbEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pcbEd->GetFilename()));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pcbEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pcbEd).Length() ? GetEditorsProjectTitle(pcbEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -2478,7 +2484,10 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor * pcbEd, int argCaretPo
 
     if (not GetLSP_IsEditorParsed(pcbEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pcbEd->GetFilename()));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pcbEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pcbEd).Length() ? GetEditorsProjectTitle(pcbEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -2574,7 +2583,10 @@ void ProcessLanguageClient::LSP_FindReferences(cbEditor * pEd, int argCaretPosit
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pEd).Length() ? GetEditorsProjectTitle(pEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -2653,7 +2665,10 @@ void ProcessLanguageClient::LSP_RequestRename(cbEditor * pEd, int argCaretPositi
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pEd).Length() ? GetEditorsProjectTitle(pEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -2727,7 +2742,10 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t rrid)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pEd).Length() ? GetEditorsProjectTitle(pEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -2865,7 +2883,8 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t rri
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        wxString msg = wxString::Format("%s: %s not yet parsed.", __FUNCTION__, pEd->GetFilename());
+        wxString msg = wxString::Format("%s: %s not yet parsed.", __FUNCTION__,
+                                        wxFileName(pEd->GetFilename()).GetFullName());
         //-InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()) );
         CCLogger::Get()->DebugLog(msg);
         return;
@@ -3080,7 +3099,10 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed.\n%s"), pEd->GetFilename(), __FUNCTION__));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pEd).Length() ? GetEditorsProjectTitle(pEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -3199,7 +3221,10 @@ void ProcessLanguageClient::LSP_CompletionRequest(cbEditor * pEd, int rrid)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pEd).Length() ? GetEditorsProjectTitle(pEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -3286,7 +3311,8 @@ void ProcessLanguageClient::LSP_Hover(cbEditor * pEd, int posn, int rrid)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
+        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."),
+                                                    wxFileName(pEd->GetFilename()).GetFullName()));
         return;
     }
 
@@ -3371,7 +3397,10 @@ void ProcessLanguageClient::LSP_SignatureHelp(cbEditor * pEd, int posn)
 
     if (not GetLSP_IsEditorParsed(pEd))
     {
-        InfoWindow::Display("LSP", wxString::Format(_("%s\n not yet parsed."), pEd->GetFilename()));
+        wxString msg = wxString::Format(_("%s\nnot yet parsed.\nProject:"),
+                                        wxFileName(pEd->GetFilename()).GetFullName());
+        msg += GetEditorsProjectTitle(pEd).Length() ? GetEditorsProjectTitle(pEd) : "None";
+        InfoWindow::Display("LSP: File not yet parsed", msg) ;
         return;
     }
 
@@ -4362,27 +4391,26 @@ void ProcessLanguageClient::CreateDiagnosticsLog()
         widths.Add(48);
         widths.Add(640);
         const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
+        wxString prefix(ConfigManager::GetDataFolder() + "/resources.zip#zip:/images/");
 #if wxCHECK_VERSION(3, 1, 6)
-        wxString prefix(ConfigManager::GetDataFolder() + wxString::Format("/resources.zip#zip:/images/%dx%d/", uiSize, uiSize));
-        wxBitmapBundle  * logbmp = new wxBitmapBundle(cbLoadBitmapBundle(prefix, "filefind.png", uiSize, wxBITMAP_TYPE_PNG));
+        const double uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
+        wxBitmapBundle * logbmp = new wxBitmapBundle(cbLoadBitmapBundle(prefix, "filefind.png", wxRound(uiSize / uiScaleFactor), wxBITMAP_TYPE_PNG));
 #else
-        const wxString imgFile = ConfigManager::GetDataFolder()
-                                 + wxString::Format("/resources.zip#zip:/images/%dx%d/filefind.png", uiSize, uiSize);
-        const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
-        wxBitmap * logbmp = new wxBitmap(cbLoadBitmapScaled(imgFile, wxBITMAP_TYPE_PNG, uiScaleFactor));
+        prefix << wxString::Format("%dx%d/", uiSize, uiSize);
+        wxBitmap * logbmp = new wxBitmap(cbLoadBitmap(prefix + "filefind.png", wxBITMAP_TYPE_PNG));
 #endif
         m_pDiagnosticsLog = new LSPDiagnosticsResultsLog(titles, widths, GetLSP_IgnoredDiagnostics());
         CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pDiagnosticsLog, _("LSP messages"), logbmp);
         Manager::Get()->ProcessEvent(evt);
         // Ask DragScroll plugin to apply its support for this log
         wxWindow * pWindow = m_pDiagnosticsLog->m_pControl;
-        cbPlugin * pPlgn = Manager::Get()->GetPluginManager()->FindPluginByName("cbDragScroll");
+        cbPlugin * pPlgn = Manager::Get()->GetPluginManager()->FindPluginByName(_T("cbDragScroll"));
 
         if (pWindow && pPlgn)
         {
             wxCommandEvent dsEvt(wxEVT_COMMAND_MENU_SELECTED, XRCID("idDragScrollAddWindow"));
             dsEvt.SetEventObject(pWindow);
-            pPlgn->ProcessEvent(dsEvt); //(ph 2022/02/12)
+            pPlgn->ProcessEvent(dsEvt);
         }
     }
 }//end createLog

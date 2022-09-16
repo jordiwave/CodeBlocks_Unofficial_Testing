@@ -22,7 +22,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.38 2022/08/26")
+#define VERSION wxT("0.2.41 2022/09/15")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -53,8 +53,24 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.41    Commit 2022/09/15 rev 79
+//          Correct search for incorrect Linux binary name
+//0.2.40    Commit 2022/09/14 rev 78
+//          Correct miss-applied fix for ticket #67 in previous rev 77
+//0.2.39    Commit 2022/09/13 rev 77
+//          2022/09/12
+//          Remove some m_CodecompletionTokens.clear() to preserve tokens for html doc requests.
+//              Fixes crash when double clicking on completion selection.
+//          Apply AndrewCo/Miguel ticket #67 fix for LSP log image changes in wx3.1.6
+//          2022/09/2
+//          Info::Display() msgs: Shorten filenames to FullName() from FullPathName()
+//          2022/09/1
+//          Emit warning when attempting to enable older CC after running clangd_client.
+//              Old CC attempts to reuse incompatible clangd_client resources.
+//          2022/08/31
+//          Changes to get working on pre-wx315 versions (esp. unix 3.0)
 //0.2.38    Commit 2022/08/26 rev 76
-//          2022/08/26 Fix annoying switch the LSP messages tab (ticket #66)
+//          2022/08/26 Fix annoying switch to the LSP messages tab (ticket #66)
 //          2022/08/24
 //          Remove Files from ~ProxyProject~ when file is closed.
 //          The parser in a Workspace with the active file NOT owned by the old active project

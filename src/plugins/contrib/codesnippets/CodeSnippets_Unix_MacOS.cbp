@@ -23,7 +23,7 @@
 					<Add after="cd resources &amp;&amp; zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/codesnippets.zip manifest.xml" />
 
 					<!-- copy PNG files  -->
-					<Add after="cp ./resources/*.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/codesnippets/ &gt; /dev/null 2&gt; /dev/null" />
+					<Add after="cp ./resources/*.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/codesnippets/ &gt; $CMD_NULL 2&gt; $CMD_NULL" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

@@ -999,6 +999,17 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
 
             return nullptr;
         }
+        wxString GetEditorsProjectTitle(cbEditor * pEditor)
+        {
+            if (pEditor->GetProjectFile() and pEditor->GetProjectFile()->GetParentProject())
+            {
+                return pEditor->GetProjectFile()->GetParentProject()->GetTitle();
+            }
+            else
+            {
+                return wxString();
+            }
+        }
 
 };
 // ----------------------------------------------------------------------------

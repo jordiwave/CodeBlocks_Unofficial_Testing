@@ -102,7 +102,11 @@ void * ProcessReaderThread::Entry()
                                 //e.SetProcess(m_process);
                                 //m_notifiedWindow->AddPendingEvent(e);
                                 //std::string stdstr = buff.ToStdString(); loses data
+#if wxCHECK_VERSION(3,1,5)
                                 std::string stdstr = buff.utf8_string(); //(ph 2022/06/20)
+#else
+                                std::string stdstr = buff.ToStdString(wxConvUTF8);
+#endif
                                 e.SetPayload<std::string *>(&stdstr);
                                 m_notifiedWindow->ProcessEvent(e);
                             }
@@ -117,7 +121,11 @@ void * ProcessReaderThread::Entry()
                                 //e.SetProcess(m_process);
                                 //m_notifiedWindow->AddPendingEvent(e);
                                 //-std::string stdstr = buffErr.ToStdString(); loses data
+#if wxCHECK_VERSION(3,1,5)
                                 std::string stdstr = buff.utf8_string();
+#else
+                                std::string stdstr =  buff.ToStdString(wxConvUTF8);
+#endif
                                 e.SetPayload<std::string *>(&stdstr);
                                 m_notifiedWindow->ProcessEvent(e);
                             }

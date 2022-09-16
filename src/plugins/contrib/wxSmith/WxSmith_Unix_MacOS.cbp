@@ -33,7 +33,7 @@
 					<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip manifest.xml" />
 
 					<!-- Copy PNG files  -->
-					<Add after="cp -f ./wxwidgets/icons/*.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith/ > /dev/null 2> /dev/null" />
+					<Add after="cp -f ./wxwidgets/icons/*.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith/ &gt; $CMD_NULL 2&gt; $CMD_NULL" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

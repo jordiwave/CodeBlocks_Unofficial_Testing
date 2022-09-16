@@ -3439,7 +3439,9 @@ void ParseManager::OnEditorClosed(EditorBase * editor)
     }
 }
 
+// ----------------------------------------------------------------------------
 void ParseManager::InitCCSearchVariables()
+// ----------------------------------------------------------------------------
 {
     m_LastControl       = nullptr;
     m_LastFunctionIndex = -1;
@@ -3450,119 +3452,6 @@ void ParseManager::InitCCSearchVariables()
     m_LastPROC.Clear();
     Reset();
 }
-
-////bool ParseManager::AddProjectToParser(cbProject* project)
-////{
-////    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
-////    ParserBase* parser = GetParserByProject(project);
-////    if (parser)
-////        return false;
-////
-////    if (m_ParsedProjects.empty())
-////        return false;
-////
-////    m_ParsedProjects.insert(project);
-////    parser = GetParserByProject(project);
-////    if (!parser)
-////        return false;
-////    else if (!parser->UpdateParsingProject(project))
-////    {
-////        m_ParsedProjects.erase(project);
-////        return false;
-////    }
-////
-////    // TODO (ollydbg#1#) did exactly the same thing as the function ParseManager::DoFullParsing()?
-////    wxString log(wxString::Format(_("ParseManager::AddProjectToParser: Add project (%s) to parser"), prj.wx_str()));
-////    CCLogger::Get()->Log(log);
-////    CCLogger::Get()->DebugLog(log);
-////
-////    bool needParseMacros = false;
-////
-////    if (!AddCompilerDirs(project, parser))
-////        CCLogger::Get()->DebugLog(_T("ParseManager::AddProjectToParser: AddCompilerDirs failed!"));
-////
-////    if (!AddCompilerPredefinedMacros(project, parser))
-////        CCLogger::Get()->DebugLog(_T("ParseManager::AddProjectToParser: AddCompilerPredefinedMacros failed!"));
-////    else
-////        needParseMacros = true;
-////
-////    if (!AddProjectDefinedMacros(project, parser))
-////        CCLogger::Get()->DebugLog(_T("ParseManager::AddProjectToParser: AddProjectDefinedMacros failed!"));
-////    else
-////    {
-////        if(!needParseMacros)
-////            needParseMacros = true;
-////    }
-////
-////    if (project)
-////    {
-////        size_t fileCount = 0;
-////        for (FilesList::const_iterator fl_it = project->GetFilesList().begin(); fl_it != project->GetFilesList().end(); ++fl_it)
-////        {
-////            ProjectFile* pf = *fl_it;
-////            if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
-////            {
-////                if ( AddFileToParser(project, pf->file.GetFullPath(), parser) )
-////                    ++fileCount;
-////            }
-////        }
-////        for (FilesList::const_iterator fl_it = project->GetFilesList().begin(); fl_it != project->GetFilesList().end(); ++fl_it)
-////        {
-////            ProjectFile* pf = *fl_it;
-////            if (pf && (FileTypeOf(pf->relativeFilename) == ftSource || FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
-////            {
-////                if ( AddFileToParser(project, pf->file.GetFullPath(), parser) )
-////                    fileCount++;
-////            }
-////        }
-////
-////        CCLogger::Get()->DebugLog(wxString::Format(_("ParseManager::AddProjectToParser: Done adding %lu files of project (%s) to parser."), static_cast<unsigned long>(fileCount), prj.wx_str()));
-////
-////        // in some cases, all the files were already be parsed, so fileCount is still 0
-////        return ((fileCount>0) || needParseMacros);
-////    }
-////    else
-////    {
-////        EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
-////        if (editor && AddFileToParser(project, editor->GetFilename(), parser))
-////        {
-////            wxFileName file(editor->GetFilename());
-////            parser->AddIncludeDir(file.GetPath());
-////            m_StandaloneFiles.Add(editor->GetFilename());
-////
-////            CCLogger::Get()->DebugLog(wxString::Format(_("ParseManager::AddProjectToParser: Done adding stand-alone file (%s) of editor to parser."), editor->GetFilename().wx_str()));
-////            return true;
-////        }
-////    }
-////    return false;
-////}
-
-////bool ParseManager::RemoveProjectFromParser(cbProject* project)
-////{
-////    ParserBase* parser = GetParserByProject(project);
-////    if (!parser)
-////        return false;
-////
-////    // Remove from the cbProject set
-////    m_ParsedProjects.erase(project);
-////
-////    if (!project || m_ParsedProjects.empty())
-////        return true;
-////
-////    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
-////    wxString log(wxString::Format(_("Remove project (%s) from parser"), prj.wx_str()));
-////    CCLogger::Get()->Log(log);
-////    CCLogger::Get()->DebugLog(log);
-////
-////    for (FilesList::const_iterator fl_it = project->GetFilesList().begin(); fl_it != project->GetFilesList().end(); ++fl_it)
-////    {
-////        ProjectFile* pf = *fl_it;
-////        if (pf && ParserCommon::FileType(pf->relativeFilename) != ParserCommon::ftOther)
-////            RemoveFileFromParser(project, pf->file.GetFullPath());
-////    }
-////
-////    return true;
-////}
 // ----------------------------------------------------------------------------
 bool ParseManager::InstallClangdProxyProject()
 // ----------------------------------------------------------------------------

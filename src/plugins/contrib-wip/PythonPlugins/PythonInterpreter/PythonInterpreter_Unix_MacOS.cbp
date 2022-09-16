@@ -32,7 +32,7 @@
 					<Add after="zip -qj9 $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/PythonInterpreter.zip resources/manifest.xml" />
 
 					<!-- copy other files  -->
-					<Add after="cp ./python/interp.py $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/python &gt; /dev/null 2&gt; /dev/null" />
+					<Add after="cp ./python/interp.py $(PROJECT_DIR)../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/python &gt; $CMD_NULL 2&gt; $CMD_NULL" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

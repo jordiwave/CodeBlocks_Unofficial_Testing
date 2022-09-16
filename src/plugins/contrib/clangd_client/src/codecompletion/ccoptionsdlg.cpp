@@ -386,7 +386,8 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent & event)
 {
     // ccmanager's config Settings/Editor/Code completion
     ConfigManager * ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
-    bool en = ccmcfg->ReadBool(_T("/code_completion"), false); //<==  CCManagers  main setting, NOT clangd_client's
+    //-bool en = ccmcfg->ReadBool(_T("/code_completion"), false); //<==  CCManagers  main setting, NOT clangd_client's
+    bool en = Manager::Get()->GetConfigManager("plugins")->ReadBool("/Clangd_Client", false);
     bool aap = XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue();
     // Page "clangd_client"
     XRCCTRL(*this, "chkUseSmartSense",              wxCheckBox)->Enable(en);

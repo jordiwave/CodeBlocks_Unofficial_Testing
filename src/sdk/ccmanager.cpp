@@ -1380,6 +1380,12 @@ void CCManager::OnPopupScroll(wxMouseEvent & event)
         return;
     }
 
+    if (not editor->AutoCompActive())
+    {
+        event.Skip();
+        return;
+    }
+
     const wxPoint & pos = editor->ClientToScreen(event.GetPosition());
 
     if (m_pPopup && m_pPopup->GetScreenRect().Contains(pos))
@@ -1576,24 +1582,42 @@ void CCManager::DoBufferedCC(cbStyledTextCtrl * stc)
 
 void CCManager::DoHidePopup()
 {
+#ifdef __WXMSW__
+
+    if (m_pLastEditor && m_pLastEditor->GetControl() and (not m_pLastEditor->GetControl()->AutoCompActive()))
+    {
+        if (m_EdAutoCompMouseTraps.count(m_pLastEditor))
+        {
+            m_pLastEditor->GetControl()->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
+            m_EdAutoCompMouseTraps.erase(m_pLastEditor);
+        }
+    }
+
+#endif // __WXMSW__
+
     if (!m_pPopup->IsShown())
     {
         return;
     }
 
     m_pPopup->Hide();
-#ifdef __WXMSW__
-
-    if (m_pLastEditor && m_pLastEditor->GetControl())
-    {
-        m_pLastEditor->GetControl()->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
-    }
-
-#endif // __WXMSW__
 }
 
 void CCManager::DoShowDocumentation(cbEditor * ed)
 {
+#ifdef __WXMSW__
+
+    if (ed->GetControl() and ed->GetControl()->AutoCompActive())
+    {
+        if (not m_EdAutoCompMouseTraps.count(ed))
+        {
+            ed->GetControl()->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
+            m_EdAutoCompMouseTraps[ed] = true;
+        }
+    }
+
+#endif // __WXMSW__
+
     if (!Manager::Get()->GetConfigManager("ccmanager")->ReadBool("/documentation_popup", true))
     {
         return;
@@ -1607,6 +1631,14 @@ void CCManager::DoShowDocumentation(cbEditor * ed)
     }
 
     if (m_LastAutocompIndex == wxNOT_FOUND || m_LastAutocompIndex >= (int)m_AutocompTokens.size())
+    {
+        return;
+    }
+
+    // If the AutoCompPopup is not shown, don't show the html documentation popup either (ticket 1168)
+    cbStyledTextCtrl * stc = ed->GetControl();
+
+    if ((not stc) or (not stc->AutoCompActive()))
     {
         return;
     }
@@ -1629,9 +1661,6 @@ void CCManager::DoShowDocumentation(cbEditor * ed)
     if (!m_pPopup->IsShown())
     {
         m_pPopup->Show();
-#ifdef __WXMSW__
-        ed->GetControl()->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
-#endif // __WXMSW__
     }
 }
 
