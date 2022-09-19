@@ -625,8 +625,7 @@ void GDBGenerateBacktrace::OnStart()
 
 GDBGenerateThreadsList::GDBGenerateThreadsList(GDBThreadsContainer & threads, int current_thread_id, LogPaneLogger * logger) :
     m_threads(threads),
-    m_logger(logger),
-    m_current_thread_id(current_thread_id)
+    m_logger(logger)
 {
 }
 
@@ -2350,7 +2349,6 @@ void GDBWatchCollapseAction::OnCommandOutput(CommandID const & id, ResultParser 
 
 GDBStackVariables::GDBStackVariables(LogPaneLogger * logger, cb::shared_ptr<dbg_mi::GDBWatch> watchLocalsandArgs, bool bWatchFuncLocalsArgs):
     m_WatchLocalsandArgs(watchLocalsandArgs),
-    m_bWatchFuncLocalsArgs(bWatchFuncLocalsArgs),
     m_logger(logger)
 {
 }

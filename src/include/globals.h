@@ -306,6 +306,12 @@ extern DLLIMPORT wxBitmapBundle cbLoadBitmapBundle(const wxString & prefix, cons
                                                    int minSize,
                                                    wxBitmapType bitmapType = wxBITMAP_TYPE_PNG,
                                                    wxFileSystem * fs = nullptr);
+
+/// This function loads a bitmap bundle from a SVG on disk.
+/// @param fs File system used to load the image from. If nullptr the default would be used.
+extern DLLIMPORT wxBitmapBundle cbLoadBitmapBundleFromSVG(const wxString & filename,
+                                                          const wxSize & size,
+                                                          wxFileSystem * fs = nullptr);
 #endif
 
 /// Loads bitmap from this. Use it when you need a bitmap which takes into account the scaling

@@ -49,6 +49,7 @@
 #include "cbworkspace.h"    //(ph 2022/04/19)
 #include <cbstyledtextctrl.h>
 #include <editor_hooks.h>
+#include "filefilters.h"
 #include <filegroupsandmasks.h>
 #include <multiselectdlg.h>
 
@@ -494,20 +495,22 @@ ClgdCompletion::ClgdCompletion() :
     m_CC_initDeferred = true;
     m_OldCC_enabled = Manager::Get()->GetConfigManager("plugins")->ReadBool("/CodeCompletion", true);
     wxString ccDllFolder = ConfigManager::GetPluginsFolder(true); //Get global plugins folder
-#if defined(_WIN32)
-    bool ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion.dll").Exists();
-#else
-    bool ccDllExists =  wxFileName(ccDllFolder + sep + "libcodecompletion.so").Exists();
-#endif
+    bool ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion" + FileFilters::DYNAMICLIB_DOT_EXT).Exists();
+
+    if (not ccDllExists)
+    {
+        ccDllExists =  wxFileName(ccDllFolder + sep + "libcodecompletion" + FileFilters::DYNAMICLIB_DOT_EXT).Exists();
+    }
 
     if (not ccDllExists) // Check if local plugins folder has codecompletion.dll
     {
         ccDllFolder = ConfigManager::GetPluginsFolder(false); //Get local plugins folder
-#if defined(_WIN32)
-        ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion.dll").Exists();
-#else
-        ccDllExists =  wxFileName(ccDllFolder + sep + "libcodecompletion.so").Exists();
-#endif
+        ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion" + FileFilters::DYNAMICLIB_DOT_EXT).Exists();
+
+        if (not ccDllExists)
+        {
+            ccDllExists =  wxFileName(ccDllFolder + sep + "libcodecompletion" + FileFilters::DYNAMICLIB_DOT_EXT).Exists();
+        }
     }
 
     if (m_OldCC_enabled and ccDllExists)
@@ -587,12 +590,22 @@ void ClgdCompletion::OnAttach()
     pInfo->version = appVersion.GetVersion();
     m_OldCC_enabled = Manager::Get()->GetConfigManager("plugins")->ReadBool("/CodeCompletion", true);;
     wxString ccDllFolder = ConfigManager::GetPluginsFolder(true); //Get global plugins folder
-    bool ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion.dll").Exists();
+    bool ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion" + FileFilters::DYNAMICLIB_DOT_EXT).Exists();
+
+    if (not ccDllExists)
+    {
+        ccDllExists =  wxFileName(ccDllFolder + sep + "libcodecompletion" + FileFilters::DYNAMICLIB_DOT_EXT).Exists();
+    }
 
     if (not ccDllExists) // Check if local plugins folder has codecompletion.dll
     {
         ccDllFolder = ConfigManager::GetPluginsFolder(false); //Get local plugins folder
-        ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion.dll").Exists();
+        ccDllExists =  wxFileName(ccDllFolder + sep + "codecompletion" + FileFilters::DYNAMICLIB_DOT_EXT).Exists();
+
+        if (not ccDllExists)
+        {
+            ccDllExists =  wxFileName(ccDllFolder + sep + "libcodecompletion" + FileFilters::DYNAMICLIB_DOT_EXT).Exists();
+        }
     }
 
     //PluginManager* pPlgnMgr = Manager::Get()->GetPluginManager();

@@ -54,7 +54,6 @@ class GDBBreakpoint : public cbBreakpoint
         };
 
         GDBBreakpoint(cbProject * project, dbg_mi::LogPaneLogger * logger) :
-            m_pLogger(logger),
             m_type(bptCode),
             m_project(project),
             m_filename(wxEmptyString),
@@ -75,7 +74,6 @@ class GDBBreakpoint : public cbBreakpoint
         }
 
         GDBBreakpoint(cbProject * project, dbg_mi::LogPaneLogger * logger, const wxString & filename, int line) :
-            m_pLogger(logger),
             m_type(bptCode),
             m_project(project),
             m_filename(filename),
@@ -378,8 +376,6 @@ class GDBBreakpoint : public cbBreakpoint
         void LoadBreakpointFromXML(tinyxml2::XMLElement * pElementBreakpoint, Debugger_GDB_MI * dbgGDB);
 
     private:
-        dbg_mi::LogPaneLogger * m_pLogger;
-
         BreakpointType m_type;          // The type of this breakpoint.
 
         cbProject * m_project;          // The Project the file belongs to.
@@ -595,12 +591,12 @@ class GDBWatch : public cbWatch
             full_watch = m_value;
         }
 
-        void GetType(wxString & type) const
+        void GetType(wxString & type) const override
         {
             type = m_type;
         }
 
-        void SetType(const wxString & type)
+        void SetType(const wxString & type) override
         {
             m_type = type;
         }
@@ -622,7 +618,7 @@ class GDBWatch : public cbWatch
         wxString GetWatchFormatTowxString();
         WatchFormat GetWatchFormatFromwxString(wxString wFormat);
 
-        wxString GetDebugString() const
+        wxString GetDebugString() const override
         {
             m_debug_string = m_id + "->" + m_symbol + " = " + m_value;
             return m_debug_string;
@@ -762,7 +758,6 @@ class GDBMemoryRangeWatch  : public cbWatch
 
     private:
         cbProject * m_project;              // The Project the watch belongs to.
-        dbg_mi::LogPaneLogger * m_pLogger;
         wxString m_GDBWatchClassName;
 
         uint64_t m_address;

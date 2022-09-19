@@ -786,6 +786,19 @@ void CCManager::OnEditorClose(CodeBlocksEvent & event)
     if (ed == m_pLastEditor)
     {
         m_pLastEditor = nullptr;
+#if defined(__WXMSW__)
+
+        // If the closing editor holds a popup wxEVT_MOUSEWHEEL connect, disconnect it.
+        // DoHidePopup() above may have disconnected m_LastEditor but not the closing editor.
+        // This happens when a non-active editor is closed while m_pLastEditor == the active editor.
+        // This may not happen anymore, but it's happened in the past and CB hung. 2022/09/17
+        if (ed and ed->GetControl() and m_EdAutocompMouseTraps.count(ed))
+        {
+            ed->GetControl()->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
+            m_EdAutocompMouseTraps.erase(ed);
+        }
+
+#endif
     }
 
     if (ed && ed->GetControl())
@@ -1586,10 +1599,12 @@ void CCManager::DoHidePopup()
 
     if (m_pLastEditor && m_pLastEditor->GetControl() and (not m_pLastEditor->GetControl()->AutoCompActive()))
     {
-        if (m_EdAutoCompMouseTraps.count(m_pLastEditor))
+        // Does this editor have a wxEVT_MOUSEWHEEL event connection? If so, disconnect it.
+        if (m_EdAutocompMouseTraps.count(m_pLastEditor))
         {
             m_pLastEditor->GetControl()->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
-            m_EdAutoCompMouseTraps.erase(m_pLastEditor);
+            // Remove this editor from the map indicating there is no longer a connection.
+            m_EdAutocompMouseTraps.erase(m_pLastEditor);
         }
     }
 
@@ -1609,10 +1624,11 @@ void CCManager::DoShowDocumentation(cbEditor * ed)
 
     if (ed->GetControl() and ed->GetControl()->AutoCompActive())
     {
-        if (not m_EdAutoCompMouseTraps.count(ed))
+        if (not m_EdAutocompMouseTraps.count(ed))
         {
             ed->GetControl()->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
-            m_EdAutoCompMouseTraps[ed] = true;
+            // Enter this editor into the map indicating that a connection exists.
+            m_EdAutocompMouseTraps.insert(ed);
         }
     }
 

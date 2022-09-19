@@ -197,10 +197,10 @@ int GDBExecutor::LaunchProcess(wxString const & cmd, wxString const & cwd, int i
     m_child_pid = -1;
 #ifdef __WXMAC__
 
-    if (m_Pid == -1)
+    if (m_pid == -1)
     {
         // Great! We got a fake PID. Time to Go Fish with our "ps" rod:
-        m_Pid = 0;
+        m_pid = 0;
         pid_t mypid = getpid();
         wxString mypidStr;
         mypidStr << mypid;
@@ -210,7 +210,7 @@ int GDBExecutor::LaunchProcess(wxString const & cmd, wxString const & cwd, int i
         wxArrayString psErrors;
         psCmd << wxT("/bin/ps -o ppid,pid,command");
         m_logger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format(_("Executing: %s"), psCmd), LogPaneLogger::LineType::Debug);
-        int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
+        wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
         mypidStr << wxT(" ");
 
         for (int i = 0; i < psOutput.GetCount(); ++i)
@@ -225,7 +225,7 @@ int GDBExecutor::LaunchProcess(wxString const & cmd, wxString const & cwd, int i
 
                 if (pidStr.ToLong(&pspid))
                 {
-                    m_Pid = pspid;
+                    m_pid = pspid;
                     break;
                 }
             }

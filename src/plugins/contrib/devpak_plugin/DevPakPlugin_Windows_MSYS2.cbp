@@ -1,124 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="DevPak Windows" />
-		<Option pch_mode="0" />
-		<Option default_target="default" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="default">
-				<Option output="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\plugins\devpakupdater.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\plugins\devpak_plugin" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<Option projectResourceIncludeDirsRelation="0" />
-				<ExtraCommands>
-					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Mode before="always" />
-					<Add after="zip ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\devpakupdater.zip manifest.xml *.xrc" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-		</Build>
-		<VirtualTargets>
-			<Add alias="All" targets="default;" />
-		</VirtualTargets>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="-mthreads" />
-			<Add option="-fexceptions" />
-			<Add option="-DBUILDING_PLUGIN" />
-			<Add option="-Winvalid-pch" />
-			<Add option="-DCB_PRECOMP" />
-			<Add option="-DHAVE_W32API_H" />
-			<Add option="-D__WXMSW__" />
-			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add option="-DWXUSINGDLL" />
-			<Add option="-DcbDEBUG" />
-			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="../../../include" />
-			<Add directory="../../../include/tinyxml" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-		</Compiler>
-		<ResourceCompiler>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-		</ResourceCompiler>
-		<Linker>
-			<Add option="-mthreads" />
-			<Add library="codeblocks" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
-			<Add library="bz2" />
-			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add option="-Wl,--enable-auto-import" />
-		</Linker>
-		<Unit filename="cbiniparser.cpp">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="cbiniparser.h">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="cbnetwork.cpp">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="cbnetwork.h">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="conf.cpp">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="conf.h">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="crc32.cpp">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="crc32.h">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="devpakinstaller.cpp">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="devpakinstaller.h">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="devpakupdater.cpp">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="devpakupdater.h">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="manifest.xml">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="manifest.rc" >
-			<Option compilerVar="WINDRES" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="mytar.cpp">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="mytar.h">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="update.xrc">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="updatedlg.cpp">
-			<Option target="default" />
-		</Unit>
-		<Unit filename="updatedlg.h">
-			<Option target="default" />
-		</Unit>
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
-	</Project>
-</CodeBlocks_project_file>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CodeBlocks_project_file>	<FileVersion major="1" minor="6" />	<Project>		<Option title="DevPak Windows" />		<Option pch_mode="0" />		<Option default_target="default" />		<Option compiler="gcc" />		<Build>			<Target title="default">				<Option output="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/devpakupdater.dll" prefix_auto="0" extension_auto="0" />				<Option object_output="../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/devpak_plugin" />				<Option type="3" />				<Option compiler="gcc" />				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />				<Option host_application="..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\codeblocks.exe" />				<Option run_host_application_in_terminal="0" />				<Option projectResourceIncludeDirsRelation="0" />				<ExtraCommands>					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />					<Mode before="always" />					<Add after="zip ..\..\..\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\devpakupdater.zip manifest.xml *.xrc" />					<Mode after="always" />				</ExtraCommands>			</Target>		</Build>		<VirtualTargets>			<Add alias="All" targets="default;" />		</VirtualTargets>		<Compiler>			<Add option="-Wall" />			<Add option="-std=$(#CB_BUILD.CPP_STD)" />			<Add option="$(#CB_BUILD.CFLAGS)" />			<Add option="-mthreads" />			<Add option="-fexceptions" />			<Add option="-DBUILDING_PLUGIN" />			<Add option="-Winvalid-pch" />			<Add option="-DCB_PRECOMP" />			<Add option="-DHAVE_W32API_H" />			<Add option="-D__WXMSW__" />			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />			<Add option="-DWXUSINGDLL" />			<Add option="-DcbDEBUG" />			<Add option="-DwxUSE_UNICODE" />			<Add directory="../../../include" />			<Add directory="../../../include/tinyxml" />			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />		</Compiler>		<ResourceCompiler>			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />		</ResourceCompiler>		<Linker>			<Add option="-mthreads" />			<Add library="codeblocks" />			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />			<Add library="bz2" />			<Add directory="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />			<Add option="-Wl,--enable-auto-import" />		</Linker>		<Unit filename="cbiniparser.cpp">			<Option target="default" />		</Unit>		<Unit filename="cbiniparser.h">			<Option target="default" />		</Unit>		<Unit filename="cbnetwork.cpp">			<Option target="default" />		</Unit>		<Unit filename="cbnetwork.h">			<Option target="default" />		</Unit>		<Unit filename="conf.cpp">			<Option target="default" />		</Unit>		<Unit filename="conf.h">			<Option target="default" />		</Unit>		<Unit filename="crc32.cpp">			<Option target="default" />		</Unit>		<Unit filename="crc32.h">			<Option target="default" />		</Unit>		<Unit filename="devpakinstaller.cpp">			<Option target="default" />		</Unit>		<Unit filename="devpakinstaller.h">			<Option target="default" />		</Unit>		<Unit filename="devpakupdater.cpp">			<Option target="default" />		</Unit>		<Unit filename="devpakupdater.h">			<Option target="default" />		</Unit>		<Unit filename="manifest.xml">			<Option target="default" />		</Unit>		<Unit filename="manifest.rc" >			<Option compilerVar="WINDRES" />			<Option target="default" />		</Unit>		<Unit filename="mytar.cpp">			<Option target="default" />		</Unit>		<Unit filename="mytar.h">			<Option target="default" />		</Unit>		<Unit filename="update.xrc">			<Option target="default" />		</Unit>		<Unit filename="updatedlg.cpp">			<Option target="default" />		</Unit>		<Unit filename="updatedlg.h">			<Option target="default" />		</Unit>		<Extensions>			<code_completion />			<envvars />			<debugger />		</Extensions>	</Project></CodeBlocks_project_file>

@@ -1322,8 +1322,9 @@ bool PluginManager::LoadPlugin(const wxString & pluginName)
 
 void PluginManager::LoadAllPlugins()
 {
+    ConfigManager * cfgPlugins = Manager::Get()->GetConfigManager("plugins");
     // check if a plugin crashed the app last time
-    wxString probPlugin = Manager::Get()->GetConfigManager(_T("plugins"))->Read(_T("/try_to_activate"), wxEmptyString);
+    wxString probPlugin = cfgPlugins->Read("/try_to_activate", wxEmptyString);
 
     if (!probPlugin.IsEmpty())
     {
@@ -1352,7 +1353,7 @@ void PluginManager::LoadAllPlugins()
         // do not load it if the user has explicitly asked not to...
         wxString baseKey;
         baseKey << _T("/") << elem->info.name;
-        bool loadIt = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(baseKey, true);
+        bool loadIt = cfgPlugins->ReadBool(baseKey, true);
 
         // if we have a problematic plugin, check if this is it
         if (loadIt && !probPlugin.IsEmpty())
@@ -1362,19 +1363,20 @@ void PluginManager::LoadAllPlugins()
             // if this is the problematic plugin, don't load it
             if (!loadIt)
             {
-                Manager::Get()->GetConfigManager(_T("plugins"))->Write(baseKey, false);
+                cfgPlugins->Write(baseKey, false);
             }
         }
 
         if (loadIt)
         {
-            Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), elem->info.title);
+            cfgPlugins->Write("/try_to_activate", elem->info.title);
             Manager::Get()->GetLogManager()->Log(elem->info.name);
 
             try
             {
                 AttachPlugin(plug);
-                Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString, false);
+                cfgPlugins->Write("/try_to_activate", wxEmptyString, false);
+                cfgPlugins->Flush();
             }
             catch (cbException & exception)
             {
@@ -1386,13 +1388,14 @@ void PluginManager::LoadAllPlugins()
 
                 if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
                 {
-                    Manager::Get()->GetConfigManager(_T("plugins"))->Write(baseKey, false);
+                    cfgPlugins->Write(baseKey, false);
                 }
             }
         }
     }
 
-    Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString, false);
+    cfgPlugins->Write("/try_to_activate", wxEmptyString, false);
+    cfgPlugins->Flush();
 }
 
 void PluginManager::UnloadAllPlugins()

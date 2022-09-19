@@ -1451,6 +1451,49 @@ wxBitmapBundle cbLoadBitmapBundle(const wxString & prefix, const wxString & file
 
     return wxBitmapBundle::FromBitmaps(bitmaps);
 }
+
+wxBitmapBundle cbLoadBitmapBundleFromSVG(const wxString & filename, const wxSize & size, wxFileSystem * fs)
+{
+    wxBitmapBundle bundle;
+#ifdef wxHAS_SVG
+    wxFileSystem defaultFS;
+
+    if (!fs)
+    {
+        fs = &defaultFS;
+    }
+
+    wxFSFile * f = fs->OpenFile(filename);
+
+    if (f)
+    {
+        wxInputStream * is = f->GetStream();
+
+        if (is->IsOk())
+        {
+            const size_t dataSize = is->GetSize();
+
+            if (dataSize)
+            {
+                char * data = new char[dataSize];
+
+                if (is->ReadAll(data, dataSize))
+                {
+                    bundle = wxBitmapBundle::FromSVG(data, size);
+                }
+
+                delete [] data;
+            }
+        }
+
+        delete f;
+    }
+
+#else
+#warning The port does not provide raw bitmap accessvia wxPixelData, so SVG loading will fail
+#endif
+    return bundle;
+}
 #endif
 
 wxBitmap cbLoadBitmapScaled(const wxString & filename, wxBitmapType bitmapType, double scaleFactor,

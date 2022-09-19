@@ -8,8 +8,7 @@
 		<Build>
 			<Target title="default">
 				<Option output="../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cb_share_config" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tools/cb_share_config" />
+				<Option working_dir="$(TARGET_OUTPUT_DIR)" />				<Option object_output="../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tools/cb_share_config" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 			</Target>

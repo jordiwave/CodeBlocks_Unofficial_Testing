@@ -619,7 +619,6 @@ struct Notifications
 
     private:
         Debugger_GDB_MI * m_plugin;
-        int m_page_index;
         dbg_mi::GDBExecutor & m_executor;
         bool m_simple_mode;
 };
@@ -2719,7 +2718,7 @@ bool Debugger_GDB_MI::SaveStateToFile(cbProject * pProject)
     dbg_mi::AddChildNode(pCompilerNode, "DBGconfig",  pCompilerProgsp.DBGconfig);
     // ******************** Save breakpoints ********************
     tinyxml2::XMLElement * pElementBreakpointList = doc.NewElement("BreakpointsList");
-    pElementBreakpointList->SetAttribute("count", m_breakpoints.size());
+    pElementBreakpointList->SetAttribute("count", static_cast<int>(m_breakpoints.size()));
     tinyxml2::XMLNode * pBreakpointMasterNode = rootnode->InsertEndChild(pElementBreakpointList);
 
     for (dbg_mi::GDBBreakpointsContainer::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it)
@@ -2734,7 +2733,7 @@ bool Debugger_GDB_MI::SaveStateToFile(cbProject * pProject)
 
     // ********************  Save Watches ********************
     tinyxml2::XMLElement * pElementWatchesList = doc.NewElement("WatchesList");
-    pElementWatchesList->SetAttribute("count", m_watches.size());
+    pElementWatchesList->SetAttribute("count", static_cast<int>(m_watches.size()));
     tinyxml2::XMLNode * pWatchesMasterNode = rootnode->InsertEndChild(pElementWatchesList);
 
     for (dbg_mi::GDBWatchesContainer::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
@@ -2749,7 +2748,7 @@ bool Debugger_GDB_MI::SaveStateToFile(cbProject * pProject)
 
     // ********************  Save Memory Range Watches ********************
     tinyxml2::XMLElement * pElementMemoryRangeList = doc.NewElement("MemoryRangeList");
-    pElementMemoryRangeList->SetAttribute("count", m_memoryRanges.size());
+    pElementMemoryRangeList->SetAttribute("count", static_cast<int>(m_memoryRanges.size()));
     tinyxml2::XMLNode * pMemoryRangeMasterNode = rootnode->InsertEndChild(pElementMemoryRangeList);
 
     for (dbg_mi::GDBMemoryRangeWatchesContainer::iterator it = m_memoryRanges.begin(); it != m_memoryRanges.end(); ++it)

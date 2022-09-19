@@ -10,7 +10,7 @@
 // System and library includes
 #include <deque>
 #include <ostream>
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include <wx/string.h>
 
 // GDB includes
@@ -330,18 +330,15 @@ bool DispatchResults(CommandExecutor & exec, ActionsMap & actions_map, OnNotify 
 
 namespace std
 {
-namespace tr1
-{
 template <>
 struct hash<dbg_mi::CommandID> /*: public unary_function<dbg_mi::CommandID, size_t>*/
 {
     size_t operator()(dbg_mi::CommandID const & v) const
     {
-        return std::tr1::hash<int64_t>()(v.GetFullID());
+        return std::hash<int64_t>()(v.GetFullID());
     }
 };
 
-}
 }
 
 #endif // _DEBUGGER_MI_GDB_CMD_QUEUE_H_

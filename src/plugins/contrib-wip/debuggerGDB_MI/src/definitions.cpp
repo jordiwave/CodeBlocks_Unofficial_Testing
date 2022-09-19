@@ -497,7 +497,6 @@ void GDBWatch::LoadWatchFromXML(tinyxml2::XMLElement * pElementWatch, Debugger_G
 
 GDBMemoryRangeWatch::GDBMemoryRangeWatch(cbProject * project, dbg_mi::LogPaneLogger * logger, uint64_t address, uint64_t size, const wxString & symbol) :
     m_project(project),
-    m_pLogger(logger),
     m_GDBWatchClassName("GDBMemoryRangeWatch"),
     m_address(address),
     m_size(size),

@@ -46,81 +46,81 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
         virtual ~Debugger_GDB_MI();
 
     public:
-        virtual void SetupToolsMenu(wxMenu & menu);
-        virtual bool ToolMenuEnabled() const
+        virtual void SetupToolsMenu(wxMenu & menu) override;
+        virtual bool ToolMenuEnabled() const override
         {
             return true;
         }
 
-        virtual bool SupportsFeature(cbDebuggerFeature::Flags flag);
-        virtual cbDebuggerConfiguration * LoadConfig(const ConfigManagerWrapper & config);
+        virtual bool SupportsFeature(cbDebuggerFeature::Flags flag) override;
+        virtual cbDebuggerConfiguration * LoadConfig(const ConfigManagerWrapper & config) override;
         dbg_mi::DebuggerConfiguration & GetActiveConfigEx();
-        cbConfigurationPanel * GetProjectConfigurationPanel(wxWindow * parent, cbProject * project);
-        virtual bool Debug(bool breakOnEntry);
-        virtual void Continue();
-        virtual bool RunToCursor(const wxString & filename, int line, const wxString & line_text);
-        virtual void SetNextStatement(const wxString & filename, int line);
-        virtual void Next();
-        virtual void NextInstruction();
-        virtual void StepIntoInstruction();
-        virtual void Step();
-        virtual void StepOut();
-        virtual void Break();
-        virtual void Stop();
-        virtual bool IsRunning() const;
-        virtual bool IsStopped() const;
-        virtual bool IsBusy() const;
-        virtual int GetExitCode() const;
+        cbConfigurationPanel * GetProjectConfigurationPanel(wxWindow * parent, cbProject * project) override;
+        virtual bool Debug(bool breakOnEntry) override;
+        virtual void Continue() override;
+        virtual bool RunToCursor(const wxString & filename, int line, const wxString & line_text) override;
+        virtual void SetNextStatement(const wxString & filename, int line) override;
+        virtual void Next() override;
+        virtual void NextInstruction() override;
+        virtual void StepIntoInstruction() override;
+        virtual void Step() override;
+        virtual void StepOut() override;
+        virtual void Break() override;
+        virtual void Stop() override;
+        virtual bool IsRunning() const override;
+        virtual bool IsStopped() const override;
+        virtual bool IsBusy() const override;
+        virtual int GetExitCode() const override;
         void SetExitCode(int code)
         {
             m_exit_code = code;
         }
 
         // stack frame calls;
-        virtual int GetStackFrameCount() const;
-        virtual cb::shared_ptr<const cbStackFrame> GetStackFrame(int index) const;
-        virtual void SwitchToFrame(int number);
-        virtual int GetActiveStackFrame() const;
+        virtual int GetStackFrameCount() const override;
+        virtual cb::shared_ptr<const cbStackFrame> GetStackFrame(int index) const override;
+        virtual void SwitchToFrame(int number) override;
+        virtual int GetActiveStackFrame() const override;
 
         // breakpoints calls
-        virtual cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString & filename, int line);
+        virtual cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString & filename, int line) override;
         cb::shared_ptr<cbBreakpoint> AddBreakpoint(cb::shared_ptr<dbg_mi::GDBBreakpoint> bp);
-        virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString & dataExpression);
-        virtual int GetBreakpointsCount() const;
-        virtual cb::shared_ptr<cbBreakpoint> GetBreakpoint(int index);
-        virtual cb::shared_ptr<const cbBreakpoint> GetBreakpoint(int index) const;
-        virtual void UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
-        virtual void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
-        virtual void DeleteAllBreakpoints();
-        virtual void ShiftBreakpoint(int index, int lines_to_shift);
-        virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable);
+        virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString & dataExpression) override;
+        virtual int GetBreakpointsCount() const override;
+        virtual cb::shared_ptr<cbBreakpoint> GetBreakpoint(int index) override;
+        virtual cb::shared_ptr<const cbBreakpoint> GetBreakpoint(int index) const override;
+        virtual void UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) override;
+        virtual void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) override;
+        virtual void DeleteAllBreakpoints() override;
+        virtual void ShiftBreakpoint(int index, int lines_to_shift) override;
+        virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable) override;
 
         // threads
-        virtual int GetThreadsCount() const;
-        virtual cb::shared_ptr<const cbThread> GetThread(int index) const;
-        virtual bool SwitchToThread(int thread_number);
+        virtual int GetThreadsCount() const override;
+        virtual cb::shared_ptr<const cbThread> GetThread(int index) const override;
+        virtual bool SwitchToThread(int thread_number) override;
 
         // watches
-        virtual cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol, bool update);
+        virtual cb::shared_ptr<cbWatch> AddWatch(const wxString & symbol, bool update) override;
         virtual cb::shared_ptr<cbWatch> AddWatch(dbg_mi::GDBWatch * watch, cb_unused bool update);
         cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update) override;
         void AddTooltipWatch(const wxString & symbol, wxRect const & rect);
-        virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch);
-        virtual bool HasWatch(cb::shared_ptr<cbWatch> watch);
+        virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch) override;
+        virtual bool HasWatch(cb::shared_ptr<cbWatch> watch) override;
         bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> & watch);
-        virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch);
-        virtual bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString & value);
-        virtual void ExpandWatch(cb::shared_ptr<cbWatch> watch);
-        virtual void CollapseWatch(cb::shared_ptr<cbWatch> watch);
-        virtual void UpdateWatch(cb::shared_ptr<cbWatch> watch);
-        virtual void SendCommand(const wxString & cmd, bool debugLog);
-        virtual void AttachToProcess(const wxString & pid);
-        virtual void DetachFromProcess();
-        virtual bool IsAttachedToProcess() const;
-        virtual void GetCurrentPosition(wxString & filename, int & line);
-        virtual void RequestUpdate(DebugWindows window);
-        virtual void OnValueTooltip(const wxString & token, const wxRect & evalRect);
-        virtual bool ShowValueTooltip(int style);
+        virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch) override;
+        virtual bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString & value) override;
+        virtual void ExpandWatch(cb::shared_ptr<cbWatch> watch) override;
+        virtual void CollapseWatch(cb::shared_ptr<cbWatch> watch) override;
+        virtual void UpdateWatch(cb::shared_ptr<cbWatch> watch) override;
+        virtual void SendCommand(const wxString & cmd, bool debugLog) override;
+        virtual void AttachToProcess(const wxString & pid) override;
+        virtual void DetachFromProcess() override;
+        virtual bool IsAttachedToProcess() const override;
+        virtual void GetCurrentPosition(wxString & filename, int & line) override;
+        virtual void RequestUpdate(DebugWindows window) override;
+        virtual void OnValueTooltip(const wxString & token, const wxRect & evalRect) override;
+        virtual bool ShowValueTooltip(int style) override;
 
         void StripQuotes(wxString & str);
         void ConvertToGDBFriendly(wxString & str);
@@ -143,7 +143,7 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
           * This means that a plugin might be loaded but <b>not</b> activated...\n
           * Think of this method as the actual constructor...
           */
-        virtual void OnAttachReal();
+        virtual void OnAttachReal() override;
 
         /** Any descendent plugin should override this virtual method and
           * perform any necessary de-initialization. This method is called by
@@ -154,20 +154,20 @@ class Debugger_GDB_MI : public cbDebuggerPlugin
           *         case *don't* use Manager::Get()->Get...() functions or the
           *         behaviour is undefined...
           */
-        virtual void OnReleaseReal(bool appShutDown);
+        virtual void OnReleaseReal(bool appShutDown) override;
 
     protected:
-        virtual void ConvertDirectory(wxString & /*str*/, wxString /*base*/, bool /*relative*/);
-        virtual cbProject * GetProject()
+        virtual void ConvertDirectory(wxString & /*str*/, wxString /*base*/, bool /*relative*/) override;
+        virtual cbProject * GetProject() override
         {
             return m_pProject;
         }
-        virtual void ResetProject()
+        virtual void ResetProject() override
         {
             m_pProject = NULL;
         }
-        virtual void CleanupWhenProjectClosed(cbProject * project);
-        virtual bool CompilerFinished(bool compilerFailed, StartType startType);
+        virtual void CleanupWhenProjectClosed(cbProject * project) override;
+        virtual bool CompilerFinished(bool compilerFailed, StartType startType) override;
 
     public:
         void UpdateWhenStopped();

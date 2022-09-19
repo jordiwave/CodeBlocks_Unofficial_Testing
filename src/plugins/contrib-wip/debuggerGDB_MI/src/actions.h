@@ -9,7 +9,7 @@
 
 // System and library includes
 #include <memory>
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include <map>
 
 // GDB includes
@@ -177,7 +177,6 @@ class GDBGenerateThreadsList : public Action
     private:
         GDBThreadsContainer & m_threads;
         LogPaneLogger * m_logger;
-        int m_current_thread_id;
 };
 
 
@@ -321,7 +320,7 @@ class GDBWatchBaseAction : public Action
         bool ParseListCommand(CommandID const & id, ResultValue const & value);
 
     protected:
-        typedef std::tr1::unordered_map<CommandID, cb::shared_ptr<GDBWatch> > ListCommandParentMap;
+        typedef std::unordered_map<CommandID, cb::shared_ptr<GDBWatch> > ListCommandParentMap;
     protected:
         ListCommandParentMap m_parent_map;
         GDBWatchesContainer & m_watches;
@@ -424,7 +423,6 @@ class GDBStackVariables : public Action
 
     private:
         cb::shared_ptr<dbg_mi::GDBWatch> m_WatchLocalsandArgs;
-        bool m_bWatchFuncLocalsArgs;
         CommandID m_stack_list_variables_request_id;
 
         LogPaneLogger * m_logger;

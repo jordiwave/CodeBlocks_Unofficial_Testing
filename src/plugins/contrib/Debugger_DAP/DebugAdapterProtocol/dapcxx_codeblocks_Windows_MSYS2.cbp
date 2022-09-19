@@ -1,95 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="Debugger WXDAP DLL" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="Debugger_WXDAP">
-				<Option output="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/debugger_wxdap" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-				<Option object_output="../../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/debugger_wxdap" />
-				<Option compiler="gcc" />
-				<Option type="3" />
-				<Option createStaticLib="1" />
-				<Option projectLinkerOptionsRelation="2" />
-			</Target>
-		</Build>
-		<VirtualTargets>
-			<Add alias="All" targets="Debugger_WXDAP" />
-		</VirtualTargets>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add option="-m$(#CB_BUILD.OSBITS)" />
-			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add option="-pipe" />
-			<Add option="-fmessage-length=0" />
-			<Add option="-fexceptions" />
-			<Add option="-mthreads" />
-			<Add option="-fno-keep-inline-dllexport" />
-			<Add option="-DBUILDING_PLUGIN" />
-			<Add option="-DHAVE_W32API_H" />
-			<Add option="-D__WXMSW__" />
-			<Add option="-DWXUSINGDLL" />
-			<Add option="-DcbDEBUG" />
-			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-			<Add directory="." />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-		</Compiler>
-		<ResourceCompiler>
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />
-		</ResourceCompiler>
-		<Linker>
-			<Add option="-m$(#CB_BUILD.OSBITS)" />
-			<Add option="-mthreads" />
-			<Add option="-Wl,--enable-auto-image-base" />
-			<Add option="-Wl,--add-stdcall-alias" />
-			<Add option="-Wl,--enable-auto-import" />
-			<Add option="-Wl,--no-undefined" />
-			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />
-			<Add library="ws2_32" />
-		</Linker>
-		<Unit filename="manifest.rc" >
-			<Option compilerVar="WINDRES" />
-		</Unit>
-		<Unit filename="cJSON.cpp"/>
-		<Unit filename="cJSON.hpp"/>
-		<Unit filename="Client.cpp"/>
-		<Unit filename="Client.hpp"/>
-		<Unit filename="CMakeLists.txt"/>
-		<Unit filename="ConnectionString.cpp"/>
-		<Unit filename="ConnectionString.hpp"/>
-		<Unit filename="dap.cpp"/>
-		<Unit filename="dap.hpp"/>
-		<Unit filename="DAPEvent.cpp"/>
-		<Unit filename="DAPEvent.hpp"/>
-		<Unit filename="dap_exports.hpp"/>
-		<Unit filename="Exception.cpp"/>
-		<Unit filename="Exception.hpp"/>
-		<Unit filename="JSON.cpp"/>
-		<Unit filename="JSON.hpp"/>
-		<Unit filename="JsonRPC.cpp"/>
-		<Unit filename="JsonRPC.hpp"/>
-		<Unit filename="linux.cpp"/>
-		<Unit filename="Log.cpp"/>
-		<Unit filename="Log.hpp"/>
-		<Unit filename="msw.cpp"/>
-		<Unit filename="Process.cpp"/>
-		<Unit filename="Process.hpp"/>
-		<Unit filename="Queue.hpp"/>
-		<Unit filename="ServerProtocol.cpp"/>
-		<Unit filename="ServerProtocol.hpp"/>
-		<Unit filename="Socket.cpp"/>
-		<Unit filename="Socket.hpp"/>
-		<Unit filename="SocketClient.cpp"/>
-		<Unit filename="SocketClient.hpp"/>
-		<Unit filename="SocketServer.cpp"/>
-		<Unit filename="SocketServer.hpp"/>
-		<Unit filename="StringUtils.cpp"/>
-		<Unit filename="StringUtils.hpp"/>
-		<Unit filename="UnixProcess.cpp"/>
-		<Unit filename="UnixProcess.hpp"/>
-	</Project>
-</CodeBlocks_project_file>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><CodeBlocks_project_file>	<FileVersion major="1" minor="6" />	<Project>		<Option title="Debugger WXDAP DLL" />		<Option compiler="gcc" />		<Build>			<Target title="Debugger_WXDAP">				<Option output="../../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/debugger_wxdap" prefix_auto="0" extension_auto="1" />				<Option working_dir="$(TARGET_OUTPUT_DIR)" />				<Option object_output="../../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/debugger_wxdap" />				<Option compiler="gcc" />				<Option type="3" />				<Option createStaticLib="1" />				<Option projectLinkerOptionsRelation="2" />			</Target>		</Build>		<VirtualTargets>			<Add alias="All" targets="Debugger_WXDAP" />		</VirtualTargets>		<Compiler>			<Add option="-Wall" />			<Add option="-std=$(#CB_BUILD.CPP_STD)" />			<Add option="-m$(#CB_BUILD.OSBITS)" />			<Add option="$(#CB_BUILD.CFLAGS)" />			<Add option="-pipe" />			<Add option="-fmessage-length=0" />			<Add option="-fexceptions" />			<Add option="-mthreads" />			<Add option="-fno-keep-inline-dllexport" />			<Add option="-DBUILDING_PLUGIN" />			<Add option="-DHAVE_W32API_H" />			<Add option="-D__WXMSW__" />			<Add option="-DWXUSINGDLL" />			<Add option="-DcbDEBUG" />			<Add option="-DwxUSE_UNICODE" />			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />			<Add directory="." />			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />		</Compiler>		<ResourceCompiler>			<Add option="`$(#WXWIDGETS.WX_CONFIG) --cflags`" />		</ResourceCompiler>		<Linker>			<Add option="-m$(#CB_BUILD.OSBITS)" />			<Add option="-mthreads" />			<Add option="-Wl,--enable-auto-image-base" />			<Add option="-Wl,--add-stdcall-alias" />			<Add option="-Wl,--enable-auto-import" />			<Add option="-Wl,--no-undefined" />			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs std,aui,propgrid`" />			<Add library="ws2_32" />		</Linker>		<Unit filename="manifest.rc" >			<Option compilerVar="WINDRES" />		</Unit>		<Unit filename="cJSON.cpp"/>		<Unit filename="cJSON.hpp"/>		<Unit filename="Client.cpp"/>		<Unit filename="Client.hpp"/>		<Unit filename="CMakeLists.txt"/>		<Unit filename="ConnectionString.cpp"/>		<Unit filename="ConnectionString.hpp"/>		<Unit filename="dap.cpp"/>		<Unit filename="dap.hpp"/>		<Unit filename="DAPEvent.cpp"/>		<Unit filename="DAPEvent.hpp"/>		<Unit filename="dap_exports.hpp"/>		<Unit filename="Exception.cpp"/>		<Unit filename="Exception.hpp"/>		<Unit filename="JSON.cpp"/>		<Unit filename="JSON.hpp"/>		<Unit filename="JsonRPC.cpp"/>		<Unit filename="JsonRPC.hpp"/>		<Unit filename="linux.cpp"/>		<Unit filename="Log.cpp"/>		<Unit filename="Log.hpp"/>		<Unit filename="msw.cpp"/>		<Unit filename="Process.cpp"/>		<Unit filename="Process.hpp"/>		<Unit filename="Queue.hpp"/>		<Unit filename="ServerProtocol.cpp"/>		<Unit filename="ServerProtocol.hpp"/>		<Unit filename="Socket.cpp"/>		<Unit filename="Socket.hpp"/>		<Unit filename="SocketClient.cpp"/>		<Unit filename="SocketClient.hpp"/>		<Unit filename="SocketServer.cpp"/>		<Unit filename="SocketServer.hpp"/>		<Unit filename="StringUtils.cpp"/>		<Unit filename="StringUtils.hpp"/>		<Unit filename="UnixProcess.cpp"/>		<Unit filename="UnixProcess.hpp"/>	</Project></CodeBlocks_project_file>

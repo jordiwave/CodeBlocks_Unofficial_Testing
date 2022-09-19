@@ -753,7 +753,12 @@ bool CodeBlocksApp::OnInit()
     m_pSingleInstance      = nullptr;
     m_GlobalVariableSetParameterOrBackup = wxEmptyString;
     m_MasterPathParameterOrBackup  = wxEmptyString;
-    wxTheClipboard->Flush();
+
+    if (wxTheClipboard->IsOpened())
+    {
+        wxTheClipboard->Flush();
+    }
+
     wxCmdLineParser & parser = *Manager::GetCmdLineParser();
     parser.SetDesc(cmdLineDesc);
     // NOTE: crash handler explicitly disabled because it causes problems
@@ -1146,7 +1151,11 @@ void CodeBlocksApp::LogPaths()
 
 int CodeBlocksApp::OnExit()
 {
-    wxTheClipboard->Flush();
+    if (wxTheClipboard->IsOpened())
+    {
+        wxTheClipboard->Flush();
+        wxTheClipboard->Close();
+    }
 
     if (g_DDEServer)
     {
