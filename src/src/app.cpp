@@ -494,7 +494,7 @@ bool CodeBlocksApp::LoadConfig()
     {
         data.assign(GetResourcesDir());                 // CodeBlocks.app/Contents/Resources
 
-        if (!data.Contains(wxString("/Resources"))) // not a bundle, use relative path
+        if (!data.Contains("/Resources") && !data.Contains("/src/devel")) // not a bundle or development build, use relative path
         {
             data = GetAppPath() + "/..";
         }
