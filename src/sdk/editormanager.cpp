@@ -996,7 +996,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
     bool reloadAll = false; // flag to stop bugging the user
     wxArrayString failedFiles; // list of files failed to reload
 
-    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (int i = (int)m_pNotebook->GetPageCount() - 1; i >= 0; --i)
     {
         cbEditor * ed = InternalGetBuiltinEditor(i);
         bool b_modified = false;
@@ -1035,8 +1035,8 @@ void EditorManager::CheckForExternallyModifiedFiles()
                                          "Do you wish to try to save the file to disk?\n"
                                          "If you close it, it will most likely be lost !\n"
                                          "If you cancel this dialog, you have to take care yourself !\n"
-                                         "Yes: save the file, No: close it, Cancel: keep your fingers crossed."), eb->GetFilename().c_str());
-                            int ret = cbMessageBox(msg, _("File changed!"), wxICON_QUESTION | wxYES_NO | wxCANCEL);
+                                         "Yes: save the file, No: close it, Cancel: keep your fingers crossed."), eb->GetFilename());
+                            const int ret = cbMessageBox(msg, _("File changed!"), wxICON_QUESTION | wxYES_NO | wxCANCEL);
 
                             switch (ret)
                             {
@@ -1108,7 +1108,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
             wxString msg;
             msg.Printf(_("%s has been deleted, or is no longer available.\n"
                          "Do you wish to keep the file open?\n"
-                         "Yes to keep the file, No to close it."), ed->GetFilename().c_str());
+                         "Yes to keep the file, No to close it."), ed->GetFilename());
 
             if (cbMessageBox(msg, _("File changed!"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
             {
@@ -1173,7 +1173,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
             {
                 wxString msg;
                 msg.Printf(_("File %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
-                           ed->GetFilename().c_str());
+                           ed->GetFilename());
                 ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
                 dlg.SetTitle(_("Reload file?"));
                 dlg.GetSizer()->SetSizeHints(&dlg);
@@ -1228,7 +1228,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         }
 
         wxString msg;
-        msg.Printf(_("Could not reload all files:\n\n%s"), GetStringFromArray(failedFiles, _T("\n")).c_str());
+        msg.Printf(_("Could not reload all files:\n\n%s"), GetStringFromArray(failedFiles, "\n"));
         cbMessageBox(msg, _("Error"), wxICON_ERROR);
     }
 

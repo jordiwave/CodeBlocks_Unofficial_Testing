@@ -40,7 +40,7 @@ void ADirParserThread::ParseFiles()
 
     for (size_t i = 0; i < pADirFiles->size(); i++)
     {
-        ParserThreadF * thread = new ParserThreadF(_T("#%&ThisIsAdditionalFileSearchDirectory&%#"), UnixFilename(pADirFiles->Item(i)), pTokens,
+        ParserThreadF * thread = new ParserThreadF("#%&ThisIsAdditionalFileSearchDirectory&%#", UnixFilename(pADirFiles->Item(i)), pTokens,
                                                    pADirFileForms->at(i), false, pIncludeDB, interpretCPP);
         thread->Parse();
         delete thread;

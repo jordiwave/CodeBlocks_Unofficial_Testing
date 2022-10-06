@@ -33,3 +33,7 @@ If you know or find or see a Code::Blocks plugin that is useful and it is not in
 Potential future plugins:
   * https://github.com/LETARTARE/CB_Collector
   * https://github.com/LETARTARE/CB_AddonForQt
+  
+  
+For MAC M1/M2 please have a look at the following thread for MacPort release for the M1/M2:
+  https://forums.codeblocks.org/index.php/topic,25100.msg171120.html#msg171120

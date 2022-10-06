@@ -94,7 +94,7 @@ ChangeCase::~ChangeCase()
 
 void ChangeCase::OnOK(cb_unused wxCommandEvent & event)
 {
-    Manager::Get()->GetLogManager()->DebugLog(_T("ChangeCase::OnOK is called"));
+    Manager::Get()->GetLogManager()->DebugLog("ChangeCase::OnOK is called");
     ChangeCaseIn chin;
 
     if (rb_ChCActiveProject->GetValue())
@@ -193,20 +193,20 @@ void ChangeCase::MakeChangeCase(ChangeCaseIn chin, int chfor, ChangeCaseTo chto)
 
                 while (i < nonFFiles.size() && i < imax)
                 {
-                    mstr << _("\n\"") << nonFFiles[i] << _T("\"");
+                    mstr << _("\n\"") << nonFFiles[i] << "\"";
                     i++;
                 }
 
                 if (nonFFiles.size() > imax)
                 {
-                    mstr << _T("...\n");
+                    mstr << "...\n";
                 }
                 else
                 {
-                    mstr << _T("\n");
+                    mstr << "\n";
                 }
 
-                mstr << wxString::Format(_T("(%d "), int(nonFFiles.size())) << _("files) ");
+                mstr << wxString::Format("(%d ", int(nonFFiles.size())) << _("files) ");
                 mstr << _("were not recognized as the Fortran files.");
                 mstr << _(" The change-case was not applied for them.");
                 cbMessageBox(mstr, _("Info"), wxICON_INFORMATION);
@@ -285,12 +285,12 @@ bool ChangeCase::EditorChangeCase(cbEditor * ed, ChangeCaseIn chin, int chfor, C
         return false;
     }
 
-    HighlightLanguage lang = _T("Fortran");
+    HighlightLanguage lang = "Fortran";
 
     for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
     {
         wxString keywords = theme->GetKeywords(lang, i);
-        wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
+        wxStringTokenizer tkz(keywords, " \t\r\n", wxTOKEN_STRTOK);
 
         while (tkz.HasMoreTokens())
         {

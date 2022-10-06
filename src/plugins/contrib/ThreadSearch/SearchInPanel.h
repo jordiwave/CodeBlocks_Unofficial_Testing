@@ -22,6 +22,7 @@
 // end wxGlade
 
 #include <wx/panel.h>
+#include "wx/tglbtn.h"
 
 class wxWindow;
 class wxCheckBox;
@@ -45,6 +46,11 @@ class SearchInPanel: public wxPanel
         bool GetSearchInWorkspaceFiles() const;
         bool GetSearchInDirectory()      const;
 
+        wxSize GetButtonSize() const
+        {
+            return m_pBtnSearchOpenFiles->GetSize();
+        }
+
         // Setters
         void SetSearchInOpenFiles(bool bSearchInOpenFiles);
         void SetSearchInTargetFiles(bool bSearchInTargetFiles);
@@ -53,6 +59,7 @@ class SearchInPanel: public wxPanel
         void SetSearchInDirectory(bool bSearchInDirectory);
 
     private:
+        wxBitmapToggleButton * CreateButton(wxWindowID id, const wxSize & size, const wxString & prefix, const wxString & name);
         // begin wxGlade: SearchInPanel::methods
         void set_properties();
         void do_layout();
@@ -60,11 +67,11 @@ class SearchInPanel: public wxPanel
 
     protected:
         // begin wxGlade: SearchInPanel::attributes
-        wxCustomButton * m_pBtnSearchOpenFiles;
-        wxCustomButton * m_pBtnSearchTargetFiles;
-        wxCustomButton * m_pBtnSearchProjectFiles;
-        wxCustomButton * m_pBtnSearchWorkspaceFiles;
-        wxCustomButton * m_pBtnSearchDir;
+        wxBitmapToggleButton * m_pBtnSearchOpenFiles;
+        wxBitmapToggleButton * m_pBtnSearchTargetFiles;
+        wxBitmapToggleButton * m_pBtnSearchProjectFiles;
+        wxBitmapToggleButton * m_pBtnSearchWorkspaceFiles;
+        wxBitmapToggleButton * m_pBtnSearchDir;
         // end wxGlade
 
 

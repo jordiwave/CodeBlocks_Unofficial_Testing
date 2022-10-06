@@ -88,12 +88,12 @@ WorkspaceBrowserF::WorkspaceBrowserF(wxWindow * parent, NativeParserF * np, Pars
       m_pActiveProject(0),
       m_pBrowserBuilder(0)
 {
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
-    m_BrowserOptions.visibleBottomTree = cfg->ReadBool(_T("/visible_bottom_tree"), true);
-    m_BrowserOptions.sortAlphabetically = cfg->ReadBool(_T("/browser_sort_alphabetically"), true);
-    m_BrowserOptions.showLocalVariables = cfg->ReadBool(_T("/browser_show_local_variables"), true);
-    m_BrowserOptions.showIncludeSeparately = cfg->ReadBool(_T("/browser_show_include_files_separately"), true);
-    Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("WorkspaceBrowserF"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
+    m_BrowserOptions.visibleBottomTree = cfg->ReadBool("/visible_bottom_tree", true);
+    m_BrowserOptions.sortAlphabetically = cfg->ReadBool("/browser_sort_alphabetically", true);
+    m_BrowserOptions.showLocalVariables = cfg->ReadBool("/browser_show_local_variables", true);
+    m_BrowserOptions.showIncludeSeparately = cfg->ReadBool("/browser_show_include_files_separately", true);
+    Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "WorkspaceBrowserF");
     CreateControlsWBF();
 
     if (platform::windows)
@@ -101,7 +101,7 @@ WorkspaceBrowserF::WorkspaceBrowserF(wxWindow * parent, NativeParserF * np, Pars
         m_Search->SetWindowStyle(wxTE_PROCESS_ENTER);    // it's a must on windows to catch EVT_TEXT_ENTER
     }
 
-    int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
+    int filter = cfg->ReadInt("/browser_display_filter", bdfWorkspace);
     m_CmbViewWBF->SetSelection(filter);
     m_BrowserOptions.displayFilter = (BrowserDisplayFilter)filter;
     // if the classbrowser is put under the control of a wxFlatNotebook,
@@ -116,8 +116,8 @@ void WorkspaceBrowserF::CreateControlsWBF()
     const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Main);
     const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Main);
     wxString prefix = ConfigManager::GetDataFolder() +
-                      wxString::Format(wxT("/FortranProject.zip#zip:images/%dx%d/"), imageSize, imageSize);
-    wxBitmap bmp_makevisible = cbLoadBitmapScaled(prefix + _T("fprojectmakevisible.png"), wxBITMAP_TYPE_PNG, uiScaleFactor);
+                      wxString::Format("/FortranProject.zip#zip:images/%dx%d/", imageSize, imageSize);
+    wxBitmap bmp_makevisible = cbLoadBitmapScaled(prefix + "fprojectmakevisible.png", wxBITMAP_TYPE_PNG, uiScaleFactor);
     wxBoxSizer * BoxSizer1;
     wxBoxSizer * BoxSizer2;
     wxBoxSizer * BoxSizer3;
@@ -126,33 +126,33 @@ void WorkspaceBrowserF::CreateControlsWBF()
     wxStaticText * StaticText1;
     wxStaticText * StaticText2;
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-    m_WBFMainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("WBFMainPanel"));
+    m_WBFMainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, "WBFMainPanel");
     BoxSizer2 = new wxBoxSizer(wxVERTICAL);
     FlexGridSizer1 = new wxFlexGridSizer(2, 2, 2, 2);
     FlexGridSizer1->AddGrowableCol(1);
-    StaticText1 = new wxStaticText(m_WBFMainPanel, wxID_ANY, _("View:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    StaticText1 = new wxStaticText(m_WBFMainPanel, wxID_ANY, _("View:"), wxDefaultPosition, wxDefaultSize, 0, "ID_STATICTEXT1");
     FlexGridSizer1->Add(StaticText1, 1, wxALL | wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-    m_CmbViewWBF = new wxChoice(m_WBFMainPanel, idCmbView, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("cmbViewWBF"));
+    m_CmbViewWBF = new wxChoice(m_WBFMainPanel, idCmbView, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, "cmbViewWBF");
     m_CmbViewWBF->Append(_("Current file\'s symbols"));
     m_CmbViewWBF->Append(_("Active project\'s symbols"));
     m_CmbViewWBF->SetSelection(m_CmbViewWBF->Append(_("All local symbols (workspace)")));
     BoxSizer3->Add(m_CmbViewWBF, 1, wxEXPAND, 0);
-    m_BtnHome = new wxBitmapButton(m_WBFMainPanel, idBtnHome, bmp_makevisible, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("btnHome"));
+    m_BtnHome = new wxBitmapButton(m_WBFMainPanel, idBtnHome, bmp_makevisible, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, "btnHome");
     m_BtnHome->SetDefault();
     BoxSizer3->Add(m_BtnHome, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 0);
     FlexGridSizer1->Add(BoxSizer3, 1, wxALL | wxEXPAND, 0);
-    StaticText2 = new wxStaticText(m_WBFMainPanel, wxID_ANY, _("Search:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+    StaticText2 = new wxStaticText(m_WBFMainPanel, wxID_ANY, _("Search:"), wxDefaultPosition, wxDefaultSize, 0, "ID_STATICTEXT2");
     FlexGridSizer1->Add(StaticText2, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-    m_Search = new wxComboBox(m_WBFMainPanel, idCmbSearch, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN | wxTE_PROCESS_ENTER, wxDefaultValidator, _T("cmbSearchWBF"));
+    m_Search = new wxComboBox(m_WBFMainPanel, idCmbSearch, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN | wxTE_PROCESS_ENTER, wxDefaultValidator, "cmbSearchWBF");
     BoxSizer4->Add(m_Search, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 0);
     FlexGridSizer1->Add(BoxSizer4, 1, wxALL | wxEXPAND, 0);
     BoxSizer2->Add(FlexGridSizer1, 0, wxALL | wxEXPAND, 4);
-    m_SplitterWin = new wxSplitterWindow(m_WBFMainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE, _T("splitterWinWBF"));
+    m_SplitterWin = new wxSplitterWindow(m_WBFMainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE, "splitterWinWBF");
     m_SplitterWin->SetSashGravity(0.5);
-    m_TreeTop = new wxTreeCtrl(m_SplitterWin, idMenuTopTree, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE, wxDefaultValidator, _T("treeAllWBF"));
-    m_TreeBottom = new wxTreeCtrl(m_SplitterWin, idMenuBottomTree, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT | wxTR_DEFAULT_STYLE, wxDefaultValidator, _T("treeMembersWBF"));
+    m_TreeTop = new wxTreeCtrl(m_SplitterWin, idMenuTopTree, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE, wxDefaultValidator, "treeAllWBF");
+    m_TreeBottom = new wxTreeCtrl(m_SplitterWin, idMenuBottomTree, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT | wxTR_DEFAULT_STYLE, wxDefaultValidator, "treeMembersWBF");
     m_SplitterWin->SplitHorizontally(m_TreeTop, m_TreeBottom);
     BoxSizer2->Add(m_SplitterWin, 1, wxALL | wxEXPAND, 0);
     m_WBFMainPanel->SetSizer(BoxSizer2);
@@ -168,9 +168,9 @@ void WorkspaceBrowserF::CreateControlsWBF()
 WorkspaceBrowserF::~WorkspaceBrowserF()
 {
     int pos = m_SplitterWin->GetSashPosition();
-    Manager::Get()->GetConfigManager(_T("fortran_project"))->Write(_T("/splitter_pos"), pos);
+    Manager::Get()->GetConfigManager("fortran_project")->Write("/splitter_pos", pos);
     int filter = m_CmbViewWBF->GetSelection();
-    Manager::Get()->GetConfigManager(_T("fortran_project"))->Write(_T("/browser_display_filter"), filter);
+    Manager::Get()->GetConfigManager("fortran_project")->Write("/browser_display_filter", filter);
 
     if (m_pBrowserBuilder)
     {
@@ -180,7 +180,7 @@ WorkspaceBrowserF::~WorkspaceBrowserF()
 
 void WorkspaceBrowserF::UpdateSash()
 {
-    int pos = Manager::Get()->GetConfigManager(_T("fortran_project"))->ReadInt(_T("/splitter_pos"), 250);
+    int pos = Manager::Get()->GetConfigManager("fortran_project")->ReadInt("/splitter_pos", 250);
     m_SplitterWin->SetSashPosition(pos, false);
 }
 
@@ -434,8 +434,8 @@ void WorkspaceBrowserF::OnChangeSort(wxCommandEvent & event)
         }
 
     UpdateView();
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
-    cfg->Write(_T("/browser_sort_alphabetically"), m_BrowserOptions.sortAlphabetically);
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
+    cfg->Write("/browser_sort_alphabetically", m_BrowserOptions.sortAlphabetically);
 }
 
 void WorkspaceBrowserF::OnChangeMode(wxCommandEvent & event)
@@ -443,8 +443,8 @@ void WorkspaceBrowserF::OnChangeMode(wxCommandEvent & event)
     if (event.GetId() == idMenuBottomTree)
     {
         m_BrowserOptions.visibleBottomTree = event.IsChecked();
-        ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
-        cfg->Write(_T("/visible_bottom_tree"), m_BrowserOptions.visibleBottomTree);
+        ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
+        cfg->Write("/visible_bottom_tree", m_BrowserOptions.visibleBottomTree);
     }
 
     UpdateView();
@@ -549,8 +549,8 @@ void WorkspaceBrowserF::OnSearch(cb_unused wxCommandEvent & event)
                 {
                     wxString inf = result.Item(i)->m_DisplayName;;
                     wxFileName fn = wxFileName(result.Item(i)->m_Filename);
-                    inf << _T("::") << result.Item(i)->GetTokenKindString() << _T(", ") << fn.GetFullName() << _T(" : ");
-                    inf << wxString::Format(_T("%d"), int(result.Item(i)->m_LineStart));
+                    inf << "::" << result.Item(i)->GetTokenKindString() << ", " << fn.GetFullName() << " : ";
+                    inf << wxString::Format("%d", int(result.Item(i)->m_LineStart));
                     selections.Add(inf);
                 }
 
@@ -691,14 +691,14 @@ void WorkspaceBrowserF::SelectSymbol(wxString filename, int line)
 
 void WorkspaceBrowserF::RereadOptions()
 {
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
 
     if (cfg->ReadBool(_("/use_symbols_browser"), true))
     {
-        m_BrowserOptions.visibleBottomTree = cfg->ReadBool(_("/visible_bottom_tree"), true);
-        m_BrowserOptions.sortAlphabetically = cfg->ReadBool(_("/browser_sort_alphabetically"), true);
-        m_BrowserOptions.showLocalVariables = cfg->ReadBool(_T("/browser_show_local_variables"), true);
-        m_BrowserOptions.showIncludeSeparately = cfg->ReadBool(_T("/browser_show_include_files_separately"), true);
+        m_BrowserOptions.visibleBottomTree = cfg->ReadBool("/visible_bottom_tree", true);
+        m_BrowserOptions.sortAlphabetically = cfg->ReadBool("/browser_sort_alphabetically", true);
+        m_BrowserOptions.showLocalVariables = cfg->ReadBool("/browser_show_local_variables", true);
+        m_BrowserOptions.showIncludeSeparately = cfg->ReadBool("/browser_show_include_files_separately", true);
         UpdateView();
     }
 }

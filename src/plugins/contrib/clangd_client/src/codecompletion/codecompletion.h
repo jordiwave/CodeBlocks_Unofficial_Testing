@@ -53,6 +53,15 @@ class DocumentationHelper;
  * See the general architecture of code completion plugin on wiki page
  *  http://wiki.codeblocks.org/index.php?title=Code_Completion_Design
  */
+
+BEGIN_DECLARE_EVENT_TYPES()
+DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CLANGD_ENABLE_PLUGIN, wxID_ANY)
+END_DECLARE_EVENT_TYPES()
+
+#define EVT_CLANGD_ENABLE_PLUGIN(id, fn) \
+    DECLARE_EVENT_TABLE_ENTRY( wxEVT_CLANGD_ENABLE_PLUGIN, id, id,  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)& fn, (wxObject*) NULL )
+
+
 // ----------------------------------------------------------------------------
 class ClgdCompletion : public cbCodeCompletionPlugin
 // ----------------------------------------------------------------------------
@@ -198,6 +207,12 @@ class ClgdCompletion : public cbCodeCompletionPlugin
             }
 
             return topWindow;
+        }
+        // ----------------------------------------------------------------------------
+        wxString GetwxUTF8Str(const std::string stdString)
+        // ----------------------------------------------------------------------------
+        {
+            return wxString(stdString.c_str(), wxConvUTF8);
         }
 
     private:
@@ -377,6 +392,9 @@ class ClgdCompletion : public cbCodeCompletionPlugin
 
         /** Indicates CC's initialization is done */
         bool                    m_InitDone;
+
+        /** Indicates C:B App startup completed*/
+        bool                    m_CBStartupCompleted;
 
         /** menu pointers to the frame's main menu */
         wxMenu         *        m_EditMenu;
@@ -875,20 +893,21 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         // Set to true when the old CodeCompletion plugin is enabled
         bool m_OldCC_enabled = true;
         // Initial condition of Clangd_Client at ctor (enabled/disabled);
-        bool m_ClgdClientStartupStatusEnabled = false;
+        bool m_ctorClientStartupStatusEnabled = false;
 
         // ----------------------------------------------------------------------------
-        bool SetClangdClient_Disabled()
+        void SetClangdClient_Disabled()
         // ----------------------------------------------------------------------------
         {
-            bool m_Clangd_client_enabled = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/CLANGD_CLIENT"), false);
+            // if enable/disable status not set, assume a new enabled CB installation (true) so that disabling works
+            bool m_Clangd_client_enabled = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/clangd_client"), true);
 
             if (m_Clangd_client_enabled)
             {
-                Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/CLANGD_CLIENT"), false);
+                Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/clangd_client"), false);
             }
 
-            return m_Clangd_client_enabled;
+            return ;//m_Clangd_client_enabled;
         }
 
 

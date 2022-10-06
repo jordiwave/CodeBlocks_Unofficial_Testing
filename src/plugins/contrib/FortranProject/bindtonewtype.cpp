@@ -72,7 +72,7 @@ void BindtoNewType::OnOK(wxCommandEvent & event)
             tc_BindC->GetValue().Trim() == wxEmptyString ||
             tc_C->GetValue().Trim() == wxEmptyString)
     {
-        wxString mstr = _T("All text fields should be filled!");
+        wxString mstr = "All text fields should be filled!";
         cbMessageBox(mstr, _("Error"), wxICON_ERROR);
         return;
     }

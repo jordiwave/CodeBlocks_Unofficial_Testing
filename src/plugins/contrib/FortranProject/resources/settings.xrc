@@ -177,12 +177,11 @@
 																	<option>1</option>
 																</object>
 																<object class="sizeritem">
-																	<object class="wxButton" name="btCHFullColour">
-																		<label>...</label>
-																		<bg>wxSYS_COLOUR_ACTIVECAPTION</bg>
+																	<object class="wxColourPickerCtrl" name="cpCHFullColour">
+																		<colour>#000000</colour>
 																	</object>
-																	<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-																	<border>4d</border>
+																	<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<border>2</border>
 																	<option>1</option>
 																</object>
 																<object class="sizeritem">
@@ -194,12 +193,11 @@
 																	<option>1</option>
 																</object>
 																<object class="sizeritem">
-																	<object class="wxButton" name="btCHUnfinColour">
-																		<label>...</label>
-																		<bg>wxSYS_COLOUR_ACTIVECAPTION</bg>
+																	<object class="wxColourPickerCtrl" name="cpCHUnfinColour">
+																		<colour>#000000</colour>
 																	</object>
-																	<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-																	<border>4d</border>
+																	<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<border>2</border>
 																	<option>1</option>
 																</object>
 															</object>
@@ -266,11 +264,12 @@
 															<option>1</option>
 														</object>
 														<object class="sizeritem">
-															<object class="wxButton" name="btCPPShadowColour">
-																<label>...</label>
+															<object class="wxColourPickerCtrl" name="cpCPPShadowColour">
+																<colour>#000000</colour>
 															</object>
-															<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-															<border>2d</border>
+															<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<border>2</border>
+															<option>1</option>
 														</object>
 														<object class="sizeritem">
 															<object class="wxStaticText" name="stCPPShadowOpacity">

@@ -11,8 +11,8 @@
 #include "cbcolourmanager.h"
 
 DocBlock::DocBlock():
-    m_Description(_T("**description**")),
-    m_Brief(_T("**brief**"))
+    m_Description("**description**"),
+    m_Brief("**brief**")
 {
     //ctor
 }
@@ -84,7 +84,7 @@ wxString DocBlock::GetValue(wxString & key)
 
 void DocBlock::AddBrief(const wxString & bline)
 {
-    m_DocMap[_T("**brief**")] = bline;
+    m_DocMap["**brief**"] = bline;
 }
 
 void DocBlock::AddParam(const wxString & name, const wxString & descr)
@@ -100,24 +100,24 @@ void DocBlock::Clear()
 //*****************************************
 namespace HTMLTags
 {
-static const wxString br = _T("<br>");
-static const wxString sep = _T(" ");
-static const wxString b1 = _T("<b>");
-static const wxString b0 = _T("</b>");
+static const wxString br = "<br>";
+static const wxString sep = " ";
+static const wxString b1 = "<b>";
+static const wxString b0 = "</b>";
 
-static const wxString a1 = _T("<a>");
-static const wxString a0 = _T("</a>");
+static const wxString a1 = "<a>";
+static const wxString a0 = "</a>";
 
-static const wxString i1 = _T("<i>");
-static const wxString i0 = _T("</i>");
+static const wxString i1 = "<i>";
+static const wxString i0 = "</i>";
 
-static const wxString pre1 = _T("<pre>");
-static const wxString pre0 = _T("</pre>");
+static const wxString pre1 = "<pre>";
+static const wxString pre0 = "</pre>";
 
-static const wxString nbsp(_T("&nbsp;"));
+static const wxString nbsp("&nbsp;");
 static const wxString tab = nbsp + nbsp + nbsp;
 
-static const wxString commandTag = _T("cmd=");
+static const wxString commandTag = "cmd=";
 }
 
 wxString HtmlDoc::GenerateHtmlDoc(TokenFlat * token, int token_idx, bool & hasDoc)
@@ -125,11 +125,11 @@ wxString HtmlDoc::GenerateHtmlDoc(TokenFlat * token, int token_idx, bool & hasDo
     //http://docs.wxwidgets.org/2.8/wx_wxhtml.html#htmltagssupported
     using namespace HTMLTags;
     ColourManager * colours = Manager::Get()->GetColourManager();
-    wxString html = _T("<html><body bgcolor=\"");
-    html += colours->GetColour(wxT("cc_docs_back")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\" text=\"");
-    html += colours->GetColour(wxT("cc_docs_fore")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\" link=\"");
-    html += colours->GetColour(wxT("cc_docs_link")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\">");
-    html += _T("<a name=\"top\"></a>");
+    wxString html = "<html><body bgcolor=\"";
+    html += colours->GetColour("cc_docs_back").GetAsString(wxC2S_HTML_SYNTAX) + "\" text=\"";
+    html += colours->GetColour("cc_docs_fore").GetAsString(wxC2S_HTML_SYNTAX) + "\" link=\"";
+    html += colours->GetColour("cc_docs_link").GetAsString(wxC2S_HTML_SYNTAX) + "\">";
+    html += "<a name=\"top\"></a>";
     hasDoc = false;
 
     if (!token || token->m_DisplayName.IsEmpty())
@@ -144,7 +144,7 @@ wxString HtmlDoc::GenerateHtmlDoc(TokenFlat * token, int token_idx, bool & hasDo
 
         if (token->m_ParentTokenKind == tkModule)
         {
-            html += _T("module: ") + b1 + token->m_ParentDisplayName + b0 + br;
+            html += "module: " + b1 + token->m_ParentDisplayName + b0 + br;
         }
     }
 
@@ -155,31 +155,31 @@ wxString HtmlDoc::GenerateHtmlDoc(TokenFlat * token, int token_idx, bool & hasDo
     switch (token->m_TokenKind)
     {
         case tkFunction:
-            html += token->m_PartFirst + _T(" function ") + b1 + token->m_DisplayName + b0;
-            html += _T(" ") + token->m_Args.Trim(false);
+            html += token->m_PartFirst + " function " + b1 + token->m_DisplayName + b0;
+            html += " " + token->m_Args.Trim(false);
             html += sep + token->m_PartLast;
             html += br;
             break;
 
         case tkSubroutine:
-            html += _T("subroutine ") + b1 + token->m_DisplayName + b0;
+            html += "subroutine " + b1 + token->m_DisplayName + b0;
             html += sep + token->m_Args;
             html += br;
 
             if (token->m_ParentTokenKind == tkFile)
             {
-                moreInfo = _T("global");
+                moreInfo = "global";
             }
             else
                 if (token->m_TokenAccess == taPrivate)
                 {
-                    moreInfo = _T("private");
+                    moreInfo = "private";
                 }
 
             break;
 
         case tkVariable:
-            html += token->m_TypeDefinition + _T(" :: ") + b1 + token->m_DisplayName + b0 + token->m_Args + br;
+            html += token->m_TypeDefinition + " :: " + b1 + token->m_DisplayName + b0 + token->m_Args + br;
             moreInfo = token->GetTokenKindString();
             break;
 
@@ -188,11 +188,11 @@ wxString HtmlDoc::GenerateHtmlDoc(TokenFlat * token, int token_idx, bool & hasDo
 
             if (token->m_TypeDefinition.IsEmpty())
             {
-                moreInfo = _T("interface");
+                moreInfo = "interface";
             }
             else
             {
-                moreInfo = _T("generic interface");
+                moreInfo = "generic interface";
             }
 
             break;
@@ -204,12 +204,12 @@ wxString HtmlDoc::GenerateHtmlDoc(TokenFlat * token, int token_idx, bool & hasDo
 
     //add kind:
     if (!moreInfo.IsEmpty())
-        html += i1 + _T("<font color=\"green\" size=3>") + _T("(") +
-                moreInfo + _T(")") + _T("</font>") + i0 + br;
+        html += i1 + "<font color=\"green\" size=3>" + "(" +
+                moreInfo + ")" + "</font>" + i0 + br;
 
     if (!token->m_DocString.IsEmpty())
     {
-        const wxString brsep = _T("@brief_end@");
+        const wxString brsep = "@brief_end@";
         size_t brf = token->m_DocString.find(brsep);
         size_t bre_idx = 11;
 
@@ -224,26 +224,26 @@ wxString HtmlDoc::GenerateHtmlDoc(TokenFlat * token, int token_idx, bool & hasDo
 
         if (bre_idx > 11)
         {
-            html += br + i1 + b1 + _T("Brief:") + b0 + i0 + br;
+            html += br + i1 + b1 + "Brief:" + b0 + i0 + br;
             html += tab + token->m_DocString.substr(0, brf) + br;
             hasDoc = true;
         }
 
         if (bre_idx < token->m_DocString.size())
         {
-            html += br + i1 + b1 + _T("Description:") + b0 + i0 + br;
+            html += br + i1 + b1 + "Description:" + b0 + i0 + br;
             html += tab + token->m_DocString.substr(bre_idx) + br;
             hasDoc = true;
         }
     }
 
     //add go to declaration
-    html += br + br + _T("<a href=\"") + commandTag + _T("goto") + wxString::Format(_T("%i"), token_idx)
-            + _T("\">") +  _T("Open declaration") + _T("</a>") + br + br;
+    html += br + br + "<a href=\"" + commandTag + "goto" + wxString::Format("%i", token_idx)
+            + "\">" +  "Open declaration" + "</a>" + br + br;
     // Append 'close' link:
-    html += _T("<a href=\"") + commandTag + _T("close")
-            + _T("\">") +  _T("close") + _T("</a>"),
-            html += _T("</body></html>");
+    html += "<a href=\"" + commandTag + "close"
+            + "\">" +  "close" + "</a>",
+            html += "</body></html>";
     return html;
 }
 
@@ -262,7 +262,7 @@ wxString HtmlDoc::OnDocumentationLink(wxHtmlLinkEvent & event, bool & dismissPop
         return wxEmptyString;
     }
 
-    if (args.StartsWith(_T("goto"), &tidx_str))
+    if (args.StartsWith("goto", &tidx_str))
     {
         if (tidx_str.ToLong(&tokenIdx))
         {
@@ -271,7 +271,7 @@ wxString HtmlDoc::OnDocumentationLink(wxHtmlLinkEvent & event, bool & dismissPop
         }
     }
     else
-        if (args.StartsWith(_T("close")))
+        if (args.StartsWith("close"))
         {
             dismissPopup = true;
         }
@@ -290,7 +290,7 @@ wxString HtmlDoc::GetDocShort(const wxString & tokDoc)
 
     if (!tokDoc.IsEmpty())
     {
-        const wxString brsep = _T("@brief_end@");
+        const wxString brsep = "@brief_end@";
         size_t brf = tokDoc.find(brsep);
         size_t bre_idx = 11;
 
@@ -314,7 +314,7 @@ wxString HtmlDoc::GetDocShort(const wxString & tokDoc)
 
                 if (doc.size() > 120) // limit length of doc
                 {
-                    doc = doc.substr(0, 120) + _T("...");
+                    doc = doc.substr(0, 120) + "...";
                 }
             }
     }

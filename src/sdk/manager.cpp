@@ -819,7 +819,7 @@ bool Manager::LoadResource(const wxString & file)
 
     if (wxFile::Access(resourceFile, wxFile::read) == false)
     {
-        Get()->GetLogManager()->LogError(wxString::Format(_("Manager failed to access XRC resource '%s'. Load from file %s"),
+        Get()->GetLogManager()->LogError(wxString::Format(_("Manager failed to access XRC resource '%s'. Load from file '%s'"),
                                                           resourceFile, file));
         return false;
     }

@@ -110,7 +110,7 @@ void ProjectDependencies::MakeProjectFilesDependencies(ProjectFilesArray & prFil
         }
 
         m_FileIndexMap.insert(std::make_pair(ffp, i));
-        wxString fname = pf->file.GetName() + _T(".") + pf->file.GetExt();
+        wxString fname = pf->file.GetName() + "." + pf->file.GetExt();
         fnames.Add(fname);
     }
 
@@ -458,7 +458,7 @@ void ProjectDependencies::MakeFileChildren(IntSet * children, size_t fileIndex)
 
     ProjectFile * pf = m_prFilesArr[fileIndex];
     wxString fname = pf->file.GetName();
-    wxString fnameExt = fname + _T(".") + pf->file.GetExt();
+    wxString fnameExt = fname + "." + pf->file.GetExt();
     size_t nIncludes = m_pIncludes.size();
 
     for (size_t k = 0; k < nIncludes; ++k)
@@ -556,12 +556,12 @@ void ProjectDependencies::RemoveModFiles(cbProject * pr, ProjectBuildTarget * bT
 
     wxString comID = bTarget->GetCompilerID();
 
-    if (!CompilerFactory::CompilerInheritsFrom(comID, _T("gfortran")) &&
-            !CompilerFactory::CompilerInheritsFrom(comID, _T("g95")) &&
-            !CompilerFactory::CompilerInheritsFrom(comID, _T("ifcwin")) &&
-            !CompilerFactory::CompilerInheritsFrom(comID, _T("ifclin")) &&
-            !CompilerFactory::CompilerInheritsFrom(comID, _T("pgfortran")) &&
-            !CompilerFactory::CompilerInheritsFrom(comID, _T("oracfortran")))
+    if (!CompilerFactory::CompilerInheritsFrom(comID, "gfortran") &&
+            !CompilerFactory::CompilerInheritsFrom(comID, "g95") &&
+            !CompilerFactory::CompilerInheritsFrom(comID, "ifcwin") &&
+            !CompilerFactory::CompilerInheritsFrom(comID, "ifclin") &&
+            !CompilerFactory::CompilerInheritsFrom(comID, "pgfortran") &&
+            !CompilerFactory::CompilerInheritsFrom(comID, "oracfortran"))
     {
         bool haveFortran = false;
 
@@ -590,7 +590,7 @@ void ProjectDependencies::RemoveModFiles(cbProject * pr, ProjectBuildTarget * bT
         wxString filename;
         wxFileName fname;
         fname.AssignDir(objDir);
-        wxString filespec = _T("*.mod");
+        wxString filespec = "*.mod";
         bool cont = odir.GetFirst(&filename, filespec, wxDIR_FILES);
 
         while (cont)
@@ -600,7 +600,7 @@ void ProjectDependencies::RemoveModFiles(cbProject * pr, ProjectBuildTarget * bT
             cont = odir.GetNext(&filename);
         }
 
-        filespec = _T("*.smod");
+        filespec = "*.smod";
         cont = odir.GetFirst(&filename, filespec, wxDIR_FILES);
 
         while (cont)
@@ -657,12 +657,12 @@ void ProjectDependencies::RemoveModFilesWS(NativeParserF * nativeParser)
 
 void ProjectDependencies::PrintChildrenTable()
 {
-    Manager::Get()->GetLogManager()->DebugLog(_T("\nProjectDependencies::PrintChildrenTable"));
+    Manager::Get()->GetLogManager()->DebugLog("\nProjectDependencies::PrintChildrenTable");
 
     for (size_t i = 0; i < m_ChildrenTable.size(); i++)
     {
         ProjectFile * pfile = m_prFilesArr[i];
-        Manager::Get()->GetLogManager()->DebugLog(_T("\n") + pfile->file.GetName());
+        Manager::Get()->GetLogManager()->DebugLog("\n" + pfile->file.GetName());
         IntSet * children = m_ChildrenTable[i];
         IntSet::iterator pos;
 
@@ -670,7 +670,7 @@ void ProjectDependencies::PrintChildrenTable()
         {
             ProjectFile * pf = m_prFilesArr[*pos];
             wxString fname = pf->file.GetName();
-            Manager::Get()->GetLogManager()->DebugLog(_T("        ") + fname);
+            Manager::Get()->GetLogManager()->DebugLog("        " + fname);
         }
     }
 }

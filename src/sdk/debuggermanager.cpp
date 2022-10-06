@@ -1154,11 +1154,15 @@ class DebugLogPanel : public wxPanel
             m_command_entry = new wxComboBox(this, idDebug_LogEntryControl, wxEmptyString,
                                              wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                              wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
-            wxBitmap execute_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_EXECUTABLE_FILE")),
-                                                               wxART_BUTTON);
-            wxBitmap clear_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_DELETE")), wxART_BUTTON);
-            wxBitmap file_open_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),
-                                                                 wxART_BUTTON);
+#if wxCHECK_VERSION(3, 1, 6)
+            wxBitmapBundle execute_bitmap = wxArtProvider::GetBitmapBundle(wxART_EXECUTABLE_FILE, wxART_BUTTON, wxSize(16, 16));
+            wxBitmapBundle clear_bitmap = wxArtProvider::GetBitmapBundle(wxART_DELETE, wxART_BUTTON, wxSize(16, 16));
+            wxBitmapBundle file_open_bitmap = wxArtProvider::GetBitmapBundle(wxART_FILE_OPEN, wxART_BUTTON, wxSize(16, 16));
+#else
+            wxBitmap execute_bitmap = wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_BUTTON);
+            wxBitmap clear_bitmap = wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON);
+            wxBitmap file_open_bitmap = wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_BUTTON);
+#endif
             wxBitmapButton * button_execute;
             button_execute = new wxBitmapButton(this, idDebug_ExecuteButton, execute_bitmap, wxDefaultPosition,
                                                 wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
@@ -1620,12 +1624,11 @@ TextCtrlLogger * DebuggerManager::GetLogger(int & index)
         LogSlot & slot = msgMan->Slot(m_loggerIndex);
         slot.title = _("Debugger");
         // set log image
-        const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
         wxString prefix(ConfigManager::GetDataFolder() + "/resources.zip#zip:/images/infopane/");
 #if wxCHECK_VERSION(3, 1, 6)
-        const double uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
-        slot.icon = new wxBitmapBundle(cbLoadBitmapBundle(prefix, "misc.png", wxRound(uiSize / uiScaleFactor), wxBITMAP_TYPE_PNG));
+        slot.icon = new wxBitmapBundle(cbLoadBitmapBundleFromSVG(prefix + "svg/misc.svg", wxSize(16, 16)));
 #else
+        const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
         prefix << wxString::Format("%dx%d/", uiSize, uiSize);
         slot.icon = new wxBitmap(cbLoadBitmap(prefix + "misc.png", wxBITMAP_TYPE_PNG));
 #endif

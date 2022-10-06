@@ -38,6 +38,7 @@ Requirements:
     To install the items above the following are the commands to use for Ubuntu/Xubuntu/Linux Mint:
         # Step 2:
         sudo apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev
+		sudo apt install -y wx3.2-headers libwxbase3.2-0 wx3.2-i18n libwxgtk3.2-0 libwxgtk3.2-dev libwxgtk-media3.2-0 libwxgtk-media3.2-dev libwxgtk-webview3.2-0 libwxgtk-webview3.2-dev
         # Step 3:
         sudo apt install -y build-essential
         # Optional step 4:

@@ -113,32 +113,32 @@ wxString TokenizerPP::GetToken()
         else
             if (m_interpretPPDirectives && token.GetChar(0) == '#')
             {
-                if (token.IsSameAs(_T("#define")))
+                if (token.IsSameAs("#define"))
                 {
                     HandlePPDefine();
                 }
                 else
-                    if (token.IsSameAs(_T("#undefine")) || token.IsSameAs(_T("#undef")))
+                    if (token.IsSameAs("#undefine") || token.IsSameAs("#undef"))
                     {
                         HandlePPUndefine();
                     }
                     else
-                        if (token.IsSameAs(_T("#if")) || token.IsSameAs(_T("#ifdef")) || token.IsSameAs(_T("#ifndef")))
+                        if (token.IsSameAs("#if") || token.IsSameAs("#ifdef") || token.IsSameAs("#ifndef"))
                         {
                             HandlePPIfdef(token);
                         }
                         else
-                            if (token.IsSameAs(_T("#endif")) || token.IsSameAs(_T("#else")) || token.IsSameAs(_T("#elif")))
+                            if (token.IsSameAs("#endif") || token.IsSameAs("#else") || token.IsSameAs("#elif"))
                             {
                                 HandlePPIfdef(token);
                             }
                             else
-                                if (token.IsSameAs(_T("#include")))
+                                if (token.IsSameAs("#include"))
                                 {
                                     HandleInclude();
                                 }
                                 else
-                                    if (token.IsSameAs(_T("#error")))
+                                    if (token.IsSameAs("#error"))
                                     {
                                         m_TokensFiles[m_ActiveFileIdx]->SkipToEOL();
                                     }
@@ -173,14 +173,14 @@ wxString TokenizerPP::InterpretDefinedFunction(const wxString & funName, const w
         return value;    // sorry, function is unknown.
     }
 
-    if (!paramsIn.StartsWith(_T("(")) || !paramsIn.EndsWith(_T(")")))
+    if (!paramsIn.StartsWith("(") || !paramsIn.EndsWith(")"))
     {
         return value;    // something is wrong
     }
 
     wxString params = paramsIn.Mid(1, paramsIn.size() - 2);
-    wxString paramsChanged = _T("(");
-    wxStringTokenizer tokenizer(params, _T(","));
+    wxString paramsChanged = "(";
+    wxStringTokenizer tokenizer(params, ",");
 
     while (tokenizer.HasMoreTokens())
     {
@@ -197,11 +197,11 @@ wxString TokenizerPP::InterpretDefinedFunction(const wxString & funName, const w
 
         if (tokenizer.HasMoreTokens())
         {
-            paramsChanged << _T(",");
+            paramsChanged << ",";
         }
     }
 
-    paramsChanged << _T(")");
+    paramsChanged << ")";
     PreProcFunction * pFunc = m_KnownFunctions.GetFunction(funName);
     value = pFunc->Interpret(paramsChanged, &m_KnownFunctions);
     return value;
@@ -209,7 +209,7 @@ wxString TokenizerPP::InterpretDefinedFunction(const wxString & funName, const w
 
 wxString TokenizerPP::ChangeWithDefinedValue(const wxString & token)
 {
-    if (token.StartsWith(_T("(")) && token.EndsWith(_T(")")))
+    if (token.StartsWith("(") && token.EndsWith(")"))
     {
         // we have e.g. "(myType)"
         wxString newToken;
@@ -226,7 +226,7 @@ wxString TokenizerPP::ChangeWithDefinedValue(const wxString & token)
             {
                 wxString value = m_DefineTokens[tok1];
 
-                if (value.StartsWith(_T("(")))
+                if (value.StartsWith("("))
                 {
                     // it is defined function
                     if (!m_KnownFunctions.HasFunction(tok1))
@@ -235,12 +235,12 @@ wxString TokenizerPP::ChangeWithDefinedValue(const wxString & token)
                     }
                     else
                     {
-                        return (_T("(") + InterpretDefinedFunction(tok1, tok2) + _T(")"));
+                        return ("(" + InterpretDefinedFunction(tok1, tok2) + ")");
                     }
                 }
                 else
                 {
-                    return (_T("(") + value + tok2 + _T(")"));
+                    return ("(" + value + tok2 + ")");
                 }
             }
         }
@@ -248,7 +248,7 @@ wxString TokenizerPP::ChangeWithDefinedValue(const wxString & token)
         {
             if (m_DefineTokens.count(tokInside) > 0)
             {
-                return (_T("(") + m_DefineTokens[tokInside] + _T(")"));
+                return ("(" + m_DefineTokens[tokInside] + ")");
             }
         }
     }
@@ -270,7 +270,7 @@ wxString TokenizerPP::ChangeDefinedWithValue(const wxString & token)
 
     wxString value = m_DefineTokens[token];
 
-    if (value.StartsWith(_T("(")))
+    if (value.StartsWith("("))
     {
         // it is defined function
         if (!m_KnownFunctions.HasFunction(token))
@@ -281,7 +281,7 @@ wxString TokenizerPP::ChangeDefinedWithValue(const wxString & token)
         {
             wxString peeked = m_TokensFiles[m_ActiveFileIdx]->PeekTokenSameFortranLine();
 
-            if (!peeked.StartsWith(_T("(")))
+            if (!peeked.StartsWith("("))
             {
                 return token;    // something is wrong
             }
@@ -338,7 +338,7 @@ wxString TokenizerPP::CheckSaveInPocket(const wxString & token)
         }
 
         val_part1 = token.Mid(0, pos1).Trim();
-        val_part2 = _T("*");
+        val_part2 = "*";
         val_part3 = token.Mid(pos1 + 1);
     }
 
@@ -383,7 +383,7 @@ void TokenizerPP::HandlePPDefine()
 
     wxString value;
     wxString val_line = line.Mid(idx1 + token.size()).Trim(true).Trim(false);
-    bool isNewFunDefinition = val_line.StartsWith(_T("("));
+    bool isNewFunDefinition = val_line.StartsWith("(");
 
     // Replace defined values in val_line
     if (isNewFunDefinition)
@@ -397,7 +397,7 @@ void TokenizerPP::HandlePPDefine()
             bool hasFunCall = false;
             size_t funNamePosShearch = 0;
             wxString funName;
-            const wxString delimeters = _T(" ,()[]");
+            const wxString delimeters = " ,()[]";
             wxStringTokenizer tokenizer(val_line, delimeters, wxTOKEN_STRTOK);
 
             if (tokenizer.HasMoreTokens())
@@ -420,7 +420,7 @@ void TokenizerPP::HandlePPDefine()
                     {
                         wxString def_val = m_DefineTokens[word];
 
-                        if (def_val.StartsWith(_T("(")))
+                        if (def_val.StartsWith("("))
                         {
                             // It is call to a defined function.
                             if (m_KnownFunctions.HasFunction(word))
@@ -528,7 +528,7 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
 
     line = line.Mid(ifToken.size()); // Skip ifToken.
 
-    while (line.EndsWith(_T("\\")))  // Continuation.
+    while (line.EndsWith("\\"))  // Continuation.
     {
         if (!m_TokensFiles[m_ActiveFileIdx]->SkipToEOL())
         {
@@ -545,15 +545,15 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
             break;
         }
 
-        line << _T(" ") << nextLine;
+        line << " " << nextLine;
     }
 
     // Remove C comments.
-    int comIdx = line.Find(_T("/*"));
+    int comIdx = line.Find("/*");
 
     if (comIdx == wxNOT_FOUND)
     {
-        comIdx = line.Find(_T("//"));
+        comIdx = line.Find("//");
     }
 
     if (comIdx != wxNOT_FOUND)
@@ -562,32 +562,32 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
     }
 
     // Change C "not" to something.
-    line.Replace(_T("!"), _T("$$$"));
-    line.Replace(_T("&&"), _T(" $$and$$ "));
-    line.Replace(_T("||"), _T(" $$or$$ "));
-    line.Replace(_T("<="), _T(" $$le$$ "));
-    line.Replace(_T(">="), _T(" $$ge$$ "));
-    line.Replace(_T("=="), _T(" $$ee$$ "));
-    line.Replace(_T("!="), _T(" $$ne$$ "));
+    line.Replace("!", "$$$");
+    line.Replace("&&", " $$and$$ ");
+    line.Replace("||", " $$or$$ ");
+    line.Replace("<=", " $$le$$ ");
+    line.Replace(">=", " $$ge$$ ");
+    line.Replace("==", " $$ee$$ ");
+    line.Replace("!=", " $$ne$$ ");
     line << "\n";
     Tokenizerf lineSplitter = Tokenizerf();
     lineSplitter.InitFromBuffer(line, fsfFree);
     wxString ptok = lineSplitter.PeekToken();
 
-    if ((ifToken.IsSameAs(_T("#if")) || (ifToken.IsSameAs(_T("#elif")) && !skipElif))
-            && (ptok.IsSameAs(_T("defined")) || ptok.IsSameAs(_T("$$$defined"))))
+    if ((ifToken.IsSameAs("#if") || (ifToken.IsSameAs("#elif") && !skipElif))
+            && (ptok.IsSameAs("defined") || ptok.IsSameAs("$$$defined")))
     {
-        ifToken = _T("#ifdef");
+        ifToken = "#ifdef";
     }
 
-    if (ifToken.IsSameAs(_T("#ifdef")) || ifToken.IsSameAs(_T("#ifndef")))
+    if (ifToken.IsSameAs("#ifdef") || ifToken.IsSameAs("#ifndef"))
     {
         bool hasDef = false;
         bool combineOr = false;
         bool combineAnd = false;
         bool ifDef = true;
 
-        if (ifToken.IsSameAs(_T("#ifndef")))
+        if (ifToken.IsSameAs("#ifndef"))
         {
             ifDef = false;
         }
@@ -596,13 +596,13 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
         {
             wxString token = lineSplitter.GetToken();
 
-            if (token.IsSameAs(_T("defined")))
+            if (token.IsSameAs("defined"))
             {
                 ifDef = true;
                 token = lineSplitter.GetToken();
             }
             else
-                if (token.IsSameAs(_T("$$$defined")))
+                if (token.IsSameAs("$$$defined"))
                 {
                     ifDef = false;
                     token = lineSplitter.GetToken();
@@ -615,7 +615,7 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
 
             if (token.StartsWith('(') && token.EndsWith(')'))
             {
-                token = token.Mid(1, token.Length() - 2).Trim(true).Trim(false);
+                token = token.Mid(1, token.length() - 2).Trim(true).Trim(false);
             }
 
             bool hasDef_1 = (m_DefineTokens.count(token) > 0) || HasProjectCPPDefine(token);
@@ -644,12 +644,12 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
                 break;
             }
 
-            if (tokNext.IsSameAs(_T("$$or$$")))
+            if (tokNext.IsSameAs("$$or$$"))
             {
                 combineOr = true;
             }
             else
-                if (tokNext.IsSameAs(_T("$$and$$")))
+                if (tokNext.IsSameAs("$$and$$"))
                 {
                     combineAnd = true;
                 }
@@ -669,14 +669,14 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
             wxString lastTok;
             SkipPPIfdef(lastTok);
 
-            if (lastTok.IsSameAs(_T("#elif")))
+            if (lastTok.IsSameAs("#elif"))
             {
                 HandlePPIfdef(lastTok, false);
             }
         }
     }
     else
-        if (skipElif && (ifToken.IsSameAs(_T("#elif")) || ifToken.IsSameAs(_T("#else"))))
+        if (skipElif && (ifToken.IsSameAs("#elif") || ifToken.IsSameAs("#else")))
         {
             wxString lastTok;
 
@@ -684,14 +684,14 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
             {
                 SkipPPIfdef(lastTok);
 
-                if (lastTok.IsEmpty() || lastTok.IsSameAs(_T("#endif")))
+                if (lastTok.empty() || lastTok.IsSameAs("#endif"))
                 {
                     break;
                 }
             }
         }
         else
-            if (ifToken.IsSameAs(_T("#if")) || ifToken.IsSameAs(_T("#elif")))
+            if (ifToken.IsSameAs("#if") || ifToken.IsSameAs("#elif"))
             {
                 // Handle:
                 //    #if (PETSC_INT == 4)
@@ -712,9 +712,9 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
                     {
                         wxString condition = conToks[0];
 
-                        if (condition.StartsWith(_T("(")) && condition.EndsWith(_T(")")))
+                        if (condition.StartsWith("(") && condition.EndsWith(")"))
                         {
-                            condition = condition.Mid(1, condition.Length() - 2).Trim(true).Trim(false);
+                            condition = condition.Mid(1, condition.length() - 2).Trim(true).Trim(false);
                         }
 
                         if (m_DefineTokens.count(condition) > 0)
@@ -770,7 +770,7 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
 
                         if (conToks[0].ToCLong(&il) && conToks[2].ToCLong(&ir))
                         {
-                            if (conToks[1] == _T("$$ee$$")) // ==
+                            if (conToks[1] == "$$ee$$") // ==
                             {
                                 if (il == ir)
                                 {
@@ -782,7 +782,7 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
                                 }
                             }
                             else
-                                if (conToks[1] == _T("$$ne$$")) // !=
+                                if (conToks[1] == "$$ne$$") // !=
                                 {
                                     if (il != ir)
                                     {
@@ -794,7 +794,7 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
                                     }
                                 }
                                 else
-                                    if (conToks[1] == _T(">"))
+                                    if (conToks[1] == ">")
                                     {
                                         if (il > ir)
                                         {
@@ -806,7 +806,7 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
                                         }
                                     }
                                     else
-                                        if (conToks[1] == _T("<"))
+                                        if (conToks[1] == "<")
                                         {
                                             if (il < ir)
                                             {
@@ -818,7 +818,7 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
                                             }
                                         }
                                         else
-                                            if (conToks[1] == _T("$$ge$$")) // >=
+                                            if (conToks[1] == "$$ge$$") // >=
                                             {
                                                 if (il >= ir)
                                                 {
@@ -830,7 +830,7 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
                                                 }
                                             }
                                             else
-                                                if (conToks[1] == _T("$$le$$")) // <=
+                                                if (conToks[1] == "$$le$$") // <=
                                                 {
                                                     if (il <= ir)
                                                     {
@@ -859,18 +859,18 @@ void TokenizerPP::HandlePPIfdef(const wxString & inToken, bool skipElif)
                         //m_TokensFiles[m_ActiveFileIdx]->SkipToEOL();
                         SkipPPIfdef(lastTok);
 
-                        if (lastTok.IsEmpty() || lastTok.IsSameAs(_T("#endif")))
+                        if (lastTok.empty() || lastTok.IsSameAs("#endif"))
                         {
                             break;
                         }
                         else
-                            if (lastTok.IsSameAs(_T("#elif")))
+                            if (lastTok.IsSameAs("#elif"))
                             {
                                 HandlePPIfdef(lastTok, false);
                                 break;
                             }
                             else
-                                if (lastTok.IsSameAs(_T("#else")))
+                                if (lastTok.IsSameAs("#else"))
                                 {
                                     break;
                                 }
@@ -897,32 +897,32 @@ void TokenizerPP::SkipPPIfdef(wxString & tokenAtEnd)
             break;
         }
 
-        if (token.StartsWith(_T("#")))
+        if (token.StartsWith("#"))
         {
-            if (token.IsSameAs(_T("#ifdef")) || token.IsSameAs(_T("#ifndef")) || token.IsSameAs(_T("#if")))
+            if (token.IsSameAs("#ifdef") || token.IsSameAs("#ifndef") || token.IsSameAs("#if"))
             {
                 inIfdef += 1;
                 m_TokensFiles[m_ActiveFileIdx]->SkipToEOL();
             }
             else
-                if (inIfdef > 0 && token.IsSameAs(_T("#endif")))
+                if (inIfdef > 0 && token.IsSameAs("#endif"))
                 {
                     inIfdef -= 1;
                     m_TokensFiles[m_ActiveFileIdx]->SkipToEOL();
                 }
                 else
-                    if (token.IsSameAs(_T("#define")))
+                    if (token.IsSameAs("#define"))
                     {
                         continue;
                     }
                     else
-                        if (token.IsSameAs(_T("#undefine")) || token.IsSameAs(_T("#undef")))
+                        if (token.IsSameAs("#undefine") || token.IsSameAs("#undef"))
                         {
                             continue;
                         }
                         else
                             if (inIfdef == 0 &&
-                                    (token.IsSameAs(_T("#elif")) || token.IsSameAs(_T("#else")) || token.IsSameAs(_T("#endif"))))
+                                    (token.IsSameAs("#elif") || token.IsSameAs("#else") || token.IsSameAs("#endif")))
                             {
                                 tokenAtEnd = token;
                                 break;
@@ -971,19 +971,19 @@ void TokenizerPP::HandleInclude()
 
     wxString includeFilename;
 
-    if ((token.StartsWith(_T("\"")) || token.StartsWith(_T("<"))) &&
-            (token.EndsWith(_T("\""))  || token.EndsWith(_T(">"))))
+    if ((token.StartsWith("\"") || token.StartsWith("<")) &&
+            (token.EndsWith("\"")  || token.EndsWith(">")))
     {
         // Handle "name".
         includeFilename = token.Mid(1, token.size() - 2).Trim(true).Trim(false);
     }
     else
-        if (token.IsSameAs(_T("<")))
+        if (token.IsSameAs("<"))
         {
             // Handle #include <filename.fpp>
             includeFilename = m_TokensFiles[m_ActiveFileIdx]->GetTokenSameLine();
 
-            if (m_TokensFiles[m_ActiveFileIdx]->PeekToken().IsSameAs(_T(".")))
+            if (m_TokensFiles[m_ActiveFileIdx]->PeekToken().IsSameAs("."))
             {
                 wxString point = m_TokensFiles[m_ActiveFileIdx]->GetTokenSameLine();
                 includeFilename.Append(point + m_TokensFiles[m_ActiveFileIdx]->GetTokenSameLine());
@@ -1217,12 +1217,12 @@ void TokenizerPP::InterpretArrayString(const wxArrayString & tokenArrIn, wxArray
             {
                 wxString value = m_DefineTokens[tokenArrIn[i]];
 
-                if (value.StartsWith(_T("(")))
+                if (value.StartsWith("("))
                 {
                     // it is defined function
                     if (m_KnownFunctions.HasFunction(tokenArrIn[i]))
                     {
-                        if ((i + 1 < arrSize) && (tokenArrIn[i + 1].StartsWith(_T("("))))
+                        if ((i + 1 < arrSize) && (tokenArrIn[i + 1].StartsWith("(")))
                         {
                             value = InterpretDefinedFunction(tokenArrIn[i], tokenArrIn[i + 1]);
                         }
@@ -1298,7 +1298,7 @@ wxString TokenizerPP::GetLine(unsigned int nl)
 void TokenizerPP::MakeSaparateTokens(const wxString & line, wxArrayString & tokenArr)
 {
     Tokenizerf tokens;
-    tokens.InitFromBuffer(line + _T(" "), fsfFree);
+    tokens.InitFromBuffer(line + " ", fsfFree);
 
     while (true)
     {

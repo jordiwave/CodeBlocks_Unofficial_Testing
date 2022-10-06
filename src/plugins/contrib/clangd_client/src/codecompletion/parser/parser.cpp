@@ -568,7 +568,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent & event) //(ph 2021/03/15)
 
         try
         {
-            idValue = pJson->at("id").get<std::string>();
+            idValue = GetwxUTF8Str(pJson->at("id").get<std::string>());
         }
         catch (std::exception & err)
         {
@@ -1397,7 +1397,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
 
     try
     {
-        uri = pJson->at("params").at("uri").get<std::string>();
+        uri = GetwxUTF8Str(pJson->at("params").at("uri").get<std::string>());
 
         if (pJson->at("params").contains("version"))
         {
@@ -1483,7 +1483,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
     size_t filesParsingDurationTime = GetLSPClient()->LSP_GetServerFilesParsingDurationTime(cbFilename);
     GetLSPClient()->LSP_RemoveFromServerFilesParsing(cbFilename);
 
-    // Find the parser for this file, else use the ProxyProject parser //(ph 2022/04/14)
+    // Find the parser for this file, else use the ProxyProject parser
     if (not pProject)
     {
         pProject = GetParsersProject();
@@ -1504,7 +1504,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         pProject = GetParseManager()->GetProxyProject();
     }
 
-    pParser = (Parser *)GetParseManager()->GetParserByProject(pProject); //(ph 2022/04/14)
+    pParser = (Parser *)GetParseManager()->GetParserByProject(pProject);
 
     if (not pParser)
     {
@@ -1514,7 +1514,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent & event)
         cbMessageBox(msg, "Error");
         msg.Replace("\n", " ");
         CCLogger::Get()->DebugLogError(msg);
-        //cbAssert(pParser);
+        //cbAssert(pParser); /**Debugging**/
         return;
     }
 
@@ -1935,7 +1935,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent & event)
 
             for (size_t ii = 0; ii < entryCount; ++ii)
             {
-                wxString URI = valueResult[ii].at("uri").get<std::string>();
+                wxString URI = GetwxUTF8Str(valueResult[ii].at("uri").get<std::string>());
                 URI = fileUtils.FilePathFromURI(URI);   //(ph 2021/12/21)
                 wxFileName curFn = URI;
                 wxString absFilename = curFn.GetFullPath();
@@ -2107,7 +2107,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent & event)
 
             for (size_t ii = 0; ii < entryCount; ++ii)
             {
-                wxString URI = valueResult[ii].at("uri").get<std::string>();
+                wxString URI = GetwxUTF8Str(valueResult[ii].at("uri").get<std::string>());
                 URI = fileUtils.FilePathFromURI(URI);   //(ph 2021/12/21)
                 wxFileName curFn = URI;
                 wxString absFilename = curFn.GetFullPath();
@@ -2311,7 +2311,7 @@ void Parser::OnLSP_DeclDefResponse(wxCommandEvent & event)
 #if defined(cbDEBUG)
                 std::string see = resultValue.dump(); //debugging
 #endif //LOGGING
-                wxString filenameStr = resultObj.at("uri").get<std::string>();
+                wxString filenameStr = GetwxUTF8Str(resultObj.at("uri").get<std::string>());
                 int linenum  = resultObj["range"]["start"]["line"].get<int>();;
                 int charPosn = resultObj["range"]["start"]["character"].get<int>();
                 // jump over 'file://' prefix
@@ -2727,7 +2727,7 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<ClgdCC
 
             for (size_t itemNdx = 0; itemNdx < valueItemsCount && itemNdx < CCMaxMatches; ++itemNdx)
             {
-                wxString labelValue = valueItems[itemNdx].at("label").get<std::string>();
+                wxString labelValue = GetwxUTF8Str(valueItems[itemNdx].at("label").get<std::string>());
                 labelValue.Trim(0).Trim(1); //(ph 2022/06/25) clangd returning prefixed blank
                 //#if wxCHECK_VERSION(3,1,5) //3.1.5 or higher
                 //wxString badBytes = "\xE2\x80\xA6"; // wx3.0 produces an empty string
@@ -2746,7 +2746,7 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<ClgdCC
                 // tokens.push_back(CCToken(token->m_Index, token->m_Name + dispStr, token->m_Name, token->m_IsTemp ? 0 : 5, iidx));
                 // CCToken(int _id, const wxString& dispNm, int categ = -1) :
                 //                id(_id), category(categ), weight(5), displayName(dispNm), name(dispNm) {}
-                wxString filterText = valueItems[itemNdx].at("filterText").get<std::string>();  //(ph 2022/06/20)
+                wxString filterText = GetwxUTF8Str(valueItems[itemNdx].at("filterText").get<std::string>());
                 int labelKind = valueItems[itemNdx].at("kind").get<int>();
                 ClgdCCToken ccctoken(-1, labelValue, labelValue);    //id and name
                 ccctoken.id = -1;                                            //needed Documentation popups, set below.
@@ -2974,7 +2974,7 @@ void Parser::OnLSP_CompletionPopupHoverResponse(wxCommandEvent & event)
             }
 
             json contents = pJson->at("result").at("contents");
-            wxString contentsValue = contents.at("value").get<std::string>();
+            wxString contentsValue = GetwxUTF8Str(contents.at("value").get<std::string>());
             //#if wxCHECK_VERSION(3,1,5) //3.1.5 or higher
             //// wx3.0 cannot produce the utf8 string
             //wxString badBytes =  "\xE2\x86\x92" ; //Wierd chars in hover results
@@ -3065,7 +3065,7 @@ void Parser::OnLSP_HoverResponse(wxCommandEvent & event, std::vector<ClgdCCToken
             }
 
             json contents = pJson->at("result").at("contents");
-            wxString contentsValue = contents.at("value").get<std::string>();
+            wxString contentsValue = GetwxUTF8Str(contents.at("value").get<std::string>());
             // Example Hover contents: L"instance-method HelloWxWorldFrame::OnAbout\n\nType: void\nParameters:\n- wxCommandEvent & event\n\n// In HelloWxWorldFrame\nprivate: void HelloWxWorldFrame::OnAbout(wxCommandEvent &event)"
             // get string array of hover info separated at /n chars.
             wxString hoverString = contentsValue;
@@ -3216,7 +3216,7 @@ void Parser::OnLSP_SignatureHelpResponse(wxCommandEvent & event, std::vector<cbC
 
             for (size_t labelndx = 0; labelndx < signatureCount && labelndx < 10; ++labelndx)
             {
-                wxString labelValue = signatures[labelndx].at("label").get<std::string>();
+                wxString labelValue = GetwxUTF8Str(signatures[labelndx].at("label").get<std::string>());
                 v_SignatureTokens.push_back(cbCodeCompletionPlugin::CCCallTip(labelValue));
             }
 
@@ -3379,7 +3379,7 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent & event)
                     prevRangeEndLine    = curRangeEndLine;
                     prevRangeStartCol   = curRangeStartCol;
                     prevRangeEndCol     = curRangeEndCol;
-                    curNewText = fileChanges[ii].at("newText").get<std::string>();
+                    curNewText = GetwxUTF8Str(fileChanges[ii].at("newText").get<std::string>());
                     curRangeStartLine = fileChanges[ii].at("range").at("start").at("line").get<int>();
                     curRangeEndLine = fileChanges[ii].at("range").at("end").at("line").get<int>();
                     curRangeStartCol = fileChanges[ii].at("range").at("start").at("character").get<int>();
@@ -3630,10 +3630,12 @@ void Parser::OnLSP_GoToFunctionResponse(wxCommandEvent & event) //unused
             {
                 size_t symbolType = valueResult[ii].at("kind").get<int>();
 
-                if ((symbolType == LSP_SymbolKind::Function) or (symbolType == LSP_SymbolKind::Method))
+                if ((symbolType == LSP_SymbolKind::Function) or (symbolType == LSP_SymbolKind::Method)
+                        or (symbolType == LSP_SymbolKind::Constructor) or (symbolType == LSP_SymbolKind::Class)
+                        or (symbolType == LSP_SymbolKind::Namespace))
                 {
                     foundCount += 1;
-                    wxString symName   = valueResult[ii].at("name").get<std::string>();
+                    wxString symName   = GetwxUTF8Str(valueResult[ii].at("name").get<std::string>());
                     //- wxString symDetail = valueResult[ii].at("detail").get<std::string>(); CCLS only
                     int      symLine   = valueResult[ii].at("range").at("start").at("line").get<int>();
                     symLine += 1; //make 1 origin
@@ -3696,7 +3698,7 @@ bool Parser::LSP_GetSymbolsByType(json * pJson, std::set<LSP_SymbolKind> & symbo
 
     try
     {
-        URI = pJson->at("id").get<std::string>();
+        URI = GetwxUTF8Str(pJson->at("id").get<std::string>());
     }
     catch (std::exception & e)
     {

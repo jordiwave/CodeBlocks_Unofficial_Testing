@@ -92,7 +92,7 @@ Tab2Space::~Tab2Space()
 
 void Tab2Space::OnOK(cb_unused wxCommandEvent & event)
 {
-    Manager::Get()->GetLogManager()->DebugLog(_T("Tab2Space::OnOK is called"));
+    Manager::Get()->GetLogManager()->DebugLog("Tab2Space::OnOK is called");
     Tab2SpaceIn chin;
 
     if (rb_ChCActiveProject->GetValue())
@@ -170,20 +170,20 @@ void Tab2Space::MakeTab2Space(Tab2SpaceIn chin, int tabSize)
 
                 while (i < nonFFiles.size() && i < imax)
                 {
-                    mstr << _("\n\"") << nonFFiles[i] << _T("\"");
+                    mstr << _("\n\"") << nonFFiles[i] << "\"";
                     i++;
                 }
 
                 if (nonFFiles.size() > imax)
                 {
-                    mstr << _T("...\n");
+                    mstr << "...\n";
                 }
                 else
                 {
-                    mstr << _T("\n");
+                    mstr << "\n";
                 }
 
-                mstr << wxString::Format(_T("(%d "), int(nonFFiles.size())) << _("files) ");
+                mstr << wxString::Format("(%d ", int(nonFFiles.size())) << _("files) ");
                 mstr << _("were not recognized as the Fortran files.");
                 mstr << _(" The tab2space was not applied for them.");
                 cbMessageBox(mstr, _("Info"), wxICON_INFORMATION);
@@ -287,7 +287,7 @@ bool Tab2Space::EditorTab2Space(cbEditor * ed, Tab2SpaceIn chin, int tabSize)
         return false;
     }
 
-    wxString contDigit = _T("123456789");
+    wxString contDigit = "123456789";
     size_t ncur = 0;
 
     while (1)
@@ -318,17 +318,17 @@ bool Tab2Space::EditorTab2Space(cbEditor * ed, Tab2SpaceIn chin, int tabSize)
         {
             if (line.GetChar(0) == '\t' && contDigit.Find(line.GetChar(1)) != wxNOT_FOUND)
             {
-                lineNew << _T("     ");
+                lineNew << "     ";
             }
             else
                 if (line.GetChar(0) == '\t')
                 {
-                    lineNew << _T("      ");
+                    lineNew << "      ";
                 }
                 else
                     if (line.GetChar(0) == '\n')
                     {
-                        lineNew << _T("\n");
+                        lineNew << "\n";
                     }
                     else
                     {

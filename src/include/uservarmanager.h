@@ -399,16 +399,6 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
         bool setNameOverwrittenInParameter;         //!< True if the active set is overridden via command line argument. If true do not store active set on closing codeblocks
         VariableSetMap m_ParameterVariableSetMap;   //!< Parameter map loaded from command line
 
-        /** \brief Get the value of the member from a variable from a given set map
-         *
-         * \param[in] setMap  a map of sets in which the member variable should be searched
-         * \param[out] value If found the value of the member variable. Only valid if return value is true
-         * \param[in] setName Set name
-         * \param[in] varName variable name
-         * \param[in] memberName member name
-         * \return true if member is found and \ref value is valid.
-         */
-        bool GetMemberValue(const VariableSetMap & setMap, wxString & value, const wxString & setName, const wxString & varName, const wxString & memberName) const;
 
 
         /** \brief Find the value of the member from a variable in the current active set
@@ -587,6 +577,16 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
          * \param setName name of the new set to create
          */
         void CreateVariableSet(const wxString & setName);
+        /** \brief Get the value of the member from a variable from a given set map
+         *
+         * \param[in] setMap  a map of sets in which the member variable should be searched
+         * \param[out] value If found the value of the member variable. Only valid if return value is true
+         * \param[in] setName Set name
+         * \param[in] varName variable name
+         * \param[in] memberName member name
+         * \return true if member is found and \ref value is valid.
+         */
+        bool GetMemberValue(const VariableSetMap & setMap, wxString & value, const wxString & setName, const wxString & varName, const wxString & memberName) const;
 
         /** \brief Get value of member variable. First search in program arguments, then in configuration file
          *

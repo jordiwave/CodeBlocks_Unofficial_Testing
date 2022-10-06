@@ -2021,6 +2021,8 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         File ${CB_BASE}${CB_SHARE_CB}\SpellChecker\56x56\*.png
         SetOutPath $INSTDIR${CB_SHARE_CB}\SpellChecker\64x64
         File ${CB_BASE}${CB_SHARE_CB}\SpellChecker\64x64\*.png
+        SetOutPath $INSTDIR${CB_SHARE_CB}\SpellChecker\svg
+        File ${CB_BASE}${CB_SHARE_CB}\SpellChecker\svg\*.svg
         WriteRegStr HKCU "${REGKEY}\Components" "SpellChecker plugin" 1
     SectionEnd
 
@@ -2087,6 +2089,7 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         File ${CB_BASE}${CB_IMG_SETTINGS}\wxsmith-off.png
         SetOutPath $INSTDIR${CB_IMAGES}\wxsmith
         File ${CB_BASE}${CB_IMAGES}\wxsmith\*.png
+        File ${CB_BASE}${CB_IMAGES}\wxsmith\*.svg
         WriteRegStr HKCU "${REGKEY}\Components" "wxSmith plugin" 1
     SectionEnd
 
@@ -2490,6 +2493,8 @@ Section "-un.SpellChecker plugin" UNSEC_SPELLCHECKER
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\56x56
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\64x64\*.png
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\64x64
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\svg\*.svg
+    RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\svg
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\SpellChecker-off.png
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\SpellChecker.png
@@ -2507,6 +2512,7 @@ Section "-un.ThreadSearch plugin" UNSEC_THREADSEARCH
 SectionEnd
 
 Section "-un.wxSmith plugin" UNSEC_WXSMITH
+    Delete /REBOOTOK $INSTDIR${CB_IMAGES}\wxsmith\*.svg
     Delete /REBOOTOK $INSTDIR${CB_IMAGES}\wxsmith\*.png
     RMDir  /REBOOTOK $INSTDIR${CB_IMAGES}\wxsmith
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\wxsmith-off.png

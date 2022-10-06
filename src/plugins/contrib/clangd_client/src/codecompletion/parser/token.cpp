@@ -231,14 +231,18 @@ wxString Token::GetImplFilename() const
     return m_TokenTree->GetFilename(m_ImplFileIdx);
 }
 
+// ----------------------------------------------------------------------------
 wxString Token::GetFormattedArgs() const
+// ----------------------------------------------------------------------------
 {
     wxString args(m_Args);
     args.Replace(_T("\n"), wxEmptyString);
     return args;
 }
 
+// ----------------------------------------------------------------------------
 wxString Token::GetStrippedArgs() const
+// ----------------------------------------------------------------------------
 {
     // the argument should have the format (xxxx = y, ....) or just an empty string
     // if it is empty, we just return an empty string
@@ -280,6 +284,11 @@ wxString Token::GetStrippedArgs() const
     if (args.Last() != _T(')'))
     {
         args << _T(')');
+    }
+
+    if (not args.StartsWith('(')) //(ph 2022/09/23)
+    {
+        args.Prepend('(');
     }
 
     return args;

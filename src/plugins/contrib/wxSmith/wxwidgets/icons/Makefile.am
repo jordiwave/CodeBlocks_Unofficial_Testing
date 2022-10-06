@@ -1,4 +1,5 @@
 pkgdatadir = $(datadir)/@PACKAGE@/images/wxsmith
 
 dist_pkgdata_DATA = \
-			*.png
+			$(srcdir)/*.png \
+			$(srcdir)/*.svg

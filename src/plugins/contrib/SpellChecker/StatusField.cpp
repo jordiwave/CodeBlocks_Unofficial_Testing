@@ -34,7 +34,6 @@ const int idEditPersonalDictionary = wxNewId();
 SpellCheckerStatusField::SpellCheckerStatusField(wxWindow * parent, SpellCheckerPlugin * plugin, SpellCheckerConfig * sccfg)
     : wxPanel(parent, wxID_ANY),
       m_bitmap(NULL),
-      m_text(NULL),
       m_sccfg(sccfg),
       m_plugin(plugin)
 {

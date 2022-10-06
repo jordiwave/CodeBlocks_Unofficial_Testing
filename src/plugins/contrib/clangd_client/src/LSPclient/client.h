@@ -650,6 +650,11 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
             return m_pCBProject;
         }
 
+        wxString GetwxUTF8Str(const std::string stdString)
+        {
+            return wxString(stdString.c_str(), wxConvUTF8);
+        }
+
         // For this project, a map containing cbEditor*(key), value: tuple<LSP serverFileOpenStatus, caretPosition, isParsed>
 #define EDITOR_STATUS_IS_OPEN 0         // editors file is open in server
 #define EDITOR_STATUS_CARET_POSITION 1  //eg., 1234

@@ -235,7 +235,7 @@ int idMenuSelectTarget                             = XRCID("idCompilerMenuSelect
 // Limit the number of menu items to try to make them all visible on the screen.
 // Scrolling menus is not the best user experience.
 const int maxTargetInMenus = 40;
-int idMenuSelectTargetOther[maxTargetInMenus]; // initialized in ctor
+int idMenuSelectTargetOther[maxTargetInMenus];           // initialized in ctor
 int idMenuSelectTargetDialog                       = XRCID("idMenuSelectTargetDialog");
 int idMenuSelectTargetHasMore                      = wxNewId();
 
@@ -419,12 +419,11 @@ void CompilerGCC::OnAttach()
     msgMan->Slot(m_PageIndex).title = _("Build log");
     //    msgMan->SetBatchBuildLog(m_PageIndex);
     // set log image
-    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     wxString prefix(ConfigManager::GetDataFolder() + "/resources.zip#zip:/images/infopane/");
 #if wxCHECK_VERSION(3, 1, 6)
-    const double uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
-    wxBitmapBundle * bmp = new wxBitmapBundle(cbLoadBitmapBundle(prefix, "misc.png", wxRound(uiSize / uiScaleFactor), wxBITMAP_TYPE_PNG));
+    wxBitmapBundle * bmp = new wxBitmapBundle(cbLoadBitmapBundleFromSVG(prefix + "svg/misc.svg", wxSize(16, 16)));
 #else
+    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     prefix << wxString::Format("%dx%d/", uiSize, uiSize);
     wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + "misc.png", wxBITMAP_TYPE_PNG));
 #endif
@@ -447,7 +446,7 @@ void CompilerGCC::OnAttach()
     {
         // set log image
 #if wxCHECK_VERSION(3, 1, 6)
-        bmp = new wxBitmapBundle(cbLoadBitmapBundle(prefix, "flag.png", wxRound(uiSize / uiScaleFactor), wxBITMAP_TYPE_PNG));
+        bmp = new wxBitmapBundle(cbLoadBitmapBundleFromSVG(prefix + "svg/flag.svg", wxSize(16, 16)));
 #else
         bmp = new wxBitmap(cbLoadBitmap(prefix + "flag.png", wxBITMAP_TYPE_PNG));
 #endif
@@ -1861,7 +1860,7 @@ void CompilerGCC::DoClearTargetMenu()
 
             if (item)
             {
-                if (item->GetKind() == wxITEM_SEPARATOR)
+                if ((item->GetKind() == wxITEM_SEPARATOR) && !foundFirstSeparator)
                 {
                     if (!foundFirstSeparator)
                     {
@@ -1872,10 +1871,12 @@ void CompilerGCC::DoClearTargetMenu()
                 // We do this because we don't want to delete the first item, because we want to
                 // make it possible for users to assign keyboard shortcuts for it.
                 else
+                {
                     if (foundFirstSeparator)
                     {
                         m_TargetMenu->Delete(item);
                     }
+                }
             }
         }
 
@@ -1978,6 +1979,11 @@ void CompilerGCC::DoRecreateTargetMenu()
         // fill the menu and combo
         for (int x = 0; x < int(m_Targets.size()); ++x)
         {
+            if (x == m_RealTargetsStartIndex)
+            {
+                m_TargetMenu->AppendSeparator();
+            }
+
             if (m_TargetMenu && x < maxTargetInMenus)
             {
                 wxString help;

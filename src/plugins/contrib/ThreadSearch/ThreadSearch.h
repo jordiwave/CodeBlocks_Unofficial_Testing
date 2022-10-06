@@ -63,7 +63,7 @@ class ThreadSearch : public cbPlugin
           */
         virtual int GetConfigurationGroup() const override
         {
-            return cgContribPlugin;
+            return cgEditor;
         }
 
         /** Return plugin's configuration panel.

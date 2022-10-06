@@ -44,6 +44,8 @@ class CMakeListsExporter : public ExporterBase
         wxString    m_ContentCMakeListTopLevel;
         wxRegEx     m_RE_Unix;
         wxRegEx     m_RE_DOS;
+
+        std::map<wxString, wxString> m_mapTargetOuputs;
 };
 
 #endif // __CMAKELISTSEXPORTER_H__

@@ -25,11 +25,11 @@ KeywordsParserF::KeywordsParserF():
     m_Parser(false)
 {
     m_IsDone = false;
-    wxString filename = ConfigManager::GetDataFolder() + _T("/images/fortranproject/fortran_procedures.f90");
+    wxString filename = ConfigManager::GetDataFolder() + "/images/fortranproject/fortran_procedures.f90";
 
     if (!wxFileExists(filename))
     {
-        Manager::Get()->GetLogManager()->Log(_T("FortranProject plugin error: file ") + filename + _T(" was not found."));
+        Manager::Get()->GetLogManager()->Log("FortranProject plugin error: file " + filename + " was not found.");
         return;
     }
 
@@ -49,7 +49,7 @@ KeywordsParserF::KeywordsParserF():
                 m_FuncSet.insert(pTokens->Item(i)->m_Name);
             }
             else
-                if (pTokens->Item(i)->m_TokenKind == tkModule && pTokens->Item(i)->m_Name.IsSameAs(_T("openmp")))
+                if (pTokens->Item(i)->m_TokenKind == tkModule && pTokens->Item(i)->m_Name.IsSameAs("openmp"))
                 {
                     TokensArrayF * pOMPMod = &pTokens->Item(i)->m_Children;
 
@@ -62,7 +62,7 @@ KeywordsParserF::KeywordsParserF():
                     }
                 }
                 else
-                    if (pTokens->Item(i)->m_TokenKind == tkModule && pTokens->Item(i)->m_Name.IsSameAs(_T("openacc")))
+                    if (pTokens->Item(i)->m_TokenKind == tkModule && pTokens->Item(i)->m_Name.IsSameAs("openacc"))
                     {
                         TokensArrayF * pACCMod = &pTokens->Item(i)->m_Children;
 
@@ -127,12 +127,12 @@ void KeywordsParserF::MakeOtherKeywordSet()
 {
     TokensArrayFlatClass tokensTmp;
     TokensArrayFlat * result = tokensTmp.GetTokens();
-    size_t resCount = m_Parser.FindMatchTokensDeclared(_T("list_of_other_fortran_keywords"), *result, tkFunction, false);
+    size_t resCount = m_Parser.FindMatchTokensDeclared("list_of_other_fortran_keywords", *result, tkFunction, false);
 
     if (resCount != 1)
     {
-        Manager::Get()->GetLogManager()->Log(_T("FortranProject plugin error: "));
-        Manager::Get()->GetLogManager()->Log(_T("Can't parse 'list_of_other_fortran_keywords' function."));
+        Manager::Get()->GetLogManager()->Log("FortranProject plugin error: ");
+        Manager::Get()->GetLogManager()->Log("Can't parse 'list_of_other_fortran_keywords' function.");
         return;
     }
 
@@ -141,8 +141,8 @@ void KeywordsParserF::MakeOtherKeywordSet()
 
     if (!m_Parser.FindTokenRange(*token, txtRange))
     {
-        Manager::Get()->GetLogManager()->Log(_T("FortranProject plugin error: "));
-        Manager::Get()->GetLogManager()->Log(_T("Can't parse 'list_of_other_fortran_keywords' function."));
+        Manager::Get()->GetLogManager()->Log("FortranProject plugin error: ");
+        Manager::Get()->GetLogManager()->Log("Can't parse 'list_of_other_fortran_keywords' function.");
         return;
     }
 

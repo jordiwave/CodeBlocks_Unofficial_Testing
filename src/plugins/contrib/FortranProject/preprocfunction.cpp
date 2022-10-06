@@ -11,7 +11,7 @@ PreProcFunction::PreProcFunction(const wxString & funName, const wxString & argS
     m_FunName = funName;
 
     // in argStr we expecting "(a, b, c)"
-    if (!argStr.StartsWith(_T("(")) || !argStr.EndsWith(_T(")")))
+    if (!argStr.StartsWith("(") || !argStr.EndsWith(")"))
     {
         // something is wrong
         m_FunName = wxEmptyString;
@@ -19,26 +19,26 @@ PreProcFunction::PreProcFunction(const wxString & funName, const wxString & argS
     }
 
     std::set<wxString> funArgSet;
-    wxStringTokenizer tokenizer(argStr.Mid(1, argStr.Length() - 2), _T(","), wxTOKEN_STRTOK);
+    wxStringTokenizer tokenizer(argStr.Mid(1, argStr.length() - 2), ",", wxTOKEN_STRTOK);
 
     while (tokenizer.HasMoreTokens())
     {
         wxString par1 = tokenizer.GetNextToken().Trim(true).Trim(false);
-        m_Args.push_back(_T("&%arg_") + par1);
+        m_Args.push_back("&%arg_" + par1);
         funArgSet.insert(par1);
     }
 
     // join function from multiple lines into one line.
     wxString funBody;
-    wxStringTokenizer funTokenizer(funBodyIn, _T("\n"), wxTOKEN_STRTOK);
+    wxStringTokenizer funTokenizer(funBodyIn, "\n", wxTOKEN_STRTOK);
 
     while (funTokenizer.HasMoreTokens())
     {
         wxString line1 = funTokenizer.GetNextToken().Trim(true);
 
-        if (line1.EndsWith(_T("\\")))
+        if (line1.EndsWith("\\"))
         {
-            line1 = line1.Mid(0, line1.Length() - 1);
+            line1 = line1.Mid(0, line1.length() - 1);
         }
 
         funBody << line1;
@@ -50,7 +50,7 @@ PreProcFunction::PreProcFunction(const wxString & funName, const wxString & argS
     }
 
     Tokenizerf funToks;
-    funToks.InitFromBuffer(funBody + _T(" "), fsfFree);
+    funToks.InitFromBuffer(funBody + " ", fsfFree);
 
     while (true)
     {
@@ -63,17 +63,17 @@ PreProcFunction::PreProcFunction(const wxString & funName, const wxString & argS
 
         wxString nexTok = funToks.PeekToken();
 
-        if (tok == _T("##"))
+        if (tok == "##")
         {
-            tok = _T("&%oper_join");
+            tok = "&%oper_join";
         }
         else
             if (funArgSet.count(tok) > 0)
             {
-                tok = _T("&%arg_") + tok;
+                tok = "&%arg_" + tok;
             }
             else
-                if (knownFunctions && knownFunctions->HasFunction(tok) && (nexTok.StartsWith(_T("(")) && nexTok.EndsWith(_T(")"))))
+                if (knownFunctions && knownFunctions->HasFunction(tok) && (nexTok.StartsWith("(") && nexTok.EndsWith(")")))
                 {
                     // it is call to the defined function.
                     tok = knownFunctions->GetFunction(tok)->Interpret(nexTok, knownFunctions, &funArgSet);
@@ -91,13 +91,13 @@ PreProcFunction::~PreProcFunction()
 
 wxString PreProcFunction::Interpret(const wxString & argStr, PreProcFunctionList * knownFunctions, std::set<wxString> * makeArgSet)
 {
-    if (!argStr.StartsWith(_T("(")) || !argStr.EndsWith(_T(")")))
+    if (!argStr.StartsWith("(") || !argStr.EndsWith(")"))
     {
         return wxEmptyString;
     }
 
     std::vector<wxString> varArr;
-    wxStringTokenizer tokenizer(argStr.Mid(1, argStr.Length() - 2), _T(","), wxTOKEN_RET_EMPTY_ALL);
+    wxStringTokenizer tokenizer(argStr.Mid(1, argStr.length() - 2), ",", wxTOKEN_RET_EMPTY_ALL);
 
     while (tokenizer.HasMoreTokens())
     {
@@ -114,7 +114,7 @@ wxString PreProcFunction::Interpret(const wxString & argStr, PreProcFunctionList
 
     for (const auto & term : m_Terms)
     {
-        if (term == _T("&%oper_join"))
+        if (term == "&%oper_join")
             ;
         else
         {
@@ -128,7 +128,7 @@ wxString PreProcFunction::Interpret(const wxString & argStr, PreProcFunctionList
 
         if (makeArgSet && makeArgSet->count(varArr[i]) > 0)
         {
-            repStr = _T("&%arg_") + varArr[i];    // mark this argument
+            repStr = "&%arg_" + varArr[i];    // mark this argument
         }
         else
         {

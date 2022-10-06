@@ -156,6 +156,12 @@ class Transport
         virtual void notify(string_ref method, value & params) = 0;
         virtual void request(string_ref method, value & params, RequestID & id) = 0;
         virtual int loop(MessageHandler &) = 0;
+
+        wxString GetwxUTF8Str(const std::string stdString)  //(ph 2022/10/01)
+        {
+            return wxString(stdString.c_str(), wxConvUTF8);
+        }
+
 };
 
 // ----------------------------------------------------------------------------
@@ -219,7 +225,7 @@ class JsonTransport : public Transport
                                 if (value.contains("params"))
                                 {
                                     // avoid swamping wxWidges event system with these Clangd messages
-                                    wxString methodValue = value.at("method").get<std::string>();
+                                    wxString methodValue = GetwxUTF8Str(value.at("method").get<std::string>());
 
                                     //{"jsonrpc":"2.0","method":"$/progress","params":{"token":"index","value":{"kind":"report","message":"5/6","percentage":83.33333333333333}}}
                                     if (methodValue.StartsWith("$/progress"))

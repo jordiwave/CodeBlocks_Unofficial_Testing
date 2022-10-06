@@ -610,16 +610,16 @@ bool ParserF::FindMatchTypeComponents2(TokensArrayFlat * foundVariables, unsigne
         {
             wxString tDefLow = tok->m_TypeDefinition.Lower();
 
-            if (tDefLow.StartsWith(_T("type")) || tDefLow.StartsWith(_T("class")))
+            if (tDefLow.StartsWith("type") || tDefLow.StartsWith("class"))
             {
                 nameType = tDefLow;
-                int idx_a = nameType.Find(_T(")"));
-                int idx_b = nameType.Find(_T("("));
+                int idx_a = nameType.Find(")");
+                int idx_b = nameType.Find("(");
 
                 if (idx_a != wxNOT_FOUND && idx_b != wxNOT_FOUND && idx_a > idx_b + 1)
                 {
                     nameType = nameType.Mid(idx_b + 1, idx_a - idx_b - 1);
-                    idx_a = nameType.Find(_T("("));
+                    idx_a = nameType.Find("(");
 
                     if (idx_a != wxNOT_FOUND) // parametrized type
                     {
@@ -774,8 +774,8 @@ bool ParserF::FindMatchTypeComponents2(TokensArrayFlat * foundVariables, unsigne
             }
         }
 
-        if ((partialMatch && !typeToken->m_ExtendsType.IsEmpty() && typeToken->m_ExtendsType.Lower().StartsWith(searchName)) ||
-                (!partialMatch && !typeToken->m_ExtendsType.IsEmpty() && typeToken->m_ExtendsType.Lower().IsSameAs(searchName)))
+        if ((partialMatch && !typeToken->m_ExtendsType.empty() && typeToken->m_ExtendsType.Lower().StartsWith(searchName)) ||
+                (!partialMatch && !typeToken->m_ExtendsType.empty() && typeToken->m_ExtendsType.Lower().IsSameAs(searchName)))
         {
             TokenF * newToken = new TokenF;
             newToken->m_Name = typeToken->m_ExtendsType.Lower();
@@ -816,25 +816,25 @@ bool ParserF::CutLineIntoParts(const wxString & lineCur, bool & isAfterPercent, 
     wxString line = lineCur.Lower();
     isAfterPercent = false;
     line = line.AfterLast(';');
-    int idx = line.Find(_T("%"));
+    int idx = line.Find("%");
 
     if (idx == wxNOT_FOUND)
     {
         return true;
     }
 
-    if (line.EndsWith(_T(" ")))
+    if (line.EndsWith(" "))
     {
         wxString tmpString = line.Trim();
 
-        if (!tmpString.EndsWith(_T("%")))
+        if (!tmpString.EndsWith("%"))
         {
             return true;
         }
     }
     else
-        if (line.EndsWith(_T(")")) || line.EndsWith(_T("(")) || line.EndsWith(_T(","))
-                || line.EndsWith(_T("[")) || line.EndsWith(_T("]")))
+        if (line.EndsWith(")") || line.EndsWith("(") || line.EndsWith(",")
+                || line.EndsWith("[") || line.EndsWith("]"))
         {
             return true;
         }
@@ -942,12 +942,12 @@ bool ParserF::CutLineIntoParts(const wxString & lineCur, bool & isAfterPercent, 
     }
 
     isAfterPercent = true;
-    wxStringTokenizer tkz(line, _T("%"), wxTOKEN_RET_EMPTY_ALL);
+    wxStringTokenizer tkz(line, "%", wxTOKEN_RET_EMPTY_ALL);
 
     while (tkz.HasMoreTokens())
     {
         wxString str = tkz.GetNextToken();
-        wxStringTokenizer tkz2(str, _T(" \t\r\n"), wxTOKEN_STRTOK);
+        wxStringTokenizer tkz2(str, " \t\r\n", wxTOKEN_STRTOK);
 
         if (tkz2.CountTokens() > 1)
         {
@@ -1010,16 +1010,16 @@ void ParserF::FindMatchDeclarationsInCurrentScope(const wxString & search, cbEdi
                     newToken->m_Filename = ed->GetFilename();
                     newToken->m_LineStart = lineStart;
                     newToken->m_DisplayName = (*it).first;
-                    newToken->m_Args << _T(" => ") << (*it).second;
+                    newToken->m_Args << " => " << (*it).second;
 
                     if (tokFl->m_TokenKind == tkAssociateConstruct)
                     {
-                        newToken->m_TypeDefinition = _T("AssociateConstruct");
+                        newToken->m_TypeDefinition = "AssociateConstruct";
                     }
                     else
                         if (tokFl->m_TokenKind == tkSelectTypeDefault)
                         {
-                            newToken->m_TypeDefinition = _T("SelectTypeConstruct");
+                            newToken->m_TypeDefinition = "SelectTypeConstruct";
                         }
                         else // tkSelectTypeChild
                         {
@@ -1275,7 +1275,7 @@ void ParserF::FindLineScopeLN(cbEditor * ed, int & lineStart, TokenFlat *& token
     {
         FindLineScope(curLine, lineStart, tokenKindMask, *pRes, pToken);
 
-        if (pToken && pToken->m_Name.IsEmpty() && (pToken->m_TokenKind != tkBlockConstruct) &&
+        if (pToken && pToken->m_Name.empty() && (pToken->m_TokenKind != tkBlockConstruct) &&
                 (pToken->m_TokenKind != tkAssociateConstruct) &&
                 (pToken->m_TokenKind != tkSelectTypeChild) && (pToken->m_TokenKind != tkSelectTypeDefault))
         {
@@ -1596,7 +1596,7 @@ size_t ParserF::FindMatchTokens(wxString filename, wxString search, TokensArrayF
     }
     else
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Can not find file # tokens:") + filename);
+        Manager::Get()->GetLogManager()->DebugLog("Can not find file # tokens:" + filename);
     }
 
     return result.GetCount();
@@ -1738,13 +1738,13 @@ void ParserF::ObtainUDModulesToken(TokenF * token, StringSet * fileUseModules, S
                         smodName = smodName.Mid(icol + 1);
                     }
 
-                    smodName << _T("(") << parentModName << _T(")");
+                    smodName << "(" << parentModName << ")";
                     fileDeclaredSubmodules->insert(smodName);
                     wxString extName;
 
                     if (!submod->m_ParentSubmoduleName.IsEmpty())
                     {
-                        extName = submod->m_ParentSubmoduleName + _T("(") + parentModName + _T(")");
+                        extName = submod->m_ParentSubmoduleName + "(" + parentModName + ")";
                     }
                     else
                     {
@@ -1902,7 +1902,7 @@ void ParserF::FindGenericTypeBoudComponents(TokenFlat * token, TokensArrayFlat &
     }
 
     wxArrayString specNames;
-    wxStringTokenizer tkz(token->m_PartLast, _T(" \t\r\n"), wxTOKEN_STRTOK);
+    wxStringTokenizer tkz(token->m_PartLast, " \t\r\n", wxTOKEN_STRTOK);
 
     while (tkz.HasMoreTokens())
     {
@@ -1955,13 +1955,13 @@ void ParserF::FindMatchOperatorTokensForJump(wxString & nameOperator, TokensArra
 {
     wxString nameFind;
 
-    if (nameOperator.IsSameAs(_T("=")))
+    if (nameOperator.IsSameAs("="))
     {
-        nameFind = _T("%%assignment");
+        nameFind = "%%assignment";
     }
     else
     {
-        nameFind = _T("%%operator");
+        nameFind = "%%operator";
     }
 
     int noChildrenOf = tkFunction | tkSubroutine | tkProgram;
@@ -1969,7 +1969,7 @@ void ParserF::FindMatchOperatorTokensForJump(wxString & nameOperator, TokensArra
     TokensArrayFlatClass tokensTmp;
     TokensArrayFlat * tokensTmpFl = tokensTmp.GetTokens();
     FindMatchTokensDeclared(nameFind, *tokensTmpFl, tokKind, true, noChildrenOf);
-    wxString regExStr = _T("^") + nameFind + _T("[\\s\\t]*\\([\\s\\t]*\\") + nameOperator + _T("[\\s\\t]*\\).*");
+    wxString regExStr = "^" + nameFind + "[\\s\\t]*\\([\\s\\t]*\\" + nameOperator + "[\\s\\t]*\\).*";
 #if wxCHECK_VERSION(3, 1, 6)
     int opt = wxRE_EXTENDED | wxRE_ICASE | wxRE_NOSUB;
 #else
@@ -2140,7 +2140,7 @@ bool ParserF::FindMatchTokensForCodeCompletion(bool useSmartCC, bool onlyUseAsso
                     tokKind = tokKind | tkVariable;
                 }
                 else
-                    if (firstWords.GetCount() > 0 && firstWords.Item(0).IsSameAs(_T("call")))
+                    if (firstWords.GetCount() > 0 && firstWords.Item(0).IsSameAs("call"))
                     {
                         tokKind = tokKind | tkVariable;
                         classVar = true;
@@ -2180,7 +2180,7 @@ bool ParserF::FindMatchTokensForCodeCompletion(bool useSmartCC, bool onlyUseAsso
                         {
                             wxString tDefLow = tok->m_TypeDefinition.Lower();
 
-                            if (!tDefLow.StartsWith(_T("type")) && !tDefLow.StartsWith(_T("class")))
+                            if (!tDefLow.StartsWith("type") && !tDefLow.StartsWith("class"))
                             {
                                 result.Item(i)->Clear();
                                 delete result.Item(i);
@@ -2211,7 +2211,7 @@ bool ParserF::FindMatchTokensForCodeCompletion(bool useSmartCC, bool onlyUseAsso
 
                 if (tokKind & tkSubroutine)
                 {
-                    if (firstWords.GetCount() > 0 && firstWords.Item(0).IsSameAs(_T("call")))
+                    if (firstWords.GetCount() > 0 && firstWords.Item(0).IsSameAs("call"))
                     {
                         TokensArrayFlatClass tokensTmp;
                         TokensArrayFlat * resTmp = tokensTmp.GetTokens();
@@ -2226,7 +2226,7 @@ bool ParserF::FindMatchTokensForCodeCompletion(bool useSmartCC, bool onlyUseAsso
                             {
                                 wxString tDefLow = tok->m_TypeDefinition.Lower();
 
-                                if (tDefLow.StartsWith(_T("type")) || tDefLow.StartsWith(_T("class")))
+                                if (tDefLow.StartsWith("type") || tDefLow.StartsWith("class"))
                                 {
                                     result.Add(new TokenFlat(tok));
                                 }
@@ -2292,14 +2292,14 @@ bool ParserF::FindWordsBefore(cbEditor * ed, int numberOfWordsMax, wxString & cu
     {
         wxString tmpLine = control->GetLine(i).BeforeFirst('!').Trim();
 
-        if (tmpLine.EndsWith(_T("&")))
+        if (tmpLine.EndsWith("&"))
         {
             // current line is continuation line
             tmpLine = tmpLine.BeforeLast('&').Trim();
 
             if (!tmpLine.IsEmpty())
             {
-                line.Prepend(_T(" "));
+                line.Prepend(" ");
                 line.Prepend(tmpLine);
             }
         }
@@ -2519,7 +2519,7 @@ bool ParserF::GetTypeOfComponent(TokenF ** ppT, const wxString & nameComponent, 
     }
 
     //Maybe nameComponent is parent type?
-    if (!pT->m_ExtendsType.IsEmpty() && pT->m_ExtendsType.Lower().IsSameAs(nameComponent))
+    if (!pT->m_ExtendsType.empty() && pT->m_ExtendsType.Lower().IsSameAs(nameComponent))
     {
         nameTypeComponent = pT->m_ExtendsType.Lower();
         return true;
@@ -2542,7 +2542,7 @@ bool ParserF::GetTypeOfComponent(TokenF ** ppT, const wxString & nameComponent, 
                     return true;
                 }
                 else
-                    if (!typeToken->m_ExtendsType.IsEmpty() && typeToken->m_ExtendsType.Lower().IsSameAs(nameComponent))
+                    if (!typeToken->m_ExtendsType.empty() && typeToken->m_ExtendsType.Lower().IsSameAs(nameComponent))
                     {
                         nameTypeComponent = typeToken->m_ExtendsType.Lower();
                         return true;
@@ -2571,10 +2571,10 @@ bool ParserF::GetTypeOfChild(TokenF * pT, const wxString & nameComponent, wxStri
         {
             wxString tdef = pT->m_Children.Item(l)->m_TypeDefinition.Lower();
 
-            if (tdef.StartsWith(_T("type")) || tdef.StartsWith(_T("class")))
+            if (tdef.StartsWith("type") || tdef.StartsWith("class"))
             {
-                int idx_a = tdef.Find(_T(")"));
-                int idx_b = tdef.Find(_T("("));
+                int idx_a = tdef.Find(")");
+                int idx_b = tdef.Find("(");
 
                 if (idx_a != wxNOT_FOUND && idx_b != wxNOT_FOUND && idx_a > idx_b)
                 {
@@ -2677,12 +2677,12 @@ bool ParserF::FindTokenDeclaration(TokenFlat & token, const wxString & argName, 
         {
             if (pChildren->Item(i)->m_TokenKind == tkProcedure)
             {
-                argDecl << _T("procedure(") << pChildren->Item(i)->m_PartLast << _T(") :: ")
+                argDecl << "procedure(" << pChildren->Item(i)->m_PartLast << ") :: "
                         << pChildren->Item(i)->m_DisplayName;
             }
             else
             {
-                argDecl << pChildren->Item(i)->m_TypeDefinition << _T(" :: ")
+                argDecl << pChildren->Item(i)->m_TypeDefinition << " :: "
                         << pChildren->Item(i)->m_DisplayName << pChildren->Item(i)->m_Args;
                 argDescription << HtmlDoc::GetDocShort(pChildren->Item(i)->m_DocString);
             }
@@ -2763,7 +2763,7 @@ bool ParserF::FindTokenRange(TokenFlat & token, wxString & txtRange, wxString & 
     bool startFound = false;
     bool endFound = false;
 
-    for (size_t i = 0; i < buff.Length(); i++)
+    for (size_t i = 0; i < buff.length(); i++)
     {
         if (!startFound && lStart <= line)
         {
@@ -2800,7 +2800,7 @@ bool ParserF::FindTokenRange(TokenFlat & token, wxString & txtRange, wxString & 
 
     if (pos_start > pos_end)
     {
-        pos_end = buff.Length();
+        pos_end = buff.length();
     }
 
     txtRange = buff.Mid(pos_start, pos_end - pos_start);
@@ -2863,23 +2863,23 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
         {
             wxString str1 = m_Buff.Mid(m_LineStarts[i - 1], m_LineStarts[i] - m_LineStarts[i - 1]).Trim(false);
 
-            if (str1.IsEmpty() && startDoxy)
+            if (str1.empty() && startDoxy)
             {
                 break;
             }
             else
-                if (str1.StartsWith(_T("!>")) || str1.StartsWith(_T("!<")) || str1.StartsWith(_T("!!")))
+                if (str1.StartsWith("!>") || str1.StartsWith("!<") || str1.StartsWith("!!"))
                 {
                     comAbove.Add(str1);
                     startDoxy = true;
                 }
                 else
-                    if (allowSimple && str1.StartsWith(_T("!")))
+                    if (allowSimple && str1.StartsWith("!"))
                     {
                         comAbove.Add(str1);
                     }
                     else
-                        if (str1.IsEmpty())
+                        if (str1.empty())
                         {
                             allowSimple = false;
                         }
@@ -2902,22 +2902,22 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
 
     if (token.m_TokenKind == tkSubroutine)
     {
-        if (token.m_Name.StartsWith(_T("__fortran_statement_")))
+        if (token.m_Name.StartsWith("__fortran_statement_"))
         {
             msg << token.m_Name.Mid(20).Upper();
         }
         else
         {
-            msg << _T("subroutine ") << token.m_DisplayName;
+            msg << "subroutine " << token.m_DisplayName;
         }
 
         if (argsNew.IsEmpty())
         {
-            msg << token.m_Args << _T("\n");
+            msg << token.m_Args << "\n";
         }
         else
         {
-            msg << argsNew << _T("\n");
+            msg << argsNew << "\n";
         }
     }
     else
@@ -2925,10 +2925,10 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
         {
             if (!token.m_PartFirst.IsEmpty())
             {
-                msg << token.m_PartFirst << _T(" ");
+                msg << token.m_PartFirst << " ";
             }
 
-            msg << _T("function ") << token.m_DisplayName;
+            msg << "function " << token.m_DisplayName;
 
             if (argsNew.IsEmpty())
             {
@@ -2941,10 +2941,10 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
 
             if (!token.m_PartLast.IsEmpty())
             {
-                msg << _T(" ") << token.m_PartLast;
+                msg << " " << token.m_PartLast;
             }
 
-            msg << _T("\n");
+            msg << "\n";
         }
         else
             if (token.m_TokenKind == tkType)
@@ -2959,23 +2959,23 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
                     }
                     else
                     {
-                        slen = m_Buff.Length() - m_LineStarts[i];
+                        slen = m_Buff.length() - m_LineStarts[i];
                     }
 
                     wxString str1 = m_Buff.Mid(m_LineStarts[i], slen).Trim(false).Trim();
 
                     if (i + 1 == token.m_LineStart || i + 1 == token.m_LineEnd)
                     {
-                        msg << str1 << _T("\n");
+                        msg << str1 << "\n";
                     }
                     else
-                        if (str1.BeforeFirst('!').Trim().Lower().IsSameAs(_T("contains")))
+                        if (str1.BeforeFirst('!').Trim().Lower().IsSameAs("contains"))
                         {
-                            msg << str1 << _T("\n");
+                            msg << str1 << "\n";
                         }
                         else
                         {
-                            msg << _T("    ") << str1 << _T("\n");
+                            msg << "    " << str1 << "\n";
                         }
                 }
             }
@@ -2989,9 +2989,9 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
         {
             wxString str1 = m_Buff.Mid(m_LineStarts[i - 1], m_LineStarts[i] - m_LineStarts[i - 1]).Trim(false);
 
-            if (str1.StartsWith(_T("!")))
+            if (str1.StartsWith("!"))
             {
-                msg << _T("    ") << str1;
+                msg << "    " << str1;
             }
             else
             {
@@ -3007,7 +3007,7 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
     if (logDeclar && token.m_TokenKind != tkType)
     {
         wxArrayString argArr;
-        wxStringTokenizer tkz(token.m_Args, _T("(),[] \t\r\n"), wxTOKEN_STRTOK);
+        wxStringTokenizer tkz(token.m_Args, "(),[] \t\r\n", wxTOKEN_STRTOK);
 
         while (tkz.HasMoreTokens())
         {
@@ -3031,15 +3031,15 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
             {
                 if (parsResult->Item(i)->m_Name.IsSameAs(arg1))
                 {
-                    msg << _T("    ") << parsResult->Item(i)->m_TypeDefinition << _T(" :: ")
+                    msg << "    " << parsResult->Item(i)->m_TypeDefinition << " :: "
                         << parsResult->Item(i)->m_DisplayName << parsResult->Item(i)->m_Args;
 
                     if (parsResult->Item(i)->m_DocString.length() > 0)
                     {
-                        msg << _T(" ! ") << parsResult->Item(i)->m_DocString;
+                        msg << " ! " << parsResult->Item(i)->m_DocString;
                     }
 
-                    msg << _T("\n");
+                    msg << "\n";
                     break;
                 }
             }
@@ -3056,22 +3056,22 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
                 {
                     if (parsResult->Item(i)->m_TokenKind == tkProcedure)
                     {
-                        msg1 << _T("    ") << parsResult->Item(i)->m_TypeDefinition
-                             << _T(" :: ") << parsResult->Item(i)->m_DisplayName;
+                        msg1 << "    " << parsResult->Item(i)->m_TypeDefinition
+                             << " :: " << parsResult->Item(i)->m_DisplayName;
 
                         if (parsResult->Item(i)->m_DocString.length() > 0)
                         {
-                            msg1 << _T(" ! ") << parsResult->Item(i)->m_DocString;
+                            msg1 << " ! " << parsResult->Item(i)->m_DocString;
                         }
                     }
                     else
                     {
-                        msg1 << _T("    ") << parsResult->Item(i)->m_TypeDefinition << _T(" :: ")
+                        msg1 << "    " << parsResult->Item(i)->m_TypeDefinition << " :: "
                              << parsResult->Item(i)->m_DisplayName << parsResult->Item(i)->m_Args;
 
                         if (parsResult->Item(i)->m_DocString.length() > 0)
                         {
-                            msg1 << _T(" ! ") << parsResult->Item(i)->m_DocString;
+                            msg1 << " ! " << parsResult->Item(i)->m_DocString;
                         }
                     }
 
@@ -3113,11 +3113,11 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
                 }
 
                 spaces.Append(' ', nspaces);
-                msg << spaces << parsResult->Item(idxOrder[j])->m_PartLast << _T("\n");
+                msg << spaces << parsResult->Item(idxOrder[j])->m_PartLast << "\n";
             }
             else
             {
-                msg << _T("\n");
+                msg << "\n";
             }
         }
     }
@@ -3131,7 +3131,7 @@ bool ParserF::FindInfoLog(TokenFlat & token, bool logComAbove, bool logComBelow,
         msg << _("!File: ");
     }
 
-    msg << token.m_Filename.AfterLast(wxFILE_SEP_PATH) << _T(":") << token.m_LineStart;
+    msg << token.m_Filename.AfterLast(wxFILE_SEP_PATH) << ":" << token.m_LineStart;
     return true;
 }
 
@@ -3151,28 +3151,28 @@ bool ParserF::FindTooltipForTypeBoundProc(wxString & msg, TokenFlat * token1, To
         return false;
     }
 
-    int ic = txtRange.Find(_T("::"));
+    int ic = txtRange.Find("::");
 
     if (ic == wxNOT_FOUND)
     {
-        msg << _T("procedure ") << token1->m_DisplayName;
+        msg << "procedure " << token1->m_DisplayName;
 
         if (!token1->m_Args.IsEmpty())
         {
-            msg << _T("(") << token1->m_Args << _T(")");
+            msg << "(" << token1->m_Args << ")";
         }
     }
     else
     {
-        msg << txtRange.Mid(0, ic + 2).Trim(false) << _T(" ") << token1->m_DisplayName;
+        msg << txtRange.Mid(0, ic + 2).Trim(false) << " " << token1->m_DisplayName;
     }
 
     if (!token1->m_PartLast.IsEmpty())
     {
-        msg << _T(" => ") << token1->m_PartLast;
+        msg << " => " << token1->m_PartLast;
     }
 
-    msg << _T("\n");
+    msg << "\n";
 
     if (token2)
     {
@@ -3196,17 +3196,17 @@ bool ParserF::FindTooltipForTypeBoundProc(wxString & msg, TokenFlat * token1, To
 
             if (end > start)
             {
-                argNew << token2->m_Args.Mid(0, start) << _T("[");
+                argNew << token2->m_Args.Mid(0, start) << "[";
                 wxString secPart = token2->m_Args.Mid(start);
-                int icom = secPart.Find(_T(","));
+                int icom = secPart.Find(",");
 
                 if (icom != wxNOT_FOUND)
                 {
-                    argNew << secPart.Mid(0, icom + 1) << _T("]") << secPart.Mid(icom + 1);
+                    argNew << secPart.Mid(0, icom + 1) << "]" << secPart.Mid(icom + 1);
                 }
                 else
                 {
-                    argNew << token2->m_Args.Mid(start, end - start) << _T("]") << token2->m_Args.Mid(end);
+                    argNew << token2->m_Args.Mid(start, end - start) << "]" << token2->m_Args.Mid(end);
                 }
             }
             else
@@ -3216,24 +3216,24 @@ bool ParserF::FindTooltipForTypeBoundProc(wxString & msg, TokenFlat * token1, To
 
             if (token2->m_TokenKind == tkSubroutine)
             {
-                msg << _T("subroutine ") << token2->m_DisplayName << argNew << _T("\n");
+                msg << "subroutine " << token2->m_DisplayName << argNew << "\n";
             }
             else
                 if (token2->m_TokenKind == tkFunction)
                 {
                     if (!token2->m_PartFirst.IsEmpty())
                     {
-                        msg << token2->m_PartFirst << _T(" ");
+                        msg << token2->m_PartFirst << " ";
                     }
 
-                    msg << _T("function ") << token2->m_DisplayName << argNew << _T("\n");
+                    msg << "function " << token2->m_DisplayName << argNew << "\n";
                 }
         }
     }
 
     if (!token1->m_Filename.IsEmpty())
     {
-        msg << token1->m_Filename.AfterLast(wxFILE_SEP_PATH) << _T(":") << token1->m_LineStart;
+        msg << token1->m_Filename.AfterLast(wxFILE_SEP_PATH) << ":" << token1->m_LineStart;
     }
 
     return true;
@@ -3277,28 +3277,28 @@ bool ParserF::FindInfoLogForTypeBoundProc(TokensArrayFlat & tokenPair, bool logC
         }
     }
 
-    int ic = txtRange.Find(_T("::"));
+    int ic = txtRange.Find("::");
 
     if (ic == wxNOT_FOUND)
     {
-        msg << _T("procedure ") << token1->m_DisplayName;
+        msg << "procedure " << token1->m_DisplayName;
 
         if (token1->m_IsAbstract)
         {
-            msg << _T("(") << token1->m_PartLast << _T(")");
+            msg << "(" << token1->m_PartLast << ")";
         }
     }
     else
     {
-        msg << txtRange.Mid(0, ic + 2).Trim(false) << _T(" ") << token1->m_DisplayName;
+        msg << txtRange.Mid(0, ic + 2).Trim(false) << " " << token1->m_DisplayName;
     }
 
-    if (!token1->m_PartLast.IsEmpty() && !token1->m_IsAbstract)
+    if (!token1->m_PartLast.empty() && !token1->m_IsAbstract)
     {
-        msg << _T(" => ") << token1->m_PartLast;
+        msg << " => " << token1->m_PartLast;
     }
 
-    msg << _T("\n!File: ") << token1->m_Filename.AfterLast(wxFILE_SEP_PATH) << _T(":") << token1->m_LineStart << _T("\n");
+    msg << "\n!File: " << token1->m_Filename.AfterLast(wxFILE_SEP_PATH) << ":" << token1->m_LineStart << "\n";
 
     if (tokenPair.GetCount() > 1)
     {
@@ -3323,17 +3323,17 @@ bool ParserF::FindInfoLogForTypeBoundProc(TokensArrayFlat & tokenPair, bool logC
             if (end > start)
             {
                 wxString argNew;
-                argNew << token->m_Args.Mid(0, start) << _T("[");
+                argNew << token->m_Args.Mid(0, start) << "[";
                 wxString secPart = token->m_Args.Mid(start);
-                int icom = secPart.Find(_T(","));
+                int icom = secPart.Find(",");
 
                 if (icom != wxNOT_FOUND)
                 {
-                    argNew << secPart.Mid(0, icom + 1) << _T("]") << secPart.Mid(icom + 1);
+                    argNew << secPart.Mid(0, icom + 1) << "]" << secPart.Mid(icom + 1);
                 }
                 else
                 {
-                    argNew << token->m_Args.Mid(start, end - start) << _T("]") << token->m_Args.Mid(end);
+                    argNew << token->m_Args.Mid(start, end - start) << "]" << token->m_Args.Mid(end);
                 }
 
                 FindInfoLog(*token, logComAbove, logComBelow, logDeclar, logComVariab, msg, argNew);
@@ -3389,7 +3389,7 @@ bool ParserF::FindInfoLogForGenericTBProc(TokensArrayFlat & tokens, bool logComA
             }
         }
 
-        msg.Append(_T("\n"));
+        msg.Append("\n");
         msg.Append(tokRan.Trim().Trim(false));
 
         if (token->m_ParentTokenKind == tkType)
@@ -3397,7 +3397,7 @@ bool ParserF::FindInfoLogForGenericTBProc(TokensArrayFlat & tokens, bool logComA
             msg << _("\n!Type: ") << token->m_ParentDisplayName << _(". File: ");
         }
 
-        msg << token->m_Filename.AfterLast(wxFILE_SEP_PATH) << _T(":") << token->m_LineStart;
+        msg << token->m_Filename.AfterLast(wxFILE_SEP_PATH) << ":" << token->m_LineStart;
         size_t i = iInt + 1;
 
         while (i < tokens.GetCount() - 1)
@@ -3407,7 +3407,7 @@ bool ParserF::FindInfoLogForGenericTBProc(TokensArrayFlat & tokens, bool logComA
                 break;
             }
 
-            msgProc << _T("\n!---------------------\n");
+            msgProc << "\n!---------------------\n";
             TokensArrayFlatClass tokensTmpCl;
             TokensArrayFlat * tokensTmp = tokensTmpCl.GetTokens();
             tokensTmp->Add(new TokenFlat(tokens.Item(i)));
@@ -3442,7 +3442,7 @@ bool ParserF::GetTokenStr(TokenFlat & token, wxString & msg)
         msg << _("\n!File: ");
     }
 
-    msg << token.m_Filename.AfterLast(wxFILE_SEP_PATH) << _T(":") << token.m_LineStart;
+    msg << token.m_Filename.AfterLast(wxFILE_SEP_PATH) << ":" << token.m_LineStart;
     return true;
 }
 
@@ -3500,7 +3500,7 @@ void ParserF::FindChildrenOfInterface(TokenFlat * token, TokensArrayFlat & resul
 
 void ParserF::GetPossitionOfDummyArgument(const wxString & args, const wxString & arg, int & start, int & end)
 {
-    wxStringTokenizer tkz(args, _T(" ,\t\r\n()"), wxTOKEN_STRTOK);
+    wxStringTokenizer tkz(args, " ,\t\r\n()", wxTOKEN_STRTOK);
 
     while (tkz.HasMoreTokens())
     {
@@ -3509,7 +3509,7 @@ void ParserF::GetPossitionOfDummyArgument(const wxString & args, const wxString 
         if (token.IsSameAs(arg))
         {
             end = tkz.GetPosition() - 1;
-            start = end - token.Length();
+            start = end - token.length();
             break;
         }
     }
@@ -3561,7 +3561,7 @@ void ParserF::GetCallTipHighlight(const wxString & calltip, int commasWas, int &
 
     if (end == 0)
     {
-        end = calltip.Length() - 1;
+        end = calltip.length() - 1;
     }
 
     if (commas < commasWas)
@@ -3630,7 +3630,7 @@ void ParserF::FindUseAssociatedTokens(bool onlyPublicNames, wxArrayString & addr
             break;
         }
 
-        bool isInterfaceExp = address.Item(j).IsSameAs(_T("%%tkInterfaceExplicit"));
+        bool isInterfaceExp = address.Item(j).IsSameAs("%%tkInterfaceExplicit");
         found = false;
 
         for (size_t i = 0; i < children->GetCount(); i++)
@@ -3888,12 +3888,12 @@ void ParserF::FindAddress(TokenFlat * tokFl, wxArrayString & address)
         address.Add(tokFl->m_Name);
     }
     else
-        if (!tokFl->m_ParentName.IsEmpty() && tokFl->m_ParentTokenKind == tkFile)
+        if (!tokFl->m_ParentName.empty() && tokFl->m_ParentTokenKind == tkFile)
         {
             address.Add(tokFl->m_Name);
         }
         else
-            if (!tokFl->m_ParentName.IsEmpty() && (tokFl->m_ParentTokenKind == tkModule || tokFl->m_ParentTokenKind == tkSubmodule))
+            if (!tokFl->m_ParentName.empty() && (tokFl->m_ParentTokenKind == tkModule || tokFl->m_ParentTokenKind == tkSubmodule))
             {
                 address.Add(tokFl->m_ParentName);
                 address.Add(tokFl->m_Name);
@@ -3935,7 +3935,7 @@ void ParserF::FindAddress(TokenFlat * tokFl, wxArrayString & address)
                     int lineDifStart = 0;
                     bool foundGuess = false;
                     wxString tokFlname = tokFl->m_Name;
-                    bool operIntf = tokFlname.StartsWith(_T("%%operator ("));
+                    bool operIntf = tokFlname.StartsWith("%%operator (");
 
                     if (operIntf)
                     {
@@ -3983,7 +3983,7 @@ void ParserF::FindAddress(TokenFlat * tokFl, wxArrayString & address)
                                         wxString childL1name;
 
                                         if (operIntf && childL1->Item(j)->m_TokenKind == tkInterface &&
-                                                childL1->Item(j)->m_Name.StartsWith(_T("%%operator (")))
+                                                childL1->Item(j)->m_Name.StartsWith("%%operator ("))
                                         {
                                             childL1name = childL1->Item(j)->m_Name.BeforeFirst('#').Trim();
                                         }
@@ -4032,7 +4032,7 @@ void ParserF::FindAddress(TokenFlat * tokFl, wxArrayString & address)
 
                                                             if (isInterfaceExp && childL1->Item(j)->m_Name.IsEmpty())
                                                             {
-                                                                guess.Add(_T("%%tkInterfaceExplicit"));
+                                                                guess.Add("%%tkInterfaceExplicit");
                                                             }
                                                             else
                                                             {
@@ -4086,7 +4086,7 @@ void ParserF::FindTokensForUse(const wxString & search, wxArrayString & firstWor
 {
     int woCount = firstWords.GetCount();
 
-    if (woCount < 2 || !firstWords.Item(woCount - 1).IsSameAs(_T("use")))
+    if (woCount < 2 || !firstWords.Item(woCount - 1).IsSameAs("use"))
     {
         return;
     }
@@ -4097,7 +4097,7 @@ void ParserF::FindTokensForUse(const wxString & search, wxArrayString & firstWor
 
     for (size_t i = 0; i < firstWords.GetCount() - 1; i++)
     {
-        if (firstWords.Item(i).IsSameAs(_T(":")))
+        if (firstWords.Item(i).IsSameAs(":"))
         {
             if (firstC)
             {
@@ -4304,8 +4304,8 @@ void ParserF::FindUseAssociatedTokens2(TokenF * useToken, const wxString & searc
                 {
                     //if ((*canSee)[j] && namesList->count(pT->Item(j)->m_Name) > 0)
                     if ((*canSee)[j] &&
-                            ((pT->Item(j)->m_Rename.IsEmpty() && namesList->count(pT->Item(j)->m_Name) > 0) ||
-                             (!pT->Item(j)->m_Rename.IsEmpty() && namesList->count(pT->Item(j)->m_Rename.Lower()) > 0)))
+                            ((pT->Item(j)->m_Rename.empty() && namesList->count(pT->Item(j)->m_Name) > 0) ||
+                             (!pT->Item(j)->m_Rename.empty() && namesList->count(pT->Item(j)->m_Rename.Lower()) > 0)))
                     {
                         if (!has)
                         {
@@ -4372,7 +4372,7 @@ void ParserF::FindUseAssociatedTokens2(TokenF * useToken, const wxString & searc
                                 if (useWithRenameTok)
                                 {
                                     TokenFlat * tfu = new TokenFlat(useToken);
-                                    tfu->m_Rename = pos->Item(0) + _T(" => ") + pos->Item(1);
+                                    tfu->m_Rename = pos->Item(0) + " => " + pos->Item(1);
                                     useWithRenameTok->Add(tfu);
                                 }
                             }
@@ -4425,7 +4425,7 @@ void ParserF::FindUseAssociatedTokens2(TokenF * useToken, const wxString & searc
                             if (have && useWithRenameTok)
                             {
                                 TokenFlat * tfu = new TokenFlat(useToken);
-                                tfu->m_Rename = pos->Item(0) + _T(" => ") + pos->Item(1);
+                                tfu->m_Rename = pos->Item(0) + " => " + pos->Item(1);
                                 useWithRenameTok->Add(tfu);
                             }
                         }
@@ -4457,7 +4457,7 @@ void ParserF::FindUseAssociatedTokens2(TokenF * useToken, const wxString & searc
 
             for (std::list<wxArrayString>::iterator pos = renameList->begin(); pos != renameList->end(); ++pos)
             {
-                if (pos->Item(0).IsEmpty() || pos->Item(1).IsEmpty())
+                if (pos->Item(0).empty() || pos->Item(1).IsEmpty())
                 {
                     continue;    //some mistake
                 }
@@ -4504,7 +4504,7 @@ void ParserF::FindUseAssociatedTokens2(TokenF * useToken, const wxString & searc
                                     if (useWithRenameTok)
                                     {
                                         TokenFlat * tfu = new TokenFlat(useToken);
-                                        tfu->m_Rename = pos->Item(0) + _T(" => ") + pos->Item(1);
+                                        tfu->m_Rename = pos->Item(0) + " => " + pos->Item(1);
                                         useWithRenameTok->Add(tfu);
                                     }
 
@@ -4557,7 +4557,7 @@ void ParserF::FindUseAssociatedTokens2(TokenF * useToken, const wxString & searc
                                 if (have && useWithRenameTok)
                                 {
                                     TokenFlat * tfu = new TokenFlat(useToken);
-                                    tfu->m_Rename = pos->Item(0) + _T(" => ") + pos->Item(1);
+                                    tfu->m_Rename = pos->Item(0) + " => " + pos->Item(1);
                                     useWithRenameTok->Add(tfu);
                                 }
                             }
@@ -4914,7 +4914,7 @@ void ParserF::ChangeAssociatedName(wxString & line, TokenFlat * token)
     //change names in the line
     wxString lineLw = line.Lower();
     line.Empty();
-    const wxString delim = _T(" ()[]{}&;,*./+-><=%\t\r\n");
+    const wxString delim = " ()[]{}&;,*./+-><=%\t\r\n";
     size_t idx1 = 0;
     wxString block;
     bool wasDeli = false;
@@ -5030,7 +5030,7 @@ void ParserF::GetSubmoduleHostTokens(TokenF * subModToken, std::vector<TokensArr
 
     if (!submod->m_ParentSubmoduleName.IsEmpty())
     {
-        parentName << _T(":") << submod->m_ParentSubmoduleName;
+        parentName << ":" << submod->m_ParentSubmoduleName;
     }
 
     TokenF * modTok = FindModuleSubmoduleToken(parentName);
@@ -5214,18 +5214,18 @@ void ParserF::ParseIntrinsicModules()
     }
 
     int dispCase = 0;
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
 
     if (cfg)
     {
-        dispCase = cfg->ReadInt(_T("/keywords_case"), 0);
+        dispCase = cfg->ReadInt("/keywords_case", 0);
     }
 
-    wxString filename = ConfigManager::GetDataFolder() + _T("/images/fortranproject/fortran_intrinsic_modules.f90");
+    wxString filename = ConfigManager::GetDataFolder() + "/images/fortranproject/fortran_intrinsic_modules.f90";
 
     if (!wxFileExists(filename))
     {
-        Manager::Get()->GetLogManager()->Log(_T("FortranProject plugin error: file ") + filename + _T(" was not found."));
+        Manager::Get()->GetLogManager()->Log("FortranProject plugin error: file " + filename + " was not found.");
         return;
     }
 
@@ -5432,7 +5432,7 @@ void ParserF::FindImplementedProcInMySubmodules(wxArrayString & address, const w
     }
 
     bool inInterface = false;
-    bool isInterfaceExp = address.Item(2).IsSameAs(_T("%%tkInterfaceExplicit"));
+    bool isInterfaceExp = address.Item(2).IsSameAs("%%tkInterfaceExplicit");
 
     for (size_t i = 0; i < subModTokenCh->GetCount(); i++)
     {
@@ -5788,7 +5788,7 @@ void ParserF::ConnectToNewSkippedLines()
 
 std::vector<int> * ParserF::GetSkippedLines(const wxString & fileName)
 {
-    if (fileName.IsEmpty() || m_SkippedLinesMap.count(fileName) == 0)
+    if (fileName.empty() || m_SkippedLinesMap.count(fileName) == 0)
     {
         return NULL;
     }

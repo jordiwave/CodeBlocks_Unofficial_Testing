@@ -89,7 +89,12 @@ void replace_substring(std::string & s, const std::string & f,
                        const std::string & t)
 // ----------------------------------------------------------------------------
 {
-    assert(not f.empty());
+    cbAssert(not f.empty());
+
+    if (f.empty())
+    {
+        return;
+    }
 
     for (auto pos = s.find(f);                // find first occurrence of f
             pos != std::string::npos;         // make sure f was found
@@ -1098,7 +1103,7 @@ int ProcessLanguageClient::ReadLSPinputLength()
     return 0;
 }
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::ReadLSPinput(int startPosn, int length, std::string & out)
+void ProcessLanguageClient::ReadLSPinput(int startPosn, int length, std::string & stdStrOut)
 // ----------------------------------------------------------------------------
 {
     // this function is driven by thread in transport::loop()
@@ -1106,9 +1111,9 @@ void ProcessLanguageClient::ReadLSPinput(int startPosn, int length, std::string 
     if (Has_LSPServerProcess() and m_std_LSP_IncomingStr.length())
     {
         //ReadLength() guaranteed input hdr was at start of buf
-        out = m_std_LSP_IncomingStr.substr(startPosn, length);
+        stdStrOut = m_std_LSP_IncomingStr.substr(startPosn, length);
 
-        if (out.length())
+        if (stdStrOut.length())
         {
             //writeClientLog(wxString::Format("Read()\n:%s", wxString(out)) ); // **Debugging**
             size_t nextHdrPosn = m_std_LSP_IncomingStr.find("Content-Length: ", 1);
@@ -1130,18 +1135,18 @@ void ProcessLanguageClient::ReadLSPinput(int startPosn, int length, std::string 
 bool ProcessLanguageClient::readJson(json & json)
 // ----------------------------------------------------------------------------
 {
-    // this function is driven by thread in transport::loop().
+    // This function is driven by thread in transport::loop().
     // Thread was started in constructor
     json.clear();
     int length = 0;
-    std::string inputbuf;
+    std::string stdStrInputbuf;
 
     if (m_terminateLSP or (not Has_LSPServerProcess()))
     {
         // terminate the read loop thread
-        inputbuf = "{\"jsonrpc\":\"2.0\",\"Exit!\":\"Exit!\",\"params\":null}";
-        length = inputbuf.length();
-        json = json::parse(inputbuf);
+        stdStrInputbuf = "{\"jsonrpc\":\"2.0\",\"Exit!\":\"Exit!\",\"params\":null}";
+        length = stdStrInputbuf.length();
+        json = json::parse(stdStrInputbuf);
         return true;
     }
 
@@ -1174,7 +1179,7 @@ bool ProcessLanguageClient::readJson(json & json)
 
     if (dataPosn != wxNOT_FOUND)
     {
-        ReadLSPinput(dataPosn, length, inputbuf);
+        ReadLSPinput(dataPosn, length, stdStrInputbuf);
     }
     else
     {
@@ -1187,27 +1192,27 @@ bool ProcessLanguageClient::readJson(json & json)
     /// we have the data, UNlock the input buffer
     m_MutexInputBufGuard.Unlock();
 
-    if (inputbuf.size())
+    if (stdStrInputbuf.size())
     {
-        writeClientLog(wxString::Format(">>> readJson() len:%d:\n%s", length, inputbuf.c_str()));
+        writeClientLog(wxString::Format(">>> readJson() len:%d:\n%s", length, stdStrInputbuf.c_str()));
     }
 
     // remove any invalid utf8 chars
-    bool validData = DoValidateUTF8data(inputbuf);
+    bool validData = DoValidateUTF8data(stdStrInputbuf);
 
     // Remove some extended ascii chars that have clobber completion and hover responses
-    if (inputbuf.find("{\"id\":\"textDocument/hover") != std::string::npos) //{"id":"textDocument/hover
+    if (stdStrInputbuf.find("{\"id\":\"textDocument/hover") != std::string::npos) //{"id":"textDocument/hover
     {
         std::string badBytes =  "\xE2\x86\x92" ; //Wierd chars in hover results
-        std_ReplaceAll(inputbuf, badBytes, " ");
+        std_ReplaceAll(stdStrInputbuf, badBytes, " ");
     }
 
-    if (inputbuf.find("{\"id\":\"textDocument/completion") != std::string::npos) //{"id":"textDocument/completion
+    if (stdStrInputbuf.find("{\"id\":\"textDocument/completion") != std::string::npos) //{"id":"textDocument/completion
     {
         std::string badBytes =  "\xE2\x80\xA2" ; //Wierd chars in completion empty params
-        std_ReplaceAll(inputbuf, badBytes, " ");
+        std_ReplaceAll(stdStrInputbuf, badBytes, " ");
         badBytes = "\xE2\x80\xA6"; // wx3.0 produces an empty string
-        std_ReplaceAll(inputbuf, badBytes, " ");
+        std_ReplaceAll(stdStrInputbuf, badBytes, " ");
     }
 
     if (not validData)
@@ -1221,7 +1226,7 @@ bool ProcessLanguageClient::readJson(json & json)
     {
         try
         {
-            json = json::parse(inputbuf);
+            json = json::parse(stdStrInputbuf);
             break;
         }
         catch (std::exception & e)
@@ -1234,7 +1239,7 @@ bool ProcessLanguageClient::readJson(json & json)
 
             if (retryCount == 1) // do only once
             {
-                msg << "\n" << inputbuf;
+                msg << "\n" << stdStrInputbuf;
             }
 
             writeClientLog(msg);
@@ -1263,15 +1268,15 @@ bool ProcessLanguageClient::readJson(json & json)
                 }
 
                 // wipe out the invalid utf8 char with a blank
-                if (inputbuf[--utf8BytePosn] & 0x80)
+                if (stdStrInputbuf[--utf8BytePosn] & 0x80)
                 {
-                    inputbuf[utf8BytePosn] = ' ';
+                    stdStrInputbuf[utf8BytePosn] = ' ';
                 }
             }
         }//endcatch
     }//endwhile
 
-    if (std_String_StartsWith(inputbuf, R"({"jsonrpc":"2.0","method":"textDocument/publishDiagnostics")"))
+    if (std_String_StartsWith(stdStrInputbuf, R"({"jsonrpc":"2.0","method":"textDocument/publishDiagnostics")"))
     {
         // whenever diagnostics arrive, an open, save or didModified was issued. //(ph 2021/02/9)
         // clear busy and modified flags
@@ -1459,12 +1464,12 @@ void ProcessLanguageClient::OnLSP_Response(wxThreadEvent & threadEvent)
     }
 
 #if defined(cbDEBUG)
-    std::string see = pJson->dump(); // **debugging**
+    //std::string see = pJson->dump(); // **debugging**
 #endif //LOGGING
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED);
-    event.SetString(threadEvent.GetString());
+    event.SetString(threadEvent.GetString()); //id of json  eg. id:result or id:method etc.
     event.SetClientData(pJson);
-    wxString rspHeader = event.GetString();
+    wxString rspHeader = event.GetString(); //id of json eg. d:result or id:method etc
 
     try
     {
@@ -1538,7 +1543,7 @@ void ProcessLanguageClient::OnIDResult(wxCommandEvent & event)
 
         try
         {
-            idValue = pJson->at("id").get<std::string>();
+            idValue = GetwxUTF8Str(pJson->at("id").get<std::string>());    //(ph 2022/10/01)
         }
         catch (std::exception & err)
         {
@@ -1643,7 +1648,7 @@ void ProcessLanguageClient::OnIDError(wxCommandEvent & event)
 
     try
     {
-        idValue = pJson->at("id").get<std::string>();
+        idValue = GetwxUTF8Str(pJson->at("id").get<std::string>());    //(ph 2022/10/01)
     }
     catch (std::exception & err)
     {
@@ -1696,7 +1701,7 @@ void ProcessLanguageClient::OnMethodParams(wxCommandEvent & event)
     try
     {
         pJson = (json *)event.GetClientData();
-        methodValue = pJson->at("method").get<std::string>();
+        methodValue = GetwxUTF8Str(pJson->at("method").get<std::string>());
     }
     catch (std::exception & e)
     {
@@ -4324,9 +4329,9 @@ int ProcessLanguageClient::GetCompilationDatabaseEntry(wxArrayString & resultArr
         for (int ii = 0; ii < knt; ++ii)
         {
             json jentry = jArray.at(ii);
-            jCommand   = jentry.at("command").get<std::string>();
-            jDirectory = jentry.at("directory").get<std::string>();
-            jFile      = jentry.at("file").get<std::string>();
+            jCommand   = GetwxUTF8Str(jentry.at("command").get<std::string>());
+            jDirectory = GetwxUTF8Str(jentry.at("directory").get<std::string>());
+            jFile      = GetwxUTF8Str(jentry.at("file").get<std::string>());
 
             if (jFile == unixFilename)
             {

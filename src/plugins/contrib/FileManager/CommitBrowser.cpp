@@ -51,10 +51,10 @@ CommitBrowser::CommitBrowser(wxWindow * parent, const wxString & repo_path, cons
     m_autofetch_count = 0;
     m_repo_path = repo_path;
     m_repo_type = repo_type;
-    CommitList->InsertColumn(0, _T("ID"));
-    CommitList->InsertColumn(1, _T("Author"));
-    CommitList->InsertColumn(2, _T("Date"));
-    CommitList->InsertColumn(3, _T("Message"));
+    CommitList->InsertColumn(0, _("ID"));
+    CommitList->InsertColumn(1, _("Author"));
+    CommitList->InsertColumn(2, _("Date"));
+    CommitList->InsertColumn(3, _("Message"));
     ButtonMore->Disable();
     Button2->Disable();
     TextCtrl1->Clear();
@@ -67,7 +67,7 @@ CommitBrowser::CommitBrowser(wxWindow * parent, const wxString & repo_path, cons
     FileEntry->SetValue(files);
     m_updater_commits = new CommitUpdater(this, m_repo_path, m_repo_type);
     m_updater = new CommitUpdater(this, m_repo_path, m_repo_type);
-    m_updater->Update(_T("BRANCHES"));
+    m_updater->Update("BRANCHES");
 }
 
 CommitBrowser::~CommitBrowser()
@@ -107,13 +107,13 @@ wxString CommitBrowser::GetSelectedCommit()
 
 void CommitBrowser::OnSearch(wxCommandEvent & /*event*/)
 {
-    wxString br = GetRepoBranch();
-    CommitsUpdaterQueue(_T("COMMITS:") + br);
+    const wxString br(GetRepoBranch());
+    CommitsUpdaterQueue("COMMITS:" + br);
     CommitList->DeleteAllItems();
     TextCtrl1->Clear();
     Button2->Disable();
     ButtonMore->Disable();
-    CommitStatus->SetLabel(_T("Loading commits..."));
+    CommitStatus->SetLabel(_("Loading commits..."));
 }
 
 void CommitBrowser::OnButton1Click(wxCommandEvent & /*event*/)
@@ -148,9 +148,9 @@ void CommitBrowser::OnCheckCommitEnd(wxCommandEvent & event)
 
 void CommitBrowser::OnButtonMore(wxCommandEvent & /*event*/)
 {
-    CommitsUpdaterQueue(_T("CONTINUE"));
+    CommitsUpdaterQueue("CONTINUE");
     ButtonMore->Disable();
-    CommitStatus->SetLabel(_T("Loading commits..."));
+    CommitStatus->SetLabel(_("Loading commits..."));
 }
 
 void CommitBrowser::CommitsUpdaterQueue(const wxString & cmd)
@@ -164,7 +164,7 @@ void CommitBrowser::CommitsUpdaterQueue(const wxString & cmd)
         m_update_commits_queue = wxEmptyString;
         CommitUpdater * cu = m_updater_commits;
 
-        if (cmd == _T("CONTINUE"))
+        if (cmd == "CONTINUE")
         {
             m_updater_commits = new CommitUpdater(*m_updater_commits);
             m_updater_commits->UpdateContinueCommitRetrieve();
@@ -183,18 +183,18 @@ void CommitBrowser::CommitsUpdaterQueue(const wxString & cmd)
 void CommitBrowser::OnListItemSelected(wxListEvent & event)
 {
     wxListItem li = event.GetItem();
-    wxString id = li.GetText();
+    const wxString id(li.GetText());
     Button2->Enable();
     TextCtrl1->Clear();
 
-    if (m_updater == 0 && id != wxEmptyString)
+    if (m_updater == nullptr && !id.empty())
     {
         m_updater = new CommitUpdater(this, m_repo_path, m_repo_type);
-        m_updater->Update(_T("DETAIL:") + id);
+        m_updater->Update("DETAIL:" + id);
     }
     else
     {
-        m_update_queue = _T("DETAIL:") + id;
+        m_update_queue = "DETAIL:" + id;
     }
 }
 
@@ -213,12 +213,12 @@ CommitUpdaterOptions CommitBrowser::GetCommitOptions()
 
 void CommitBrowser::OnBranchSelected(wxCommandEvent & /*event*/)
 {
-    wxString br = Choice1->GetString(Choice1->GetSelection());
-    CommitsUpdaterQueue(_T("COMMITS:") + br);
+    const wxString br(Choice1->GetString(Choice1->GetSelection()));
+    CommitsUpdaterQueue("COMMITS:" + br);
     CommitList->DeleteAllItems();
     ButtonMore->Disable();
     Button2->Disable();
-    CommitStatus->SetLabel(_T("Loading commits..."));
+    CommitStatus->SetLabel(_("Loading commits..."));
 }
 
 void CommitBrowser::OnCommitsUpdateComplete(wxCommandEvent & /*event*/)
@@ -230,9 +230,9 @@ void CommitBrowser::OnCommitsUpdateComplete(wxCommandEvent & /*event*/)
 
     m_updater_commits->Wait();
 
-    if (m_updater_commits->m_what.StartsWith(_T("COMMITS:")))
+    if (m_updater_commits->m_what.StartsWith("COMMITS:"))
     {
-        wxString branch = m_updater_commits->m_what.AfterFirst(_T(':'));
+        wxString branch = m_updater_commits->m_what.AfterFirst(':');
         m_autofetch_count += m_updater_commits->m_commits.size();
 
         for (unsigned int i = 0; i < m_updater_commits->m_commits.size(); ++i)
@@ -259,7 +259,7 @@ void CommitBrowser::OnCommitsUpdateComplete(wxCommandEvent & /*event*/)
         {
             if (m_autofetch_count < m_rev_fetch_amt[m_repo_type])
             {
-                CommitsUpdaterQueue(_T("CONTINUE"));
+                CommitsUpdaterQueue("CONTINUE");
             }
             else
             {
@@ -270,11 +270,11 @@ void CommitBrowser::OnCommitsUpdateComplete(wxCommandEvent & /*event*/)
 
         if (CommitList->GetItemCount() != 1)
         {
-            CommitStatus->SetLabel(wxString::Format(_T("Showing %i commits"), CommitList->GetItemCount()));
+            CommitStatus->SetLabel(wxString::Format(_("Showing %i commits"), CommitList->GetItemCount()));
         }
         else
         {
-            CommitStatus->SetLabel(_T("Showing 1 commit"));
+            CommitStatus->SetLabel(_("Showing 1 commit"));
         }
     }
 
@@ -292,7 +292,7 @@ void CommitBrowser::OnUpdateComplete(wxCommandEvent & /*event*/)
 
     m_updater->Wait();
 
-    if (m_updater->m_what == _T("BRANCHES"))
+    if (m_updater->m_what == "BRANCHES")
     {
         if (m_updater->m_branches.GetCount() == 0)
         {
@@ -307,12 +307,12 @@ void CommitBrowser::OnUpdateComplete(wxCommandEvent & /*event*/)
         }
 
         Choice1->Select(0);
-        CommitsUpdaterQueue(_T("COMMITS:") + m_updater->m_branches[0]);
+        CommitsUpdaterQueue("COMMITS:" + m_updater->m_branches[0]);
     }
     else
-        if (m_updater->m_what.StartsWith(_T("DETAIL:")))
+        if (m_updater->m_what.StartsWith("DETAIL:"))
         {
-            wxString commit = m_updater->m_what.AfterFirst(_T(':'));
+            wxString commit = m_updater->m_what.AfterFirst(':');
             TextCtrl1->Clear();
             TextCtrl1->SetValue(m_updater->m_detailed_commit_log);
         }

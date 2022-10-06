@@ -377,7 +377,7 @@ void WorkspaceBrowserBuilder::AddTreeChildren(wxTreeCtrl * tree, wxTreeItemId pa
     {
         case bdfFile:
         {
-            if (!m_ActiveFilename.IsEmpty() &&
+            if (!m_ActiveFilename.empty() &&
                     (!m_Options.showIncludeSeparately ||
                      (m_Options.showIncludeSeparately && !m_pParser->IsIncludeFile(m_ActiveFilename))))
             {
@@ -492,7 +492,7 @@ bool WorkspaceBrowserBuilder::AddChildrenNodes(wxTreeCtrl * tree, wxTreeItemId p
 
                 if (token->m_TokenKind == tkVariable)
                 {
-                    nameDisp << _T(" : ") << token->m_PartFirst;
+                    nameDisp << " : " << token->m_PartFirst;
                 }
 
                 wxTreeItemId idni = AddNodeIfNotThere(tree, parent, nameDisp, GetTokenKindImageIdx(token), new TreeDataF(sfToken, token), sorted);
@@ -536,7 +536,7 @@ int WorkspaceBrowserBuilder::AddInterfaceNode(wxTreeCtrl * tree, wxTreeItemId pa
     {
         wxString name;
 
-        if (parToken->m_DisplayName.StartsWith(_T("%%")))
+        if (parToken->m_DisplayName.StartsWith("%%"))
         {
             name = parToken->m_DisplayName.Mid(2);
         }
@@ -635,7 +635,7 @@ int WorkspaceBrowserBuilder::AddTypeChildren(wxTreeCtrl * tree, wxTreeItemId par
             {
                 wxString name;
 
-                if (token->m_DisplayName.StartsWith(_T("%%")))
+                if (token->m_DisplayName.StartsWith("%%"))
                 {
                     name = token->m_DisplayName.Mid(2);
                 }
@@ -668,7 +668,7 @@ int WorkspaceBrowserBuilder::AddTypeChildren(wxTreeCtrl * tree, wxTreeItemId par
     for (size_t i = 0; i < tokCount; ++i)
     {
         wxString nameDisp;
-        nameDisp << varTokens.Item(i)->m_DisplayName << _T(" : ") << varTokens.Item(i)->m_PartFirst;
+        nameDisp << varTokens.Item(i)->m_DisplayName << " : " << varTokens.Item(i)->m_PartFirst;
         AddNodeIfNotThere(tree, parent, nameDisp,
                           GetTokenKindImageIdx(varTokens.Item(i)), new TreeDataF(sfToken, varTokens.Item(i)), false);
         count++;
@@ -680,7 +680,7 @@ int WorkspaceBrowserBuilder::AddTypeChildren(wxTreeCtrl * tree, wxTreeItemId par
     {
         wxString name;
 
-        if (otherTokens.Item(i)->m_DisplayName.StartsWith(_T("%%")))
+        if (otherTokens.Item(i)->m_DisplayName.StartsWith("%%"))
         {
             name = otherTokens.Item(i)->m_DisplayName.Mid(2);
         }
@@ -710,7 +710,7 @@ bool WorkspaceBrowserBuilder::SelectNode(wxTreeItemId node)
 
     if (!root)
     {
-        root = m_pTreeBottom->AddRoot(_T("Members"));
+        root = m_pTreeBottom->AddRoot("Members");
     }
     else
     {
@@ -1065,7 +1065,7 @@ wxTreeItemId WorkspaceBrowserBuilder::FindItemByName(wxTreeCtrl * tree, wxString
         item = tree->GetNextChild(root, cookie);
     }
 
-    if (!name2.IsEmpty() && foundFirst)
+    if (!name2.empty() && foundFirst)
     {
         wxTreeItemIdValue cookie3;
         wxTreeItemId item2 = tree->GetFirstChild(firstItem, cookie3);

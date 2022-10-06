@@ -81,7 +81,7 @@ END_EVENT_TABLE()
 
 CallTreeView::CallTreeView(wxWindow * parentWindow, FortranProject * forproj)
 {
-    wxXmlResource::Get()->LoadPanel(this, parentWindow, _T("pnlCallTreeView"));
+    wxXmlResource::Get()->LoadPanel(this, parentWindow, "pnlCallTreeView");
     m_pTree = XRCCTRL(*this, "treeCallTreeView", wxTreeCtrl);
     int targetHeight = floor(16 * cbGetActualContentScaleFactor(*parentWindow));
     m_pImgList = new FPImageList(targetHeight);
@@ -331,8 +331,8 @@ void CallTreeView::OnChangeSort(wxCommandEvent & event)
             m_SortAlphabetically = event.IsChecked();
         }
 
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
-    cfg->Write(_T("/calltree_sort_alphabetically"), m_SortAlphabetically);
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
+    cfg->Write("/calltree_sort_alphabetically", m_SortAlphabetically);
     UpdateView();
 }
 
@@ -386,7 +386,7 @@ void CallTreeView::OnGoToCall(wxCommandEvent & event)
 
 void CallTreeView::RereadOptions()
 {
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
     m_SortAlphabetically = cfg->ReadBool(_("/calltree_sort_alphabetically"), true);
 }
 

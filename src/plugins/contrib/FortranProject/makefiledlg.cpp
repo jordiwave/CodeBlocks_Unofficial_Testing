@@ -83,7 +83,7 @@ wxString MakefileDlg::GetFilename()
 
 void MakefileDlg::OnbtChooseFileNameClick(wxCommandEvent & event)
 {
-    wxFileDialog saveFileDialog(this, _("Choose file name"), wxEmptyString, wxEmptyString, _T("All files (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog saveFileDialog(this, _("Choose file name"), wxEmptyString, wxEmptyString, "All files (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     saveFileDialog.SetPath(tcMakefileName->GetValue());
     PlaceWindow(&saveFileDialog);
 

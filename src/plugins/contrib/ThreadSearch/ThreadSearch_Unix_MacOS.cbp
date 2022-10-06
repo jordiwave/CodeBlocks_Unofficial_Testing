@@ -8,7 +8,6 @@
 			<Target title="ThreadSearch">
 				<Option output="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/ThreadSearch" prefix_auto="1" extension_auto="1" />
 				<Option object_output="$(PROJECT_DIR)../../../.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/ThreadSearch" />
-				<Option external_deps="../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxcustombutton.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
@@ -48,12 +47,10 @@
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
-			<Add directory="../wxContribItems/wxthings/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(#WXWIDGETS.WX_CONFIG) --libs`" />
 			<Add library="codeblocks" />
-			<Add library="wxcustombutton" />
 			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="DirectoryParamsPanel.cpp" />

@@ -32,8 +32,9 @@
 					<Add after="if [ -f $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip ] ; then rm $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip ; fi" />
 					<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxsmith.zip manifest.xml" />
 
-					<!-- Copy PNG files  -->
+					<!-- Copy PNG and SVG files  -->
 					<Add after="cp -f ./wxwidgets/icons/*.png $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith/ &gt; $CMD_NULL 2&gt; $CMD_NULL" />
+					<Add after="cp -f ./wxwidgets/icons/*.svg $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/images/wxsmith/ &gt; $CMD_NULL 2&gt; $CMD_NULL" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

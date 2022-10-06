@@ -18,6 +18,11 @@
 */
 
 #include <wx/dcmemory.h>
+
+#if wxCHECK_VERSION(3, 1, 6)
+    #include <wx/bmpbndl.h>
+#endif
+
 #include "wxsitemeditor.h"
 #include "wxsitemeditorcontent.h"
 #include "wxsitemfactory.h"
@@ -533,32 +538,48 @@ void wxsItemEditor::InitializeImages()
         return;
     }
 
-    wxString basePath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
+    const wxString basePath(ConfigManager::GetDataFolder() + "/images/wxsmith/");
+    const int toolSize = ToolIconSize();
+#if wxCHECK_VERSION(3, 1, 6)
+    const wxSize imgSize(toolSize, toolSize);
+    m_InsPointImg        = cbLoadBitmapBundleFromSVG(basePath + "insertpoint.svg", imgSize);
+    m_InsIntoImg         = cbLoadBitmapBundleFromSVG(basePath + "insertinto.svg", imgSize);
+    m_InsAfterImg        = cbLoadBitmapBundleFromSVG(basePath + "insertafter.svg", imgSize);
+    m_InsBeforeImg       = cbLoadBitmapBundleFromSVG(basePath + "insertbefore.svg", imgSize);
+    m_InsPointSelImg     = cbLoadBitmapBundleFromSVG(basePath + "insertpoint_selected.svg", imgSize);
+    m_InsIntoSelImg      = cbLoadBitmapBundleFromSVG(basePath + "insertinto_selected.svg", imgSize);
+    m_InsAfterSelImg     = cbLoadBitmapBundleFromSVG(basePath + "insertafter_selected.svg", imgSize);
+    m_InsBeforeSelImg    = cbLoadBitmapBundleFromSVG(basePath + "insertbefore_selected.svg", imgSize);
+    m_DelImg             = cbLoadBitmapBundleFromSVG(basePath + "deletewidget.svg", imgSize);
+    m_PreviewImg         = cbLoadBitmapBundleFromSVG(basePath + "showpreview.svg", imgSize);
+    m_QuickPropsImgOpen  = cbLoadBitmapBundleFromSVG(basePath + "quickpropsopen.svg", imgSize);
+    m_QuickPropsImgClose = cbLoadBitmapBundleFromSVG(basePath + "quickpropsclose.svg", imgSize);
+#else
     static const wxString NormalNames[] =
     {
-        _T("insertpoint32.png"),
-        _T("insertinto32.png"),
-        _T("insertafter32.png"),
-        _T("insertbefore32.png"),
-        _T("deletewidget32.png"),
-        _T("showpreview32.png"),
-        _T("quickpropsopen32.png"),
-        _T("quickpropsclose32.png"),
-        _T("selected32.png")
+        "insertpoint32.png",
+        "insertinto32.png",
+        "insertafter32.png",
+        "insertbefore32.png",
+        "deletewidget32.png",
+        "showpreview32.png",
+        "quickpropsopen32.png",
+        "quickpropsclose32.png",
+        "selected32.png"
     };
     static const wxString SmallNames[] =
     {
-        _T("insertpoint16.png"),
-        _T("insertinto16.png"),
-        _T("insertafter16.png"),
-        _T("insertbefore16.png"),
-        _T("deletewidget16.png"),
-        _T("showpreview16.png"),
-        _T("quickpropsopen16.png"),
-        _T("quickpropsclose16.png"),
-        _T("selected16.png")
+        "insertpoint16.png",
+        "insertinto16.png",
+        "insertafter16.png",
+        "insertbefore16.png",
+        "deletewidget16.png",
+        "showpreview16.png",
+        "quickpropsopen16.png",
+        "quickpropsclose16.png",
+        "selected16.png"
     };
-    const wxString * Array = (ToolIconSize() == 16L) ? SmallNames : NormalNames;
+    const wxString * Array = (toolSize == 16) ? SmallNames : NormalNames;
     m_InsPointImg.LoadFile(basePath + Array[0]);
     m_InsIntoImg.LoadFile(basePath + Array[1]);
     m_InsAfterImg.LoadFile(basePath + Array[2]);
@@ -568,6 +589,7 @@ void wxsItemEditor::InitializeImages()
     m_QuickPropsImgOpen.LoadFile(basePath + Array[6]);
     m_QuickPropsImgClose.LoadFile(basePath + Array[7]);
     m_SelectedImg.LoadFile(basePath + Array[8]);
+#endif
     m_ImagesLoaded = true;
 }
 
@@ -625,12 +647,29 @@ void wxsItemEditor::SetInsertionType(int Type)
 
 void wxsItemEditor::RebuildInsTypeIcons()
 {
+#if wxCHECK_VERSION(3, 1, 6)
+    BuildInsTypeIcon(m_InsPointBtn,  m_InsPointImg,  m_InsPointSelImg,  itPoint);
+    BuildInsTypeIcon(m_InsIntoBtn,   m_InsIntoImg,   m_InsIntoSelImg,   itInto);
+    BuildInsTypeIcon(m_InsBeforeBtn, m_InsBeforeImg, m_InsBeforeSelImg, itBefore);
+    BuildInsTypeIcon(m_InsAfterBtn,  m_InsAfterImg,  m_InsAfterSelImg,  itAfter);
+#else
     BuildInsTypeIcon(m_InsPointBtn, m_InsPointImg, itPoint);
     BuildInsTypeIcon(m_InsIntoBtn, m_InsIntoImg, itInto);
     BuildInsTypeIcon(m_InsBeforeBtn, m_InsBeforeImg, itBefore);
     BuildInsTypeIcon(m_InsAfterBtn, m_InsAfterImg, itAfter);
+#endif
 }
 
+#if wxCHECK_VERSION(3, 1, 6)
+void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton * Btn, const wxBitmapBundle & Original, const wxBitmapBundle & Checked, int ButtonType)
+{
+    const bool Selected = (m_InsType & ButtonType) != 0;
+    const bool Enabled = (m_InsTypeMask & ButtonType) != 0;
+    Btn->SetBitmapLabel((!Enabled || !Selected) ? Original : Checked);
+    Btn->Enable(Enabled);
+    Btn->Refresh();
+}
+#else
 void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton * Btn, const wxImage & Original, int ButtonType)
 {
     const bool Selected = (m_InsType & ButtonType) != 0;
@@ -653,6 +692,7 @@ void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton * Btn, const wxImage & Origi
     Btn->Enable(Enabled);
     Btn->Refresh();
 }
+#endif
 
 void wxsItemEditor::RebuildQuickPropsIcon()
 {
@@ -928,15 +968,31 @@ void wxsItemEditor::OnPopup(wxCommandEvent & event)
     }
 }
 
-wxImage wxsItemEditor::m_InsPointImg;
-wxImage wxsItemEditor::m_InsIntoImg;
-wxImage wxsItemEditor::m_InsBeforeImg;
-wxImage wxsItemEditor::m_InsAfterImg;
-wxImage wxsItemEditor::m_DelImg;
-wxImage wxsItemEditor::m_PreviewImg;
-wxImage wxsItemEditor::m_QuickPropsImgOpen;
-wxImage wxsItemEditor::m_QuickPropsImgClose;
-wxImage wxsItemEditor::m_SelectedImg;
+#if wxCHECK_VERSION(3, 1, 6)
+    wxBitmapBundle wxsItemEditor::m_InsPointImg;
+    wxBitmapBundle wxsItemEditor::m_InsIntoImg;
+    wxBitmapBundle wxsItemEditor::m_InsBeforeImg;
+    wxBitmapBundle wxsItemEditor::m_InsAfterImg;
+    wxBitmapBundle wxsItemEditor::m_InsPointSelImg;
+    wxBitmapBundle wxsItemEditor::m_InsIntoSelImg;
+    wxBitmapBundle wxsItemEditor::m_InsBeforeSelImg;
+    wxBitmapBundle wxsItemEditor::m_InsAfterSelImg;
+    wxBitmapBundle wxsItemEditor::m_DelImg;
+    wxBitmapBundle wxsItemEditor::m_PreviewImg;
+    wxBitmapBundle wxsItemEditor::m_QuickPropsImgOpen;
+    wxBitmapBundle wxsItemEditor::m_QuickPropsImgClose;
+#else
+    wxImage wxsItemEditor::m_InsPointImg;
+    wxImage wxsItemEditor::m_InsIntoImg;
+    wxImage wxsItemEditor::m_InsBeforeImg;
+    wxImage wxsItemEditor::m_InsAfterImg;
+    wxImage wxsItemEditor::m_DelImg;
+    wxImage wxsItemEditor::m_PreviewImg;
+    wxImage wxsItemEditor::m_QuickPropsImgOpen;
+    wxImage wxsItemEditor::m_QuickPropsImgClose;
+    wxImage wxsItemEditor::m_SelectedImg;
+#endif
+
 wxsItemEditor::WindowSet wxsItemEditor::m_AllEditors;
 bool wxsItemEditor::m_ImagesLoaded = false;
 

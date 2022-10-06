@@ -818,8 +818,8 @@ ParserBase * ParseManager::CreateParser(cbProject * project, bool useSavedOption
 
     m_ParserList.push_back(std::make_pair(project, parser));
     wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
-    wxString log(wxString::Format(_("ParseManager::CreateParser: Finish creating a new parser for project '%s'"), prj.wx_str()));
-    CCLogger::Get()->Log(log);
+    wxString log(wxString::Format(_("ParseManager::CreateParser: Finished creating a new parser for project '%s'"), prj.wx_str()));
+    //-CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
     ////    RemoveObsoleteParsers();
     return parser;
@@ -3504,6 +3504,7 @@ void ParseManager::SetProxyProject(cbProject * pActiveProject)
 
     if (not m_pProxyProject)
     {
+        Manager::Get()->GetLogManager()->Log("ClangdClient: allocating ProxyProject (phase 1).");
         // configure an error msg just in case...
         wxString configFolder = ConfigManager::GetConfigFolder();
         msg.Clear();
@@ -3530,10 +3531,14 @@ void ParseManager::SetProxyProject(cbProject * pActiveProject)
 
         if (m_pProxyProject)
         {
+            Manager::Get()->GetLogManager()->Log("ClangdClient: loading ProxyProject (phase 2.");
             m_pProxyProject->SetNotifications(false);
             // Freeze the editor window so it doesn't flash on project load/close
             Manager::Get()->GetEditorManager()->GetNotebook()->Freeze();
+            // open an empty project to get CB to build all the internal project structures
             cbProject * pLoadedEmptyProject = pPrjMgr->LoadProject(configFolder + "/CC_ProxyProject.cbp", false);
+            // copy all CB internal structures to the hidden proxy project. Then close the loaded project
+            //  now that we have all the internal structures copied into the created hidden cbProject.
             m_pProxyProject = &(m_pProxyProject->cbProject::operator=(*pLoadedEmptyProject));
             pPrjMgr->CloseProject(pLoadedEmptyProject, true, false); //nosave,norefresh
             Manager::Get()->GetEditorManager()->GetNotebook()->Thaw();
@@ -3541,13 +3546,14 @@ void ParseManager::SetProxyProject(cbProject * pActiveProject)
 
         if (not m_pProxyProject)
         {
-            msg << "Allocation of new cbProject proxy failed in ";
+            msg << "Allocation of new cbProject proxy (ProxyProject) failed in ";
             msg  << wxString::Format("%s", __FUNCTION__);
             cbMessageBox(msg, "Clangd_client Error");
             return;
         }
 
-        // Remove the empty "untitled" project from the workspace/project tree.
+        // Remove the created hidden "untitled" proxy project from the workspace/project tree.
+        // so CB has nothing to save or report about.
         pPrjMgr->GetUI().RemoveProject(m_pProxyProject);
         // Say workspace is not modified
         pPrjMgr->GetWorkspace()->SetModified(false);
@@ -3555,9 +3561,12 @@ void ParseManager::SetProxyProject(cbProject * pActiveProject)
 
     m_pProxyProject->SetTitle("~ProxyProject~");
     // Don't allow the ProyProject to issue events. It's not a full blown cbProject.
+    // We do not want to confuse other plugins with a hidden project.
     m_pProxyProject->SetNotifications(false);
     // Set the proxy project into the list of parser->projects
     //This is what happens: m_ParserList.push_back(std::make_pair(m_pProxyProject, pProxyParser));
+    // ProxyProject will now look like a regular cbProject to the parsers and clangd_client.
+    // We'll be able to add and remove non-project files to the hidden cbProject.
     ParserBase * pProxyParser = CreateParser(m_pProxyProject, false);
 
     if (pProxyParser)

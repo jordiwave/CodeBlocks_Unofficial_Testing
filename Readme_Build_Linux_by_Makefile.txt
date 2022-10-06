@@ -36,25 +36,27 @@ Requirements:
 
     To install the items above the following are the commands to use for Ubuntu/Xubuntu/Linux Mint:
         # Step 2:
-        sudo apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev
+                sudo apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev
         # Step 3:
-        sudo apt install -y build-essential
+                sudo apt install -y build-essential
         # Step 4:
-        sudo apt install -y libtool automake autoconf checkinstall
+                sudo apt install -y libtool automake autoconf checkinstall
         # Step 5:
-        sudo apt install -y libgtk-3-dev
+                sudo apt install -y libgtk-3-dev
         # Step 6,7 & 8:
-        sudo apt install -y libboost-dev libboost-system-dev libhunspell-dev libgamin-dev 
+                sudo apt install -y libboost-dev libboost-system-dev libhunspell-dev libgamin-dev 
         # Optional step 9:
-        sudo apt install -y subversion git
+                sudo apt install -y subversion git
         # Optional step 10:
-        sudo apt install -y libbz2-dev debhelper cdbs xsltproc fakeroot
+                sudo apt install -y libbz2-dev debhelper cdbs xsltproc fakeroot
         # Optional step 11:
-        sudo apt install yaru-theme-icon
+                sudo apt install -y yaru-theme-icon
         # Step 12:
-        sudo apt install discount libmarkdown2 libmarkdown2-dev
+                sudo apt install -y discount libmarkdown2 libmarkdown2-dev
 
- 
+        ALL steps in one:
+            apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev build-essential libtool automake autoconf checkinstall libgtk-3-dev libboost-dev libboost-system-dev libhunspell-dev libgamin-dev  subversion git libbz2-dev debhelper cdbs xsltproc fakeroot yaru-theme-icon  discount libmarkdown2 libmarkdown2-dev
+
 To build Code::Blocks:
     1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or via GIT or
         by downloading a snapshot.

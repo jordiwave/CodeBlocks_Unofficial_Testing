@@ -34,15 +34,14 @@ FInfoWindow::FInfoWindow()
     // Colorize
     cbEditor::ApplyStyles(m_pView);
     EditorColourSet edColSet;
-    edColSet.Apply(edColSet.GetLanguageForFilename(_T("name.f90")), m_pView, false, true);
+    edColSet.Apply(edColSet.GetLanguageForFilename("name.f90"), m_pView, false, true);
     SetFoldingIndicator();
     // Creates log image
-    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     wxString prefix(ConfigManager::GetDataFolder() + "/FortranProject.zip#zip:/images/");
 #if wxCHECK_VERSION(3, 1, 6)
-    const double uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
-    wxBitmapBundle * bmp = new wxBitmapBundle(cbLoadBitmapBundle(prefix, "info_f.png", wxRound(uiSize / uiScaleFactor), wxBITMAP_TYPE_PNG));
+    wxBitmapBundle * bmp = new wxBitmapBundle(cbLoadBitmapBundleFromSVG(prefix + "svg/info_f.svg", wxSize(16, 16)));
 #else
+    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     prefix << wxString::Format("%dx%d/", uiSize, uiSize);
     wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + "info_f.png", wxBITMAP_TYPE_PNG));
 #endif

@@ -68,12 +68,11 @@ void ReopenEditor::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<ReopenEditor, CodeBlocksEvent>(this, &ReopenEditor::OnEditorOpened));
     ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor"));
     m_IsManaged = cfg->ReadBool(_T("/reopen_editor/managed"), true);
-    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     wxString prefix(ConfigManager::GetDataFolder() + "/resources.zip#zip:/images/");
 #if wxCHECK_VERSION(3, 1, 6)
-    const double uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
-    m_LogIcon = cbLoadBitmapBundle(prefix, "undo.png", wxRound(uiSize / uiScaleFactor), wxBITMAP_TYPE_PNG);
+    m_LogIcon = cbLoadBitmapBundleFromSVG(prefix + "svg/undo.svg", wxSize(16, 16));
 #else
+    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     prefix << wxString::Format("%dx%d/", uiSize, uiSize);
     m_LogIcon = cbLoadBitmap(prefix + "undo.png", wxBITMAP_TYPE_PNG);
 #endif

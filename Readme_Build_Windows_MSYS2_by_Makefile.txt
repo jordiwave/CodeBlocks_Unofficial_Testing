@@ -49,6 +49,9 @@ Requirements:
                 NOTE: If you are asked to "To complete this update all MSYS2 processes including this terminal will be closed. Confirm to proceed [Y/n]"
                  then do NOT press Y or N, but close the bash window by clicking on the [X] on the top right of the window and then open the C:\mssy64\msys2.exe
                  again and run the "pacman -Syu" command again and again until no updates are available.
+
+		c) For wxwidgets 3.2 tn the msys2 bash shell run the following command to install the additional packages
+				pacman -S mingw-w64-x86_64-wxwidgets3.2-common mingw-w64-x86_64-wxwidgets3.2-common-libs mingw-w64-x86_64-wxwidgets3.2-gtk3 mingw-w64-x86_64-wxwidgets3.2-gtk3-libs mingw-w64-x86_64-wxwidgets3.2-msw mingw-w64-x86_64-wxwidgets3.2-msw-cb_headers mingw-w64-x86_64-wxwidgets3.2-msw-libs
     2) A local build of wxWidgets 3.1.7 for Code::Blocks. If you have not built wxWidgetas for Code::Blocks before have a look at the following
        files or check out the https://forums.wxwidgets.org/viewtopic.php?t=42817 thread.
             - Andrew_Build_Helper_Files\Libraries_Windows\build_WXWidget_3.1.7_win32.bat

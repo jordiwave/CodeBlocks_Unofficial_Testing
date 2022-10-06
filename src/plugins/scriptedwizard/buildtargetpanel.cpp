@@ -7,8 +7,8 @@
 #include <sdk.h>
 #ifndef CB_PRECOMP
     //(*InternalHeadersPCH(BuildTargetPanel)
-    #include <wx/string.h>
     #include <wx/intl.h>
+    #include <wx/string.h>
     //*)
 #endif // CB_PRECOMP
 
@@ -37,10 +37,10 @@ BuildTargetPanel::BuildTargetPanel(wxWindow * parent, wxWindowID id)
 {
     //(*Initialize(BuildTargetPanel)
     wxFlexGridSizer * FlexGridSizer1;
+    wxStaticBoxSizer * StaticBoxSizer1;
     wxStaticText * StaticText1;
     wxStaticText * StaticText4;
     wxStaticText * StaticText5;
-    wxStaticBoxSizer * StaticBoxSizer1;
     Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Please setup the options for the new build target."), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
@@ -70,8 +70,6 @@ BuildTargetPanel::BuildTargetPanel(wxWindow * parent, wxWindowID id)
     StaticBoxSizer1->Add(chkEnableDebug, 0, wxALL | wxALIGN_LEFT, 8);
     BoxSizer1->Add(StaticBoxSizer1, 0, wxALL | wxEXPAND, 8);
     SetSizer(BoxSizer1);
-    BoxSizer1->Fit(this);
-    BoxSizer1->SetSizeHints(this);
     Connect(ID_TEXTCTRL1, wxEVT_COMMAND_TEXT_UPDATED, (wxObjectEventFunction)&BuildTargetPanel::OntxtNameText);
     //*)
 }

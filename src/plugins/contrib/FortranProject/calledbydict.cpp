@@ -102,7 +102,7 @@ void CalledByDict::FillCalledByDict(TokensArrayF * tokens, std::set<wxString> & 
                         }
                         else
                         {
-                            name = submod->m_AncestorModuleName + _T(":") + submod->m_ParentSubmoduleName;
+                            name = submod->m_AncestorModuleName + ":" + submod->m_ParentSubmoduleName;
                         }
                     }
                     else

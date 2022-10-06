@@ -39,7 +39,7 @@ FPOptionsProjectDlg::FPOptionsProjectDlg(wxWindow * parent, cbProject * project,
     m_pProject(project),
     m_pNativeParser(np)
 {
-    wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlProjectFPOptions"));
+    wxXmlResource::Get()->LoadPanel(this, parent, "pnlProjectFPOptions");
     m_OldPaths = m_pNativeParser->GetProjectSearchDirs(m_pProject);
     wxListBox * control = XRCCTRL(*this, "lstPaths", wxListBox);
     control->Clear();
@@ -85,8 +85,8 @@ void FPOptionsProjectDlg::OnAddDir(cb_unused wxCommandEvent & event)
 {
     wxListBox * control = XRCCTRL(*this, "lstPaths", wxListBox);
     EditPathDlg dlg(this,
-                    m_pProject ? m_pProject->GetBasePath() : _T(""),
-                    m_pProject ? m_pProject->GetBasePath() : _T(""),
+                    m_pProject ? m_pProject->GetBasePath() : "",
+                    m_pProject ? m_pProject->GetBasePath() : "",
                     _("Add directory"));
     PlaceWindow(&dlg);
 
@@ -101,15 +101,15 @@ void FPOptionsProjectDlg::OnAddFile(cb_unused wxCommandEvent & event)
 {
     wxListBox * control = XRCCTRL(*this, "lstPaths", wxListBox);
     EditPathDlg dlg(this,
-                    m_pProject ? m_pProject->GetBasePath() : _T(""),
-                    m_pProject ? m_pProject->GetBasePath() : _T(""),
-                    _("Add file"), _T(""), false, true);
+                    m_pProject ? m_pProject->GetBasePath() : "",
+                    m_pProject ? m_pProject->GetBasePath() : "",
+                    _("Add file"), "", false, true);
     PlaceWindow(&dlg);
 
     if (dlg.ShowModal() == wxID_OK)
     {
         wxString pathAll = dlg.GetPath();
-        wxStringTokenizer tokenizer(pathAll, _T(";"), wxTOKEN_STRTOK);
+        wxStringTokenizer tokenizer(pathAll, ";", wxTOKEN_STRTOK);
 
         while (tokenizer.HasMoreTokens())
         {
@@ -139,8 +139,8 @@ void FPOptionsProjectDlg::OnEdit(cb_unused wxCommandEvent & event)
 
     EditPathDlg dlg(this,
                     selStr,
-                    m_pProject ? m_pProject->GetBasePath() : _T(""),
-                    isDir ? _("Edit directory") : _("Edit file"), _T(""), isDir);
+                    m_pProject ? m_pProject->GetBasePath() : "",
+                    isDir ? _("Edit directory") : _("Edit file"), "", isDir);
     PlaceWindow(&dlg);
 
     if (dlg.ShowModal() == wxID_OK)
@@ -167,8 +167,8 @@ void FPOptionsProjectDlg::OnAddInclude(cb_unused wxCommandEvent & event)
 {
     wxListBox * control = XRCCTRL(*this, "lstPathsInclude", wxListBox);
     EditPathDlg dlg(this,
-                    m_pProject ? m_pProject->GetBasePath() : _T(""),
-                    m_pProject ? m_pProject->GetBasePath() : _T(""),
+                    m_pProject ? m_pProject->GetBasePath() : "",
+                    m_pProject ? m_pProject->GetBasePath() : "",
                     _("Add directory"));
     PlaceWindow(&dlg);
 
@@ -191,7 +191,7 @@ void FPOptionsProjectDlg::OnEditInclude(cb_unused wxCommandEvent & event)
 
     EditPathDlg dlg(this,
                     control->GetString(sel),
-                    m_pProject ? m_pProject->GetBasePath() : _T(""),
+                    m_pProject ? m_pProject->GetBasePath() : "",
                     _("Edit directory"));
     PlaceWindow(&dlg);
 
@@ -239,7 +239,8 @@ void FPOptionsProjectDlg::OnApply()
 
     for (int i = 0; i < (int)control->GetCount(); ++i)
     {
-        newpathsSearch.Add(control->GetString(i));
+        wxString dir = UnixFilename(control->GetString(i));
+        newpathsSearch.Add(dir);
     }
 
     if (m_OldPaths != newpathsSearch)
@@ -254,7 +255,8 @@ void FPOptionsProjectDlg::OnApply()
 
     for (int i = 0; i < (int)control->GetCount(); ++i)
     {
-        newpathsInclude.Add(control->GetString(i));
+        wxString dir = UnixFilename(control->GetString(i));
+        newpathsInclude.Add(dir);
     }
 
     if (m_OldPathsInclude != newpathsInclude)

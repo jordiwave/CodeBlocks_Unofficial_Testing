@@ -117,13 +117,11 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
 
         // Export, import sets
         wxString GetExportFileName(bool exportAllSets);
-        void ExportXMLtoFile(TiXmlDocument * exportXmlDoc, bool exportAllSets);
         void ExportSetData(bool exportAllSets);
         void ExportAllSets(wxCommandEvent & event);
         void ExportSet(wxCommandEvent & event);
         void ImportSet(wxCommandEvent & event);
         // void SaveSet(wxCommandEvent & event);
-        bool TiXmlSuccess(TiXmlDocument * xmlDoc, wxString & xmlFileName);
 
         DECLARE_EVENT_TABLE()
 

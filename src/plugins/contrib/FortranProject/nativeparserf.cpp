@@ -87,10 +87,10 @@ NativeParserF::~NativeParserF()
 
 void NativeParserF::CreateWorkspaceBrowser()
 {
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
-    m_WorkspaceBrowserIsFloating = cfg->ReadBool(_T("/as_floating_window"), false);
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
+    m_WorkspaceBrowserIsFloating = cfg->ReadBool("/as_floating_window", false);
 
-    if (cfg->ReadBool(_T("/use_symbols_browser"), true))
+    if (cfg->ReadBool("/use_symbols_browser", true))
     {
         if (!m_pWorkspaceBrowser)
         {
@@ -106,7 +106,7 @@ void NativeParserF::CreateWorkspaceBrowser()
                 // make this a free floating/docking window
                 m_pWorkspaceBrowser = new WorkspaceBrowserF(Manager::Get()->GetAppWindow(), this, &m_Parser);
                 CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
-                evt.name = _T("FSymbolsBrowser");
+                evt.name = "FSymbolsBrowser";
                 evt.title = _("FSymbols browser");
                 evt.pWindow = m_pWorkspaceBrowser;
                 evt.dockSide = CodeBlocksDockEvent::dsRight;
@@ -297,7 +297,7 @@ void NativeParserF::ReparseProject(cbProject * project)
         }
     }
 
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("NativeParserF::ReparseProject: Reparse poject took %d ms."), sw.Time()));
+    Manager::Get()->GetLogManager()->DebugLog(F("NativeParserF::ReparseProject: Reparse poject took %d ms.", sw.Time()));
 }
 
 void NativeParserF::ForceReparseWorkspace()
@@ -458,8 +458,7 @@ void NativeParserF::MakeAIncludeFileList()
             for (size_t j = 0; j < nfiles; ++j)
             {
                 wxFileName fname(files.Item(j));
-                fname.MakeRelativeTo(dirName.GetPath(), wxPATH_UNIX);
-                m_AIncludeFiles[fname.GetFullPath(wxPATH_UNIX)] = files.Item(j);
+                m_AIncludeFiles[fname.GetFullName()] = files.Item(j);
             }
         }
     }
@@ -674,7 +673,7 @@ void NativeParserF::UpdateWSFilesDependency()
         }
     }
 
-    wxString name = _T("### WorkspaceAllFortranFiles ###");
+    wxString name = "### WorkspaceAllFortranFiles ###";
     WSDependencyMap::iterator pos;
     pos = m_WSDependency.find(name);
 
@@ -698,8 +697,8 @@ void NativeParserF::UpdateWSFilesDependency()
 
         if (projDep->HasInfiniteDependences())
         {
-            wxString msg = _T("Warning. FortranProject plugin:\n");
-            msg << _T("     'It seems you have a circular dependency in Fortran files. Check your USE or INCLUDE statements.'");
+            wxString msg = "Warning. FortranProject plugin:\n";
+            msg << "     'It seems you have a circular dependency in Fortran files. Check your USE or INCLUDE statements.'";
             Manager::Get()->GetLogManager()->Log(msg);
             cbMessageBox(_("It seems you have a circular dependency in Fortran files. Check your USE or INCLUDE statements."),
                          _("Warning"));
@@ -747,8 +746,8 @@ void NativeParserF::UpdateProjectFilesDependency(cbProject * project)
 
         if (projDep->HasInfiniteDependences())
         {
-            wxString msg = _T("Warning. FortranProject plugin:\n");
-            msg << _T("     'It seems you have a circular dependency in Fortran files. Check your USE or INCLUDE statements.'");
+            wxString msg = "Warning. FortranProject plugin:\n";
+            msg << "     'It seems you have a circular dependency in Fortran files. Check your USE or INCLUDE statements.'";
             Manager::Get()->GetLogManager()->Log(msg);
             cbMessageBox(_("It seems you have a circular dependency in Fortran files. Check your USE or INCLUDE statements."),
                          _("Warning"));
@@ -910,9 +909,9 @@ void NativeParserF::CollectInformationForCallTip(int & commasAll, int & commasUn
     wxString lineTextMinus = lineText.Mid(0, lineText.Len() - lastName.Len());
     wxString beforLast = GetLastName(lineTextMinus);
 
-    if (beforLast.IsSameAs(_T("subroutine"), false) || beforLast.IsSameAs(_T("function"), false))
+    if (beforLast.IsSameAs("subroutine", false) || beforLast.IsSameAs("function", false))
     {
-        lastName = _T("");
+        lastName = "";
         return; // we don't want calltips during procedure declaration
     }
 
@@ -1265,7 +1264,7 @@ void NativeParserF::GetCallTips(const wxString & name, bool onlyUseAssoc, bool o
 {
     int tokKind;
 
-    if (Manager::Get()->GetConfigManager(_T("fortran_project"))->ReadBool(_T("/call_tip_arrays"), true))
+    if (Manager::Get()->GetConfigManager("fortran_project")->ReadBool("/call_tip_arrays", true))
     {
         tokKind = tkFunction | tkSubroutine | tkInterface | tkType | tkVariable;
     }
@@ -1460,7 +1459,7 @@ void NativeParserF::GetCallTipsForVariable(TokenFlat * token, wxString & callTip
         return;
     }
 
-    int dstart = token->m_TypeDefinition.Lower().Find(_T("dimension"));
+    int dstart = token->m_TypeDefinition.Lower().Find("dimension");
 
     if (dstart != wxNOT_FOUND)
     {
@@ -1477,7 +1476,7 @@ void NativeParserF::GetCallTipsForVariable(TokenFlat * token, wxString & callTip
         }
     }
     else
-        if (token->m_Args.StartsWith(_T("(")))
+        if (token->m_Args.StartsWith("("))
         {
             int last = token->m_Args.Find(')');
 
@@ -1514,12 +1513,12 @@ void NativeParserF::GetCallTipsForType(TokenFlat * token, wxString & callTip)
             continue;
         }
 
-        names << resultTmp->Item(i)->m_DisplayName << _T(", ");
+        names << resultTmp->Item(i)->m_DisplayName << ", ";
     }
 
     if (!names.IsEmpty())
     {
-        callTip << _T("(") << names.Mid(0, names.Length() - 2) << _T(")");
+        callTip << "(" << names.Mid(0, names.length() - 2) << ")";
     }
 }
 
@@ -1569,7 +1568,7 @@ void NativeParserF::MarkCurrentSymbol(bool selectCurrentSymbol)
 
 void NativeParserF::RereadOptions()
 {
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
 
     // disabled?
     if (cfg->ReadBool(_("/use_symbols_browser"), true))
@@ -1580,7 +1579,7 @@ void NativeParserF::RereadOptions()
         }
         // change class-browser docking settings
         else
-            if (m_WorkspaceBrowserIsFloating != cfg->ReadBool(_T("/as_floating_window"), false))
+            if (m_WorkspaceBrowserIsFloating != cfg->ReadBool("/as_floating_window", false))
             {
                 RemoveWorkspaceBrowser();
                 CreateWorkspaceBrowser();
@@ -1621,7 +1620,7 @@ void NativeParserF::GenMakefile()
 
     if (!project)
     {
-        Manager::Get()->GetLogManager()->Log(_T("No active project was found. Makefile was not generated."));
+        Manager::Get()->GetLogManager()->Log("No active project was found. Makefile was not generated.");
         cbMessageBox(_("No active project was found.\nMakefile was not generated."), _("Error"), wxICON_ERROR);
         return;
     }
@@ -1642,7 +1641,7 @@ void NativeParserF::GenMakefile()
     }
     else
     {
-        Manager::Get()->GetLogManager()->Log(_T("Active project doesn't have Fortran files."));
+        Manager::Get()->GetLogManager()->Log("Active project doesn't have Fortran files.");
         cbMessageBox(_("Active project doesn't have Fortran files.\nMakefile was not generated."), _("Information"), wxICON_INFORMATION);
     }
 }
@@ -1702,7 +1701,7 @@ void NativeParserF::ReparseCurrentEditor()
         }
         else
         {
-            m_CurrentEditorProjectFN = _T("");
+            m_CurrentEditorProjectFN = "";
         }
     }
 

@@ -623,7 +623,7 @@ wxString Tokenizerf::GetTokenSameFortranLine()
     {
         token = GetTokenSameLine();
 
-        while (token.IsSameAs(_T("&")))
+        while (token.IsSameAs("&"))
         {
             token = GetToken();
         }
@@ -752,7 +752,7 @@ wxString Tokenizerf::DoGetToken()
     if (IsBindTo())
     {
         m_TokenIndex += 8;
-        ret_Str = _T("!bindto");
+        ret_Str = "!bindto";
     }
     else
         if (isalpha(CurrentChar()) || CurrentChar() == '_' || CurrentChar() == '$' || CurrentChar() == '#')
@@ -813,12 +813,12 @@ wxString Tokenizerf::DoGetToken()
                         {
                             MoveToNextChar();
                             MoveToNextChar();
-                            ret_Str = _T("::");
+                            ret_Str = "::";
                         }
                         else
                         {
                             MoveToNextChar();
-                            ret_Str = _T(":");
+                            ret_Str = ":";
                         }
                     }
                     else
@@ -826,7 +826,7 @@ wxString Tokenizerf::DoGetToken()
                         {
                             MoveToNextChar();
                             MoveToNextChar();
-                            ret_Str = _T("=>");
+                            ret_Str = "=>";
                         }
                         else
                             if (CurrentChar() == '(' || CurrentChar() == '[')
@@ -928,10 +928,10 @@ wxString Tokenizerf::DoGetToken()
                                     }
                                 }
 
-                                tmp.Replace(_T("\t"), _T(" ")); // replace tabs with spaces
-                                tmp.Replace(_T("\n"), _T(" ")); // replace LF with spaces
-                                tmp.Replace(_T("\r"), _T(" ")); // replace CR with spaces
-                                tmp.Replace(_T("&"), _T(" ")); // replace fortran line continuation with spaces
+                                tmp.Replace("\t", " "); // replace tabs with spaces
+                                tmp.Replace("\n", " "); // replace LF with spaces
+                                tmp.Replace("\r", " "); // replace CR with spaces
+                                tmp.Replace("&", " "); // replace fortran line continuation with spaces
                                 // fix-up arguments (remove excessive spaces/tabs/newlines)
                                 unsigned int tmpLen = tmp.Length() - 1;
 
@@ -947,17 +947,17 @@ wxString Tokenizerf::DoGetToken()
 
                                 if (chBlock == '(')
                                 {
-                                    ret_Str << _T(')'); // add closing parenthesis (see "i < tmp.Length() - 1" in previous "for")
-                                    ret_Str.Replace(_T("  "), _T(" ")); // replace two-spaces with single-space (introduced if it skipped comments or assignments)
-                                    ret_Str.Replace(_T("( "), _T("("));
-                                    ret_Str.Replace(_T(" )"), _T(")"));
+                                    ret_Str << ')'; // add closing parenthesis (see "i < tmp.Length() - 1" in previous "for")
+                                    ret_Str.Replace("  ", " "); // replace two-spaces with single-space (introduced if it skipped comments or assignments)
+                                    ret_Str.Replace("( ", "(");
+                                    ret_Str.Replace(" )", ")");
                                 }
                                 else
                                 {
-                                    ret_Str << _T(']'); // add closing parenthesis (see "i < tmp.Length() - 1" in previous "for")
-                                    ret_Str.Replace(_T("  "), _T(" ")); // replace two-spaces with single-space (introduced if it skipped comments or assignments)
-                                    ret_Str.Replace(_T("[ "), _T("["));
-                                    ret_Str.Replace(_T(" ]"), _T("]"));
+                                    ret_Str << ']'; // add closing parenthesis (see "i < tmp.Length() - 1" in previous "for")
+                                    ret_Str.Replace("  ", " "); // replace two-spaces with single-space (introduced if it skipped comments or assignments)
+                                    ret_Str.Replace("[ ", "[");
+                                    ret_Str.Replace(" ]", "]");
                                 }
                             }
                             else
@@ -992,18 +992,18 @@ void Tokenizerf::GetTokensToEOL(wxArrayString & arrStr, wxArrayString * arrStrLi
 
         if (m_SourceForm == fsfFree)
         {
-            if ((n_line > line) && !o_tok.IsSameAs(_T("&")))
+            if ((n_line > line) && !o_tok.IsSameAs("&"))
             {
                 UngetToken();
                 break;
             }
             else
-                if (tok.IsSameAs(_T(";")))
+                if (tok.IsSameAs(";"))
                 {
                     break;
                 }
                 else
-                    if (!tok.IsSameAs(_T("&")) && ((!m_DetailedParsing && !tok.IsSameAs(_T(","))) || m_DetailedParsing))
+                    if (!tok.IsSameAs("&") && ((!m_DetailedParsing && !tok.IsSameAs(",")) || m_DetailedParsing))
                     {
                         arrStr.Add(tok);
 
@@ -1021,12 +1021,12 @@ void Tokenizerf::GetTokensToEOL(wxArrayString & arrStr, wxArrayString * arrStrLi
                 break;
             }
             else
-                if (tok.IsSameAs(_T(";")) || (m_Column < 7 && m_Column != 0))
+                if (tok.IsSameAs(";") || (m_Column < 7 && m_Column != 0))
                 {
                     break;
                 }
                 else
-                    if ((m_Column > 7 || m_Column == 0) && ((!m_DetailedParsing && !tok.IsSameAs(_T(","))) || m_DetailedParsing))
+                    if ((m_Column > 7 || m_Column == 0) && ((!m_DetailedParsing && !tok.IsSameAs(",")) || m_DetailedParsing))
                     {
                         arrStr.Add(tok);
 
@@ -1128,9 +1128,9 @@ wxString Tokenizerf::GetLineFortran()
 
             beforeLine = beforeLine.Trim().Trim(false);
 
-            if (beforeLine.EndsWith(_T("&")))
+            if (beforeLine.EndsWith("&"))
             {
-                curLine = beforeLine.BeforeLast('&').Trim() + _T(" ") + curLine;
+                curLine = beforeLine.BeforeLast('&').Trim() + " " + curLine;
                 sc_ind = curLine.Find(';');
 
                 if (sc_ind != wxNOT_FOUND)
@@ -1149,7 +1149,7 @@ wxString Tokenizerf::GetLineFortran()
         }
     }
 
-    if (!endFound && curLine.EndsWith(_T("&")))
+    if (!endFound && curLine.EndsWith("&"))
     {
         curLine = curLine.BeforeLast('&').Trim();
         unsigned int afterLineStart = curLineEnd + 1;
@@ -1165,7 +1165,7 @@ wxString Tokenizerf::GetLineFortran()
                 afterLine = afterLine.Mid(0, comInd);
             }
 
-            curLine  = curLine + _T(" ") + afterLine.Trim().Trim(false);
+            curLine  = curLine + " " + afterLine.Trim().Trim(false);
             sc_ind = curLine.Find(';');
 
             if (sc_ind != wxNOT_FOUND)
@@ -1174,7 +1174,7 @@ wxString Tokenizerf::GetLineFortran()
                 break;
             }
 
-            if (curLine.EndsWith(_T("&")))
+            if (curLine.EndsWith("&"))
             {
                 curLine = curLine.BeforeLast('&');
                 afterLineStart = afterLineEnd + 1;
@@ -1281,7 +1281,7 @@ bool Tokenizerf::IsBindTo()
 
         wxString str = m_Buffer.Mid(m_TokenIndex + 1, 6);
 
-        if (str.IsSameAs(_T("bindto"), false))
+        if (str.IsSameAs("bindto"), false)
         {
             unsigned int idx = m_TokenIndex + 7;
 

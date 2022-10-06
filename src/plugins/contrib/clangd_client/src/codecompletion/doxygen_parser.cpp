@@ -924,7 +924,7 @@ wxString DocumentationHelper::GenerateHTMLbyHover(const ClgdCCToken & cccToken, 
     // Example Hover contents: L"instance-method HelloWxWorldFrame::OnAbout\n\nType: void\nParameters:\n- wxCommandEvent & event\n\n// In HelloWxWorldFrame\nprivate: void HelloWxWorldFrame::OnAbout(wxCommandEvent &event)"
     // get string array of hover info separated at /n chars.
     // **Debugging**
-    CCLogger::Get()->DebugLog(wxString::Format("%s HoverInfo[%s}", __FUNCTION__, hoverString));
+    //CCLogger::Get()->DebugLog(wxString::Format("%s HoverInfo[%s}",__FUNCTION__, hoverString));
     hoverString.Replace("\n\n", "\n"); //remove double newline chars
     wxArrayString vHoverInfo = GetArrayFromString(hoverString, "\n");
     // **Debugging**

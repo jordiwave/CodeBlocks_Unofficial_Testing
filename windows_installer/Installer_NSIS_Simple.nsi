@@ -1979,6 +1979,8 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         File ${CB_BASE}${CB_SHARE_CB}\SpellChecker\56x56\*.png
         SetOutPath $INSTDIR${CB_SHARE_CB}\SpellChecker\64x64
         File ${CB_BASE}${CB_SHARE_CB}\SpellChecker\64x64\*.png
+        SetOutPath $INSTDIR${CB_SHARE_CB}\SpellChecker\svg
+        File ${CB_BASE}${CB_SHARE_CB}\SpellChecker\svg\*.svg
         WriteRegStr HKCU "${REGKEY}\Components" "SpellChecker plugin" 1
     SectionEnd
 
@@ -2440,6 +2442,8 @@ Section "-un.SpellChecker plugin" UNSEC_SPELLCHECKER
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\56x56
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\64x64\*.png
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\64x64
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\svg\*.svg
+    RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker\svg
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}\SpellChecker
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\SpellChecker-off.png
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\SpellChecker.png

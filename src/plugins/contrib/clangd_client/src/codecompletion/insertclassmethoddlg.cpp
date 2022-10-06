@@ -23,10 +23,14 @@
 
 #include "parser/parser.h"
 
+// ----------------------------------------------------------------------------
 namespace InsertClassMethodDlgHelper
+// ----------------------------------------------------------------------------
 {
+// ----------------------------------------------------------------------------
 inline void DoFillMethodsFor(wxCheckListBox * clb, Token * parentToken, const wxString & ns, bool includePrivate,
                              bool includeProtected, bool includePublic)
+// ----------------------------------------------------------------------------
 {
     if (!parentToken)
     {
@@ -54,17 +58,32 @@ inline void DoFillMethodsFor(wxCheckListBox * clb, Token * parentToken, const wx
         }
 
         const bool valid =    token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor)
-                              && ((includePrivate && token->m_Scope == tsPrivate)
-                                  || (includeProtected && token->m_Scope == tsProtected)
-                                  || (includePublic && token->m_Scope == tsPublic));
+                              // FIXME (ph#): Clangd "textDocument/documentSymbol" response does not report scope //(ph 2022/09/21)
+                              //           && (   (includePrivate && token->m_Scope == tsPrivate)
+                              //               || (includeProtected && token->m_Scope == tsProtected)
+                              //               || (includePublic && token->m_Scope == tsPublic) );
+                              ;
 
         if (valid)
         {
             wxString str;
-            str << token->m_FullType << _T(" ") << ns << token->m_Name << token->GetFormattedArgs();
-            str.Replace(_T("&"), _T("&&"));
+            //-str << token->m_FullType << _T(" ") << ns << token->m_Name << token->GetFormattedArgs();
+            wxString args = token->GetFormattedArgs();
 
-            if (clb->FindString(str) == wxNOT_FOUND)
+            if (not args.StartsWith('('))
+            {
+                args.Prepend('(');
+            }
+
+            if (not args.EndsWith(')'))
+            {
+                args.Append(')');
+            }
+
+            str << token->m_FullType << _T(" ") << ns << token->m_Name << args;
+
+            //? str.Replace(_T("&"), _T("&&")); why?
+            if (clb->FindString(str) == wxNOT_FOUND) //avoiding duplicates?
             {
                 clb->Append(str);
             }
@@ -103,7 +122,9 @@ BEGIN_EVENT_TABLE(InsertClassMethodDlg, wxScrollingDialog)
     EVT_CHECKBOX(XRCID("chkPublic"), InsertClassMethodDlg::OnFilterChange)
 END_EVENT_TABLE()
 
+// ----------------------------------------------------------------------------
 InsertClassMethodDlg::InsertClassMethodDlg(wxWindow * parent, ParserBase * parser, const wxString & filename) :
+    // ----------------------------------------------------------------------------
     m_Parser(parser),
     m_Decl(true),
     m_Filename(filename)
@@ -113,14 +134,23 @@ InsertClassMethodDlg::InsertClassMethodDlg(wxWindow * parent, ParserBase * parse
     XRCCTRL(*this, "rbCode", wxRadioBox)->SetSelection(0);
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     FillClasses();
+    // FIXME (ph#): clangd "textdocument/documentSymbol" does not report scope
+    // Hide chkPrivate, chkProtected, chkPublic check boxes for now //(ph 2022/09/21)
+    XRCCTRL(*this, "chkPrivate", wxCheckBox)->Hide();
+    XRCCTRL(*this, "chkProtected", wxCheckBox)->Hide();
+    XRCCTRL(*this, "chkPublic", wxCheckBox)->Hide();
 }
 
+// ----------------------------------------------------------------------------
 InsertClassMethodDlg::~InsertClassMethodDlg()
+// ----------------------------------------------------------------------------
 {
     //dtor
 }
 
+// ----------------------------------------------------------------------------
 wxArrayString InsertClassMethodDlg::GetCode() const
+// ----------------------------------------------------------------------------
 {
     wxArrayString array;
     const wxCheckListBox * clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
@@ -146,7 +176,9 @@ wxArrayString InsertClassMethodDlg::GetCode() const
     return array;
 } // end of GetCode
 
+// ----------------------------------------------------------------------------
 void InsertClassMethodDlg::FillClasses()
+// ----------------------------------------------------------------------------
 {
     wxListBox * lb = XRCCTRL(*this, "lstClasses", wxListBox);
     lb->Freeze();
@@ -169,7 +201,9 @@ void InsertClassMethodDlg::FillClasses()
     FillMethods();
 }
 
+// ----------------------------------------------------------------------------
 void InsertClassMethodDlg::FillMethods()
+// ----------------------------------------------------------------------------
 {
     wxListBox * lb = XRCCTRL(*this, "lstClasses", wxListBox);
     wxCheckListBox * clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
@@ -183,6 +217,9 @@ void InsertClassMethodDlg::FillMethods()
     bool includePrivate = XRCCTRL(*this, "chkPrivate", wxCheckBox)->IsChecked();
     bool includeProtected = XRCCTRL(*this, "chkProtected", wxCheckBox)->IsChecked();
     bool includePublic = XRCCTRL(*this, "chkPublic", wxCheckBox)->IsChecked();
+    // FIXME (ph#): clangd does not report scope //(ph 2022/09/24)
+    //Set all true until we can find a way to get scope from clangd //(ph 2022/09/24)
+    includePrivate = includeProtected = includePublic = true;
     Token * parentToken = reinterpret_cast<Token *>(lb->GetClientData(lb->GetSelection()));
     clb->Freeze();
     InsertClassMethodDlgHelper::DoFillMethodsFor(
@@ -196,17 +233,23 @@ void InsertClassMethodDlg::FillMethods()
 }
 
 // events
+// ----------------------------------------------------------------------------
 void InsertClassMethodDlg::OnClassesChange(cb_unused wxCommandEvent & event)
+// ----------------------------------------------------------------------------
 {
     FillMethods();
 }
 
+// ----------------------------------------------------------------------------
 void InsertClassMethodDlg::OnCodeChange(cb_unused wxCommandEvent & event)
+// ----------------------------------------------------------------------------
 {
     m_Decl = XRCCTRL(*this, "rbCode", wxRadioBox)->GetSelection() == 0;
 }
 
+// ----------------------------------------------------------------------------
 void InsertClassMethodDlg::OnFilterChange(cb_unused wxCommandEvent & event)
+// ----------------------------------------------------------------------------
 {
     FillMethods();
 }

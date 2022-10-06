@@ -349,6 +349,28 @@ bool UserVariableManager::GetMemberValue(const VariableSetMap & setMap, wxString
     return var.GetValue(memberName, value);
 }
 
+wxString UserVariableManager::GetMemberValue(const wxString & setName, const wxString & varName, const wxString & memberName) const
+{
+    const VariableSetMap::const_iterator itrSet = m_ParameterVariableSetMap.find(setName);
+
+    if (itrSet == m_ParameterVariableSetMap.end())
+    {
+        return wxEmptyString;
+    }
+
+    const VariableMap & varMap = itrSet->second;
+    const VariableMap::const_iterator itrVar = varMap.find(varName);
+
+    if (itrVar == varMap.end())
+    {
+        return wxEmptyString;
+    }
+
+    const UserVariable & var = itrVar->second;
+    wxString value;
+    var.GetValue(memberName, value);
+    return value;
+}
 
 void UserVariableManager::Preempt(const wxString & variable, const ProjectBuildTarget * target)
 {

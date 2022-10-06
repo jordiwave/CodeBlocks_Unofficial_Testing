@@ -1,8 +1,13 @@
 /*@REVISION@*/
-//don't include this header, only configmanager-revision.cpp should do this.
+
+// +=============================================================================+
+// | don't include this header, only configmanager-revision.cpp should do this.  |
+// | don't include this header, only configmanager-revision.cpp should do this.  |
+// | don't include this header, only configmanager-revision.cpp should do this.  |
+// +=============================================================================+
+
 #ifndef AUTOREVISION_H
 #define AUTOREVISION_H
-
 
 #include <wx/string.h>
 
@@ -13,6 +18,10 @@ namespace autorevision
 	const wxString svnDate(_T("@DATE@"));
 }
 
-
-
 #endif
+
+// +=============================================================================+
+// | don't include this header, only configmanager-revision.cpp should do this.  |
+// | don't include this header, only configmanager-revision.cpp should do this.  |
+// | don't include this header, only configmanager-revision.cpp should do this.  |
+// +=============================================================================+

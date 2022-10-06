@@ -13,15 +13,15 @@
 CallTree::CallTree(FortranProject * forproj)
 {
     m_pCallTreeView = new CallTreeView(Manager::Get()->GetAppWindow(), forproj);
-    m_FortranIntrinsicModules.insert(_T("iso_c_binding"));
-    m_FortranIntrinsicModules.insert(_T("iso_fortran_env"));
-    m_FortranIntrinsicModules.insert(_T("ieee_exceptions"));
-    m_FortranIntrinsicModules.insert(_T("ieee_arithmetic"));
-    m_FortranIntrinsicModules.insert(_T("ieee_features"));
-    m_FortranIntrinsicModules.insert(_T("omp_lib"));
+    m_FortranIntrinsicModules.insert("iso_c_binding");
+    m_FortranIntrinsicModules.insert("iso_fortran_env");
+    m_FortranIntrinsicModules.insert("ieee_exceptions");
+    m_FortranIntrinsicModules.insert("ieee_arithmetic");
+    m_FortranIntrinsicModules.insert("ieee_features");
+    m_FortranIntrinsicModules.insert("omp_lib");
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
-    evt.name = _T("FCallTree");
-    evt.title = _("Fortran Call/Called-By Tree");
+    evt.name = "FCallTree";
+    evt.title = "Fortran Call/Called-By Tree";
     evt.pWindow = m_pCallTreeView;
     evt.dockSide = CodeBlocksDockEvent::dsFloating;
     evt.desiredSize.Set(200, 250);
@@ -75,7 +75,7 @@ void CallTree::BuildCallTree(cbEditor * ed, const wxString & NameUnderCursor, Pa
 
     if (pRoot->GetCount() == 1 && !(pRoot->Item(0)->m_TokenKind & tokenKindMask))
     {
-        wxString msg = _T("\"") + NameUnderCursor + _("\" is not a procedure or a module.");
+        wxString msg = "\"" + NameUnderCursor + _("\" is not a procedure or a module.");
         cbMessageBox(msg, _("Error"), wxICON_ERROR);
         return;
     }
@@ -119,8 +119,8 @@ void CallTree::BuildCallTree(cbEditor * ed, const wxString & NameUnderCursor, Pa
     m_TimeOld = m_StopWatch.Time();
     m_Cancelled = false;
     m_CallDepth = 1;
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("fortran_project"));
-    m_CallDepthMax = cfg->ReadInt(_T("/calltree_depthmax"), 5);
+    ConfigManager * cfg = Manager::Get()->GetConfigManager("fortran_project");
+    m_CallDepthMax = cfg->ReadInt("/calltree_depthmax", 5);
     TokensArrayF * tokAll = new TokensArrayF();
 
     for (size_t i = 0; i < pRoot->size(); i++)

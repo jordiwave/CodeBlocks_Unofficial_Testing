@@ -33,10 +33,10 @@ wxsPropertyGridManager::wxsPropertyGridManager(
     long style,
     const char * name):
     wxPropertyGridManager(parent, id, pos, size, style, name),
-    MainContainer(0)
+    MainContainer(nullptr)
 {
     Singleton = this;
-    PropertiesList = 0;
+    PropertiesList = nullptr;
 }
 
 wxsPropertyGridManager::~wxsPropertyGridManager()
@@ -53,11 +53,11 @@ wxsPropertyGridManager::~wxsPropertyGridManager()
     }
 
     PreviousIndex = -1;
-    PreviousProperty = 0;
+    PreviousProperty = nullptr;
 
     if (Singleton == this)
     {
-        Singleton = 0;
+        Singleton = nullptr;
     }
 
     DeleteTemporaryPropertiesList();
@@ -76,10 +76,10 @@ void wxsPropertyGridManager::OnChange(wxPropertyGridEvent & event)
             if (!PGEntries[i]->PGRead(Container, this, ID, PGIndexes[i]))
             {
                 wxString ErrorMsg;
-                ErrorMsg << _T("wxSmith: Couldn't read value from wxsPropertyGridManager")
-                         << _T(", propgrid name=") << PGEntries[i]->GetPGName()
-                         << _T(", date name=")     << PGEntries[i]->GetDataName()
-                         << _T(", type name=")     << PGEntries[i]->GetTypeName();
+                ErrorMsg << "wxSmith: Couldn't read value from wxsPropertyGridManager"
+                         << ", propgrid name=" << PGEntries[i]->GetPGName()
+                         << ", date name="     << PGEntries[i]->GetDataName()
+                         << ", type name="     << PGEntries[i]->GetTypeName();
                 Manager::Get()->GetLogManager()->DebugLogError(ErrorMsg);
             }
 
@@ -87,12 +87,12 @@ void wxsPropertyGridManager::OnChange(wxPropertyGridEvent & event)
             Container->NotifyPropertyChangeFromPropertyGrid();
 
             // Notifying about sub property change
-            if (Container != MainContainer && MainContainer != 0)
+            if (Container != MainContainer && MainContainer != nullptr)
             {
                 MainContainer->OnSubPropertyChanged(Container);
             }
 
-            Update(0);
+            Update(nullptr);
             return;
         }
     }
@@ -150,8 +150,8 @@ void wxsPropertyGridManager::UnbindAll()
     }
 
     PreviousIndex = -1;
-    PreviousProperty = 0;
-    SetNewMainContainer(0);
+    PreviousProperty = nullptr;
+    SetNewMainContainer(nullptr);
 }
 
 void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer * PC, bool doFreeze)
@@ -205,7 +205,7 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer * PC, 
             ClearPage(i);
         }
 
-        SetNewMainContainer(0);
+        SetNewMainContainer(nullptr);
     }
 }
 
@@ -247,7 +247,7 @@ void wxsPropertyGridManager::NewPropertyContainerAddProperty(wxsProperty * Prope
     NewItem->Container = Container;
     NewItem->Priority = Property->GetPriority();
     int Priority = NewItem->Priority;
-    TemporaryPropertiesList * Prev = 0, *Search;
+    TemporaryPropertiesList * Prev = nullptr, *Search;
 
     for (Search = PropertiesList; Search && Search->Property->GetPriority() >= Priority; Prev = Search, Search = Search->Next);
 
@@ -257,7 +257,7 @@ void wxsPropertyGridManager::NewPropertyContainerAddProperty(wxsProperty * Prope
 
 void wxsPropertyGridManager::NewPropertyContainerFinish(wxsPropertyContainer * Container)
 {
-    SelectPage(0);
+    SelectPage(0);  // SelectPage() has three overloads, is 0 an int or a pointer to wxPropertyGridPage?
 
     while (PropertiesList)
     {
@@ -296,7 +296,7 @@ void wxsPropertyGridManager::StoreSelected(SelectionData * Data)
     Data->m_PageIndex = GetSelectedPage();
     wxPGId Selected = GetSelection();
 
-    if (Selected != NULL)
+    if (Selected)
     {
         Data->m_PropertyName = GetPropertyName(Selected);
     }
@@ -323,7 +323,7 @@ void wxsPropertyGridManager::RestoreSelected(const SelectionData * Data)
         return;
     }
 
-    if (Data->m_PropertyName.IsEmpty())
+    if (Data->m_PropertyName.empty())
     {
         return;
     }
@@ -338,7 +338,7 @@ void wxsPropertyGridManager::RestoreSelected(const SelectionData * Data)
 }
 
 
-wxsPropertyGridManager * wxsPropertyGridManager::Singleton = 0;
+wxsPropertyGridManager * wxsPropertyGridManager::Singleton = nullptr;
 
 BEGIN_EVENT_TABLE(wxsPropertyGridManager, wxPropertyGridManager)
     EVT_PG_CHANGED(-1, wxsPropertyGridManager::OnChange)

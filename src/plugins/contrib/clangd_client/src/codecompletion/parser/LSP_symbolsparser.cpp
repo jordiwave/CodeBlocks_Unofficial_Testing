@@ -634,7 +634,7 @@ bool LSP_SymbolsParser::InitTokenizer(json * pJson)
     m_Tokenizer.m_SemanticTokensTypes = m_SemanticTokensTypes;
     m_Tokenizer.m_SemanticTokensModifiers = m_SemanticTokensModifiers;
     // convert LSP semantic tokens and symbols results to usable data
-    wxString jsonIDfield = pJson->at("id").get<std::string>();
+    wxString jsonIDfield = GetwxUTF8Str(pJson->at("id").get<std::string>());
     bool converted = false;
 
     if (jsonIDfield.StartsWith("textDocument/semanticTokens/full"))
@@ -666,7 +666,7 @@ bool LSP_SymbolsParser::Parse(json * pJson, cbProject * pProject)
 
     try
     {
-        parseIDstr = pJson->at("id").get<std::string>();
+        parseIDstr = GetwxUTF8Str(pJson->at("id").get<std::string>());
     }
     catch (std::exception & e)
     {
@@ -749,7 +749,7 @@ bool LSP_SymbolsParser::DoParseSemanticTokens(json * pJson, cbProject * pProject
 
     try
     {
-        URI = pJson->at("id").get<std::string>();
+        URI = GetwxUTF8Str(pJson->at("id").get<std::string>());
     }
     catch (std::exception & e)
     {
@@ -960,7 +960,7 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
 
     try
     {
-        URI = pJson->at("id").get<std::string>();
+        URI = GetwxUTF8Str(pJson->at("id").get<std::string>());
     }
     catch (std::exception & e)
     {
@@ -1035,6 +1035,14 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
             CHECK_TIME(startTime, 2000) //(ph 2021/09/7)
             wxString name =   result.at(symidx)["name"].get<std::string>();
             int kind =        result.at(symidx)["kind"].get<int>();
+            // "detail":xxxx contains the type and arguments example: {"detail":"bool (const wxString &)"
+            wxString detail = wxString();
+
+            if (result.at(symidx).contains("detail"))
+            {
+                detail = result.at(symidx)["detail"].get<std::string>();
+            }
+
             // startLine etc is the items lines ranges, eg., function start line to end line braces.
             int startLine =   result.at(symidx)["range"]["start"]["line"].get<int>();
             int startCol =    result.at(symidx)["range"]["start"]["character"].get<int>();
@@ -1129,9 +1137,23 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
                 case LSP_DocumentSymbolKind::Constructor:   // 9
                 case LSP_DocumentSymbolKind::Property:      // 7
                 {
+                    // "detail":"xxxx" contains the type and arguments. Example: {"detail":"bool (const wxString &)"
+                    wxString fullType = wxString();
+
+                    if (detail.Length())
+                    {
+                        fullType = GetFullTypeFromDetail(detail);
+                    }
+
                     m_Str = wxString();
-                    size_t funcNameLth = selectionRangeEndCol - selectionRangeStartCol;
-                    args = DoGetDocumentSymbolFunctionArgs(lineTxt, selectionRangeStartCol, funcNameLth);
+
+                    if (fullType.Length())
+                    {
+                        m_Str = fullType;
+                    }
+
+                    //- unused -size_t funcNameLth = selectionRangeEndCol - selectionRangeStartCol;
+                    args = DoGetDocumentSymbolFunctionArgs(detail);
 
                     if (wxFound(name.Find("::")))
                     {
@@ -1139,28 +1161,28 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json * pJson, cbProject * pProjec
                         wxString nmspce = name.SubString(0, posn - 1).Trim(true).Trim(false);
                         m_EncounteredNamespaces.push(nmspce);
                         name = name.Mid(posn + 2).Trim(true).Trim(false);
-
-                        if (kind == LSP_DocumentSymbolKind::Method)
-                        {
-                            if (wxFound(posn = lineTxt.Find(nmspce)))
-                            {
-                                m_Str = posn ? lineTxt.SubString(0, posn - 1) : wxString();
-                                m_Str = m_Str.BeforeLast(' '); //must have blank before namespace
-                            }
-                        }
+                        // FIXME (ph#): m_Str already set, remove this code //(ph 2022/09/23)
+                        //if (kind == LSP_DocumentSymbolKind::Method)
+                        //{
+                        //    if (wxFound(posn = lineTxt.Find(nmspce)))
+                        //    {
+                        //        m_Str = posn ? lineTxt.SubString(0, posn-1) : wxString();
+                        //        m_Str = m_Str.BeforeLast(' '); //must have blank before namespace
+                        //    }
+                        //}
                     }//endif method
 
-                    // fetch function return type
-                    if (kind == LSP_DocumentSymbolKind::Function)
-                    {
-                        int posn;
-
-                        if (wxFound(posn = lineTxt.Find(name)))
-                        {
-                            m_Str = posn ? lineTxt.SubString(0, posn - 1) : wxString();
-                            m_Str = m_Str.BeforeLast(' '); //must have blank before func name
-                        }
-                    }
+                    // FIXME (ph#): m_Str already has return type
+                    //// fetch function return type
+                    //if (kind == LSP_DocumentSymbolKind::Function)
+                    //{
+                    //    int posn;
+                    //    if (wxFound(posn = lineTxt.Find(name)))
+                    //    {
+                    //        m_Str = posn ? lineTxt.SubString(0,posn-1) : wxString();
+                    //        m_Str = m_Str.BeforeLast(' '); //must have blank before func name
+                    //    }
+                    //}
                 }//endcase kind function, method, constructor, property
 
                 // fall into default:
@@ -1247,6 +1269,14 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json & jref, wxString & filename, To
         for (size_t symidx = 0; symidx < defcnt; ++symidx)
         {
             wxString name =   result.at(symidx)["name"].get<std::string>();
+            // "detail":xxxx contains the type and arguments example: {"detail":"bool (const wxString &)"
+            wxString detail = wxString();
+
+            if (result.at(symidx).contains("detail"))
+            {
+                detail = result.at(symidx)["detail"].get<std::string>();
+            }
+
             int kind =        result.at(symidx)["kind"].get<int>();
             int endCol =      result.at(symidx)["range"]["end"]["character"].get<int>();
             int endLine =     result.at(symidx)["range"]["end"]["line"].get<int>();
@@ -1280,8 +1310,24 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json & jref, wxString & filename, To
             {
                 //function or method
                 m_Str = wxString();
-                size_t funcNameLth = selectionRangeEndCol - selectionRangeStartCol;
-                args = DoGetDocumentSymbolFunctionArgs(lineTxt, selectionRangeStartCol, funcNameLth);
+                // "detail":xxxx contains the type and arguments example: {"detail":"bool (const wxString &)"
+                wxString fullType = wxString();
+
+                if (detail.Length())
+                {
+                    fullType = GetFullTypeFromDetail(detail);
+                }
+
+                if (fullType.Length())
+                {
+                    m_Str = fullType;
+                }
+
+                //- unused -size_t funcNameLth = selectionRangeEndCol - selectionRangeStartCol;
+                if (detail.Length())
+                {
+                    args = DoGetDocumentSymbolFunctionArgs(detail);
+                }
 
                 if (wxFound(name.Find("::")))
                 {
@@ -1289,28 +1335,28 @@ void LSP_SymbolsParser::WalkDocumentSymbols(json & jref, wxString & filename, To
                     wxString nmspce = name.SubString(0, posn - 1).Trim(true).Trim(false);
                     m_EncounteredNamespaces.push(nmspce);
                     name = name.Mid(posn + 2).Trim(true).Trim(false);
-
-                    if (kind == LSP_DocumentSymbolKind::Method)
-                    {
-                        if (wxFound(posn = lineTxt.Find(nmspce)))
-                        {
-                            m_Str = posn ? lineTxt.SubString(0, posn - 1) : wxString();
-                            m_Str = m_Str.BeforeLast(' '); //must have blank before namespace
-                        }
-                    }
+                    // FIXME (ph#): m_Str already set, remove this code //(ph 2022/09/23)
+                    //if (kind == LSP_DocumentSymbolKind::Method)
+                    //{
+                    //    if (wxFound(posn = lineTxt.Find(nmspce)))
+                    //    {
+                    //        m_Str = posn ? lineTxt.SubString(0, posn-1) : wxString();
+                    //        m_Str = m_Str.BeforeLast(' '); //must have blank before namespace
+                    //    }
+                    //}
                 }//endif method
 
-                // fetch function return type
-                if (kind == LSP_DocumentSymbolKind::Function)
-                {
-                    int posn;
-
-                    if (wxFound(posn = lineTxt.Find(name)))
-                    {
-                        m_Str = posn ? lineTxt.SubString(0, posn - 1) : wxString();
-                        m_Str = m_Str.BeforeLast(' '); //must have blank before func name
-                    }
-                }
+                // FIXME (ph#): mStr already set, remove this code //(ph 2022/09/23)
+                //// fetch function return type
+                //if (kind == LSP_DocumentSymbolKind::Function)
+                //{
+                //    int posn;
+                //    if (wxFound(posn = lineTxt.Find(name)))
+                //    {
+                //        m_Str = posn ? lineTxt.SubString(0,posn-1) : wxString();
+                //        m_Str = m_Str.BeforeLast(' '); //must have blank before func name
+                //    }
+                //}
             }//endif kind function, method, constructor, property, class
 
             //Token* DoAddToken(TokenKind       kind,
@@ -1502,31 +1548,211 @@ TokenKind LSP_SymbolsParser::ConvertDocSymbolKindToCCTokenKind(int docSymKind)
     return ccTokenKind;
 }
 // ----------------------------------------------------------------------------
-wxString LSP_SymbolsParser::DoGetDocumentSymbolFunctionArgs(wxString & lineTxt, int startCol, int length)
+wxString LSP_SymbolsParser::DoGetDocumentSymbolFunctionArgs(const wxString & detail)
 // ----------------------------------------------------------------------------
 {
+    // parse out the aruments data from the clangd "detail" response entry
+    // The detail data contains the type and argments for functions etc.
+    // Example of data: "detail":"int (wxString, int)"
     wxString args = wxString();
-    //cbStyledTextCtrl* pControl = m_Tokenizer.m_pControl;
-    int posn = startCol + length;
 
-    if (wxFound(lineTxt.Mid(posn).Find('(')))
+    //if no arguments, just return empty string;
+    if (not detail.Length())
     {
-        int stx = lineTxt.Mid(posn).Find('(');
-        int etx = lineTxt.Mid(posn).Find(')');
-
-        if (etx == wxNOT_FOUND)       // if no ending ')'
-        {
-            args = lineTxt.Mid(posn); // use rest of line as arguments
-            args.Trim(true);
-            args.Append("...");
-        }
-        else                          // else use '(chars)' following function name
-        {
-            args = lineTxt.Mid(posn).SubString(stx, etx);
-        }
+        return args;
     }
 
-    return args;
+    if (not detail.EndsWith(')'))
+    {
+        return wxString();
+    }
+
+    // There must be only arguments or arguments following the type
+    // Find the opening paren to arguments and remove arguments to get type only
+    int openingParen = FindOpeningEnclosureChar(detail, detail.Length() - 1);
+
+    if (wxFound(openingParen))
+    {
+        args = detail.SubString(openingParen, detail.Length() - 1);
+        return args.Trim(true).Trim(false);
+    }
+
+    return wxString();
+}
+// ----------------------------------------------------------------------------
+int LSP_SymbolsParser::FindOpeningEnclosureChar(const wxString source, int index)
+// ----------------------------------------------------------------------------
+{
+    // Find enclosure char such as () {} []
+    // source string, src position of char to match(zero origin).
+    // Returns zero origin index of paired char or -1.
+    // Find index of Opening bracket, paren, brace for given opening char.
+    int i;
+    // Stack to store opening brackets.
+    std::vector<int> st;
+    wxChar targetChar = '\0';
+    wxChar srcChar = source[index];
+
+    // If index given is invalid and is
+    // not an opening paren, bracket, or brace.
+    if (srcChar == ')')
+    {
+        targetChar = '(';
+    }
+
+    if (srcChar == ']')
+    {
+        targetChar = '[';
+    }
+
+    if (srcChar == '}')
+    {
+        targetChar = '{';
+    }
+
+    if (targetChar == '\0')
+    {
+        wxString msg = wxString::Format("Error: %s failed:", __FUNCTION__);
+        msg << source << ", " << srcChar << ", " << index << ": -1\n";
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return -1;
+    }
+
+    // Traverse through string starting from
+    // given index.
+    for (i = index; i > -1; --i)
+    {
+        // If current character is an
+        // opening bracket push it in stack.
+        if (source[i] == srcChar)
+        {
+            st.push_back(source[i]);
+        }
+        // If current character is a closing
+        // char, pop from stack. If stack
+        // is empty, then this closing
+        // char is the closing char.
+        else
+            if (source[i] == targetChar)
+            {
+                st.pop_back();
+
+                if (st.empty())
+                {
+                    return i;
+                }
+            }
+    }
+
+    // If no matching closing bracket is found.
+    wxString msg = wxString::Format("Error: %s failed:", __FUNCTION__);
+    msg << source << ", " << srcChar << ", " << index << ": -1\n";
+    Manager::Get()->GetLogManager()->DebugLog(msg);
+    return -1;
+}
+// ----------------------------------------------------------------------------
+int LSP_SymbolsParser::FindClosingEnclosureChar(const wxString source, int index)
+// ----------------------------------------------------------------------------
+{
+    // Find enclosure char such as () {} []
+    // source string, src position of char to match(zero origin).
+    // Returns zero origin index of paired char or -1.
+    // Find index of closing bracket, paren, brace for given opening char.
+    int i;
+    // Stack to store opening brackets.
+    std::vector<int> st;
+    wxChar targetChar = '\0';
+    wxChar srcChar = source[index];
+
+    // If index given is invalid and is
+    // not an opening paren, bracket, or brace.
+    if (srcChar == '(')
+    {
+        targetChar = ')';
+    }
+
+    if (srcChar == '[')
+    {
+        targetChar = ']';
+    }
+
+    if (srcChar == '{')
+    {
+        targetChar = '}';
+    }
+
+    if (targetChar == '\0')
+    {
+        wxString msg = wxString::Format("Error: %s failed:", __FUNCTION__);
+        msg << source << ", " << srcChar << ", " << index << ": -1";
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return -1;
+    }
+
+    // Traverse through string starting from
+    // given index.
+    for (i = index; i < (int)source.length(); i++)
+    {
+        // If current character is an
+        // opening bracket push it in stack.
+        if (source[i] == srcChar)
+        {
+            st.push_back(source[i]);
+        }
+        // If current character is a closing
+        // char, pop from stack. If stack
+        // is empty, then this closing
+        // char is the closing char.
+        else
+            if (source[i] == targetChar)
+            {
+                st.pop_back();
+
+                if (st.empty())
+                {
+                    return i;
+                }
+            }
+    }
+
+    // If no matching closing bracket is found.
+    wxString msg = wxString::Format("Error: %s failed:", __FUNCTION__);
+    msg << source << ", " << srcChar << ", " << index << ": -1\n";
+    Manager::Get()->GetLogManager()->DebugLog(msg);
+    return -1;
+}
+// ----------------------------------------------------------------------------
+wxString LSP_SymbolsParser::GetFullTypeFromDetail(const wxString & detail)
+// ----------------------------------------------------------------------------
+{
+    // parse out the type data from the clangd "detail" response entry
+    // The detail data contains the type and argments for functions etc.
+    // Example of data: "detail":"int (wxString, int)"
+    wxString fullType = wxString();
+
+    //if no arguments, just return empty string;
+    if (not detail.Length())
+    {
+        return fullType;
+    }
+
+    if (not detail.EndsWith(')'))
+    {
+        fullType = detail;
+        return fullType.Trim(true).Trim(false);
+    }
+
+    // There must be only arguments or arguments following the type
+    // Find the opening paren to arguments and remove arguments to get type only
+    int openingParen = FindOpeningEnclosureChar(detail, detail.Length() - 1);
+
+    if (wxFound(openingParen))
+    {
+        fullType = detail.Mid(0, openingParen);
+        return fullType.Trim(true).Trim(false);
+    }
+
+    return wxString();
 }
 // ----------------------------------------------------------------------------
 Token * LSP_SymbolsParser::TokenExists(const wxString & name, const Token * parent, short int kindMask)

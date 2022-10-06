@@ -117,9 +117,10 @@ void AnnoyingDialog::Init(const wxString & caption, const wxString & id, const w
     wxBoxSizer * outerSizer = new wxBoxSizer(wxVERTICAL);
     wxFlexGridSizer * mainArea = new wxFlexGridSizer(2, 0, 0);
 #if wxCHECK_VERSION(3, 1, 6)
-    wxStaticBitmap * bitmap = new wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetBitmapBundle(icon, wxART_MESSAGE_BOX));
+    wxStaticBitmap * bitmap = new wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetBitmapBundle(icon, wxART_MESSAGE_BOX, wxSize(32, 32)));
 #else
-    wxStaticBitmap * bitmap = new wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetBitmap(icon, wxART_MESSAGE_BOX));
+    const int height = cbFindMinSize16to64(wxRound(32 * cbGetContentScaleFactor(*this)));
+    wxStaticBitmap * bitmap = new wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetBitmap(icon, wxART_MESSAGE_BOX, wxSize(height, height)));
 #endif
     mainArea->Add(bitmap, 0, wxALL, 5);
     wxStaticText * txt = new wxStaticText(this, wxID_ANY, message, wxDefaultPosition, wxDefaultSize, 0);

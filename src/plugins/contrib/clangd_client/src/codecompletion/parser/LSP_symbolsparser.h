@@ -216,6 +216,11 @@ class LSP_SymbolsParser
             return m_Buffer;    // used in TRACE for debug only
         }
 
+        wxString GetwxUTF8Str(const std::string stdString)
+        {
+            return wxString(stdString.c_str(), wxConvUTF8);
+        }
+
     protected:
         /** specify which "class like type" we are handling: struct or class or union*/
         enum EClassType { ctStructure = 0, ctClass = 1, ctUnion = 3 };
@@ -552,8 +557,15 @@ class LSP_SymbolsParser
         FileUtils fileUtils;
     private:
         wxString DoHandleSemanticTokenFunction();
-        wxString DoGetDocumentSymbolFunctionArgs(wxString & txtLine, int start, int length);
+        wxString DoGetDocumentSymbolFunctionArgs(const wxString & detail);
         TokenKind ConvertDocSymbolKindToCCTokenKind(int docSymKind);
+        // Find enclosure char such as () {} []
+        // source string, src position of char to match(zero origin).
+        // Returns zero origin index of paired char or -1.
+        int FindOpeningEnclosureChar(const wxString source, int indexOfCharToMatch);
+        int FindClosingEnclosureChar(const wxString source, int indexOfCharToMatch);
+        // Get the type from the clangd "detail" response entry containing type and arguments
+        wxString GetFullTypeFromDetail(const wxString & detail);
 
 };
 

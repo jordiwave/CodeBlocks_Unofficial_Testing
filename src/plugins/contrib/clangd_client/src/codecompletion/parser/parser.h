@@ -512,6 +512,11 @@ class Parser : public ParserBase
         {
             return m_ParsersProject;
         }
+
+        wxString GetwxUTF8Str(const std::string stdString)
+        {
+            return wxString(stdString.c_str(), wxConvUTF8);
+        }
 };
 
 #endif // PARSER_H

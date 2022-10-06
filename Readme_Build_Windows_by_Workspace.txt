@@ -21,7 +21,7 @@ This section outlines the requirements and process to build Code::Blocks from so
 
 Requirements:
     1) A recent Code::Blocks nightly build installed (http://www.codeblocks.org/nightly).
-    2) A working GNU GCC C & C++ compiler.
+    2) A working GNU GCC C & C++ compiler. See Readme_Build_Windows_MSYS2_by_Makefile.txt for MSYS2 install info/guide.
     3) A local build of wxWidgets for Code::Blocks
 
 To build Code::Blocks:

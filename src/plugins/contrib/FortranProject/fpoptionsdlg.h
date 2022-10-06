@@ -42,7 +42,6 @@ class FPOptionsDlg : public cbConfigurationPanel
         void OnEditRepl(wxCommandEvent & event);
         void OnDelRepl(wxCommandEvent & event);
         void OnOK(wxCommandEvent & event);
-        void OnChooseColour(wxCommandEvent & event);
         void OnSliderScroll(wxScrollEvent & event);
         void ShowCurrientAInsert(int idx);
         void OnAISelectionChanged(wxCommandEvent & event);

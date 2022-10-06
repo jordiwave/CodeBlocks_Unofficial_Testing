@@ -22,7 +22,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.41 2022/09/15")
+#define VERSION wxT("0.2.44 2022/10/1")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -53,6 +53,35 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.45
+//          2022/10/03
+//          Apply patch#69 change some cbmessage dialogs to AnnoyingDialog.
+//          Apply patch#70 rework startup message dialogs to show after the C::B app has loaded (after auto detect compiler dialog)
+//0.2.44    Commit 2022/10/2 rev 82
+//          2022/10/1
+//          Fix GoToFunction() for non-source files.
+//          CC Toolbar needs '(' and ')' stowed in tokenTree along with arguments.
+//              Was deleting them previously in DoGetDocumentSymbolFunctionArgs().
+//          Assure proper conversion of utf8 std:string to wxString with GetwxUTF8Str()
+//              when invoking <jsonData>.at("someID").get<std::string>(); Thanks ollydbg and sodev
+//              See: https://forums.codeblocks.org/index.php/topic,24357.msg171288.html#msg171288 Reply #200
+//          Disable clangd_client when no default compiler exists. Ticket #70
+//0.2.43    Commit 2022/09/26 rev 81
+//          2022/09/26
+//          Apply ticket#68 fix to OnAttach() function also. Thanks Andrew.
+//          Tested on msw wx3.2.1
+//          2022/09/24
+//          Modify InsertClassMethodDlgHelper() to understand clangd "detail" data (type and arguments) format.
+//          Avoid orphaned htmlDocumentPopup by checking for AutoCompActive() in GetDocumentation()
+//          2022/09/22-23
+//          Modify DoAllMethodsImpl() to understand clangd token type and arguments format.
+//          Record token type and arguments from clangd textDocument/documentSymbol "detail:" data. LSP_symbolsparser::DoParseDocumentSymbols()
+//          2022/09/21
+//          InsertClassMethodDlg - hide scope choices bec. clangd textDocument/documentSymbol does not report such data.
+//0.2.42    Commit 2022/09/18 rev 80
+//          2022/09/18
+//          Apply patch#68 (modified) for finding linux/mac plugin lib name. (Thanks Andrew)
+//          Using patch for cb ticket#1168 ccManager AutoCompPopup(s) CB rev12900
 //0.2.41    Commit 2022/09/15 rev 79
 //          Correct search for incorrect Linux binary name
 //0.2.40    Commit 2022/09/14 rev 78
@@ -522,7 +551,7 @@ class AppVersion
 //          Fixed LSP_ParseDocumentSymbols() DoAddToken() miss-queing tokens esp. after RemoveFile()
 //              Was not updating m_LastParent properly.
 //          2021/10/15
-//          Cone and delete IdleCallBack queue entry before executing the call
+//          Clone and delete IdleCallBack queue entry before executing the call
 //          Fixed erroneous "editor is being parsed" caused by LSP_AddToServerFilesParsing()
 //              in LSP_DidChange(). There's no response to clear the entry.
 //          2021/10/14
