@@ -174,7 +174,7 @@ void CMakeListsExporter::ExpandMacros(wxString & buffer)
     buffer.Replace("$$", "$");
 }
 
-void CMakeListsExporter::ConvertMacros(wxString & buffer)
+void CMakeListsExporter::ConvertMacros(wxString & buffer, bool bConvertWindowsSlashToLinux)
 {
     if (buffer.IsEmpty())
     {
@@ -346,7 +346,17 @@ void CMakeListsExporter::ConvertMacros(wxString & buffer)
 
     buffer.Replace("%%", "%");
     buffer.Replace("$$", "$");
-    buffer.Replace("\\", "/");
+
+    buffer.Replace("\\\\", "\\");
+    if (bConvertWindowsSlashToLinux)
+    {
+        buffer.Replace("\\", "/");
+    }
+    else
+    {
+        buffer.Replace("\\ ", " ");
+        buffer.Replace("\\", "\\\\");
+    }
 }
 
 void CMakeListsExporter::ExportGlobalVariableSets(ExportMode eMode)
@@ -392,7 +402,7 @@ void CMakeListsExporter::ExportGlobalVariableSets(ExportMode eMode)
                         for (unsigned int i = 0; i < knownMembers.GetCount(); ++i)
                         {
                             value = pCfgMan->Read(path + knownMembers[i]);
-                            ConvertMacros(value);
+                            ConvertMacros(value, false);
 
                             if (knownMembers[i].Upper().IsSameAs("BASE"))
                             {
@@ -424,7 +434,7 @@ void CMakeListsExporter::ExportGlobalVariableSets(ExportMode eMode)
                         for (unsigned int i = 0; i < knownMembers.GetCount(); ++i)
                         {
                             value = pCfgMan->Read(path + knownMembers[i]);
-                            ConvertMacros(value);
+                            ConvertMacros(value, false);
 
                             if (knownMembers[i].Upper().IsSameAs("BASE"))
                             {
@@ -646,6 +656,12 @@ void CMakeListsExporter::RunExport()
     {
         return;
     }
+    bool bConvertWindowsSlashToLinux = true;
+    if (platform::windows)
+    {
+        bConvertWindowsSlashToLinux = false;
+    }
+
 
     m_ContentCMakeListTopLevel.Clear();
     m_ContentCMakeListTarget.Clear();
@@ -754,11 +770,9 @@ void CMakeListsExporter::RunExport()
                 continue;
             }
 
-
             wxString targetTitle = ValidateFilename(buildTarget->GetTitle());
             wxString targetOutPutName = RemLib(wxFileName(buildTarget->GetOutputFilename()).GetName());
             wxString prjBasepath = project->GetBasePath();
-
             m_ContentCMakeListTarget.Clear();
             m_ContentCMakeListTarget.append(wxString::Format("cmake_minimum_required(VERSION %s) %s", CMAKE_MIN_VERSION_REQUIRED, EOL));
             m_ContentCMakeListTarget.append(EOL);
@@ -818,7 +832,7 @@ void CMakeListsExporter::RunExport()
             m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# Include global variable definition file:%s", EOL));
-            m_ContentCMakeListTarget.append(wxString::Format("include(%s)%s", UnixFilename(m_sGlobalVariableFileName, wxPATH_UNIX), EOL));
+            m_ContentCMakeListTarget.append(wxString::Format("include(\"%s\")%s", UnixFilename(m_sGlobalVariableFileName, wxPATH_UNIX), EOL));
             m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
@@ -853,7 +867,7 @@ void CMakeListsExporter::RunExport()
                     logMgr->DebugLog(wxString::Format("Exported file: %s", wsFullMacroFileName));
                     m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
                     m_ContentCMakeListTarget.append(wxString::Format("# Include target macro definition file:%s", EOL));
-                    m_ContentCMakeListTarget.append(wxString::Format("include(%s)%s", UnixFilename(wsFullMacroFileName, wxPATH_UNIX), EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("include(\"%s\")%s", UnixFilename(wsFullMacroFileName, wxPATH_UNIX), EOL));
                 }
             }
             else
@@ -871,16 +885,17 @@ void CMakeListsExporter::RunExport()
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
-
             // ====================================================================================
             // Compiler search directories
             wxArrayString prjSearchDirs = project->GetIncludeDirs();
+
             for (unsigned int i = 0; i < prjSearchDirs.GetCount(); i++)
             {
                 if (!::wxIsAbsolutePath(prjSearchDirs[i]))
                 {
                     tmpStringA = prjSearchDirs[i];
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmpStringA);
+
                     if (tmpStringA.IsSameAs(prjSearchDirs[i]))
                     {
                         prjSearchDirs[i]  = wxString::Format("%s%s", prjBasepath, prjSearchDirs[i]);
@@ -896,12 +911,14 @@ void CMakeListsExporter::RunExport()
             }
 
             wxArrayString tgtSearchDirs = buildTarget->GetIncludeDirs();
+
             for (unsigned int i = 0; i < tgtSearchDirs.GetCount(); i++)
             {
                 if (!::wxIsAbsolutePath(tgtSearchDirs[i]))
                 {
                     tmpStringA = tgtSearchDirs[i];
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmpStringA);
+
                     if (tmpStringA.IsSameAs(tgtSearchDirs[i]))
                     {
                         tgtSearchDirs[i]  = wxString::Format("%s%s", prjBasepath, tgtSearchDirs[i]);
@@ -928,7 +945,7 @@ void CMakeListsExporter::RunExport()
             if (!tmpStringA.IsEmpty())
             {
                 m_ContentCMakeListTarget.append(wxString::Format("# Compiler Include paths:%s", EOL));
-                ConvertMacros(tmpStringA);
+                ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
                 m_ContentCMakeListTarget.append(wxString::Format("include_directories(%s)%s", tmpStringA, EOL));
                 m_ContentCMakeListTarget.append(EOL);
             }
@@ -944,13 +961,13 @@ void CMakeListsExporter::RunExport()
                 if ((tmpArrayA[j].Left(2) == "-D") || (tmpArrayA[j].Left(2) == "/D"))
                 {
                     wxString tmpStringCVT = tmpArrayA[j].Clone();
-                    ConvertMacros(tmpStringCVT);
+                    ConvertMacros(tmpStringCVT, false);
                     tmpStringB += wxString::Format("add_definitions(%s)%s", tmpStringCVT, EOL);
                 }
                 else
                 {
                     wxString tmpStringCVT = tmpArrayA[j].Clone();
-                    ConvertMacros(tmpStringCVT);
+                    ConvertMacros(tmpStringCVT, false);
                     tmpStringA += wxString::Format("set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} %s\")%s", tmpStringCVT, EOL);
                 }
             }
@@ -1012,7 +1029,7 @@ void CMakeListsExporter::RunExport()
                 for (unsigned int j = 0; j < tmpArraySrc.GetCount(); j++)
                 {
                     tmpStringA = tmpArraySrc[j];
-                    ConvertMacros(tmpStringA);
+                    ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
                     m_ContentCMakeListTarget.append(wxString::Format("            \"%s%s\"%s", projectTopLevelPath, tmpStringA, EOL));
                 }
 
@@ -1024,7 +1041,7 @@ void CMakeListsExporter::RunExport()
                     for (unsigned int j = 0; j < tmpArrayhdr.GetCount(); j++)
                     {
                         tmpStringA = tmpArrayhdr[j];
-                        ConvertMacros(tmpStringA);
+                        ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
 
                         if ((buildTarget->GetTargetType() == ttStaticLib) || (buildTarget->GetTargetType() == ttDynamicLib))
                         {
@@ -1128,9 +1145,25 @@ void CMakeListsExporter::RunExport()
             m_ContentCMakeListTarget.append(EOL);
             m_ContentCMakeListTarget.append(wxString::Format("# Set the target output directory:%s", EOL));
             wxString wxsOutputDir = wxFileName(buildTarget->GetOutputFilename()).GetPath();
-            ConvertMacros(wxsOutputDir);
-            m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY  \"%s%s\")%s", projectTopLevelPath, wxsOutputDir, EOL));
-            m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY  \"%s%s\")%s", projectTopLevelPath, wxsOutputDir, EOL));
+            ConvertMacros(wxsOutputDir, bConvertWindowsSlashToLinux);
+
+            // set_target_properties properties based on the Target Output Type
+            switch (buildTarget->GetTargetType())
+            {
+                case ttExecutable:
+                case ttConsoleOnly:
+                    break;
+
+                case ttStaticLib:
+                case ttDynamicLib:
+                    m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY  \"%s%s\")%s", projectTopLevelPath, wxsOutputDir, EOL));
+                    m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY  \"%s%s\")%s", projectTopLevelPath, wxsOutputDir, EOL));
+                    break;
+
+                default:
+                    break;
+            }
+
             m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${PROJECT_OUTPUTNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY  \"%s%s\")%s", projectTopLevelPath, wxsOutputDir, EOL));
             m_ContentCMakeListTarget.append(EOL);
             m_ContentCMakeListTarget.append(wxString::Format("unset(SOURCE_FILES)%s", EOL));
@@ -1150,8 +1183,8 @@ void CMakeListsExporter::RunExport()
                 for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
                 {
                     tmpStringA = tmpArrayA[j].Clone();
-                    ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("list(APPEND LINKER_OPTIONS_LIST %s)%s", tmpStringA, EOL));
+                    ConvertMacros(tmpStringA, false);
+                    m_ContentCMakeListTarget.append(wxString::Format("list(APPEND LINKER_OPTIONS_LIST \"%s\")%s", tmpStringA, EOL));
                 }
 
                 m_ContentCMakeListTarget.append(wxString::Format("target_link_options(${PROJECT_OUTPUTNAME} PRIVATE ${LINKER_OPTIONS_LIST})%s", EOL));
@@ -1173,11 +1206,10 @@ void CMakeListsExporter::RunExport()
                     for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
                     {
                         tmpStringA = tmpArrayA[j].Clone();
-                        ConvertMacros(tmpStringA);
-                        m_ContentCMakeListTarget.append(wxString::Format("list(APPEND LINKER_LIBRARIES_LIST %s)%s", tmpStringA, EOL));
+                        ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
+                        m_ContentCMakeListTarget.append(wxString::Format("list(APPEND LINKER_LIBRARIES_LIST \"%s\")%s", tmpStringA, EOL));
                     }
 
-                    ConvertMacros(tmpStringA);
                     m_ContentCMakeListTarget.append(wxString::Format("target_link_libraries(${PROJECT_OUTPUTNAME} PRIVATE ${LINKER_LIBRARIES_LIST})%s", EOL));
                     m_ContentCMakeListTarget.append(wxString::Format("unset(LINKER_LIBRARIES_LIST)%s", EOL));
                     m_ContentCMakeListTarget.append(EOL);
@@ -1187,12 +1219,14 @@ void CMakeListsExporter::RunExport()
             // ====================================================================================
             // Linker search directories
             wxArrayString prjLibDirs = project->GetLibDirs();
+
             for (unsigned int i = 0; i < prjLibDirs.GetCount(); i++)
             {
                 if (!::wxIsAbsolutePath(prjLibDirs[i]))
                 {
                     tmpStringA = prjLibDirs[i];
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmpStringA);
+
                     if (tmpStringA.IsSameAs(prjLibDirs[i]))
                     {
                         prjLibDirs[i]  = wxString::Format("%s%s", prjBasepath, prjLibDirs[i]);
@@ -1207,14 +1241,15 @@ void CMakeListsExporter::RunExport()
                 }
             }
 
-
             wxArrayString tgtLibDirs  = buildTarget->GetLibDirs();
+
             for (unsigned int i = 0; i < tgtLibDirs.GetCount(); i++)
             {
                 if (!::wxIsAbsolutePath(tgtLibDirs[i]))
                 {
                     tmpStringA = tgtLibDirs[i];
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmpStringA);
+
                     if (tmpStringA.IsSameAs(tgtLibDirs[i]))
                     {
                         tgtLibDirs[i]  = wxString::Format("%s%s", prjBasepath, tgtLibDirs[i]);
@@ -1229,7 +1264,6 @@ void CMakeListsExporter::RunExport()
                 }
             }
 
-
             tmpArrayA = AppendOptionsArray(prjLibDirs, tgtLibDirs, buildTarget->GetOptionRelation(ortLibDirs));
 
             if (!tmpArrayA.IsEmpty())
@@ -1240,8 +1274,8 @@ void CMakeListsExporter::RunExport()
                 for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
                 {
                     tmpStringA = tmpArrayA[j].Clone();
-                    ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("list(APPEND LINKER_DIR_LIST %s)%s", tmpStringA, EOL));
+                    ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
+                    m_ContentCMakeListTarget.append(wxString::Format("list(APPEND LINKER_DIR_LIST \"%s\")%s", tmpStringA, EOL));
                 }
 
                 m_ContentCMakeListTarget.append(wxString::Format("target_link_directories(${PROJECT_OUTPUTNAME} PUBLIC ${LINKER_DIR_LIST})%s", EOL));
@@ -1254,6 +1288,7 @@ void CMakeListsExporter::RunExport()
             m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
             // Before build commands
+            Manager::Get()->GetMacrosManager()->RecalcVars(project, nullptr, buildTarget);
             tmpArrayA = buildTarget->GetCommandsBeforeBuild();
 
             if (!tmpArrayA.IsEmpty())
@@ -1262,26 +1297,22 @@ void CMakeListsExporter::RunExport()
 
                 for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
                 {
-                    tmpStringA = tmpArrayA[j];
-                    //ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("# %s%s", tmpStringA, EOL));
+                    tmpStringA = tmpArrayA[j].Clone();
+//if (platform::windows)
+//{
+//    tmpStringA.Replace(" $(TARGET_OUTPUT_DIR)", " $(PROJECT_DIR)$(TARGET_OUTPUT_DIR)");
+//    tmpStringA.Replace(" ..\\", " $(PROJECT_DIR)..\\");
+//    tmpStringA.Replace(" devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)", " $(PROJECT_DIR)devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)");
+//}
+                    ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
+                    m_ContentCMakeListTarget.append(wxString::Format("add_custom_command("
+                                                                                        "TARGET ${PROJECT_OUTPUTNAME} "
+                                                                                        "PRE_BUILD COMMAND %s "
+                                                                                        "WORKING_DIRECTORY ${CB_SRC_ROOT_DIR} "
+                                                                                        ") # %s%s",
+                                                                                        tmpStringA, tmpArrayA[j], EOL)
+                                                                    );
                 }
-            }
-
-            tmpArrayA = project->GetCommandsBeforeBuild();
-
-            if (!tmpArrayA.IsEmpty())
-            {
-                m_ContentCMakeListTarget.append(wxString::Format("# Project before commands:%s", EOL));
-
-                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
-                {
-                    tmpStringA = tmpArrayA[j];
-                    //ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("# %s%s", tmpStringA, EOL));
-                }
-
-                m_ContentCMakeListTarget.append(EOL);
             }
 
             // ====================================================================================
@@ -1294,34 +1325,27 @@ void CMakeListsExporter::RunExport()
 
                 for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
                 {
-                    tmpStringA = tmpArrayA[j];
-                    //ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("# %s%s", tmpStringA, EOL));
-                }
-
-                m_ContentCMakeListTarget.append(EOL);
-            }
-
-            tmpArrayA = project->GetCommandsAfterBuild();
-
-            if (!tmpArrayA.IsEmpty())
-            {
-                m_ContentCMakeListTarget.append(wxString::Format("# Project after commands:%s", EOL));
-
-                for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
-                {
-                    tmpStringA = tmpArrayA[j];
-                    //ConvertMacros(tmpStringA);
-                    m_ContentCMakeListTarget.append(wxString::Format("# %s%s", tmpStringA, EOL));
+                    tmpStringA = tmpArrayA[j].Clone();
+//if (platform::windows)
+//{
+//    tmpStringA.Replace(" $(TARGET_OUTPUT_DIR)", " $(PROJECT_DIR)$(TARGET_OUTPUT_DIR)");
+//    tmpStringA.Replace(" ..\\", " $(PROJECT_DIR)..\\");
+//    tmpStringA.Replace(" devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)", " $(PROJECT_DIR)devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)");
+//}
+                    ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
+                    m_ContentCMakeListTarget.append(wxString::Format("add_custom_command("
+                                                                                        "TARGET ${PROJECT_OUTPUTNAME} "
+                                                                                        "POST_BUILD COMMAND %s "
+                                                                                        "WORKING_DIRECTORY ${CB_SRC_ROOT_DIR} "
+                                                                                        ") # %s%s",
+                                                                                        tmpStringA, tmpArrayA[j], EOL)
+                                                                    );
                 }
 
                 m_ContentCMakeListTarget.append(EOL);
             }
 
             m_ContentCMakeListTarget.append(wxString::Format("unset(PROJECT_OUTPUTNAME)%s", EOL));
-            // ====================================================================================
-            m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
-            m_ContentCMakeListTarget.append(EOL);
             // ====================================================================================
             m_ContentCMakeListTarget.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
             m_ContentCMakeListTarget.append(EOL);
@@ -1414,7 +1438,7 @@ void CMakeListsExporter::RunExport()
                     m_ContentCMakeListTopLevel.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
                     m_ContentCMakeListTopLevel.append(wxString::Format("# CBP: %s , Target: %s  %s", project->GetFilename(), targetTitle, EOL));
                     wxString tmpString(wxfTargetFileName.GetPath());
-                    ConvertMacros(tmpString);
+                    ConvertMacros(tmpString, bConvertWindowsSlashToLinux);
                     m_ContentCMakeListTopLevel.append(wxString::Format("add_subdirectory(\"%s\")%s", tmpString, EOL));
                 }
             }
@@ -1426,6 +1450,43 @@ void CMakeListsExporter::RunExport()
             // ========================================================================================================================================================================
             // ========================================================================================================================================================================
             // ========================================================================================================================================================================
+        }
+
+        wxString sCMakeProjectListTopLevel;
+        // ====================================================================================
+        // Before build commands
+        tmpArrayA = project->GetCommandsBeforeBuild();
+
+        if (!tmpArrayA.IsEmpty())
+        {
+            sCMakeProjectListTopLevel.append(wxString::Format("# Project before commands:%s", EOL));
+
+            for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
+            {
+                tmpStringA = tmpArrayA[j];
+                ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
+                sCMakeProjectListTopLevel.append(wxString::Format("add_custom_command(TARGET ${PROJECT_OUTPUTNAME} PRE_BUILD COMMAND %s)%s", tmpStringA, EOL));
+            }
+
+            sCMakeProjectListTopLevel.append(EOL);
+        }
+
+        // ====================================================================================
+        // After build commands
+        tmpArrayA = project->GetCommandsAfterBuild();
+
+        if (!tmpArrayA.IsEmpty())
+        {
+            sCMakeProjectListTopLevel.append(wxString::Format("# Project after commands:%s", EOL));
+
+            for (unsigned int j = 0; j < tmpArrayA.GetCount(); j++)
+            {
+                tmpStringA = tmpArrayA[j];
+                ConvertMacros(tmpStringA, bConvertWindowsSlashToLinux);
+                sCMakeProjectListTopLevel.append(wxString::Format("add_custom_command(TARGET ${PROJECT_OUTPUTNAME} POST_BUILD COMMAND %s)%s", tmpStringA, EOL));
+            }
+
+            sCMakeProjectListTopLevel.append(EOL);
         }
 
         m_ContentCMakeListTopLevel.append(wxString::Format("# -----------------------------------------------------------------------------%s", EOL));
@@ -1480,56 +1541,15 @@ void CMakeListsExporter::RunExport()
 
             // DEBUGGING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 #endif
-            wxString wxsWorkspaceTitle = ValidateFilename(Title);
-            sCMakeListTopLevel.append("#################################################################################################################################################################");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("##                                                                                                                                                              #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("## CMake top level file                                                                                                                                         #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("## Typical usage will be (build in release mode):                                                                                                               #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("##                                                                                                                                                              #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("## > mkdir build                                                                                                                                                #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("## > cd build                                                                                                                                                   #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("## > cmake -G \"Unix Makefile\" ..                                                                                                                              #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("## > make -jN                                                                                                                                                   #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("##                                                                                                                                                              #");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("#################################################################################################################################################################");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("if (NOT CMAKE_VERSION VERSION_LESS 3.1) # THIS MUST STAY AT THE TOP OF THE FILE");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("    cmake_policy(VERSION 3.1) # Doing this prevents multiple, very verbose warnings about policy CMP0053 not being set");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("endif()");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("#############################################");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("## Name top level project");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append("#############################################");
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append(wxString::Format("project(\"%s\")", wxsWorkspaceTitle));
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel.append(EOL);
-            sCMakeListTopLevel = wxString::Format("%s%s%s", sCMakeListTopLevel, EOL, m_ContentCMakeListTopLevel);
-            // ====================================================================================
-            // Save the top level CMakeLists file
+            // ========================================================================================================================================================================
             wxString wxsFileName = wxEmptyString;
+            wxString wxsCBRootDir = wxEmptyString;
             const wxString sGlobalVariableFileName("CMakeLists.txt");
             cbWorkspace * pWorkspace = Manager::Get()->GetProjectManager()->GetWorkspace();
-
             if (pWorkspace && pWorkspace->IsOK())
             {
                 wxFileName wxfWorkspaceFileName(pWorkspace->GetFilename());
+                wxsCBRootDir = wxfWorkspaceFileName.GetPathWithSep();
                 wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfWorkspaceFileName.GetPathWithSep(), sGlobalVariableFileName));
             }
             else
@@ -1539,12 +1559,58 @@ void CMakeListsExporter::RunExport()
                 if (project)
                 {
                     wxFileName wxfProjectFileName(project->GetFilename());
+                    wxsCBRootDir = wxfProjectFileName.GetPathWithSep();
                     wxsFileName = ValidateFilename(wxString::Format("%s%s", wxfProjectFileName.GetPathWithSep(), sGlobalVariableFileName));
                 }
             }
 
             if (!wxsFileName.IsEmpty())
             {
+                wxString wxsWorkspaceTitle = ValidateFilename(Title);
+                sCMakeListTopLevel.append("#################################################################################################################################################################");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("##                                                                                                                                                              #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("## CMake top level file                                                                                                                                         #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("## Typical usage will be (build in release mode):                                                                                                               #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("##                                                                                                                                                              #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("## > mkdir build                                                                                                                                                #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("## > cd build                                                                                                                                                   #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("## > cmake -G \"Unix Makefile\" ..                                                                                                                              #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("## > make -jN                                                                                                                                                   #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("##                                                                                                                                                              #");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("#################################################################################################################################################################");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append(wxString::Format("if (NOT CMAKE_VERSION VERSION_LESS %s) # THIS MUST STAY AT THE TOP OF THE FILE%s", CMAKE_MIN_VERSION_REQUIRED, EOL));
+                sCMakeListTopLevel.append(wxString::Format("    cmake_policy(VERSION %s) # Doing this prevents multiple, very verbose warnings about policy CMP0053 not being set%s", CMAKE_MIN_VERSION_REQUIRED, EOL));
+                sCMakeListTopLevel.append("endif()");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("#############################################");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append("## Name top level project and directory");
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append(wxString::Format("project(\"%s\")%s", wxsWorkspaceTitle, EOL));
+                if (platform::windows)
+                {
+                    wxsCBRootDir.Replace("\\", "\\\\");
+                }
+                sCMakeListTopLevel.append(wxString::Format("set(CB_SRC_ROOT_DIR \"%s\")%s", wxsCBRootDir, EOL));
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel.append(EOL);
+                sCMakeListTopLevel = wxString::Format("%s%s%s", sCMakeListTopLevel, EOL, m_ContentCMakeListTopLevel);
+
+                // ====================================================================================
+                // Save the top level CMakeLists file
                 fileMgr->Save(wxsFileName, sCMakeListTopLevel, wxFONTENCODING_SYSTEM, true, true);
                 logMgr->DebugLog(wxString::Format("Exported file: %s", wxsFileName));
                 m_sGlobalVariableFileName = wxsFileName.Clone();

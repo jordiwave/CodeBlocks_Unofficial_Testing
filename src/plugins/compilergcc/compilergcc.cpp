@@ -404,13 +404,18 @@ void CompilerGCC::OnAttach()
     AllocProcesses();
     LogManager * msgMan = Manager::Get()->GetLogManager();
     {
-        const wxString prefix = ConfigManager::GetDataFolder() + wxT("/compiler.zip#zip:/images");
+        const wxString prefix(ConfigManager::GetDataFolder() + wxT("/compiler.zip#zip:/images"));
         m_pArtProvider = new cbArtProvider(prefix);
-        m_pArtProvider->AddMapping(wxT("compiler/compile"), wxT("compile.png"));
-        m_pArtProvider->AddMapping(wxT("compiler/run"), wxT("run.png"));
-        m_pArtProvider->AddMapping(wxT("compiler/compile_run"), wxT("compilerun.png"));
-        m_pArtProvider->AddMapping(wxT("compiler/rebuild"), wxT("rebuild.png"));
-        m_pArtProvider->AddMapping(wxT("compiler/stop"), wxT("stop.png"));
+#if wxCHECK_VERSION(3, 1, 6)
+        const wxString ext(".svg");
+#else
+        const wxString ext(".png");
+#endif
+        m_pArtProvider->AddMapping("compiler/compile",     "compile" + ext);
+        m_pArtProvider->AddMapping("compiler/run",         "run" + ext);
+        m_pArtProvider->AddMapping("compiler/compile_run", "compilerun" + ext);
+        m_pArtProvider->AddMapping("compiler/rebuild",     "rebuild" + ext);
+        m_pArtProvider->AddMapping("compiler/stop",        "stop" + ext);
         wxArtProvider::Push(m_pArtProvider);
     }
     // create compiler's log
@@ -994,23 +999,26 @@ void CompilerGCC::SetupEnvironment()
     for (size_t i = 0; i < extraPaths.GetCount(); ++i)
     {
         wxString extraPath = extraPaths[i];
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(extraPath);
 
-        while (extraPath.Last() == '\\' || extraPath.Last() == '/')
+        if (!extraPath.empty())
         {
-            extraPath.RemoveLast();
-        }
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(extraPath);
 
-        if (!extraPath.Trim().IsEmpty())
-        {
-            // Remember, if we found the C application in the extra path's:
-            if (extraPathsBinPath.IsEmpty()
-                    && wxFileExists(extraPath + pathSep + cApp))
+            while (!extraPath.empty() && (extraPath.Last() == '\\' || extraPath.Last() == '/'))
             {
-                extraPathsBinPath = extraPath;
+                extraPath.RemoveLast();
             }
 
-            pathList.Add(extraPath);
+            if (!extraPath.Trim().empty())
+            {
+                // Remember, if we found the C application in the extra path's:
+                if (extraPathsBinPath.empty() && wxFileExists(extraPath + pathSep + cApp))
+                {
+                    extraPathsBinPath = extraPath;
+                }
+
+                pathList.Add(extraPath);
+            }
         }
     }
 

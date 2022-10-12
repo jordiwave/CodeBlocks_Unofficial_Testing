@@ -21,7 +21,8 @@ libThreadSearch_la_LDFLAGS = \
 			-avoid-version
 
 libThreadSearch_la_LIBADD = \
-			$(top_srcdir)/src/sdk/libcodeblocks.la ../wxContribItems/wxthings/libwxcustombutton.la $(WX_LIBS)
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
+			../wxContribItems/wxthings/libwxcustombutton.la $(WX_LIBS)
 
 libThreadSearch_la_SOURCES = \
 			DirectoryParamsPanel.cpp \

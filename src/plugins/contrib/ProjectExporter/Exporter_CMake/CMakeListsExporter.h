@@ -28,7 +28,7 @@ class CMakeListsExporter : public ExporterBase
         };
 
         void ExpandMacros(wxString & buffer);
-        void ConvertMacros(wxString & buffer);
+        void ConvertMacros(wxString & buffer, bool bConvertWindowsSlashToLinux);
         void ExportGlobalVariableSets(ExportMode eMode);
         wxString ExportMacros(ProjectBuildTarget * buildTarget);
         void ExportGlobalVariables();

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467" style="shape-rendering:crispEdges">
+    <defs>
+        <linearGradient id="a">
+            <stop style="stop-color:#48ba43;stop-opacity:1" offset="0"/>
+            <stop style="stop-color:#93e790;stop-opacity:1" offset="1"/>
+        </linearGradient>
+        <linearGradient xlink:href="#a" id="b" gradientUnits="userSpaceOnUse" x1="3.616" y1="291.677" x2="1.376" y2="294.627" gradientTransform="matrix(0 1.18125 .94186 0 -270.75 289.157)"/>
+    </defs>
+    <g transform="translate(0 -288.533)">
+        <image xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A /wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wDBwoxKfonLpUAAAAZdEVYdENv bW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAABwElEQVQ4y8VSv2sUQRh939zuHneuJyL+iJyF eJIIliISLPwR/QeEFEoqKwUxWoqggn9AICkSCxFLW7Gwi52FWAREMahs8I4YPE2yM3s7szP7Waxo jtzCWflN8WB4b+Z9jwf876FBlw/fPKC7J+7xjifBknvtjlCF/rCpkOizs+eaL+hlQmUvN+/sfyqO iqkLrYtY1z8hrURsJKSNsZlKrC62H6eP8qtikHjy+alX4a7G1PnDE9xVPxBrCWUVlFWQmULPKhCJ 8hXCm1W+PHkF3bgLmUl8ePferH1ds/SXrmmGmsoziTcwGCKoLIHOe/i8/CmO3nZO4xmW+khzBYiy DHo2geYU0ceos028ZfochNNVDvwAFd/jnpGkXIqgHowGt8BgQM7obSv3OZDr+oDJDMYnxovgtMLI yYMAA844b+geNG7XeOzMMd40G1hZXGknc9mhoZt1fGGsAgB77je+h9NVBoCd11v07x29hNpQVa7f 8FtCiGUiKpICCuQCCSWf55hXs+aal+e52DuyD+HuENql0E5D5xqpS2GdLVLiLWnxb4zgA4BXq9e+ fGuvjnYi5wjFERUhiIkJxKXefWwAwC8RZsOetpGMmgAAAABJRU5ErkJggg==" preserveAspectRatio="none" height="21.333" width="21.333" transform="matrix(.24805 0 0 .24805 -7.276 289.724)"/>
+        <path style="fill:#48ba43;fill-opacity:1;stroke:#096204;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M1.5 16h27v3h-27Z" transform="matrix(.26458 0 0 .26458 .265 291.047)"/>
+        <path transform="matrix(-1 0 0 1 8.202 -1.058)" style="fill:url(#b);fill-opacity:1;stroke:#096204;stroke-width:.26458335;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;shape-rendering:crispEdges" d="M3.969 290.518c.997 0 1.984 1.045 1.984 2.116v1.059h1.058v.132l-1.984 2.117-1.984-2.117v-.132H4.1v-.265c0-.625-.318-1.058-1.19-1.058l-1.586.002c-.25 0-.398-.616-.398-.929 0-.312.264-.925.396-.925z"/>
+    </g>
+</svg>

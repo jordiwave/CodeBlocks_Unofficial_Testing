@@ -176,29 +176,29 @@ CLEANFILES = \
 
 SmartIndentHDL.zip:
 	PWD=`pwd` cd $(srcdir) && \
-	zip -Rm $(PWD)/SmartIndentHDL.zip SRC_HDL/manifest.xml
+	zip -jq9 $(PWD)/SmartIndentHDL.zip SRC_HDL/manifest.xml
 
 SmartIndentPascal.zip:
 	PWD=`pwd` cd $(srcdir) && \
-	zip -Rm $(PWD)/SmartIndentPascal.zip SRC_Pascal/manifest.xml
+	zip -jq9 $(PWD)/SmartIndentPascal.zip SRC_Pascal/manifest.xml
 
 SmartIndentCpp.zip:
 	PWD=`pwd` cd $(srcdir) && \
-	zip -Rm $(PWD)/SmartIndentCpp.zip SRC_CPP/manifest.xml
+	zip -jq9 $(PWD)/SmartIndentCpp.zip SRC_CPP/manifest.xml
 
 SmartIndentPython.zip:
 	PWD=`pwd` cd $(srcdir) && \
-	zip -Rm $(PWD)/SmartIndentPython.zip SRC_Python/manifest.xml
+	zip -jq9 $(PWD)/SmartIndentPython.zip SRC_Python/manifest.xml
 
 SmartIndentLua.zip:
 	PWD=`pwd` cd $(srcdir) && \
-	zip -Rm $(PWD)/SmartIndentLua.zip SRC_LUA/manifest.xml
+	zip -jq9 $(PWD)/SmartIndentLua.zip SRC_LUA/manifest.xml
 
 SmartIndentFortran.zip:
 	PWD=`pwd` cd $(srcdir) && \
-	zip -Rm $(PWD)/SmartIndentFortran.zip SRC_Fortran/manifest.xml
+	zip -jq9 $(PWD)/SmartIndentFortran.zip SRC_Fortran/manifest.xml
 
 SmartIndentXML.zip:
 	PWD=`pwd` cd $(srcdir) && \
-	zip -Rm $(PWD)/SmartIndentXML.zip SRC_XML/manifest.xml
+	zip -jq9 $(PWD)/SmartIndentXML.zip SRC_XML/manifest.xml
 

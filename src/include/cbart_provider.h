@@ -36,7 +36,9 @@ class DLLIMPORT cbArtProvider : public wxArtProvider
 #endif
 
     private:
-        wxBitmap DoCreateBitmap(const wxArtID & id, Manager::UIComponent uiComponent) const;
+        wxString GetFileName(const wxArtID & id, const wxSize & size) const;
+        wxSize GetSize(const wxArtClient & client, bool unscaled) const;
+        wxBitmap ReadBitmap(const wxArtID & id, const wxSize & size) const;
         wxString m_prefix;
 
         struct Data

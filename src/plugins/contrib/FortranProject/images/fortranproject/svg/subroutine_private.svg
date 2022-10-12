@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467">
+    <defs>
+        <linearGradient xlink:href="#a" id="b" x1="1.72" y1="290.782" x2="5.027" y2="294.09" gradientUnits="userSpaceOnUse" gradientTransform="matrix(.88235 0 0 .88236 1.198 34.675)"/>
+        <linearGradient id="a">
+            <stop style="stop-color:#86d28d;stop-opacity:1" offset="0"/>
+            <stop style="stop-color:#17b626;stop-opacity:1" offset="1"/>
+        </linearGradient>
+    </defs>
+    <g transform="translate(0 -288.533)">
+        <rect style="fill:url(#b);fill-opacity:1;stroke:#078513;stroke-width:.26458332;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" width="3.969" height="3.969" x="2.249" y="290.782" ry=".7" rx="0"/>
+        <path style="fill:none;stroke:#3e403e;stroke-width:.52916664;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M1.587 295.675S.53 294.617.53 292.765s1.058-2.91 1.058-2.91M6.881 289.854s1.058 1.059 1.058 2.91c0 1.853-1.058 2.911-1.058 2.911"/>
+        <image y="288.69" x="-9.36" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A /wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sEFxIOOCVAbaQAAAHISURBVDjL zZOxihNRFIa/GVLtLloER1BhcZVBLcxaWIgyjuuYJZstNUXYYhgWH8DWN9BKLARdDFvYuFhICAGn 0e2sVrDLCwgDkoiZTGbmzj0WIYHBIu3e8ue755z7n//CqTmO60h7ry3LuPZeWxzXWXAmQKPZENM0 8TxvaSPP8zBNk0azIQAVgDiOsW2bwA8MgPvdHdFKo6Y5aqrI/2ZMVMLg2Q8j8ANj/+m+DAaD2QR+ 4AtAvV4H4EFvV7bXH3L38h1qV2+yce0K1q0LnN2scumFXWL9wJdKFEUAtB63DACtNYmk3P74nVr3 hEIU3+5ZvGudRwwWrOM6EkURlfEkLr1RTRWjfMRm94SNn78AyEXx5kkVjS6x40k8M7FUYJIzVCOU FAtNiybVGUqr/0ytrK2sMh6PF0IeZwzViC/bF8klR4vm86MqiU5IJStdXltZxbQsC4CjT0cCMM1S hvkfPuyew39do/3qBu93zjApEtIiLbGWZWHMQ2TbNgdvDwyA9ZfXRQxB6QKFItMZSTElff7bAJiv 8fjr8czWRrMh7pYrncPO0iR2DjvibrkyD5IJ0O/1Da01YRguTWIYhmit6ff6xun4hP8A7iLbL/1K /2UAAAAASUVORK5CYII=" preserveAspectRatio="none" height="8.467" width="8.467"/>
+        <circle style="fill:red;fill-opacity:1;stroke:red;stroke-width:.26458332;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="4.233" cy="292.767" r=".926"/>
+    </g>
+</svg>

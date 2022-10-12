@@ -1809,6 +1809,8 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         File ${CB_BASE}${CB_IMAGES}\fortranproject\56x56\*.png
         SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\64x64
         File ${CB_BASE}${CB_IMAGES}\fortranproject\64x64\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\svg
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\svg\*.svg
         WriteRegStr HKCU "${REGKEY}\Components" "Fortran Project plugin" 1
     SectionEnd
 !endif
@@ -2352,6 +2354,8 @@ Section /o "-un.Fortran Project plugin" UNSEC_FORTRANPROJECT
     RMDir  /REBOOTOK $INSTDIR${CB_IMAGES}\fortranproject\56x56
     Delete /REBOOTOK $INSTDIR${CB_IMAGES}\fortranproject\64x64\*.png
     RMDir  /REBOOTOK $INSTDIR${CB_IMAGES}\fortranproject\64x64
+    Delete /REBOOTOK $INSTDIR${CB_IMAGES}\fortranproject\svg\*.svg
+    RMDir  /REBOOTOK $INSTDIR${CB_IMAGES}\fortranproject\svg
     RMDir  /REBOOTOK $INSTDIR${CB_IMAGES}\fortranproject
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\FortranProject.dll
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\FortranProject.zip

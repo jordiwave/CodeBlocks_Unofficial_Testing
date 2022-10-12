@@ -460,6 +460,7 @@ AC_CONFIG_FILES([Makefile
     src/plugins/contrib/FortranProject/images/fortranproject/48x48/Makefile
     src/plugins/contrib/FortranProject/images/fortranproject/56x56/Makefile
     src/plugins/contrib/FortranProject/images/fortranproject/64x64/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/svg/Makefile
     src/plugins/contrib/FortranProject/images/fortranproject/Makefile
     src/plugins/contrib/FortranProject/images/Makefile
     src/plugins/contrib/FortranProject/Makefile

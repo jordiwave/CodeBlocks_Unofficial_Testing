@@ -91,20 +91,26 @@ void OpenFilesListPlugin::OnAttach()
     const int size = cbFindMinSize16to64(targetHeight);
     int imageListSize;
     m_pImages = cbMakeScaledImageList(size, scaleFactor, imageListSize);
-    const wxString prefix = ConfigManager::GetDataFolder() + "/images/";
-    const wxString treePrefix = ConfigManager::GetDataFolder()
-                                + wxString::Format("/resources.zip#zip:images/tree/%dx%d/", imageListSize, imageListSize);
-    wxBitmap bmp;
-    bmp = cbLoadBitmap(treePrefix + "folder_open.png", wxBITMAP_TYPE_PNG);
-    cbAddBitmapToImageList(*m_pImages, bmp, imageListSize, imageListSize, scaleFactor);
-    bmp = cbLoadBitmap(treePrefix + "file.png", wxBITMAP_TYPE_PNG);
-    cbAddBitmapToImageList(*m_pImages, bmp, imageListSize, imageListSize, scaleFactor);
-    bmp = cbLoadBitmap(treePrefix + "file-modified.png", wxBITMAP_TYPE_PNG);
-    cbAddBitmapToImageList(*m_pImages, bmp, imageListSize, imageListSize, scaleFactor);
-    bmp = cbLoadBitmap(treePrefix + "file-readonly", wxBITMAP_TYPE_PNG);
-    cbAddBitmapToImageList(*m_pImages, bmp, imageListSize, imageListSize, scaleFactor);
+    wxString prefix(ConfigManager::GetDataFolder() + "/resources.zip#zip:images/tree/");
+#if wxCHECK_VERSION(3, 1, 6)
+    prefix << "svg/";
+    wxBitmap bmp1 = cbLoadBitmapBundleFromSVG(prefix + "folder_open.svg", wxSize(16, 16)).GetBitmap(wxSize(imageListSize, imageListSize));
+    wxBitmap bmp2 = cbLoadBitmapBundleFromSVG(prefix + "file.svg", wxSize(16, 16)).GetBitmap(wxSize(imageListSize, imageListSize));
+    wxBitmap bmp3 = cbLoadBitmapBundleFromSVG(prefix + "file-modified.svg", wxSize(16, 16)).GetBitmap(wxSize(imageListSize, imageListSize));
+    wxBitmap bmp4 = cbLoadBitmapBundleFromSVG(prefix + "file-readonly.svg", wxSize(16, 16)).GetBitmap(wxSize(imageListSize, imageListSize));
+#else
+    prefix << wxString::Format("%dx%d/", imageListSize, imageListSize);
+    wxBitmap bmp1 = cbLoadBitmap(prefix + "folder_open.png");
+    wxBitmap bmp2 = cbLoadBitmap(prefix + "file.png");
+    wxBitmap bmp3 = cbLoadBitmap(prefix + "file-modified.png");
+    wxBitmap bmp4 = cbLoadBitmap(prefix + "file-readonly.png");
+#endif
+    cbAddBitmapToImageList(*m_pImages, bmp1, imageListSize, imageListSize, scaleFactor);
+    cbAddBitmapToImageList(*m_pImages, bmp2, imageListSize, imageListSize, scaleFactor);
+    cbAddBitmapToImageList(*m_pImages, bmp3, imageListSize, imageListSize, scaleFactor);
+    cbAddBitmapToImageList(*m_pImages, bmp4, imageListSize, imageListSize, scaleFactor);
     m_pTree->SetImageList(m_pImages.get());
-    m_pTree->AddRoot("Opened Files", 0, 0);
+    m_pTree->AddRoot(_("Opened Files"), 0, 0);
     // first build of the tree
     RebuildOpenFilesTree();
     // add the tree to the docking system

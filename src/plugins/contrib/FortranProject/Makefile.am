@@ -165,6 +165,7 @@ EXTRA_DIST = \
 			resources/tab2space.xrc \
 			resources/workspacebrowserf.xrc
 
+#			\
 #			images/16x16/*.png \
 #			images/20x20/*.png \
 #			images/24x24/*.png \
@@ -174,18 +175,20 @@ EXTRA_DIST = \
 #			images/48x48/*.png \
 #			images/56x56/*.png \
 #			images/64x64/*.png \
+#			images/svg/*.svg \
 #			images/fortranproject/*.py \
 #			images/fortranproject/*.f90 \
 #			images/fortranproject/*.dem \
 #			images/fortranproject/16x16/*.png \
 #			images/fortranproject/20x20/*.png \
-#			images/fortranproject/24x24*.png \
+#			images/fortranproject/24x24/*.png \
 #			images/fortranproject/28x28/*.png \
 #			images/fortranproject/32x32/*.png \
 #			images/fortranproject/40x40/*.png \
 #			images/fortranproject/48x48/*.png \
 #			images/fortranproject/56x56/*.png \
-#			images/fortranproject/64x64/*.png
+#			images/fortranproject/64x64/*.png \
+#			images/fortranproject/svg/*.svg
 
 pkgdata_DATA = \
 			FortranProject.zip
@@ -198,4 +201,4 @@ uninstall-hook:
 
 FortranProject.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip -j9 $(PWD)/FortranProject.zip manifest.xml resources/*.xrc > /dev/null
-	PWD=`pwd` cd $(srcdir) && zip -R9 $(PWD)/FortranProject.zip images/16x16/*.png images/20x20/*.png images/24x24/*.png images/28x28/*.png images/32x32/*.png images/40x40/*.png images/48x48/*.png images/56x56/*.png images/64x64/*.png images/fortranproject/*.f90 images/fortranproject/16x16/*.png images/fortranproject/20x20/*.png images/fortranproject/24x24/*.png images/fortranproject/28x28/*.png images/fortranproject/32x32/*.png images/fortranproject/40x40/*.png images/fortranproject/48x48/*.png images/fortranproject/56x56/*.png images/fortranproject/64x64/*.png > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip -R9 $(PWD)/FortranProject.zip images/16x16/*.png images/20x20/*.png images/24x24/*.png images/28x28/*.png images/32x32/*.png images/40x40/*.png images/48x48/*.png images/56x56/*.png images/64x64/*.png images/svg/*.svg images/fortranproject/*.f90 images/fortranproject/16x16/*.png images/fortranproject/20x20/*.png images/fortranproject/24x24/*.png images/fortranproject/28x28/*.png images/fortranproject/32x32/*.png images/fortranproject/40x40/*.png images/fortranproject/48x48/*.png images/fortranproject/56x56/*.png images/fortranproject/64x64/*.png images/fortranproject/svg/*.svg > /dev/null

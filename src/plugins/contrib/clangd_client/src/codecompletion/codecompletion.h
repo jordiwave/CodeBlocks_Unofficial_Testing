@@ -53,15 +53,6 @@ class DocumentationHelper;
  * See the general architecture of code completion plugin on wiki page
  *  http://wiki.codeblocks.org/index.php?title=Code_Completion_Design
  */
-
-BEGIN_DECLARE_EVENT_TYPES()
-DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CLANGD_ENABLE_PLUGIN, wxID_ANY)
-END_DECLARE_EVENT_TYPES()
-
-#define EVT_CLANGD_ENABLE_PLUGIN(id, fn) \
-    DECLARE_EVENT_TABLE_ENTRY( wxEVT_CLANGD_ENABLE_PLUGIN, id, id,  (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)& fn, (wxObject*) NULL )
-
-
 // ----------------------------------------------------------------------------
 class ClgdCompletion : public cbCodeCompletionPlugin
 // ----------------------------------------------------------------------------
@@ -392,9 +383,6 @@ class ClgdCompletion : public cbCodeCompletionPlugin
 
         /** Indicates CC's initialization is done */
         bool                    m_InitDone;
-
-        /** Indicates C:B App startup completed*/
-        bool                    m_CBStartupCompleted;
 
         /** menu pointers to the frame's main menu */
         wxMenu         *        m_EditMenu;

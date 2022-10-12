@@ -1,7 +1,6 @@
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
- *
  */
 
 #include "sdk_precomp.h"
@@ -44,7 +43,7 @@ wxToolBarAddOnXmlHandler::wxToolBarAddOnXmlHandler() :
 void wxToolBarAddOnXmlHandler::SetToolbarImageSize(int size)
 {
     m_ImageSize = size;
-    m_PathReplaceString = wxString::Format(wxT("%dx%d"), size, size);
+    m_PathReplaceString = wxString::Format("%dx%d", size, size);
 }
 
 void wxToolBarAddOnXmlHandler::SetCurrentResourceID(const wxString & id)
@@ -114,17 +113,39 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString & param, wxS
         return wxArtProvider::GetBitmap(wxT("sdk/missing_icon"), wxART_TOOLBAR, size * scaleFactor);
     }
 
-    wxString finalName = name;
-    finalName.Replace(wxT("22x22"), m_PathReplaceString);
-    wxBitmap bitmap = cbLoadBitmapScaled(finalName, wxBITMAP_TYPE_PNG, scaleFactor,
-                                         &GetCurFileSystem());
+    wxString finalName(name);
+    wxBitmap bitmap;
+
+#if wxCHECK_VERSION(3, 1, 6)
+    if (finalName.Replace("22x22", "svg"))
+    {
+    finalName.Replace(".png", ".svg");
+        bitmap = cbLoadBitmapBundleFromSVG(finalName, wxSize(m_ImageSize, m_ImageSize), &GetCurFileSystem()).GetBitmap(wxDefaultSize);
+
+        if (!bitmap.Ok() && name.Contains(".png"))
+        {
+            finalName = name;
+            if (finalName.Replace("22x22", m_PathReplaceString))
+            {
+                bitmap = cbLoadBitmap(finalName, wxBITMAP_TYPE_PNG, &GetCurFileSystem());
+            }
+        }
+    }
+    else
+    {
+        bitmap = cbLoadBitmap(finalName, wxBITMAP_TYPE_PNG, &GetCurFileSystem());
+    }
+
+#else
+    finalName.Replace("22x22", m_PathReplaceString);
+    wxBitmap bitmap = cbLoadBitmap(finalName, wxBITMAP_TYPE_PNG, &GetCurFileSystem());
+#endif
 
     if (!bitmap.Ok())
     {
         LogManager * logger = Manager::Get()->GetLogManager();
-        logger->LogError(wxString::Format(wxT("(%s) Failed to load image: '%s'"),
-                                          m_CurrentID.wx_str(), finalName.wx_str()));
-        return wxArtProvider::GetBitmap(wxT("sdk/missing_icon"), wxART_TOOLBAR, size * scaleFactor);
+        logger->LogError(wxString::Format("(%s) Failed to load image: '%s'", m_CurrentID, finalName));
+        return wxArtProvider::GetBitmap("sdk/missing_icon", wxART_TOOLBAR, size * scaleFactor);
     }
 
     int bw = bitmap.GetWidth();
@@ -136,11 +157,10 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString & param, wxS
     }
 
     LogManager * logger = Manager::Get()->GetLogManager();
-    const wxString msg = wxString::Format(wxT("(%s): Image \"%s\" with size [%dx%d] doesn't match ")
-                                          wxT("requested size [%dx%d] resizing (scale factor ")
-                                          wxT("%.3f)!"),
-                                          m_CurrentID.wx_str(), finalName.wx_str(), bw, bh,
-                                          int(size.x * scaleFactor), int(size.y * scaleFactor),
+    const wxString msg = wxString::Format("(%s): Image \"%s\" with size [%dx%d] doesn't match "
+                                          "requested size [%dx%d] resizing (scale factor %.3f)!",
+                                          m_CurrentID, finalName, bw, bh,
+                                          wxRound(size.x * scaleFactor), wxRound(size.y * scaleFactor),
                                           scaleFactor);
     logger->LogWarning(msg);
     wxImage image = bitmap.ConvertToImage();

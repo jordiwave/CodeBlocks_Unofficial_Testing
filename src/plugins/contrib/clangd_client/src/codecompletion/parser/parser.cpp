@@ -2716,26 +2716,19 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent & event, std::vector<ClgdCC
                 return;
             }
 
-            // Debugging
-            //LogManager* pLogMgr = CCLogger::Get()->;
+            // **Debugging**
+            //LogManager* pLogMgr = CCLogger::Get();
             //pLogMgr->DebugLog("-------------------Completions-----------------");
             json valueItems = pJson->at("result").at("items");
             // -unused- Parser* pParser = (Parser*)GetParseManager()->GetParserByProject(pProject);
             wxString filename = pEditor->GetFilename();
             ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
-            size_t CCMaxMatches = cfg->ReadInt(_T("/max_matches"), 16384);
+            size_t ccMaxMatches = cfg->ReadInt(_T("/max_matches"), 256);
 
-            for (size_t itemNdx = 0; itemNdx < valueItemsCount && itemNdx < CCMaxMatches; ++itemNdx)
+            for (size_t itemNdx = 0; (itemNdx < valueItemsCount) && (itemNdx < ccMaxMatches); ++itemNdx)
             {
                 wxString labelValue = GetwxUTF8Str(valueItems[itemNdx].at("label").get<std::string>());
-                labelValue.Trim(0).Trim(1); //(ph 2022/06/25) clangd returning prefixed blank
-                //#if wxCHECK_VERSION(3,1,5) //3.1.5 or higher
-                //wxString badBytes = "\xE2\x80\xA6"; // wx3.0 produces an empty string
-                //labelValue.Replace(badBytes, ""); //happens withing empty params "()" // asserts on wx3.0
-                //badBytes = "\xE2\x80\xA2";
-                //labelValue.Replace(badBytes, ""); //happens withing empty params "()"
-                //#endif
-                labelValue.Trim(true).Trim(false);
+                labelValue.Trim(true).Trim(false); //(ph 2022/06/25) clangd returning prefixed blank
 
                 if (labelValue.empty())
                 {

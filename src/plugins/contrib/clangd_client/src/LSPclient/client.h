@@ -948,8 +948,8 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         void LSP_Hover(cbEditor * pEd, int posn, int rrid = 0); //(ph 2022/06/15)
         void LSP_SignatureHelp(cbEditor * pEd, int posn);
 
-        void writeClientLog(wxString logmsg);
-        void writeServerLog(wxString logmsg);
+        void writeClientLog(const std::string & logmsg);
+        void writeServerLog(const std::string & logmsg);
         wxString GetTime();
         std::string LSP_GetTimeHMSM(); //Get time in hours minute second milliseconds
         std::string GetTime_in_HH_MM_SS_MMM();

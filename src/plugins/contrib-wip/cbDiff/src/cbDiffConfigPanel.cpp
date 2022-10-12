@@ -99,8 +99,6 @@ cbDiffConfigPanel::cbDiffConfigPanel(wxWindow * parent)
     RBViewing->SetSelection(0);
     BoxSizer1->Add(RBViewing, 0, wxALL | wxEXPAND, 5);
     SetSizer(BoxSizer1);
-    BoxSizer1->Fit(this);
-    BoxSizer1->SetSizeHints(this);
     Connect(ID_BUTTON2, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffConfigPanel::OnColAddClick);
     Connect(ID_BUTTON1, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffConfigPanel::OnColRemClick);
     Connect(ID_BUTTON4, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffConfigPanel::OnColSelClick);

@@ -49,6 +49,7 @@ images_forZIP = \
 			images/16x16/searchreplacef.png \
 			images/16x16/searchreplace.png \
 			images/16x16/undo.png \
+			\
 			images/20x20/bookmark_add.png \
 			images/20x20/dbginfo.png \
 			images/20x20/dbgnexti.png \
@@ -85,6 +86,7 @@ images_forZIP = \
 			images/20x20/searchreplacef.png \
 			images/20x20/searchreplace.png \
 			images/20x20/undo.png \
+			\
 			images/24x24/bookmark_add.png \
 			images/24x24/dbginfo.png \
 			images/24x24/dbgnexti.png \
@@ -121,6 +123,7 @@ images_forZIP = \
 			images/24x24/searchreplacef.png \
 			images/24x24/searchreplace.png \
 			images/24x24/undo.png \
+			\
 			images/28x28/bookmark_add.png \
 			images/28x28/dbginfo.png \
 			images/28x28/dbgnexti.png \
@@ -157,6 +160,7 @@ images_forZIP = \
 			images/28x28/searchreplacef.png \
 			images/28x28/searchreplace.png \
 			images/28x28/undo.png \
+			\
 			images/32x32/bookmark_add.png \
 			images/32x32/dbginfo.png \
 			images/32x32/dbgnexti.png \
@@ -193,6 +197,7 @@ images_forZIP = \
 			images/32x32/searchreplacef.png \
 			images/32x32/searchreplace.png \
 			images/32x32/undo.png \
+			\
 			images/40x40/bookmark_add.png \
 			images/40x40/dbginfo.png \
 			images/40x40/dbgnexti.png \
@@ -229,6 +234,7 @@ images_forZIP = \
 			images/40x40/searchreplacef.png \
 			images/40x40/searchreplace.png \
 			images/40x40/undo.png \
+			\
 			images/48x48/bookmark_add.png \
 			images/48x48/dbginfo.png \
 			images/48x48/dbgnexti.png \
@@ -265,6 +271,7 @@ images_forZIP = \
 			images/48x48/searchreplacef.png \
 			images/48x48/searchreplace.png \
 			images/48x48/undo.png \
+			\
 			images/56x56/bookmark_add.png \
 			images/56x56/dbginfo.png \
 			images/56x56/dbgnexti.png \
@@ -302,6 +309,7 @@ images_forZIP = \
 			images/56x56/searchreplace.png \
 			images/56x56/undo.png \
 			images/64x64/bookmark_add.png \
+			\
 			images/64x64/dbginfo.png \
 			images/64x64/dbgnexti.png \
 			images/64x64/dbgnext.png \
@@ -337,6 +345,7 @@ images_forZIP = \
 			images/64x64/searchreplacef.png \
 			images/64x64/searchreplace.png \
 			images/64x64/undo.png \
+			\
 			images/svg/bookmark_add.svg \
 			images/svg/dbginfo.svg \
 			images/svg/dbgnexti.svg \
@@ -397,6 +406,7 @@ treeImages_forZIP = \
 			images/tree/16x16/vfolder_open.png \
 			images/tree/16x16/workspace.png \
 			images/tree/16x16/workspace-readonly.png \
+			\
 			images/tree/20x20/file-missing.png \
 			images/tree/20x20/file-modified.png \
 			images/tree/20x20/file.png \
@@ -419,6 +429,7 @@ treeImages_forZIP = \
 			images/tree/20x20/vfolder_open.png \
 			images/tree/20x20/workspace.png \
 			images/tree/20x20/workspace-readonly.png \
+			\
 			images/tree/24x24/file-missing.png \
 			images/tree/24x24/file-modified.png \
 			images/tree/24x24/file.png \
@@ -441,6 +452,7 @@ treeImages_forZIP = \
 			images/tree/24x24/vfolder_open.png \
 			images/tree/24x24/workspace.png \
 			images/tree/24x24/workspace-readonly.png \
+			\
 			images/tree/28x28/file-missing.png \
 			images/tree/28x28/file-modified.png \
 			images/tree/28x28/file.png \
@@ -463,6 +475,7 @@ treeImages_forZIP = \
 			images/tree/28x28/vfolder_open.png \
 			images/tree/28x28/workspace.png \
 			images/tree/28x28/workspace-readonly.png \
+			\
 			images/tree/32x32/file-missing.png \
 			images/tree/32x32/file-modified.png \
 			images/tree/32x32/file.png \
@@ -485,6 +498,7 @@ treeImages_forZIP = \
 			images/tree/32x32/vfolder_open.png \
 			images/tree/32x32/workspace.png \
 			images/tree/32x32/workspace-readonly.png \
+			\
 			images/tree/40x40/file-missing.png \
 			images/tree/40x40/file-modified.png \
 			images/tree/40x40/file.png \
@@ -529,6 +543,7 @@ treeImages_forZIP = \
 			images/tree/48x48/vfolder_open.png \
 			images/tree/48x48/workspace.png \
 			images/tree/48x48/workspace-readonly.png \
+			\
 			images/tree/56x56/file-missing.png \
 			images/tree/56x56/file-modified.png \
 			images/tree/56x56/file.png \
@@ -551,6 +566,7 @@ treeImages_forZIP = \
 			images/tree/56x56/vfolder_open.png \
 			images/tree/56x56/workspace.png \
 			images/tree/56x56/workspace-readonly.png \
+			\
 			images/tree/64x64/file-missing.png \
 			images/tree/64x64/file-modified.png \
 			images/tree/64x64/file.png \
@@ -573,6 +589,7 @@ treeImages_forZIP = \
 			images/tree/64x64/vfolder_open.png \
 			images/tree/64x64/workspace.png \
 			images/tree/64x64/workspace-readonly.png \
+			\
 			images/tree/svg/file-missing.svg \
 			images/tree/svg/file-modified.svg \
 			images/tree/svg/file.svg \

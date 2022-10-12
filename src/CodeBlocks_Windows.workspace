@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="CodeBlocks Workspace Windows">
-		<Project filename="CodeBlocks_Windows.cbp" />
 		<Project filename="tools/Addr2LineUI/Addr2LineUI_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<Project filename="tools/cb_share_config/cb_share_config_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
+		<Project filename="CodeBlocks_Windows.cbp" />
 		<Project filename="tools/CBLauncher/CbLauncher_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
@@ -158,7 +158,6 @@
 		<Project filename="plugins/contrib/FortranProject/FortranProject_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE ADDITIONAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
 		<Project filename="plugins/contrib-wip/cbBuildTools/cbBuildTools_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
@@ -194,18 +193,14 @@
 			<Depends filename="plugins/contrib/Debugger_DAP/DebugAdapterProtocol/dapcxx_codeblocks_Windows.cbp" />
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-
-		<!-- https://github.com/spillz/codeblocks-python/compare/master...crobarcro:codeblocks-python:master -->
 		<Project filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows.cbp" />
-		<Project filename="plugins/contrib-wip/PythonPlugins/PythonCodeCompletion/PythonCodeCompletion_Windows.cbp" >
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonCodeCompletion/PythonCodeCompletion_Windows.cbp">
 			<Depends filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/contrib-wip/PythonPlugins/PythonInterpreter/PythonInterpreter_Windows.cbp" >
+		<Project filename="plugins/contrib-wip/PythonPlugins/PythonInterpreter/PythonInterpreter_Windows.cbp">
 			<Depends filename="plugins/contrib-wip/PythonPlugins/XmlRpcEmbedder/XmlRpcEmbedder_Windows.cbp" />
 		</Project>
 		<Project filename="plugins/contrib-wip/PythonPlugins/PythonDebugger/PythonDebugger_Windows.cbp" />
 		<Project filename="plugins/contrib-wip/PythonPlugins/codecheck/PythonCodeChecker_Windows.cbp" />
-
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE ADDITIONAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
 	</Workspace>
 </CodeBlocks_workspace_file>

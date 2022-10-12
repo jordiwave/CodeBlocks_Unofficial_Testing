@@ -115,8 +115,6 @@
 #define TRACE2(format, args...)
 #endif
 
-DEFINE_EVENT_TYPE(wxEVT_CLANGD_ENABLE_PLUGIN)
-
 /// Scopes choice name for global functions in CC's toolbar.
 static wxString g_GlobalScope(_T("<global>"));
 
@@ -475,7 +473,6 @@ std::vector<ClgdCCToken> ClgdCompletion::m_CompletionTokens; // cached tokens
 ClgdCompletion::ClgdCompletion() :
     // ----------------------------------------------------------------------------
     m_InitDone(false),
-    m_CBStartupCompleted(false),
     m_pCodeRefactoring(nullptr), //re-initialized in ctor
     m_EditorHookId(0),
     //m_TimerRealtimeParsing(this, idRealtimeParsingTimer),
@@ -492,7 +489,7 @@ ClgdCompletion::ClgdCompletion() :
     //m_NeedReparse(false),
     m_CurrentLength(-1),
     m_NeedsBatchColour(true),
-    m_CCMaxMatches(16384),
+    m_CCMaxMatches(256),
     m_CCAutoAddParentheses(true),
     m_CCDetectImplementation(false),
     m_CCDelay(300),
@@ -670,11 +667,7 @@ void ClgdCompletion::OnAttach()
         wxWindow * pTopWindow = GetTopWxWindow();
         //avoid later assert in PluginManager if user changes selection in parent window
         pTopWindow->Freeze();
-        AnnoyingDialog dlg(_("ERROR: Clangd client plugin found code completion plugin enabled"),
-                           msg,
-                           wxART_WARNING,
-                           AnnoyingDialog::OK);
-        dlg.ShowModal();
+        cbMessageBox(msg, "Clangd_client plugin", wxOK, pTopWindow);
         pTopWindow->Thaw();
         pTopWindow = Manager::Get()->GetAppWindow();
 
@@ -700,7 +693,7 @@ void ClgdCompletion::OnAttach()
     if (((not m_OldCC_enabled) and m_CC_initDeferred) /* or (not m_ClgdClientEnabled)*/)
     {
         // Old CC is disabled but we haven't initialize ourself.
-        cbMessageBox(_("Clang_Client plugin needs you to RESTART CodeBlocks before it can function properly."),
+        cbMessageBox(_("Clang_Client plugin needs you to RESTART codeblocks before it can function properly."),
                      _("CB restart needed"), wxOK, GetTopWxWindow());
         wxWindow * appWindow = Manager::Get()->GetAppWindow();
 
@@ -749,7 +742,6 @@ void ClgdCompletion::OnAttach()
     // register event sinks
     Manager * pm = Manager::Get();
     pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnAppStartupDone));
-    pm->RegisterEventSink(wxEVT_CLANGD_ENABLE_PLUGIN, new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnAppStartupDone));
     pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED,    new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnWorkspaceChanged));
     pm->RegisterEventSink(cbEVT_WORKSPACE_CLOSING_BEGIN, new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnWorkspaceClosingBegin));
     pm->RegisterEventSink(cbEVT_WORKSPACE_CLOSING_COMPLETE, new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnWorkspaceClosingEnd));
@@ -895,7 +887,6 @@ void ClgdCompletion::OnRelease(bool appShutDown)
     // conflict with enabling old CodeCompletion.
     if (not appShutDown)
     {
-        m_InitDone = false;
         wxString msg = _("You should RESTART Code::Blocks to remove Clangd_Client resource");
         msg += _("\n  if you intend to re-enable the older CodeCompletion plugin.");
         cbMessageBox(msg, _("RESTART required"), wxOK, GetTopWxWindow());
@@ -1261,22 +1252,20 @@ void ClgdCompletion::OnPluginAttached(CodeBlocksEvent & event)
 
     // if clangd_client was disabled and user has just enabled it, we need to invoke
     // OnAppStartupDone() in order to initialize it.
+    //if ((not m_InitDone) and (not m_CC_initDeferred) and (m_ctorClientStartupStatusEnabled == false) )
     if (isClangdClientPlugin and (not m_InitDone)
-            and (not m_CC_initDeferred) and ns_DefaultCompilerMasterPath.Length()
-            and m_CBStartupCompleted)
+            and (not m_CC_initDeferred) and ns_DefaultCompilerMasterPath.Length())
     {
+        wxWindow * pTopWindow = wxFindWindowByName(_("Manage plugins"));
         // If this is a response to the user just having enabled Clangd_Client,
         // we need to call OnAppStartupDone to fully initialize.
         cbPlugin * pPlugin = event.GetPlugin();
 
-        if (pPlugin)
+        if (pPlugin and pTopWindow)
         {
-            const PluginInfo * info = Manager::Get()->GetPluginManager()->GetPluginInfo(pPlugin);
-
-            if (info->name == "clangd_client" and (m_ctorClientStartupStatusEnabled == false))
-            {
-                CallAfter(&ClgdCompletion::OnPluginEnabled); //calls OnAppStartupDone()
-            }
+            cbMessageBox(_("Clang_Client plugin needs you to RESTART codeblocks before it can function properly."),
+                         _("CB restart needed"), wxOK, pTopWindow);
+            CallAfter(&ClgdCompletion::OnPluginEnabled); //calls OnAppStartupDone()
         }
 
         return;
@@ -2200,7 +2189,7 @@ void ClgdCompletion::RereadOptions()
     m_LexerKeywordsToInclude[7] = cfg->ReadBool(_T("/lexer_keywords_set8"), false);
     m_LexerKeywordsToInclude[8] = cfg->ReadBool(_T("/lexer_keywords_set9"), false);
     // for CC
-    m_CCMaxMatches           = cfg->ReadInt(_T("/max_matches"),            16384);
+    m_CCMaxMatches           = cfg->ReadInt(_T("/max_matches"),            256);
     m_CCAutoAddParentheses   = cfg->ReadBool(_T("/auto_add_parentheses"),  true);
     m_CCDetectImplementation = cfg->ReadBool(_T("/detect_implementation"), false); //depends on auto_add_parentheses
     m_CCFillupChars          = cfg->Read(_T("/fillup_chars"),              wxEmptyString);
@@ -3261,7 +3250,7 @@ void ClgdCompletion::OnPluginEnabled()
 // ----------------------------------------------------------------------------
 {
     // This is a CallAfter() from OnPluginAttached()
-    CodeBlocksEvent evt(wxEVT_CLANGD_ENABLE_PLUGIN);
+    CodeBlocksEvent evt(cbEVT_APP_STARTUP_DONE);
     OnAppStartupDone(evt);
 }
 
@@ -3269,7 +3258,6 @@ void ClgdCompletion::OnPluginEnabled()
 void ClgdCompletion::OnAppStartupDone(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
-    m_CBStartupCompleted = true;
     // Verify existent clangd.exe path before creating a proxy project
     ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
     wxString cfgClangdMasterPath = cfg->Read("/LLVM_MasterPath", wxEmptyString);
@@ -3285,11 +3273,8 @@ void ClgdCompletion::OnAppStartupDone(CodeBlocksEvent & event)
             msg << _("The clangd path:\n") << "'" << cfgClangdMasterPath << _("' does not exist.");
             msg << _("\nUse Settings/Editor/Clangd_client/ 'C/C++ parser' tab to set it's path.");
             msg << _("\n\nThis requires a restart of CodeBlocks for Clangd to function correctly.");
-            AnnoyingDialog dlg(_("ERROR: Clangd client path not found"),
-                               msg,
-                               wxART_WARNING,
-                               AnnoyingDialog::OK);
-            dlg.ShowModal();
+            wxWindow * pTopWindow = GetTopWxWindow();
+            cbMessageBox(msg, _("ERROR: Clangd client"), wxOK, pTopWindow);
             return;
         }
     }
@@ -3307,13 +3292,10 @@ void ClgdCompletion::OnAppStartupDone(CodeBlocksEvent & event)
             msg << _("\n\nTo use a different clangd, use the Settings/Editor/Clangd_client \n'C/C++ parser' tab to set it's path.");
             msg << _("\nThis requires a restart of CodeBlocks for Clangd to function correctly.");
             msg << _("\n\nDo you want to use the detected clangd?");
-            AnnoyingDialog dlg(_("Clangd client detected clangd"),
-                               msg,
-                               wxART_QUESTION,
-                               AnnoyingDialog::YES_NO,
-                               AnnoyingDialog::rtYES);
+            wxWindow * pTopWindow = GetTopWxWindow();
+            cbMessageBox(msg, _("ERROR: Clangd client"), wxOK, pTopWindow);
 
-            if (dlg.ShowModal() == AnnoyingDialog::rtYES)
+            if (cbMessageBox(msg, _("ERROR: Clangd client"), wxICON_QUESTION | wxYES_NO, pTopWindow) == wxID_YES)
             {
                 cfg->Write(_T("/LLVM_MasterPath"), fnClangdPath.GetFullPath());
             }
@@ -3322,11 +3304,8 @@ void ClgdCompletion::OnAppStartupDone(CodeBlocksEvent & event)
         {
             msg << _("\nUse Settings/Editor/Clangd_client/ 'C/C++ parser' tab to set it's path.");
             msg << _("\n\nThis requires a restart of CodeBlocks for Clangd to function correctly.");
-            AnnoyingDialog dlg(_("ERROR: Clangd client path not set"),
-                               msg,
-                               wxART_WARNING,
-                               AnnoyingDialog::OK);
-            dlg.ShowModal();
+            wxWindow * pTopWindow = GetTopWxWindow();
+            cbMessageBox(msg, _("ERROR: Clangd client"), wxOK, pTopWindow);
         }
 
         return;

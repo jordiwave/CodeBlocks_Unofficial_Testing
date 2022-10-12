@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467" shape-rendering="crispEdges">
+    <defs>
+        <linearGradient id="a">
+            <stop style="stop-color:#77c873;stop-opacity:1" offset="0"/>
+            <stop style="stop-color:#3aaf35;stop-opacity:1" offset="1"/>
+        </linearGradient>
+        <linearGradient xlink:href="#a" id="b" x1="2.117" y1="292.502" x2="6.879" y2="292.502" gradientUnits="userSpaceOnUse" gradientTransform="translate(-.265 .265)"/>
+    </defs>
+    <g transform="translate(0 -288.533)">
+        <image y="288.401" x="-9.657" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A /wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oIGwwULN11TGQAAAAZdEVYdENv bW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAApklEQVQ4y2NgGPKAEZ8kdx7bfxj766RfWNWy 4NMYHRzD8P3PN4Z3P98xHGA48B+bQUy4bM+OyoU7kZGBkcHC1QKrOiZstudE5UL99p/hP5J9+o76 KN7C64L/UOL/fyib4T9xLmBgYGDgYOaA287IwMDAwPgfl35MA75O+sXYs7gb6oz/cJcwMDAwXNx/ kfhAnLpsCgMDIyMDI1T3iT0naZMORgEDAwCG+jpXq8ti/QAAAABJRU5ErkJggg==" style="image-rendering:optimizeSpeed" preserveAspectRatio="none" height="8.467" width="8.467"/>
+        <circle style="fill:url(#b);fill-opacity:1;stroke:#064f03;stroke-width:.26458335;stroke-opacity:1" cx="4.233" cy="292.767" r="2.249"/>
+    </g>
+</svg>

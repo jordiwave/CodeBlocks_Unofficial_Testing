@@ -64,7 +64,7 @@ const int idBuildLog = wxNewId();
 #endif
 
 // ----------------------------------------------------------------------------
-void std_ReplaceAll(std::string & str, const std::string & from, const std::string & to)
+void StdString_ReplaceAll(std::string & str, const std::string & from, const std::string & to)
 // ----------------------------------------------------------------------------
 {
     if (from.empty())
@@ -83,9 +83,9 @@ void std_ReplaceAll(std::string & str, const std::string & from, const std::stri
     return;
 }
 
-#if (saveTheseFunctionsTillNeeded)
 // ----------------------------------------------------------------------------
-void replace_substring(std::string & s, const std::string & f,
+__attribute__((used))
+void StdString_ReplaceSubstring(std::string & s, const std::string & f,
                        const std::string & t)
 // ----------------------------------------------------------------------------
 {
@@ -104,7 +104,8 @@ void replace_substring(std::string & s, const std::string & f,
 }
 
 // ----------------------------------------------------------------------------
-void std_MakeLower(std::string & data)
+__attribute__((used))
+void StdString_MakeLower(std::string & data)
 // ----------------------------------------------------------------------------
 {
     std::transform(data.begin(), data.end(), data.begin(),
@@ -114,24 +115,23 @@ void std_MakeLower(std::string & data)
     });
 }
 // ----------------------------------------------------------------------------
-bool std_String_EndsWith(const std::string & str, const std::string & suffix)
+bool StdString_EndsWith(const std::string & str, const std::string & suffix)
 // ----------------------------------------------------------------------------
 {
     return str.size() >= suffix.size() &&
            str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
-#endif
+
 // ----------------------------------------------------------------------------
-bool std_String_StartsWith(const std::string & str, const std::string & prefix)
+bool StdString_StartsWith(const std::string & str, const std::string & prefix)
 // ----------------------------------------------------------------------------
 {
     return str.size() >= prefix.size() &&
            str.compare(0, prefix.size(), prefix) == 0;
 }
 
-#if (saveTheseFunctionsTillNeeded)
 // ----------------------------------------------------------------------------
-size_t std_String_Contains(const std::string & source, const std::string & token)
+bool StdString_Contains(const std::string & source, const std::string & token)
 // ----------------------------------------------------------------------------
 {
     //returns position of token in string
@@ -139,15 +139,16 @@ size_t std_String_Contains(const std::string & source, const std::string & token
 
     if (posn != std::string::npos)
     {
-        return posn;
+        return true;
     }
 
-    return std::string::npos;
+    return false;
 }
 // ----------------------------------------------------------------------------
 //  String_trim or String_Reduce
 // ----------------------------------------------------------------------------
-std::string std_String_Trim(const std::string & str, const std::string & whitespace = " \t")
+__attribute__((used))
+std::string StdString_Trim(const std::string & str, const std::string & whitespace = " \t")
 {
     const auto strBegin = str.find_first_not_of(whitespace);
 
@@ -160,7 +161,60 @@ std::string std_String_Trim(const std::string & str, const std::string & whitesp
     const auto strRange = strEnd - strBegin + 1;
     return str.substr(strBegin, strRange);
 }
-#endif
+
+//    #if (This_Version_Causes_Errors)
+//    // https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf
+//    // Causes error: note:Cannot pass object of non-trivial type 'std::basic_string<char>' through variadic function; call will abort at runtime
+//    // ----------------------------------------------------------------------------
+//    template<typename ... Args>
+//    std::string StdString_Format( const std::string& format, Args ... args )
+//    // ----------------------------------------------------------------------------
+//    {
+//        int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1; // Extra space for '\0'
+//        if( size_s <= 0 ){ throw std::runtime_error( "Error during formatting." ); }
+//        auto size = static_cast<size_t>( size_s );
+//        std::unique_ptr<char[]> buf( new char[ size ] );
+//        std::snprintf( buf.get(), size, format.c_str(), args ... );
+//        return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
+//    }
+//    #endif
+
+// https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf
+// C++11 solution that uses vsnprintf() internally:
+//#include <stdarg.h>  // For va_start, etc.
+// ----------------------------------------------------------------------------
+std::string StdString_Format(const std::string fmt, ...)
+// ----------------------------------------------------------------------------
+{
+    int size = ((int)fmt.size()) * 2 + 50;   // Use a rubric appropriate for your code
+    std::string str;
+    va_list ap;
+
+    while (1)       // Maximum two passes on a POSIX system...
+    {
+        str.resize(size);
+        va_start(ap, fmt);
+        int n = vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
+        va_end(ap);
+
+        if (n > -1 && n < size)    // Everything worked
+        {
+            str.resize(n);
+            return str;
+        }
+
+        if (n > -1)  // Needed size returned
+        {
+            size = n + 1;    // For null char
+        }
+        else
+        {
+            size *= 2;    // Guess at a larger size (OS specific)
+        }
+    }
+
+    return str;
+}
 
 bool wxFound(int result)
 {
@@ -348,7 +402,9 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject * pProject, const c
     //-command += " --suggest-missing-includes";   // Attempts to fix diagnostic errors caused by missing includes using index
     // use --compile-commands-dir=<path> to restrict compilation database search to to <path>
     //https://clangd.llvm.org/faq#how-do-i-fix-errors-i-get-when-opening-headers-outside-of-my-project-directory
-    command += " --limit-results=20";              // Limit the number of results returned by clangd. 0 means no limit (default=100)
+    // Get number of code completions returned from  config max_matches //(ph 2022/10/06)
+    int ccMaxMatches = cfg->ReadInt(_T("/max_matches"), 20);
+    command += wxString::Format(" --limit-results=%d", ccMaxMatches);
 
     if (wxDirExists(clangdResourceDir))
     {
@@ -430,7 +486,7 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject * pProject, const c
             }
 
             // write the project title to the log for identification
-            wxString logLine = "Project: " + pProject->GetTitle() + ": " + pProject->GetFilename();
+            std::string logLine = "Project: " + pProject->GetTitle().ToStdString() + ": " + pProject->GetFilename().ToStdString();
             writeClientLog(logLine);
             wxString envPath;
             wxGetEnv("PATH", &envPath);
@@ -460,11 +516,11 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject * pProject, const c
 
         // write the project title to the log for identification
         wxString logLine = "Project: " + pProject->GetTitle() + ": " + pProject->GetFilename() + "\n";
-        writeServerLog(logLine);
+        writeServerLog(logLine.ToStdString());
         wxString envPath;
         wxGetEnv("PATH", &envPath);
         logLine = "SystemPath: " + envPath + "\n";
-        writeServerLog(logLine);
+        writeServerLog(logLine.ToStdString());
     }
 
     Manager::Get()->GetAppFrame()->PushEventHandler(this);
@@ -677,7 +733,7 @@ bool ProcessLanguageClient::IsAlive() //for linux
 #endif
 
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::writeClientLog(wxString logmsg)
+void ProcessLanguageClient::writeClientLog(const std::string & logmsg)
 // ----------------------------------------------------------------------------
 {
     if (not lspClientLogFile.IsOpened())
@@ -685,9 +741,9 @@ void ProcessLanguageClient::writeClientLog(wxString logmsg)
         return;
     }
 
-    wxString logcr = "";
+    std::string logcr = "";
 
-    if (not logmsg.EndsWith(wxT("\n")))
+    if (not StdString_EndsWith(logmsg, "\n"))
     {
         logcr = "\n";
     }
@@ -696,7 +752,7 @@ void ProcessLanguageClient::writeClientLog(wxString logmsg)
     lspClientLogFile.Flush();
 }
 // ----------------------------------------------------------------------------
-void ProcessLanguageClient::writeServerLog(wxString logmsg)
+void ProcessLanguageClient::writeServerLog(const std::string & logmsg)
 // ----------------------------------------------------------------------------
 {
     if (not lspServerLogFile.IsOpened())
@@ -712,14 +768,15 @@ void ProcessLanguageClient::writeServerLog(wxString logmsg)
     // clangd does not always respond when it reuses a file (esp., with didOpen() )
     // So here we check if that's what happend by checking the server log response.
     // If so, we clear our "waiting for response" status flags
-    if (logmsg.Contains("Reusing preamble version") and logmsg.Contains(" for version "))
+    if (StdString_Contains(logmsg, "Reusing preamble version")
+            and StdString_Contains(logmsg, " for version "))
     {
         wxString filename;
-        int filenamePosn = logmsg.Find(" of ");
+        int filenamePosn = logmsg.find(" of ");
 
-        if (wxFound(filenamePosn))
+        if (stdFound(filenamePosn))
         {
-            filename = logmsg.Mid(filenamePosn + 4);
+            filename = logmsg.substr(filenamePosn + 4);
             filename.Trim();    //remove CRLF or LF
             filename.Replace("\\", "/");
             cbEditor * pEditor = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
@@ -847,7 +904,7 @@ void ProcessLanguageClient::OnClangd_stdout(wxThreadEvent & event)
         wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __FUNCTION__);
         wxSafeShowMessage("Lock fail, lost data", msg);
         CCLogger::Get()->DebugLogError(msg);
-        writeClientLog(msg);
+        writeClientLog(msg.ToStdString());
         return;
     }
 
@@ -1040,8 +1097,8 @@ int ProcessLanguageClient::ReadLSPinputLength()
             {
                 // Error: header is not at beginning of buffer. Try to fix it.
                 // usually caused by clangd invalid utf8 sequence
-                wxString msg(wxString::Format("ERROR:%s(): buffLength (%d): Position of content header %d.\n",
-                                              __FUNCTION__, int(m_std_LSP_IncomingStr.length()), int(hdrPosn)));
+                std::string msg = StdString_Format("ERROR:%s(): buffLength (%d): Position of content header %d.\n",
+                                                   __FUNCTION__, int(m_std_LSP_IncomingStr.length()), int(hdrPosn));
                 msg += "Buffer contents written to client log.";
                 //#if defined(cbDEBUG)
                 //    wxSafeShowMessage("Input Buffer error",msg);
@@ -1072,7 +1129,7 @@ int ProcessLanguageClient::ReadLSPinputLength()
 
                 // Length in LSP data header was wrong. Should have seen a '}' at end of data.
                 //cbAssertNonFatal(m_std_LSP_IncomingStr[jdataPosn + jdataLength-1] == '}'); // **Debugging**
-                wxString msg = wxString::Format("Error:%s invalid LSP dataLth[%d]\n%s", __FUNCTION__, int(jdataLength), m_std_LSP_IncomingStr);
+                std::string msg = StdString_Format("Error:%s invalid LSP dataLth[%d]\n%s", __FUNCTION__, int(jdataLength), m_std_LSP_IncomingStr.c_str());
                 writeClientLog(msg);
                 // Must return the length even if invalid else the data gets stuck in the buffer.
                 // Try for valid length by looking for next LSP data entry
@@ -1094,7 +1151,7 @@ int ProcessLanguageClient::ReadLSPinputLength()
                                                     m_std_LSP_IncomingStr.substr(0, jdataPosn), //header
                                                     int(m_std_LSP_IncomingStr.length()));       //full buffer length
                     msg.Replace("\r\n", "\\r\\n"); //show crlf
-                    writeClientLog(wxString::Format(" >>> Info:%s() %s", __FUNCTION__, msg));
+                    writeClientLog(StdString_Format(" >>> Info:%s() %s", __FUNCTION__, msg.ToStdString().c_str()));
                 }
             }
         }
@@ -1157,7 +1214,7 @@ bool ProcessLanguageClient::readJson(json & json)
 
     if (lockerr != wxMUTEX_NO_ERROR)
     {
-        wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __FUNCTION__);
+        std::string msg = StdString_Format("LSP data loss. %s() Failed to obtain input buffer lock", __FUNCTION__);
         //-wxSafeShowMessage("Lock failed, lost data", msg); // **Debugging**
         CCLogger::Get()->DebugLogError(msg);
         writeClientLog(msg);
@@ -1194,7 +1251,7 @@ bool ProcessLanguageClient::readJson(json & json)
 
     if (stdStrInputbuf.size())
     {
-        writeClientLog(wxString::Format(">>> readJson() len:%d:\n%s", length, stdStrInputbuf.c_str()));
+        writeClientLog(StdString_Format(">>> readJson() len:%d:\n%s", length, stdStrInputbuf.c_str()));
     }
 
     // remove any invalid utf8 chars
@@ -1204,15 +1261,15 @@ bool ProcessLanguageClient::readJson(json & json)
     if (stdStrInputbuf.find("{\"id\":\"textDocument/hover") != std::string::npos) //{"id":"textDocument/hover
     {
         std::string badBytes =  "\xE2\x86\x92" ; //Wierd chars in hover results
-        std_ReplaceAll(stdStrInputbuf, badBytes, " ");
+        StdString_ReplaceAll(stdStrInputbuf, badBytes, " ");
     }
 
     if (stdStrInputbuf.find("{\"id\":\"textDocument/completion") != std::string::npos) //{"id":"textDocument/completion
     {
         std::string badBytes =  "\xE2\x80\xA2" ; //Wierd chars in completion empty params
-        std_ReplaceAll(stdStrInputbuf, badBytes, " ");
+        StdString_ReplaceAll(stdStrInputbuf, badBytes, " ");
         badBytes = "\xE2\x80\xA6"; // wx3.0 produces an empty string
-        std_ReplaceAll(stdStrInputbuf, badBytes, " ");
+        StdString_ReplaceAll(stdStrInputbuf, badBytes, " ");
     }
 
     if (not validData)
@@ -1226,12 +1283,15 @@ bool ProcessLanguageClient::readJson(json & json)
     {
         try
         {
+            // **Debugging** the catch code below
+            //char const* errorBuf = "ill-formed UTF-8 byte column 12";
+            //throw std::runtime_error(std::string("Testing: ") + errorBuf);
             json = json::parse(stdStrInputbuf);
             break;
         }
         catch (std::exception & e)
         {
-            wxString msg = wxString::Format(" >>> readJson() error:%s", e.what()) ;
+            std::string msg = StdString_Format(" >>> readJson() error:%s", e.what()) ;
 #if defined(cbDEBUG)
             //-Manager::Get()->GetLogManager()->DebugLogError(msg);
             CCLogger::Get()->DebugLog(msg);
@@ -1239,7 +1299,7 @@ bool ProcessLanguageClient::readJson(json & json)
 
             if (retryCount == 1) // do only once
             {
-                msg << "\n" << stdStrInputbuf;
+                msg += "\n" + stdStrInputbuf;
             }
 
             writeClientLog(msg);
@@ -1249,7 +1309,7 @@ bool ProcessLanguageClient::readJson(json & json)
                 break;    //allow nine errors
             }
 
-            if (not msg.Contains("ill-formed UTF-8 byte"))
+            if (not StdString_Contains(msg, "ill-formed UTF-8 byte"))
             {
                 break;
             }
@@ -1257,10 +1317,10 @@ bool ProcessLanguageClient::readJson(json & json)
             // find the location of the invalid utf8 char
             size_t posn = msg.find("column ");
 
-            if (posn)
+            if (stdFound(posn))
             {
                 long utf8BytePosn = 0;
-                msg.Mid(posn + 7).ToLong(&utf8BytePosn, 10); // always returns false even when ok
+                utf8BytePosn = std::stol(msg.substr(posn + 7));
 
                 if (not utf8BytePosn)
                 {
@@ -1276,7 +1336,7 @@ bool ProcessLanguageClient::readJson(json & json)
         }//endcatch
     }//endwhile
 
-    if (std_String_StartsWith(stdStrInputbuf, R"({"jsonrpc":"2.0","method":"textDocument/publishDiagnostics")"))
+    if (StdString_StartsWith(stdStrInputbuf, R"({"jsonrpc":"2.0","method":"textDocument/publishDiagnostics")"))
     {
         // whenever diagnostics arrive, an open, save or didModified was issued. //(ph 2021/02/9)
         // clear busy and modified flags
@@ -1338,7 +1398,7 @@ bool ProcessLanguageClient::WriteHdr(const std::string & in)
         limitedLogOut.Prepend("<<< ");
     }
 
-    writeClientLog(limitedLogOut);
+    writeClientLog(limitedLogOut.ToStdString());
     // Write raw data to clangd server
 #if defined(_WIN32)
     bool ok = m_pServerProcess->WriteRaw(out);   //windows
@@ -1428,7 +1488,7 @@ bool ProcessLanguageClient::DoValidateUTF8data(std::string & strdata)
             }
 
             CCLogger::Get()->DebugLog(msg);
-            writeClientLog(msg);
+            writeClientLog(msg.ToStdString());
             // erase the invalid utf8 char
             strdata.erase(invloc, 1);
         }//endFor
@@ -1514,7 +1574,7 @@ void ProcessLanguageClient::OnLSP_Response(wxThreadEvent & threadEvent)
     catch (std::exception & err)
     {
         wxString errMsg(wxString::Format("\nOnLSP_Response() error: %s", err.what()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
         return;
     }
@@ -1548,7 +1608,7 @@ void ProcessLanguageClient::OnIDResult(wxCommandEvent & event)
         catch (std::exception & err)
         {
             wxString errMsg(wxString::Format("\nOnIDResult() error: %s", err.what()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
             return;
         }
@@ -1653,7 +1713,7 @@ void ProcessLanguageClient::OnIDError(wxCommandEvent & event)
     catch (std::exception & err)
     {
         wxString errMsg(wxString::Format("\nOnIDError() error: %s", err.what()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
         return;
     }
@@ -1706,7 +1766,7 @@ void ProcessLanguageClient::OnMethodParams(wxCommandEvent & event)
     catch (std::exception & e)
     {
         wxString msg = wxString::Format("OnMethodParams() %s", e.what());
-        writeClientLog(msg);
+        writeClientLog(msg.ToStdString());
         cbMessageBox(msg);
         return;
     }
@@ -1941,17 +2001,17 @@ void ProcessLanguageClient::LSP_Initialize(cbProject * pProject)
 
     if (not GetLSP_Initialized())
     {
-        writeClientLog(wxString::Format("<<< Initialize(): %s", dirname));
+        writeClientLog(StdString_Format("<<< Initialize(): %s", dirname.ToStdString().c_str()));
 
         try
         {
-            Initialize(string_ref(fileUtils.FilePathToURI(dirname)));
+            Initialize(string_ref(fileUtils.FilePathToURI(dirname)));    //what a waste of good bits
         }
         catch (std::exception & err)
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_Initialize() error: %s\n%s", err.what(), dirname.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -2013,8 +2073,8 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor * pcbEd)
 
     if (platform::windows)
     {
-        std_ReplaceAll(srcFilename, "\\", "/");
-        std_ReplaceAll(srcDirname, "\\", "/");
+        StdString_ReplaceAll(srcFilename, "\\", "/");
+        StdString_ReplaceAll(srcDirname, "\\", "/");
     }
 
     wxString fileURI = fileUtils.FilePathToURI(infilename); //(ph 2022/01/5)
@@ -2044,7 +2104,7 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor * pcbEd)
     wxString strText = pCntl->GetText();
     //-const char* pText = strText.mb_str();        //works //(ph 2022/01/17)
     const char * pText = strText.ToUTF8();          //ollydbg  220115 did not solve illegal utf8char
-    writeClientLog(wxString::Format("<<< LSP_DidOpen:%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_DidOpen:%s", docuri.c_str()));
 
     try
     {
@@ -2053,7 +2113,7 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor * pcbEd)
     catch (std::exception & err)
     {
         //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
-        wxString errMsg(wxString::Format("\nLSP_DidOpen() error: %s\n%s", err.what(), docuri.c_str()));
+        std::string errMsg(StdString_Format("\nLSP_DidOpen() error: %s\n%s", err.what(), docuri.c_str()));
         writeClientLog(errMsg);
         cbMessageBox(errMsg);
         return false;
@@ -2136,8 +2196,8 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject * pProject)
 
     if (platform::windows)
     {
-        std_ReplaceAll(srcFilename, "\\", "/");
-        std_ReplaceAll(srcDirname, "\\", "/");
+        StdString_ReplaceAll(srcFilename, "\\", "/");
+        StdString_ReplaceAll(srcDirname, "\\", "/");
     }
 
     wxString fileURI = fileUtils.FilePathToURI(infilename);
@@ -2156,7 +2216,7 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject * pProject)
     std::string strText = std::string(pCtrl->GetText().utf8_str());
 #endif
     const char * pText = strText.c_str();          //works
-    writeClientLog(wxString::Format("<<< LSP_DidOpen:%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_DidOpen:%s", docuri.c_str()));
 
     try
     {
@@ -2166,7 +2226,7 @@ bool ProcessLanguageClient::LSP_DidOpen(wxString filename, cbProject * pProject)
     {
         //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
         wxString errMsg(wxString::Format("\nLSP_DidOpen() error: %s\n%s", err.what(), docuri.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
         return false;
     }
@@ -2217,7 +2277,7 @@ void ProcessLanguageClient::LSP_DidClose(cbEditor * pcbEd)
     // There wont be a wxStyledTextCtrl !!
     //-cbStyledTextCtrl* pCntl = pcbEd->GetControl();
     //-if (not pCntl) return;
-    writeClientLog(wxString::Format("<<< LSP_DidClose File:\n%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_DidClose File:\n%s", docuri.c_str()));
 
     try
     {
@@ -2227,7 +2287,7 @@ void ProcessLanguageClient::LSP_DidClose(cbEditor * pcbEd)
     {
         //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
         wxString errMsg(wxString::Format("\nLSP_DidClose() error: %s\n%s", err.what(), fileURI.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
     }
 
@@ -2270,7 +2330,7 @@ void ProcessLanguageClient::LSP_DidClose(wxString filename, cbProject * pProject
     wxString fileURI = fileUtils.FilePathToURI(infilename);
     fileURI.Replace("\\", "/");
     DocumentUri docuri = DocumentUri(fileURI.c_str());
-    writeClientLog(wxString::Format("<<< LSP_DidClose File:\n%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_DidClose File:\n%s", docuri.c_str()));
 
     try
     {
@@ -2280,7 +2340,7 @@ void ProcessLanguageClient::LSP_DidClose(wxString filename, cbProject * pProject
     {
         //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
         wxString errMsg(wxString::Format("\nLSP_DidClose() error: %s\n%s", err.what(), fileURI.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
     }
 
@@ -2337,7 +2397,7 @@ void ProcessLanguageClient::LSP_DidSave(cbEditor * pcbEd)
     wxString fileURI = fileUtils.FilePathToURI(infilename);
     fileURI.Replace("\\", "/");
     DocumentUri docuri = DocumentUri(fileURI.c_str());
-    writeClientLog(wxString::Format("<<< LSP_DidSave File:\n%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_DidSave File:\n%s", docuri.c_str()));
     // Here only when editor was changed, so tell LSP server
     /// clangd issues unhandled exception on didSave()'s (bug #320)
     /// Then it disables completions.
@@ -2426,7 +2486,7 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor * pcbEd, int argCaretPos
     //-const int endPosn   = pCtrl->WordEndPosition(posn, true); //not needed
     position.line       = edLineNum;
     position.character  = edColumn;
-    writeClientLog(wxString::Format("<<< GoToDefinition:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
+    writeClientLog(StdString_Format("<<< GoToDefinition:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
     //Tell LSP server if text has changed
     LSP_DidChange(pcbEd);
 
@@ -2445,7 +2505,7 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor * pcbEd, int argCaretPos
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_GoToDefinition() error: %s\n%s", err.what(), docuri.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -2459,7 +2519,7 @@ void ProcessLanguageClient::LSP_GoToDefinition(cbEditor * pcbEd, int argCaretPos
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_GoToDefinition() error: %s\n%s", err.what(), docuri.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -2520,7 +2580,7 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor * pcbEd, int argCaretPo
     //-const int startPosn = pCtrl->WordStartPosition(edCaretPosn, true);
     position.line       = edLineNum;
     position.character  = edColumn;
-    writeClientLog(wxString::Format("<<< GoToDeclaration:\n%s,line[%d], char[%d]", docuri.str(), position.line, position.character));
+    writeClientLog(StdString_Format("<<< GoToDeclaration:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
     // Tell server if text has changed
     LSP_DidChange(pcbEd);
 
@@ -2538,7 +2598,7 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor * pcbEd, int argCaretPo
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_GoToDeclaration() error: %s\n%s", err.what(), fileURI.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -2552,7 +2612,7 @@ void ProcessLanguageClient::LSP_GoToDeclaration(cbEditor * pcbEd, int argCaretPo
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_GoToDeclaration() error: %s\n%s", err.what(), fileURI.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -2622,8 +2682,8 @@ void ProcessLanguageClient::LSP_FindReferences(cbEditor * pEd, int argCaretPosit
     //-const int endPosn   = pCtrl->WordEndPosition(posn, true); //not needed
     position.line       = edLineNum;
     position.character  = edColumn;
-    writeClientLog(wxString::Format("<<< FindReferences:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
-    // Report changes to server else reported references will be wrong.
+    writeClientLog(StdString_Format("<<< FindReferences:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
+    // Report changes to server else reported line references will be wrong.
     LSP_DidChange(pEd);
 
     try
@@ -2633,9 +2693,9 @@ void ProcessLanguageClient::LSP_FindReferences(cbEditor * pEd, int argCaretPosit
     catch (std::exception & err)
     {
         wxString errMsg(wxString::Format("\nLSP_FindReferences() error: %s\n%s", err.what(), docuri.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
-        writeClientLog("Error: " + errMsg);
+        writeClientLog("Error: " + errMsg.ToStdString());
         return;
     }
 
@@ -2704,8 +2764,8 @@ void ProcessLanguageClient::LSP_RequestRename(cbEditor * pEd, int argCaretPositi
     //-const int endPosn   = pCtrl->WordEndPosition(posn, true); //not needed
     position.line       = edLineNum;
     position.character  = edColumn;
-    writeClientLog(wxString::Format("<<< RequestRename:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
-    // Report changes to server else reported references will be wrong.
+    writeClientLog(StdString_Format("<<< RequestRename:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
+    // Report changes to server else reported line references will be wrong.
     LSP_DidChange(pEd);
     string_ref newNameStrRef(newName.c_str()); //(ph 2022/01/3)
 
@@ -2716,7 +2776,7 @@ void ProcessLanguageClient::LSP_RequestRename(cbEditor * pEd, int argCaretPositi
     catch (std::exception & err)
     {
         wxString errMsg(wxString::Format("\nLSP_FindReferences() error: %s\n%s", err.what(), docuri.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
     }
 
@@ -2771,7 +2831,7 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t rrid)
     }
 
     DocumentUri docuri = DocumentUri(fileURI.c_str());
-    writeClientLog(wxString::Format("<<< LSP_GetSymbols:\n%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_GetSymbols:\n%s", docuri.c_str()));
     // Tell LSP server when text has changed
     LSP_DidChange(pEd);
     wxString rridHdr = fileURI;
@@ -2790,7 +2850,7 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor * pEd, size_t rrid)
     {
         //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
         wxString errMsg(wxString::Format("\nLSP_RequestSymbols() error: %s\n%s", err.what(), docuri.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
     }
 
@@ -2841,7 +2901,7 @@ void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject * pP
     }
 
     DocumentUri docuri = DocumentUri(fileURI.c_str());
-    writeClientLog(wxString::Format("<<< LSP_GetSymbols:\n%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_GetSymbols:\n%s", docuri.c_str()));
     wxString rridHdr = fileURI;
 
     if (rrid)
@@ -2859,7 +2919,7 @@ void ProcessLanguageClient::LSP_RequestSymbols(wxString filename, cbProject * pP
     {
         //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
         wxString errMsg(wxString::Format("\nLSP_RequestSymbols() error: %s\n%s", err.what(), docuri.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
     }
 
@@ -2916,7 +2976,7 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t rri
     }
 
     DocumentUri docuri = DocumentUri(fileURI.c_str());
-    writeClientLog(wxString::Format("<<< LSP_GetSemanticTokens:\n%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_GetSemanticTokens:\n%s", docuri.c_str()));
     // Tell LSP server when text has changed
     LSP_DidChange
     (pEd);
@@ -2936,7 +2996,7 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t rri
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_RequestSemanticTokens() error: %s\n%s", err.what(), docuri.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -2950,7 +3010,7 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(cbEditor * pEd, size_t rri
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_RequestSemanticTokens() error: %s\n%s", err.what(), docuri.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -3002,7 +3062,7 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(wxString filename, cbProje
     }
 
     DocumentUri docuri = DocumentUri(fileURI.c_str());
-    writeClientLog(wxString::Format("<<< LSP_RequestSemanticTokens:\n%s", docuri.c_str()));
+    writeClientLog(StdString_Format("<<< LSP_RequestSemanticTokens:\n%s", docuri.c_str()));
     wxString rridHdr = fileURI;
 
     if (rrid)
@@ -3020,7 +3080,7 @@ void ProcessLanguageClient::LSP_RequestSemanticTokens(wxString filename, cbProje
     {
         //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
         wxString errMsg(wxString::Format("\nLSP_RequestSemanticTokens() error: %s\n%s", err.what(), docuri.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
     }
 
@@ -3192,7 +3252,7 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor * pEd)
     catch (std::exception & err)
     {
         wxString errMsg(wxString::Format("\nLSP_DidChange error: %s\n%s", err.what(), fileURI.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
     }
 
@@ -3272,8 +3332,8 @@ void ProcessLanguageClient::LSP_CompletionRequest(cbEditor * pEd, int rrid)
     context.triggerCharacter = ".";
     wxString lineText = pCtrl->GetLine(position.line);
     wxString token    = lineText.Mid(relativeTokenStart, tknEnd - tknStart);
-    writeClientLog(wxString::Format("<<< Completion:\nline[%d], col[%d] token[%s] uri[%s]",
-                                    position.line, position.character, token.c_str(), docuri.c_str()));
+    writeClientLog(StdString_Format("<<< Completion:\nline[%d], col[%d] token[%s] uri[%s]",
+                                    position.line, position.character, token.ToStdString().c_str(), docuri.c_str()));
 
     try
     {
@@ -3283,7 +3343,7 @@ void ProcessLanguageClient::LSP_CompletionRequest(cbEditor * pEd, int rrid)
     {
         //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
         wxString errMsg(wxString::Format("\nLSP_Completion error: %s\n%s", err.what(), fileURI.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
         return;
     }
@@ -3340,7 +3400,7 @@ void ProcessLanguageClient::LSP_Hover(cbEditor * pEd, int posn, int rrid)
     Position position;
     position.line       = pCtrl->LineFromPosition(posn);
     position.character  = startPosn - pCtrl->PositionFromLine(position.line);
-    writeClientLog(wxString::Format("<<< Hover:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
+    writeClientLog(StdString_Format("<<< Hover:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
     // Inform LSP server if text has changed
     LSP_DidChange(pEd);
     wxString rridHdr = fileURI;
@@ -3358,7 +3418,7 @@ void ProcessLanguageClient::LSP_Hover(cbEditor * pEd, int posn, int rrid)
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_Hover() error: %s\n%s", err.what(), docuri.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -3372,7 +3432,7 @@ void ProcessLanguageClient::LSP_Hover(cbEditor * pEd, int posn, int rrid)
         {
             //printf("read error -> %s\nread -> %s\n ", e.what(), read.c_str());
             wxString errMsg(wxString::Format("\nLSP_Hover() error: %s\n%s", err.what(), docuri.c_str()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
     }
@@ -3428,7 +3488,7 @@ void ProcessLanguageClient::LSP_SignatureHelp(cbEditor * pEd, int posn)
     Position position;
     position.line       = pCtrl->LineFromPosition(posn);
     position.character  = startPosn - pCtrl->PositionFromLine(position.line);
-    writeClientLog(wxString::Format("<<< SignatureHelp:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
+    writeClientLog(StdString_Format("<<< SignatureHelp:\n%s,line[%d], char[%d]", docuri.c_str(), position.line, position.character));
     // Inform LSP server if text has changed
     LSP_DidChange(pEd);
 
@@ -3439,7 +3499,7 @@ void ProcessLanguageClient::LSP_SignatureHelp(cbEditor * pEd, int posn)
     catch (std::exception & err)
     {
         wxString errMsg(wxString::Format("\nLSP_SignatureHelp() error: %s\n%s", err.what(), docuri.c_str()));
-        writeClientLog(errMsg);
+        writeClientLog(errMsg.ToStdString());
         cbMessageBox(errMsg);
     }
 
@@ -4069,7 +4129,7 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject * pProject, Project
         catch (std::exception & err)
         {
             wxString errMsg(wxString::Format("\nAddFileToCompileDBJson() error: %s\n", err.what()));
-            writeClientLog(errMsg);
+            writeClientLog(errMsg.ToStdString());
             cbMessageBox(errMsg);
         }
 
@@ -4109,7 +4169,7 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject * pProject, Project
             }
             catch (std::exception & e)
             {
-                writeClientLog(wxString::Format("\nAddFileToCompileDBJson() error:%s erase", e.what()));
+                writeClientLog(StdString_Format("\nAddFileToCompileDBJson() error:%s erase", e.what()));
                 return false;
             }
 
@@ -4547,7 +4607,7 @@ wxString ProcessLanguageClient::CreateLSPClientLogName(int pid, const cbProject 
     if (not clientLogIndexesFile.IsOpened())
     {
         wxString msg = "Error: CreateLSPClientLogName() could not open " + clientLogIndexesFilename;
-        writeClientLog(msg);
+        writeClientLog(msg.ToStdString());
         cbMessageBox(msg);
         return wxEmptyString;
     }

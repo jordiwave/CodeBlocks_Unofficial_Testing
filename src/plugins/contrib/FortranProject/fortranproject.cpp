@@ -552,13 +552,20 @@ void FortranProject::BuildMenu(wxMenuBar * menuBar)
     {
         wxMenu * submenuJump = new wxMenu();
         submenuJump->Append(idMenuGotoDeclaration, _("Jump to declaration"));
+        wxString prefix(ConfigManager::GetDataFolder() + "/FortranProject.zip#zip:/images/");
+#if wxCHECK_VERSION(3, 1, 6)
+        const wxSize imageSize(16, 16);
+        prefix << "svg/";
+        wxBitmapBundle bmp_back = cbLoadBitmapBundleFromSVG(prefix + "fprojectjumpback.svg", imageSize);
+        wxBitmapBundle bmp_home = cbLoadBitmapBundleFromSVG(prefix + "fprojectjumphome.svg", imageSize);
+        wxBitmapBundle bmp_forward = cbLoadBitmapBundleFromSVG(prefix + "fprojectjumpforward.svg", imageSize);
+#else
         const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Menus);
-        const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Menus);
-        wxString prefix = ConfigManager::GetDataFolder() +
-                          wxString::Format("/images/fortranproject/%dx%d/", imageSize, imageSize);
-        wxBitmap bmp_back = cbLoadBitmapScaled(prefix + "fprojectjumpback.png", wxBITMAP_TYPE_PNG, uiScaleFactor);
-        wxBitmap bmp_home = cbLoadBitmapScaled(prefix + "fprojectjumphome.png", wxBITMAP_TYPE_PNG, uiScaleFactor);
-        wxBitmap bmp_forward = cbLoadBitmapScaled(prefix + "fprojectjumpforward.png", wxBITMAP_TYPE_PNG, uiScaleFactor);
+        prefix << wxString::Format("%dx%d/", imageSize, imageSize);
+        wxBitmap bmp_back = cbLoadBitmap(prefix + "fprojectjumpback.png");
+        wxBitmap bmp_home = cbLoadBitmap(prefix + "fprojectjumphome.png");
+        wxBitmap bmp_forward = cbLoadBitmap(prefix + "fprojectjumpforward.png");
+#endif
         wxMenuItem * itemJumpBack = new wxMenuItem(submenuJump, idMenuJumpBack, _("Jump back"));
         itemJumpBack->SetBitmap(bmp_back);
         wxMenuItem * itemJumpHome = new wxMenuItem(submenuJump, idMenuJumpHome, _("Jump last"));
@@ -1322,54 +1329,7 @@ bool FortranProject::BuildToolBar(wxToolBar * toolBar)
         return false;
     }
 
-    int imSize = Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars);
-    wxString tbSStr;
-
-    if (imSize <= 16)
-    {
-        tbSStr = "_16x16";
-    }
-    else
-        if (imSize <= 20)
-        {
-            tbSStr = "_20x20";
-        }
-        else
-            if (imSize <= 24)
-            {
-                tbSStr = "_24x24";
-            }
-            else
-                if (imSize <= 28)
-                {
-                    tbSStr = "_28x28";
-                }
-                else
-                    if (imSize <= 32)
-                    {
-                        tbSStr = "_32x32";
-                    }
-                    else
-                        if (imSize <= 40)
-                        {
-                            tbSStr = "_40x40";
-                        }
-                        else
-                            if (imSize <= 48)
-                            {
-                                tbSStr = "_48x48";
-                            }
-                            else
-                                if (imSize <= 56)
-                                {
-                                    tbSStr = "_56x56";
-                                }
-                                else
-                                {
-                                    tbSStr = "_64x64";
-                                }
-
-    Manager::Get()->AddonToolBar(toolBar, "fortran_project_toolbar" + tbSStr);
+    Manager::Get()->AddonToolBar(toolBar, "fortran_project_toolbar_22x22");
     toolBar->Realize();
     m_pToolbar = toolBar;
     m_pToolbar->EnableTool(XRCID("idFortProjBack"), false);

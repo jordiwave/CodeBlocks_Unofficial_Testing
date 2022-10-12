@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467">
+    <defs>
+        <linearGradient id="b">
+            <stop style="stop-color:#7a73fb;stop-opacity:1" offset="0"/>
+            <stop style="stop-color:#2d25c8;stop-opacity:1" offset="1"/>
+        </linearGradient>
+        <linearGradient id="a">
+            <stop style="stop-color:#790075;stop-opacity:1" offset="0"/>
+            <stop style="stop-color:#ae5aab;stop-opacity:1" offset="1"/>
+        </linearGradient>
+        <linearGradient xlink:href="#a" id="e" gradientUnits="userSpaceOnUse" x1="2.285" y1="307.589" x2="5.839" y2="302.074"/>
+        <linearGradient xlink:href="#a" id="d" gradientUnits="userSpaceOnUse" x1="2.285" y1="307.589" x2="5.839" y2="302.074"/>
+        <linearGradient gradientTransform="matrix(-1.03871 0 0 .9595 8.992 .015)" xlink:href="#a" id="f" gradientUnits="userSpaceOnUse" x1="2.285" y1="307.589" x2="5.839" y2="302.074"/>
+        <linearGradient xlink:href="#b" id="c" x1="3.043" y1="291.047" x2="5.292" y2="293.957" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.00672 0 0 .85184 -.023 43.336)"/>
+    </defs>
+    <g transform="translate(0 -288.533)">
+        <rect style="fill:url(#c);fill-opacity:1;stroke:#16108e;stroke-width:.24501744;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" width="2.93" height="2.93" x="2.774" y="291.037" ry=".597"/>
+        <g style="font-style:normal;font-weight:400;font-size:6.573318px;line-height:1.25;font-family:sans-serif;letter-spacing:0;word-spacing:0;fill:url(#d);fill-opacity:1;stroke:none;stroke-width:.02645833;stroke-miterlimit:4;stroke-dasharray:none" transform="matrix(1.04215 0 0 .95955 -.53 0)" aria-label="{">
+            <path style="fill:url(#e);fill-opacity:1;stroke-width:.02645833;stroke-miterlimit:4;stroke-dasharray:none" d="m3.563 307.04-.009.825h-.199c-.532 0-.89-.08-1.072-.238-.18-.158-.27-.474-.27-.946v-.768c0-.323-.116-.415-.232-.54-.115-.123-.263-.272-.575-.268l-.19.002v-.69h.187c.306 0 .46-.015.574-.137.116-.124.237-.211.237-.53v-.77c0-.473.091-.888.27-1.044.183-.158.54-.129 1.018-.135l.252-.003v.828l-.252-.003c-.301-.003-.354-.023-.446.071-.063.07-.063.093-.063.395v.686c0 .336-.156.629-.254.78-.096.152-.273.223-.508.276.238.058.412.124.508.276.096.152.268.417.266.822l-.003.564c-.001.302-.038.381.054.475.092.094.197.073.486.072z"/>
+        </g>
+        <path style="font-style:normal;font-weight:400;font-size:6.573318px;line-height:1.25;font-family:sans-serif;letter-spacing:0;word-spacing:0;fill:url(#f);fill-opacity:1;stroke:none;stroke-width:.02641394;stroke-miterlimit:4;stroke-dasharray:none" d="m5.292 294.62.008.792h.207c.554 0 .925-.076 1.114-.227.186-.152.28-.455.28-.909v-.736c0-.31.12-.399.24-.518s.275-.261.599-.257l.197.002v-.662h-.194c-.318-.001-.479-.015-.597-.132-.12-.12-.245-.203-.245-.509v-.739c0-.454-.095-.851-.282-1.001-.189-.152-.56-.124-1.057-.13l-.262-.002v.793l.262-.003c.313-.003.368-.021.464.07.066.065.066.088.066.378v.658c0 .323.161.603.263.749.1.146.283.213.528.264-.247.056-.428.12-.528.265-.1.146-.279.4-.277.789l.003.541c.002.29.04.366-.055.456-.096.09-.205.07-.505.068z"/>
+        <image y="288.004" x="-9.393" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A /wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sGBw0gLX45YNEAAAAZdEVYdENv bW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAByklEQVQ4y92SvWuTYRTFf/dtU5pS6aCglIoK aqmDrhW6uIkgCn5hBQehQksRpLSglqjVEGkGl0KRIiIuRYsFcVNQJ3VREeliBIsQcQhqim+S5+s6 xLwY8gcI3uneeziHw7kX/nXJ38PD4QeKgreOY0snm7CFwXk1FYOJDec/TiZY1GiWTy1pR7qDVGeq hQww8mpUJBJEhNm+nLYIIEAkHLxzWAD6N6/pjr4VHdj2THdtv68AY2/PCSJAwqe90XjjETU0yEeO d/K1uJ7yWhfl8ibieE4/F8dFg7YK3Nt/V23V4q0HIOgXdr54zOnCIiEEnvfsI2u31rEQCF6Z6clo 5ueMRAt759VV6+GcWB4WgPbUNwYLi/T/eMNA+R1DpafYP+ITn6YkuEDwgUttUxqNvBwVW7G4iuX2 0C0FkLYS3ofEZgiKtXXbN3qvq3ce7zxZPysRwNnXY1KrGEzFJKQnGw/xoXsP77t282jdgWTvjMNb x7VqTppCtLFBpH69lcJRudk7p/n0GZwLmDjw/deEALiqw9V86xVMXAMR8ltyOrl6QVaL4y2/cKV7 Wl3NJWG3fGJ2w1UFUIXp0uUmLJO+qN54gg/kyAv/T/0Gvvvicsx8kKcAAAAASUVORK5CYII=" style="image-rendering:optimizeSpeed" preserveAspectRatio="none" height="8.467" width="8.467"/>
+        <circle style="fill:red;fill-opacity:1;stroke:red;stroke-width:.2315104;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="4.233" cy="292.502" r=".81"/>
+    </g>
+</svg>

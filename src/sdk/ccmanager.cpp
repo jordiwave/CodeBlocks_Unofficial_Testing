@@ -1401,7 +1401,8 @@ void CCManager::OnPopupScroll(wxMouseEvent & event)
 
     const wxPoint & pos = editor->ClientToScreen(event.GetPosition());
 
-    if (m_pPopup && m_pPopup->GetScreenRect().Contains(pos))
+    // Scroll when the current mouse position is within a shown popup window
+    if (m_pPopup && m_pPopup->IsShown() && m_pPopup->GetScreenRect().Contains(pos))
     {
         if (m_pHtml)
         {
@@ -1409,7 +1410,7 @@ void CCManager::OnPopupScroll(wxMouseEvent & event)
         }
     }
     else
-        if (m_pAutocompPopup && m_pAutocompPopup->GetScreenRect().Contains(pos))
+        if (m_pAutocompPopup && m_pAutocompPopup->IsShown() && m_pAutocompPopup->GetScreenRect().Contains(pos))
         {
             m_pAutocompPopup->ScrollList(0, event.GetWheelRotation() / -4); // TODO: magic number... can we hook to the actual event?
         }

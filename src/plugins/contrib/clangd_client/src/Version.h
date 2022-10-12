@@ -22,7 +22,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.44 2022/10/1")
+#define VERSION wxT("0.2.45 22/10/8")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -53,10 +53,13 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
-//0.2.45
-//          2022/10/03
-//          Apply patch#69 change some cbmessage dialogs to AnnoyingDialog.
-//          Apply patch#70 rework startup message dialogs to show after the C::B app has loaded (after auto detect compiler dialog)
+//0.2.45    Commit 2022/10/9 rev 83
+//          2022/10/8
+//          Assure log accuracy by writing only std:string(s) to the client and serverlogs. Just like clangd give to us.
+//          2022/10/6
+//          Create patch to CB ccManager. It's scrolling hidden popup document window but should
+//              be scrolling shown popup completion window.
+//          Honor user max code completions limit (was stuck on 20) Thanks MaxGaspa.
 //0.2.44    Commit 2022/10/2 rev 82
 //          2022/10/1
 //          Fix GoToFunction() for non-source files.

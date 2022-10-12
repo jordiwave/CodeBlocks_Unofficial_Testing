@@ -113,11 +113,15 @@ WorkspaceBrowserF::WorkspaceBrowserF(wxWindow * parent, NativeParserF * np, Pars
 
 void WorkspaceBrowserF::CreateControlsWBF()
 {
+    wxString prefix(ConfigManager::GetDataFolder() + "/FortranProject.zip#zip:images/");
+#if wxCHECK_VERSION(3, 1, 6)
+    prefix << "svg/";
+    wxBitmapBundle bmp_makevisible = cbLoadBitmapBundleFromSVG(prefix + "fprojectmakevisible.svg", wxSize(16, 16));
+#else
     const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Main);
-    const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Main);
-    wxString prefix = ConfigManager::GetDataFolder() +
-                      wxString::Format("/FortranProject.zip#zip:images/%dx%d/", imageSize, imageSize);
-    wxBitmap bmp_makevisible = cbLoadBitmapScaled(prefix + "fprojectmakevisible.png", wxBITMAP_TYPE_PNG, uiScaleFactor);
+    prefix << wxString::Format("%dx%d/", imageSize, imageSize);
+    wxBitmap bmp_makevisible = cbLoadBitmap(prefix + "fprojectmakevisible.png");
+#endif
     wxBoxSizer * BoxSizer1;
     wxBoxSizer * BoxSizer2;
     wxBoxSizer * BoxSizer3;

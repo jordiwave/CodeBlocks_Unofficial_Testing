@@ -26,7 +26,7 @@ libwxSpellChecker_la_LIBADD = \
 			$(CB_HUNSPELL_LIBS)
 
 libwxSpellChecker_la_SOURCES = \
-			../HunspellInterface.cpp \
+			src/HunspellInterface.cpp \
 			src/PersonalDictionary.cpp \
 			src/SpellCheckCmdLineInterface.cpp \
 			src/SpellCheckDialogInterface.cpp \
@@ -39,7 +39,7 @@ libwxSpellChecker_la_SOURCES = \
 			src/exports.cpp
 
 noinst_HEADERS = \
-			../HunspellInterface.h \
+			include/HunspellInterface.h \
 			include/PersonalDictionary.h \
 			include/SpellCheckEngineInterface.h \
 			include/SpellCheckerOptionsDialog.h \

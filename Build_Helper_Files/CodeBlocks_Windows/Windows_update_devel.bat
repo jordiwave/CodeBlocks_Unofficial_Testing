@@ -6,19 +6,13 @@ SET CurrentDir="%CD%"
 
 for /f "tokens=4-7 delims=[.] " %%i in ('ver') do (if %%i==Version (set WIN_Version=%%j.%%k) else (set WIN_Version=%%i.%%j))
 
-if exist "..\..\src\devel31_32" call :CONFIGURE_WX31_32_VARS
 if exist "..\..\src\devel32_32" call :CONFIGURE_WX32_32_VARS
-if exist "..\..\src\devel31_64" call :CONFIGURE_WX31_64_VARS
 if exist "..\..\src\devel32_64" call :CONFIGURE_WX32_64_VARS
 
-if exist "..\src\devel31_32" call :CONFIGURE_WX31_32_VARS
 if exist "..\src\devel32_32" call :CONFIGURE_WX32_32_VARS
-if exist "..\src\devel31_64" call :CONFIGURE_WX31_64_VARS
 if exist "..\src\devel32_64" call :CONFIGURE_WX32_64_VARS
 
-if exist "src\devel31_32" call :CONFIGURE_WX31_32_VARS
 if exist "src\devel32_32" call :CONFIGURE_WX32_32_VARS
-if exist "src\devel31_64" call :CONFIGURE_WX31_64_VARS
 if exist "src\devel32_64" call :CONFIGURE_WX32_64_VARS
 
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay
@@ -45,13 +39,6 @@ SET WXWIN=%RETVAL%
 if not exist "%WXWIN%" goto ErrNowxWidget
 
 @rem ----------------------------------------------------------------------------
-@rem Check if build worked
-@rem ----------------------------------------------------------------------------
-if not exist "%BUILD_DEV_OUTPUT_DIR%\codeblocks.exe"                                                                goto CompileError
-if not exist "%BUILD_DEV_OUTPUT_DIR%\libcodeblocks.la"  if not exist "%BUILD_DEV_OUTPUT_DIR%\codeblocks.dll"            goto CompileError
-if not exist "%BUILD_DEV_OUTPUT_DIR%\libcodeblocks.la"  if not exist "%BUILD_DEV_OUTPUT_DIR%\share\codeblocks\todo.zip" goto CompileError
-
-@rem ----------------------------------------------------------------------------
 @rem Copy the compiler DLL and wxWidget DLL's into the %BUILD_DEV_OUTPUT_DIR% directory
 @rem ----------------------------------------------------------------------------
 @echo Copying compiler and wxWidget DLL's into the %BUILD_DEV_OUTPUT_DIR% directory.
@@ -72,12 +59,21 @@ if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" copy /Y "%WXWIN%\lib\gcc_dll
 
 
 if not exist "%BUILD_DEV_OUTPUT_DIR%\exchndl.dll" (
-    if "%WIN_Version%" == "10.0" copy /Y "exchndl\win_10\bin\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul
-    if "%WIN_Version%" ==  "6.3" copy /Y "exchndl\win_7\bin\win%BUILD_BITS%\bin\*.*"  %BUILD_DEV_OUTPUT_DIR% > nul
-    if "%WIN_Version%" ==  "6.2" copy /Y "exchndl\win_7\bin\win%BUILD_BITS%\bin\*.*"  %BUILD_DEV_OUTPUT_DIR% > nul
-    if "%WIN_Version%" ==  "5.2" copy /Y "exchndl\win_xp\bin\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul
-    if "%WIN_Version%" ==  "5.1" copy /Y "exchndl\win_xp\bin\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul
-    if not exist "%BUILD_DEV_OUTPUT_DIR%\exchndl.dll" copy /Y "exchndl\win_7\bin\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul
+    if "%WIN_Version%" == "10.0" copy /Y "exchndl\Win_10\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul
+    if "%WIN_Version%" ==  "6.3" copy /Y "exchndl\Win_7\win%BUILD_BITS%\bin\*.*"  %BUILD_DEV_OUTPUT_DIR% > nul
+    if "%WIN_Version%" ==  "6.2" copy /Y "exchndl\Win_7\win%BUILD_BITS%\bin\*.*"  %BUILD_DEV_OUTPUT_DIR% > nul
+    if "%WIN_Version%" ==  "5.2" copy /Y "exchndl\Win_xp\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul
+    if "%WIN_Version%" ==  "5.1" copy /Y "exchndl\Win_xp\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul
+    if not exist "%BUILD_DEV_OUTPUT_DIR%\exchndl.dll" copy /Y "exchndl\Win_7\win%BUILD_BITS%\bin\*.*" %BUILD_DEV_OUTPUT_DIR% > nul
+    )
+
+@rem ----------------------------------------------------------------------------
+@rem Check if build worked
+@rem ----------------------------------------------------------------------------
+if not exist "%BUILD_DEV_OUTPUT_DIR%\codeblocks.exe"                goto CompileError
+if not exist "%BUILD_DEV_OUTPUT_DIR%\libcodeblocks.la"  (
+    if not exist "%BUILD_DEV_OUTPUT_DIR%\*codeblocks.dll"           goto CompileError
+    if not exist "%BUILD_DEV_OUTPUT_DIR%\share\codeblocks\todo.zip" goto CompileErrorZIP
     )
 
 @rem ------------------------------------------------------------------------------------------
@@ -121,6 +117,19 @@ cd /d %PrevDirectory%
     @set RETURN_ERROR_LEVEL=2
     goto Finish
 
+:CompileErrorZIP
+    @echo.
+    @echo.
+    @echo ^+----------------------------------------------------^+
+    @echo ^| Error: Code::Blocks compile error was detected.    ^|
+    @echo ^|        Mssing zip file(s) was detected.            ^|
+    @echo ^|        Please fix the error and try again.         ^|
+    @echo ^+----------------------------------------------------^+
+    @echo.
+    @echo.
+    @set RETURN_ERROR_LEVEL=3
+    goto Finish
+
 :NoPluginDLLFilesFound
     @echo.
     @echo.
@@ -130,7 +139,7 @@ cd /d %PrevDirectory%
     @echo ^+------------------------------------------------------^+
     @echo.
     @echo.
-    @set RETURN_ERROR_LEVEL=3
+    @set RETURN_ERROR_LEVEL=4
     goto Finish
 
 :ErrNowxWidget
@@ -145,19 +154,9 @@ cd /d %PrevDirectory%
     @echo ^+------------------------------------------------------------------------------------------------------------^+
     @echo. 
     @echo.
-    @set RETURN_ERROR_LEVEL=4
+    @set RETURN_ERROR_LEVEL=5
     goto Finish
 
-:CONFIGURE_WX31_32_VARS
-    set BUILD_BITS=32
-    set WXWIDGET_VERSION=3.1.7
-    set WX_DIR_VERSION=31
-    EXIT /B
-:CONFIGURE_WX31_64_VARS
-    set BUILD_BITS=64
-    set WXWIDGET_VERSION=3.1.7
-    set WX_DIR_VERSION=31
-    EXIT /B
 :CONFIGURE_WX32_32_VARS
     set BUILD_BITS=32
     set WXWIDGET_VERSION=3.2.1

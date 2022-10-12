@@ -75,7 +75,6 @@ cbDiffSelectFiles::cbDiffSelectFiles(wxWindow * parent, wxWindowID id)
     BoxSizer1->Add(StdDialogButtonSizer1, 0, wxALL | wxEXPAND, 5);
     SetSizer(BoxSizer1);
     SelectFile = new wxFileDialog(this, _("Select file"), wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-    BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
     Connect(ID_BSFROM, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffSelectFiles::OnSelectFrom);
     Connect(ID_BSTO, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffSelectFiles::OnSelectTo);
@@ -91,6 +90,7 @@ cbDiffSelectFiles::cbDiffSelectFiles(wxWindow * parent, wxWindowID id)
 cbDiffSelectFiles::~cbDiffSelectFiles()
 {
     //(*Destroy(cbDiffSelectFiles)
+    SelectFile->Destroy();
     //*)
 }
 
