@@ -78,6 +78,7 @@ noinst_HEADERS = \
 
 resources_forZIP = \
 			manifest.xml \
+			\
 			images/16x16/copyLeft.png \
 			images/16x16/copyLeft_next.png \
 			images/16x16/copyRight.png \
@@ -91,6 +92,7 @@ resources_forZIP = \
 			images/16x16/swap.png \
 			images/16x16/table.png \
 			images/16x16/unified.png \
+			\
 			images/20x20/copyLeft.png \
 			images/20x20/copyLeft_next.png \
 			images/20x20/copyRight.png \
@@ -104,6 +106,7 @@ resources_forZIP = \
 			images/20x20/swap.png \
 			images/20x20/table.png \
 			images/20x20/unified.png \
+			\
 			images/24x24/copyLeft.png \
 			images/24x24/copyLeft_next.png \
 			images/24x24/copyRight.png \
@@ -117,6 +120,7 @@ resources_forZIP = \
 			images/24x24/swap.png \
 			images/24x24/table.png \
 			images/24x24/unified.png \
+			\
 			images/28x28/copyLeft.png \
 			images/28x28/copyLeft_next.png \
 			images/28x28/copyRight.png \
@@ -130,6 +134,7 @@ resources_forZIP = \
 			images/28x28/swap.png \
 			images/28x28/table.png \
 			images/28x28/unified.png \
+			\
 			images/32x32/copyLeft.png \
 			images/32x32/copyLeft_next.png \
 			images/32x32/copyRight.png \
@@ -143,6 +148,7 @@ resources_forZIP = \
 			images/32x32/swap.png \
 			images/32x32/table.png \
 			images/32x32/unified.png \
+			\
 			images/40x40/copyLeft.png \
 			images/40x40/copyLeft_next.png \
 			images/40x40/copyRight.png \
@@ -156,6 +162,7 @@ resources_forZIP = \
 			images/40x40/swap.png \
 			images/40x40/table.png \
 			images/40x40/unified.png \
+			\
 			images/48x48/copyLeft.png \
 			images/48x48/copyLeft_next.png \
 			images/48x48/copyRight.png \
@@ -169,6 +176,7 @@ resources_forZIP = \
 			images/48x48/swap.png \
 			images/48x48/table.png \
 			images/48x48/unified.png \
+			\
 			images/56x56/copyLeft.png \
 			images/56x56/copyLeft_next.png \
 			images/56x56/copyRight.png \
@@ -182,6 +190,7 @@ resources_forZIP = \
 			images/56x56/swap.png \
 			images/56x56/table.png \
 			images/56x56/unified.png \
+			\
 			images/64x64/copyLeft.png \
 			images/64x64/copyLeft_next.png \
 			images/64x64/copyRight.png \
@@ -195,6 +204,21 @@ resources_forZIP = \
 			images/64x64/swap.png \
 			images/64x64/table.png \
 			images/64x64/unified.png \
+			\
+			images/svg/copyLeft.svg \
+			images/svg/copyLeft_next.svg \
+			images/svg/copyRight.svg \
+			images/svg/copyRight_next.svg \
+			images/svg/firstDifference.svg \
+			images/svg/lastDifference.svg \
+			images/svg/nextDifference.svg \
+			images/svg/previousDifference.svg \
+			images/svg/reload.svg \
+			images/svg/sidebyside.svg \
+			images/svg/swap.svg \
+			images/svg/table.svg \
+			images/svg/unified.svg \
+			\
 			cb_diff_toolbar.xrc
 
 EXTRA_DIST = \

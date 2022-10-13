@@ -38,6 +38,7 @@ class CMakeListsExporter : public ExporterBase
         wxString GetHumanReadableOptionRelation(ProjectBuildTarget * buildTarget, OptionsRelationType type);
 
         const wxChar * EOL = wxTextFile::GetEOL();
+        wxString    m_CBProjectRootDir;
         wxString    m_ContentCMakeListTarget;
         wxString    m_ContentCMakeListGlobalVariables;
         wxString    m_sGlobalVariableFileName;

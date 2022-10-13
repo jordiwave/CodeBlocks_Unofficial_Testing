@@ -106,25 +106,27 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString & param, wxS
         }
     }
 
-    const wxString name = GetParamValue(paramNode);
+    const wxString name(GetParamValue(paramNode));
 
     if (name.empty())
     {
-        return wxArtProvider::GetBitmap(wxT("sdk/missing_icon"), wxART_TOOLBAR, size * scaleFactor);
+        return wxArtProvider::GetBitmap("sdk/missing_icon", wxART_TOOLBAR, size * scaleFactor);
     }
 
     wxString finalName(name);
     wxBitmap bitmap;
-
 #if wxCHECK_VERSION(3, 1, 6)
+
     if (finalName.Replace("22x22", "svg"))
     {
-    finalName.Replace(".png", ".svg");
+        finalName.Replace(".png", ".svg");
         bitmap = cbLoadBitmapBundleFromSVG(finalName, wxSize(m_ImageSize, m_ImageSize), &GetCurFileSystem()).GetBitmap(wxDefaultSize);
 
-        if (!bitmap.Ok() && name.Contains(".png"))
+        // Fallback
+        if (!bitmap.Ok() && name.EndsWith(".png"))
         {
             finalName = name;
+
             if (finalName.Replace("22x22", m_PathReplaceString))
             {
                 bitmap = cbLoadBitmap(finalName, wxBITMAP_TYPE_PNG, &GetCurFileSystem());
@@ -138,7 +140,14 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString & param, wxS
 
 #else
     finalName.Replace("22x22", m_PathReplaceString);
-    wxBitmap bitmap = cbLoadBitmap(finalName, wxBITMAP_TYPE_PNG, &GetCurFileSystem());
+
+    if (finalName.Contains(".svg"))
+    {
+        // Just in case something was coded up incorrectly
+        finalName.Replace(".svg", ".png");
+    }
+
+    bitmap = cbLoadBitmap(finalName, wxBITMAP_TYPE_PNG, &GetCurFileSystem());
 #endif
 
     if (!bitmap.Ok())
