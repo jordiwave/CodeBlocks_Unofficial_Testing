@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="yes"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+<path style="fill:#010101; stroke:none;" d="M0 0L0 64L64 64L64 0L0 0z"/>
+<path style="fill:#ff0101; stroke:none;" d="M2 3L2 11L32 11L32 3L2 3z"/>
+<path style="fill:#55ff01; stroke:none;" d="M32 3L32 11L62 11L62 3L32 3z"/>
+<path style="fill:#7d7d7d; stroke:none;" d="M2 11L2 14L62 14L62 11L2 11z"/>
+<path style="fill:#55ff01; stroke:none;" d="M2 14L2 25L32 25L32 38L2 38L2 40L62 38L62 25L32 25L32 14L2 14z"/>
+<path style="fill:#ff0101; stroke:none;" d="M32 14L32 25L62 25L62 14L32 14M2 25L2 38L32 38L32 25L2 25M32 38L32 40L62 40L62 38L32 38z"/>
+<path style="fill:#7d7d7d; stroke:none;" d="M2 40L2 46L62 46L62 40L2 40z"/>
+<path style="fill:#ff0101; stroke:none;" d="M2 46L2 54L32 54L32 46L2 46z"/>
+<path style="fill:#55ff01; stroke:none;" d="M32 46L32 54L62 54L62 46L32 46z"/>
+<path style="fill:#7d7d7d; stroke:none;" d="M2 54L2 56L62 56L62 54L2 54z"/>
+<path style="fill:#55ff01; stroke:none;" d="M2 56L2 61L32 61L32 56L2 56z"/>
+<path style="fill:#ff0101; stroke:none;" d="M32 56L32 61L62 61L62 56L32 56z"/>
+</svg>

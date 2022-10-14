@@ -20,6 +20,14 @@ class CMakeListsExporter : public ExporterBase
     protected:
 
     private:
+        enum ConvertMacro_DirSeperator
+        {
+            NoConversion,
+            WindowsToLinux,
+            WindowsExpand,
+            WindowsExpandKeepTrailing
+        };
+
         enum ExportMode
         {
             GVS_EXPORT_ALL	= 0x00,
@@ -28,7 +36,7 @@ class CMakeListsExporter : public ExporterBase
         };
 
         void ExpandMacros(wxString & buffer);
-        void ConvertMacros(wxString & buffer, bool bConvertWindowsSlashToLinux);
+        void ConvertMacros(wxString & buffer, ConvertMacro_DirSeperator eConvertDirSeperator);
         void ExportGlobalVariableSets(ExportMode eMode);
         wxString ExportMacros(ProjectBuildTarget * buildTarget);
         void ExportGlobalVariables();

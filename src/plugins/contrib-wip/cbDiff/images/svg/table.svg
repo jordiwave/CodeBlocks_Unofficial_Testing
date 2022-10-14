@@ -1,0 +1,11 @@
+<?xml version="1.0" standalone="yes"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+<path style="fill:#010101; stroke:none;" d="M0 0L0 64L64 64L64 0L0 0z"/>
+<path style="fill:#ff0101; stroke:none;" d="M2 14L2 22L62 22L62 14L2 14z"/>
+<path style="fill:#7d7d7d; stroke:none;" d="M2 22L2 25L62 25L62 22L2 22z"/>
+<path style="fill:#55ff01; stroke:none;" d="M2 25L2 35L62 35L62 25L2 25z"/>
+<path style="fill:#ff0101; stroke:none;" d="M2 35L2 48L62 48L62 35L2 35z"/>
+<path style="fill:#55ff01; stroke:none;" d="M2 48L2 51L62 51L62 48L2 48z"/>
+<path style="fill:#7d7d7d; stroke:none;" d="M2 51L2 59L62 59L62 51L2 51z"/>
+<path style="fill:#55ff01; stroke:none;" d="M2 59L2 61L62 61L62 59L2 59z"/>
+</svg>
