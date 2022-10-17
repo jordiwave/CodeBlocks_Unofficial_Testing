@@ -16,6 +16,10 @@
 				<Compiler>
 					<Add option="$(#CB_BUILD.CFLAGS)" />
 				</Compiler>
+				<ExtraCommands>
+					<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ToolsPlus.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
@@ -41,10 +45,6 @@
 			<Add library="codeblocks" />
 			<Add directory="$(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
-		<ExtraCommands>
-			<Add after="zip -jq9 $(PROJECT_DIR)../../../devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/ToolsPlus.zip manifest.xml" />
-			<Mode after="always" />
-		</ExtraCommands>
 		<Unit filename="CmdConfigDialog.cpp" />
 		<Unit filename="CmdConfigDialog.h" />
 		<Unit filename="PipedProcessCtrl.cpp" />

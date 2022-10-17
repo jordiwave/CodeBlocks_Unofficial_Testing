@@ -151,6 +151,7 @@ bool shutTFU = wxFound(0); //shutup 'not used' compiler err msg when wxFound not
 ////    bool ns_CompilerAttached = false;
 wxString ns_DefaultCompilerMasterPath = wxString(); //Default compiler master path
 
+int ns_CompilerEventId = 0;
 }
 // ----------------------------------------------------------------------------
 namespace CodeCompletionHelper
@@ -760,9 +761,6 @@ void ClgdCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_PLUGIN_ATTACHED,      new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnPluginAttached));
     pm->RegisterEventSink(cbEVT_COMPILER_STARTED,     new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnCompilerStarted));
     pm->RegisterEventSink(cbEVT_COMPILER_FINISHED,    new cbEventFunctor<ClgdCompletion, CodeBlocksEvent>(this, &ClgdCompletion::OnCompilerFinished));
-    //m->RegisterEventSink(cbEVT_PLUGIN_RELEASED,        new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginReleased));
-    // m->RegisterEventSink(cbEVT_PLUGIN_INSTALLED,       new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
-    //m->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED,     new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
     m_pDocHelper->OnAttach();
 }
 // ----------------------------------------------------------------------------
@@ -811,6 +809,12 @@ void ClgdCompletion::OnRelease(bool appShutDown)
     if (m_CC_initDeferred)
     {
         return;
+    }
+
+    // FIXME (ph#): This is unecessary after a nightly for rev 12975 //(ph 2022/10/13)
+    if (m_pCompilerPlugin)
+    {
+        m_pCompilerPlugin->Unbind(wxEVT_COMMAND_MENU_SELECTED, &ClgdCompletion::OnCompilerMenuSelected, this);
     }
 
     GetParseManager()->SetPluginIsShuttingDown();
@@ -1248,6 +1252,12 @@ void ClgdCompletion::OnPluginAttached(CodeBlocksEvent & event)
         {
             isClangdClientPlugin = true;
         }
+
+        // FIXME (ph#): This is unecessary after a nightly for rev 12975 //(ph 2022/10/13)
+        if (infoName == "compiler")
+        {
+            m_pCompilerPlugin = pPlugin;
+        }
     }
 
     // if clangd_client was disabled and user has just enabled it, we need to invoke
@@ -1332,9 +1342,28 @@ void ClgdCompletion::OnIdle(wxIdleEvent & event) //(ph 2020/10/24)
     }
 }
 // ----------------------------------------------------------------------------
+void ClgdCompletion::OnCompilerMenuSelected(wxCommandEvent & event)
+// ----------------------------------------------------------------------------
+{
+    // This function bound from OnAppStartupDone() to intercept compiler menu selections
+    // in order to avoid hanging this plugin because compilergcc plugin sends
+    // no EVT_COMPIER_FINISHED event on a compiler Run() command.
+    // FIXME (ph#): This trap is unnecessary after a nightly for rev 12975
+    event.Skip(); /// <------ very important
+    ns_CompilerEventId = event.GetId();
+}
+// ----------------------------------------------------------------------------
 void ClgdCompletion::OnCompilerStarted(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
+    //If this is a idCompileMenuRun only, do not set compiler is running
+    // else we'll hang before nightly rev 12975 fix
+#warning Developer should remove the line below when using CB rev 12975 and above.
+    if (ns_CompilerEventId == XRCID("idCompilerMenuRun"))
+    {
+        return;
+    }
+
     GetParseManager()->SetCompilerIsRunning(true);
 }
 // ----------------------------------------------------------------------------
@@ -2868,6 +2897,53 @@ void ClgdCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent & event)
     cbMessageBox(wxString::Format(_("Not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
 }
 // ----------------------------------------------------------------------------
+void ClgdCompletion::ClearReparseConditions()
+// ----------------------------------------------------------------------------
+{
+    // Clear all conditions that may prevent a reparse
+    cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+    if (not pProject)
+    {
+        return;
+    }
+
+    Parser * pParser = (Parser *)GetParseManager()->GetParserByProject(pProject);
+
+    if (not pParser)
+    {
+        return;
+    }
+
+    wxArrayString pauseReasons;
+    pParser->GetArrayOfPauseParsingReasons(pauseReasons);
+    wxString msg;
+
+    for (size_t ii = 0; ii < pauseReasons.GetCount(); ++ii)
+    {
+        msg = pauseReasons[ii] + "\n";
+    }
+
+    if (GetParseManager()->IsCompilerRunning())
+    {
+        msg += _("Compiler was running, now cleared.\n");
+        GetParseManager()->SetCompilerIsRunning(false);
+    }
+
+    if (pParser->GetUserParsingPaused())
+    {
+        pParser->SetUserParsingPaused(false);
+        msg += _("User paused parsing, now cleared.\n");
+    }
+
+    if (msg.Length())
+    {
+        InfoWindow::Display(" Paused reason(s) ", msg, 7000);
+    }
+
+    return;
+}
+// ----------------------------------------------------------------------------
 void ClgdCompletion::OnCurrentProjectReparse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
@@ -2875,6 +2951,7 @@ void ClgdCompletion::OnCurrentProjectReparse(wxCommandEvent & event)
     // and this event will become invalid. Let wxWidgets delete it.
     //eventSkip() ==> causes crash;
     // Invoked from menu event "Reparse active project" and Symbols window root context menu "Re-parse now"
+    ClearReparseConditions();
     // ----------------------------------------------------
     // CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
     // ----------------------------------------------------
@@ -3017,6 +3094,7 @@ void ClgdCompletion::OnReparseSelectedProject(wxCommandEvent & event)
 
                 if (project)
                 {
+                    ClearReparseConditions();
                     // Send a quit instruction
                     ShutdownLSPclient(project);
                     // Close and create a new parser
@@ -3127,6 +3205,7 @@ void ClgdCompletion::OnSelectedFileReparse(wxCommandEvent & event)
 void ClgdCompletion::OnLSP_SelectedFileReparse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
+    // Reparse a file selected from project tree
     wxTreeCtrl * tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
 
     if (!tree)
@@ -3162,6 +3241,13 @@ void ClgdCompletion::OnLSP_SelectedFileReparse(wxCommandEvent & event)
                 return;
             }
 
+            Parser * pParser = (Parser *)GetParseManager()->GetParserByProject(project);
+
+            if (pParser)
+            {
+                ClearReparseConditions();
+            }
+
             // if file is open in editor, send a didSave() causing a clangd reparse
             // if file is not open in editor do a didOpen()/didClose() sequence
             //      to cause a background parse.
@@ -3189,6 +3275,7 @@ void ClgdCompletion::OnLSP_SelectedFileReparse(wxCommandEvent & event)
 void ClgdCompletion::OnEditorFileReparse(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
+    // Redirection to OnLSP_EditorFileReparse()
     return OnLSP_EditorFileReparse(event); //(ph 2021/05/13)
 }
 // ----------------------------------------------------------------------------
@@ -3224,6 +3311,17 @@ void ClgdCompletion::OnLSP_EditorFileReparse(wxCommandEvent & event)
             // if file is not open in editor do a didOpen()/didClose() sequence
             //      to cause a background parse.
             wxString filename = pf->file.GetFullPath();
+            //// **Debugging** show status of parse pausing map
+            //wxArrayString pauseParsingReasons;
+            //Parser* pParser = (Parser*)GetParseManager()->GetParserByProject(pProject);
+            //if (pParser) pParser->GetArrayOfPauseParsingReasons(pauseParsingReasons);
+            //LogManager* pLogMgr = Manager::Get()->GetLogManager();
+            //for (size_t ii=0; ii < pauseParsingReasons.GetCount(); ++ii)
+            //{
+            //    if (0==ii) pLogMgr->DebugLog("--- Parser pause reasons ---");
+            //    pLogMgr->DebugLog("\t" + pauseParsingReasons[ii]);
+            //}
+            ClearReparseConditions();
 
             if (pEditor and pClient and pClient->GetLSP_IsEditorParsed(pEditor))
             {
@@ -3258,7 +3356,7 @@ void ClgdCompletion::OnPluginEnabled()
 void ClgdCompletion::OnAppStartupDone(CodeBlocksEvent & event)
 // ----------------------------------------------------------------------------
 {
-    // Verify existent clangd.exe path before creating a proxy project
+    // Verify an existent clangd.exe path before creating a proxy project
     ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
     wxString cfgClangdMasterPath = cfg->Read("/LLVM_MasterPath", wxEmptyString);
 
@@ -3267,7 +3365,7 @@ void ClgdCompletion::OnAppStartupDone(CodeBlocksEvent & event)
         Manager::Get()->GetMacrosManager()->ReplaceMacros(cfgClangdMasterPath);
         wxFileName fnClangdName(cfgClangdMasterPath);
 
-        if (!fnClangdName.FileExists() || !fnClangdName.GetFullName().Lower().StartsWith(clangdexe))
+        if ((not fnClangdName.FileExists()) || (not fnClangdName.GetFullName().Lower().StartsWith(clangdexe)))
         {
             wxString msg;
             msg << _("The clangd path:\n") << "'" << cfgClangdMasterPath << _("' does not exist.");
@@ -6279,6 +6377,13 @@ void ClgdCompletion::DoParseOpenedProjectAndActiveEditor(wxTimerEvent & event)
     if (editor)
     {
         GetParseManager()->OnEditorActivated(editor);
+    }
+
+    // FIXME (ph#): This is unecessary after a nightly for rev 12975 //(ph 2022/10/13)
+    // Catch compiler Run() command to avoid hanging on missing EVT_COMPILER_FINISHED notificaiton
+    if (m_pCompilerPlugin)
+    {
+        m_pCompilerPlugin->Bind(wxEVT_COMMAND_MENU_SELECTED, &ClgdCompletion::OnCompilerMenuSelected, this);
     }
 }
 // ----------------------------------------------------------------------------

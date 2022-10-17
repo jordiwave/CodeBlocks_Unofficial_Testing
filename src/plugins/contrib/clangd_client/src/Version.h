@@ -22,7 +22,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.45 22/10/8")
+#define VERSION wxT("0.2.47 22/10/15")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -53,6 +53,21 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.47    Commit 0.2.47 22/10/15
+//          2022/10/15
+//          ProcessLanguageClient::WriteHdr() modified to use std::string only.
+//              Ref: Code completion using LSP and clangd Reply #225 (ollydbg)
+//          Modify Parser::OnLSP_HoverResponse() to number hoverText lines to avoid
+//              ccManger sorting them by wxString content.
+//          2022/10/14
+//          Change WriteToClient() and WriteToServer to use .Write(out.c_str(), out.size());
+//              to avoid using local encodings. Thanks ollydbg.
+//0.2.46    Commit 2022/10/14 rev 84
+//          2022/10/14
+//          Clear "Parser paused" conditions when user chooses to reparse file or project.
+//          Temporary fix to avoid hanging when CB does not issue cbEVT_COMPILER_FINISHED
+//          Default code completion matches to 256 from 16k to avoid unnecessary memory usage.
+//          Catch and correct incoming pipe length of clangd msg for large code completion responses
 //0.2.45    Commit 2022/10/9 rev 83
 //          2022/10/8
 //          Assure log accuracy by writing only std:string(s) to the client and serverlogs. Just like clangd give to us.

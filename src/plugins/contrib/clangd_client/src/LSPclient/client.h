@@ -405,7 +405,6 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         bool            m_LSP_responseStatus = false;
         int             m_LSP_CompileCommandsChangedTime = 0; //contains eon time-of-day in milliseconds
         wxArrayString   m_LSP_aIgnoredDiagnostics;
-        wxMutex         m_MutexInputBufGuard;
 
         //-std::map<cbEditor*,int> m_ParseStartMillsTODmap; //key:cbEditor* value: millisecs TOD time-of-eon
 

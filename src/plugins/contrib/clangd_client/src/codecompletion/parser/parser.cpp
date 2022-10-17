@@ -123,9 +123,20 @@ namespace
 #include "../LSP_SymbolKind.h"
 
 const char STX = '\u0002'; //(ph 2021/03/17)
+
 int prevDocumentSymbolsFilesProcessed = 0;
 
 std::deque<json *> LSP_ParserDocumentSymbolsQueue; // cf: OnLSP_ParseDocumentSysmbols()
+
+__attribute__((used))
+bool wxFound(int result)
+{
+    return result != wxNOT_FOUND;
+};
+bool wxFound(size_t result)
+{
+    return result != wxString::npos;
+}
 }
 // ----------------------------------------------------------------------------
 Parser::Parser(ParseManager * parent, cbProject * project) :
@@ -3062,36 +3073,91 @@ void Parser::OnLSP_HoverResponse(wxCommandEvent & event, std::vector<ClgdCCToken
             // Example Hover contents: L"instance-method HelloWxWorldFrame::OnAbout\n\nType: void\nParameters:\n- wxCommandEvent & event\n\n// In HelloWxWorldFrame\nprivate: void HelloWxWorldFrame::OnAbout(wxCommandEvent &event)"
             // get string array of hover info separated at /n chars.
             wxString hoverString = contentsValue;
-            hoverString.Replace("\n\n", "\n"); //remove double newline chars
+            hoverString.Replace("\n\n", "\n"); //remove double newlines
             wxArrayString vHoverInfo = GetArrayFromString(hoverString, "\n");
-            // **Debugging**
-            // LogManager* pLogMgr = Manager::Get()->GetLogManager();
-            //    for (size_t ii=0; ii<vHoverInfo.size(); ++ii)
-            //        pLogMgr->DebugLog(wxString::Format("vHoverInfo[%d]:%s", int(ii), vHoverInfo[ii]));
-            // Find items from hover data and cut the chaff
+            //// **Debugging**
+            //{
+            //    #warning comment out this **Debugging**
+            //     LogManager* pLogMgr = Manager::Get()->GetLogManager();
+            //        for (size_t ii=0; ii<vHoverInfo.size(); ++ii)
+            //            pLogMgr->DebugLog(wxString::Format("vHoverInfo[%d]:%s", int(ii), vHoverInfo[ii]));
+            //}
+            // ----------------------------------------------------------------------------
+            // Reformat the hover response so that it fits into the ccManager allowed 5 to 6 lines.
+            // ccManager displays tips by unique ordered std::set, so we have to use a digit
+            // prepended to the hover text line to control the sort order.
+            // ----------------------------------------------------------------------------
             wxString hoverText;
+            //for (size_t ii=0, foundIn=false; ii<vHoverInfo.size(); ++ii)
+            size_t posn;
 
-            for (size_t ii = 0, foundIn = false; ii < vHoverInfo.size(); ++ii)
+            for (size_t ii = 0; ii < vHoverInfo.size(); ++ii)
             {
-                if (ii < 2)
+                if (vHoverInfo[ii].StartsWith("----")) //a huge long line of dashes
                 {
-                    hoverText += vHoverInfo[ii] + "\n";    //type and return value
-                }
+                    if (wxFound(posn = vHoverInfo[ii].find_last_of('-')))
+                    {
+                        hoverText = vHoverInfo[ii].Mid(posn + 1);
 
-                if (vHoverInfo[ii].StartsWith("// In "))    //parent
-                {
-                    hoverText += vHoverInfo[ii] += "\n";
-                    foundIn = true;
+                        if (hoverText.Length())
+                        {
+                            hoverText = wxString::Format("%02d) %s", int(ii), hoverText);
+                            v_HoverTokens.push_back(ClgdCCToken(int(ii), hoverText, hoverText));
+                        }
+
+                        hoverText.Empty();
+                    }
+
                     continue;
                 }
+                else
+                    if (vHoverInfo[ii].StartsWith("Parameters:"))
+                    {
+                        hoverText = wxString::Format("%02d) Args: ", int(ii));
+                        continue;
+                    }
+                    else
+                        if (vHoverInfo[ii].StartsWith("- ") and hoverText.Contains(" Args: "))
+                        {
+                            hoverText += vHoverInfo[ii];
+                            continue;
+                        }
+                        else
+                            if (hoverText.Contains(" Args: "))
+                            {
+                                // Leave this out for now. The parameters are shown
+                                // when the full declaraton is shown anyway.
+                                // Args hoverText starts with a sort number
+                                if (0)
+                                {
+                                    v_HoverTokens.push_back(ClgdCCToken(ii - 1, hoverText, hoverText));
+                                }
 
-                if (foundIn)
-                {
-                    hoverText += vHoverInfo[ii] + "\n";
-                };
+                                hoverText.Clear();
+
+                                if (ii > 0)
+                                {
+                                    ii -= 1;    //use the current item again
+                                }
+
+                                continue;
+                            }
+                            else
+                            {
+                                hoverText = wxString::Format("%02d) %s", int(ii), vHoverInfo[ii]);
+                                v_HoverTokens.push_back(ClgdCCToken(ii, hoverText, hoverText));
+                                hoverText.Clear();
+                            }
             }//endfor vHoverInfo
 
-            v_HoverTokens.push_back(ClgdCCToken(0, hoverText, hoverText));
+            //// **Debugging**
+            //#warning comment out this **Debugging**
+            //if (v_HoverTokens.size())
+            //{
+            //     LogManager* pLogMgr = Manager::Get()->GetLogManager();
+            //        for (size_t ii=0; ii<v_HoverTokens.size(); ++ii)
+            //            pLogMgr->DebugLog(wxString::Format("v_HoverTokens[%d]:%s", int(ii), v_HoverTokens[ii].displayName));
+            //}
 
             if (v_HoverTokens.size())
             {

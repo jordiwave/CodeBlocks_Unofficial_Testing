@@ -1,14 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467">
-    <defs>
-        <linearGradient xlink:href="#a" id="b" x1="1.72" y1="290.782" x2="5.027" y2="294.09" gradientUnits="userSpaceOnUse" gradientTransform="matrix(.88235 0 0 .88236 -.918 34.675)"/>
-        <linearGradient id="a">
-            <stop style="stop-color:#817bf3;stop-opacity:1" offset="0"/>
-            <stop style="stop-color:#261ec1;stop-opacity:1" offset="1"/>
-        </linearGradient>
-    </defs>
-    <g transform="translate(0 -288.533)">
-        <path style="fill:none;stroke:#3e403e;stroke-width:.52916667;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" d="m6.615 291.444 1.322 1.322-1.322 1.324 1.32-1.325m.003.002H4.763"/>
-        <rect style="fill:url(#b);fill-opacity:1;stroke:#16108e;stroke-width:.26458332;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" width="3.969" height="3.969" x=".132" y="290.782" ry=".7" rx="0"/>
-        <image y="289.768" x="-6.615" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBI WXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QgFBxABLujtNgAAAPlJREFUOMvtkjFKA1EQhr+3WRBr ryAIqQT7JScQPIG1rafxOGEbD2Cjha2IStR9G/J23sw8i5gFEyQXyMAwzBTf//MzcKgAcH72XnJe QfgmVAtCtQA6Hp6uw17AxfSjXF4d0fdCjGk9u0SMAy+v9zw+3/yBNLOmtPN2vFUiieVSkEFRdVQd 9/LbvqPYztvQzJqy2Wvzjj5OyNlISRExJBuaHbcwqm6DNk7qavJJ7I9RdYZB15C0hpjZ3hDrUC3o 4wmqhZx1hAwpk7ONtv/LoYaOGAV3J4shYqRBWa0Ukd0MtkMMANPTu2LumBVMnZwNEeft6zYcPn1/ /QBhBrfMk2FZSAAAAABJRU5ErkJggg==" style="image-rendering:optimizeSpeed" preserveAspectRatio="none" height="5.644" width="5.644"/>
-    </g>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.467 8.467" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="b" x1="1.72" x2="5.027" y1="290.8" y2="294.1" gradientTransform="matrix(.8824 0 0 .8824 -.918 34.68)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#817bf3" offset="0"/>
+      <stop stop-color="#261ec1" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0 -288.5)">
+    <path d="m6.615 291.4 1.322 1.322-1.322 1.324 1.32-1.325m3e-3 2e-3h-3.175" fill="none" stroke="#3e403e" stroke-width=".5292"/>
+    <rect x=".132" y="290.8" width="3.969" height="3.969" rx="0" ry=".7" fill="url(#b)" stroke="#16108e" stroke-width=".2646"/>
+  </g>
 </svg>

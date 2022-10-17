@@ -1,6 +1,5 @@
 # Dr. Mingw
 
-[![Build status](https://ci.appveyor.com/api/projects/status/9q3o5w85s5o5yup5/branch/master?svg=true)](https://ci.appveyor.com/project/jrfonseca/drmingw)
 [![Build status](https://github.com/jrfonseca/drmingw/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/jrfonseca/drmingw/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/jrfonseca/drmingw/branch/codecov/graph/badge.svg?token=nR3cxxP8zB)](https://codecov.io/gh/jrfonseca/drmingw)
 
@@ -67,11 +66,11 @@ The following table describes the Dr. Mingw command-line options.  All command-l
 
 The MgwHelp library aims to be a drop-in replacement for the DbgHelp library, that understand MinGW symbols.  It provides the same interface as DbgHelp library, but it is able to read the debug information produced by MinGW compilers/linkers.
 
-MgwHelp is used by Dr.MinGW and ExcHndl below to lookup symbols.
+MgwHelp is used by Dr. Mingw and ExcHndl below to lookup symbols.
 
 But the hope is that it will eventually be used by third-party Windows development tools (like debuggers, profilers, etc.) to easily resolve symbol on binaries produced by the MinGW toolchain.
 
-MgwHelp relies on [libdwarf](http://reality.sgiweb.org/davea/dwarf.html) to read DWARF debugging information.
+MgwHelp relies on [libdwarf](https://www.prevanders.net/dwarf.html) to read DWARF debugging information.
 
 **NOTE: It's still work in progress, and only exports a limited number of symbols. So it's not a complete solution yet**
 
@@ -97,13 +96,13 @@ You can use ExcHndl by:
             pfnExcHndlInit = GetProcAddress("ExcHndlInit");
             pfnExcHndlInit()
 
-  * you can also override the report location by invoking the exported `ExcHndlSetLogFileNameA` entry-point.
+  * you can also override the report location by invoking the exported `ExcHndlSetLogFileNameA`/`ExcHndlSetLogFileNameW` entry-point.
 
 Note that currently [only unhandled exceptions on the thread which called ExcHndlInit() which be caught and logged](https://github.com/jrfonseca/drmingw/issues/54).
 
 ### Example
 
-The sample` sample.exe` application uses the second method above.  Copy all DLLs mentioned above to the executable directory.  When you run it, even before general protection fault dialog box appears, it's written to the `sample.RPT` file a report of the fault.
+The sample `sample.exe` application uses the second method above.  Copy all DLLs mentioned above to the executable directory.  When you run it, even before general protection fault dialog box appears, it's written to the `sample.RPT` file a report of the fault.
 
 Here is how `sample.RPT` should look like:
 
@@ -132,7 +131,7 @@ Here is how `sample.RPT` should look like:
 
 ## CatchSegv
 
-Dr. Mingw also includes a Windows replica of GLIBC's `catchsegv` utility, which enables you to run a program, dumping a stack backtrace on any fatal exception.  Dr. Mingw's catchsegv has additional features:
+Dr. Mingw also includes a Windows replica of GLIBC's `catchsegv` utility, which enables you to run a program, dumping a stack backtrace on any fatal exception.  Dr. Mingw's CatchSegv has additional features:
 
 * will collect and dump all `OutputDebugString` messages to stderr
 
@@ -142,25 +141,30 @@ Dr. Mingw also includes a Windows replica of GLIBC's `catchsegv` utility, which 
 
 * allows to specify a time out
 
-All the above make Dr. Mingw's catchsegv ideally suited for test automation.
+All the above make Dr. Mingw's CatchSegv ideally suited for test automation.
 
 Here's the how to use it:
 
-    usage: catchsegv [options] <command-line>
+    usage: catchsegv [options] -- <command-line>
     
     options:
-      -? displays command line help text
-      -v enables verbose output from the debugger
-      -t <seconds> specifies a timeout in seconds
-      -1 dump stack on first chance exceptions
+      -?|-h        displays command line help text
+      -v           enables verbose output from the debugger
+      -d           enables debugging output (for debugging catchsegv itself)
+      -t SECONDS   specifies a timeout in seconds
+      -1           dump stack on first chance exceptions
+      -m           ignore modal dialogs
+      -z           write minidumps
+      -Z DIRECTORY write minidumps to specified directory
+      -H           use debug heap
 
 ## Frequently Asked Questions
 
 ### Why do I get a different stack trace from your example?
 
-Make sure you don't use Dr.Mingw and exchndl at the same time -- the latter seems to interfere with the former by some obscure reason.
+Make sure you don't use Dr. Mingw and ExcHndl at the same time -- the latter seems to interfere with the former by some obscure reason.
 
-### Which options should I pass to gcc when compiling?
+### Which options should I pass to GCC/Clang when compiling?
 
 This options are _essential_ to produce suitable results are:
 
@@ -168,7 +172,9 @@ This options are _essential_ to produce suitable results are:
 
  * **`-fno-omit-frame-pointer`** : use the frame pointer (frame pointer usage is disabled by default in some architectures like `x86_64` and for some optimization levels; and it may be impossible to walk the call stack without it)
 
-You can choose more detailed debug info, e.g., `-g3`, `-ggdb`. But so far I have seen no evidence this will lead to better results, at least as far as Dr.MinGW is concerned.
+ * (Clang only) **`-gdwarf-aranges`** : emit DWARF `.debug_aranges` section ([issue 42](https://github.com/jrfonseca/drmingw/issues/42))
+
+You can choose more detailed debug info, e.g., `-g3`, `-ggdb`. But so far I have seen no evidence this will lead to better results, at least as far as Dr. Mingw is concerned.
 
 ### Why are the reported source lines always after the call?
 
@@ -192,11 +198,13 @@ or
 
 ### Related tools
 
- * [binutil's addr2line](http://sourceware.org/binutils/docs/binutils/addr2line.html) (included in MinGW)
- * [cv2pdb - DWARF to PDB converter](https://github.com/rainers/cv2pdb)
+ * [binutil's addr2line](https://sourceware.org/binutils/docs/binutils/addr2line.html) (included in MinGW)
+ * [cv2pdb](https://github.com/rainers/cv2pdb) - DWARF to PDB converter
  * [Breakpad](https://chromium.googlesource.com/breakpad/breakpad/)
  * [Crashpad](https://crashpad.chromium.org/)
- * [CrashRpt](http://crashrpt.sourceforge.net/)
+ * [dwarfstack](https://github.com/ssbssa/dwarfstack)
+ * [libbacktrace](https://github.com/ianlancetaylor/libbacktrace)
+ * [boost stacktrace](https://github.com/boostorg/stacktrace)
 
 ### Suggested Reading
 

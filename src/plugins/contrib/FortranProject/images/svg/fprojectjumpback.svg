@@ -1,14 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467" shape-rendering="crispEdges">
-    <defs>
-        <linearGradient id="a">
-            <stop style="stop-color:#2eab26;stop-opacity:1" offset="0"/>
-            <stop style="stop-color:#9ded99;stop-opacity:1" offset="1"/>
-        </linearGradient>
-        <linearGradient xlink:href="#a" id="b" x1="2.941" y1="294.486" x2="7.581" y2="291.444" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-1.08333 0 0 1 8.88 -.53)"/>
-    </defs>
-    <g transform="translate(0 -288.533)">
-        <image y="288.004" x="-8.864" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A /wD/oL2nkwAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAAd0SU1FB9oIBwQECchvM+0AAAAZdEVYdENv bW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAABZUlEQVQ4y62Tz2pTQRTGf9OYBg3WJ+i7+ADF zd24iRvtToO4KIUspEJojaaLrlroqkEQIVBx4cqNfYC+yr3XmJlz78wcFxcC+XNDG/w2M3zDnPN9 850xLEBVqYMxZol7wD3R7m7POvw9K8wWG+Dt6+ez/UYFQgj1Fp6cPISoGguYHIlZVaAIAsB4PF6h IKoO9ocQ6xVEXx0mSTKvYKff0o+vPuNKiwnQfreteIii4EFD9X5BFyw8/tDCNNDjl59IXYqUwpsX XXKXI6WQu4wiCK4Ufv+4QYKdL1BdHiDeIYVDgiBecKWrOC8475Cy8h6DzqeQ98QcXhyQ2pTMpWTT lMxmZLZaU1txuc0AcIsKAP68F3NaDLWTdBDv+Hr1DXWKekUd4BUN0NxtoDGujnHSF/Pl0Uj3nj6D oNjLcinGZrehsdT6Qcp7Yq5H3zFNUxujt7r+L0zPC7NuEnWdgrvg569b/hv+ARLqyyyURXifAAAA AElFTkSuQmCC" style="image-rendering:optimizeSpeed" preserveAspectRatio="none" height="8.467" width="8.467"/>
-        <path style="fill:url(#b);fill-opacity:1;fill-rule:evenodd;stroke:#064f03;stroke-width:.26458335;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M3.577 290.782h-.27l-2.59 2.115 2.59 2.119h.27v-1.059h2.905v-2.116H3.577Z"/>
-        <path style="fill:#5bc43a;fill-opacity:1;stroke:#064f03;stroke-width:.26458335;stroke-opacity:1" d="M6.482 289.195h1.323v7.144H6.482z"/>
-    </g>
+<svg width="32" height="32" shape-rendering="crispEdges" version="1.1" viewBox="0 0 8.467 8.467" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="b" x1="2.941" x2="7.581" y1="294.5" y2="291.4" gradientTransform="matrix(-1.083 0 0 1 8.88 -.53)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2eab26" offset="0"/>
+      <stop stop-color="#9ded99" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0 -288.5)" stroke="#064f03" stroke-width=".2646">
+    <path d="M3.577 290.782h-.27l-2.59 2.115 2.59 2.119h.27v-1.059h2.905v-2.116H3.577Z" fill="url(#b)" fill-rule="evenodd"/>
+    <path d="m6.482 289.2h1.323v7.144h-1.323z" fill="#5bc43a"/>
+  </g>
 </svg>

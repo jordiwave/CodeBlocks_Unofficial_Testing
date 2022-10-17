@@ -35,16 +35,19 @@ class CMakeListsExporter : public ExporterBase
             GVS_EXPORT_NON_DEFAULT
         };
 
+        wxString GetTargetRootDirectory(ProjectBuildTarget * buildTarget);
         void ExpandMacros(wxString & buffer);
         void ConvertMacros(wxString & buffer, ConvertMacro_DirSeperator eConvertDirSeperator);
         void ExportGlobalVariableSets(ExportMode eMode);
         wxString ExportMacros(ProjectBuildTarget * buildTarget);
         void ExportGlobalVariables();
-        wxString GetTargetRootDirectory(ProjectBuildTarget * buildTarget);
+        void ExportBuildTarget(cbProject * project, ProjectBuildTarget * buildTarget);
 
         wxString ValidateFilename(const wxString & iFileName);
         wxString GetHumanReadableOptionRelation(ProjectBuildTarget * buildTarget, OptionsRelationType type);
 
+        LogManager * m_LogMgr;
+        ConvertMacro_DirSeperator m_eMacroConvertDirectorySeperator;
         const wxChar * EOL = wxTextFile::GetEOL();
         wxString    m_CBProjectRootDir;
         wxString    m_ContentCMakeListTarget;

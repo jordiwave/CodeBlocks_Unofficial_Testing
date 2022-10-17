@@ -471,6 +471,25 @@ class Parser : public ParserBase
 
             return false;
         }
+        // ----------------------------------------------------------------------------
+        size_t GetArrayOfPauseParsingReasons(wxArrayString & aryReasons)
+        // ----------------------------------------------------------------------------
+        {
+            if (0 == PauseParsingCount())
+            {
+                return 0;
+            }
+
+            size_t pauseCounts = 0;
+
+            for (PauseReasonType::iterator it = m_PauseParsingMap.begin(); it != m_PauseParsingMap.end(); ++it)
+            {
+                aryReasons.Add(it->first);
+                pauseCounts ++;
+            }
+
+            return pauseCounts;
+        }
 
         /** Remember and return the base dir for the SearchLog */
         void SetLogFileBase(wxString filebase)

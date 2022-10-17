@@ -86,7 +86,7 @@ void StdString_ReplaceAll(std::string & str, const std::string & from, const std
 // ----------------------------------------------------------------------------
 __attribute__((used))
 void StdString_ReplaceSubstring(std::string & s, const std::string & f,
-                       const std::string & t)
+                                const std::string & t)
 // ----------------------------------------------------------------------------
 {
     cbAssert(not f.empty());
@@ -114,6 +114,7 @@ void StdString_MakeLower(std::string & data)
         return std::tolower(c);
     });
 }
+
 // ----------------------------------------------------------------------------
 bool StdString_EndsWith(const std::string & str, const std::string & suffix)
 // ----------------------------------------------------------------------------
@@ -160,6 +161,149 @@ std::string StdString_Trim(const std::string & str, const std::string & whitespa
     const auto strEnd = str.find_last_not_of(whitespace);
     const auto strRange = strEnd - strBegin + 1;
     return str.substr(strBegin, strRange);
+}
+__attribute__((used))
+// ----------------------------------------------------------------------------
+int StdString_FindOpeningEnclosureChar(const std::string & source, int index)
+// ----------------------------------------------------------------------------
+{
+    // Find enclosure char such as () {} []
+    // source string, src position of char to match(zero origin).
+    // Returns zero origin index of paired char or -1.
+    // Find index of Opening bracket, paren, brace for given opening char.
+    int i;
+    // Stack to store opening brackets.
+    std::vector<int> st;
+    char targetChar = '\0';
+    char srcChar = source[index];
+
+    // If index given is invalid and is
+    // not an opening paren, bracket, or brace.
+    if (srcChar == ')')
+    {
+        targetChar = '(';
+    }
+
+    if (srcChar == ']')
+    {
+        targetChar = '[';
+    }
+
+    if (srcChar == '}')
+    {
+        targetChar = '{';
+    }
+
+    if (targetChar == '\0')
+    {
+        wxString msg = wxString::Format("Error: %s failed:", __FUNCTION__);
+        msg << source << ", " << srcChar << ", " << index << ": -1\n";
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return -1;
+    }
+
+    // Traverse through string starting from
+    // given index.
+    for (i = index; i > -1; --i)
+    {
+        // If current character is an
+        // opening bracket push it in stack.
+        if (source[i] == srcChar)
+        {
+            st.push_back(source[i]);
+        }
+        // If current character is a closing
+        // char, pop from stack. If stack
+        // is empty, then this closing
+        // char is the closing char.
+        else
+            if (source[i] == targetChar)
+            {
+                st.pop_back();
+
+                if (st.empty())
+                {
+                    return i;
+                }
+            }
+    }
+
+    // If no matching closing bracket/paren/brace is found.
+    wxString msg = wxString::Format("Error: %s failed:", __FUNCTION__);
+    msg << source << ", " << srcChar << ", " << index << ": -1\n";
+    Manager::Get()->GetLogManager()->DebugLog(msg);
+    return -1;
+}
+// ----------------------------------------------------------------------------
+int StdString_FindClosingEnclosureChar(const std::string & source, int index)
+// ----------------------------------------------------------------------------
+{
+    // Find enclosure char such as () {} []
+    // source string, src position of char to match(zero origin).
+    // Returns zero origin index of paired char or -1.
+    // Find index of closing bracket, paren, brace for given opening char.
+    int i;
+    // Stack to store opening brackets.
+    std::vector<int> st;
+    char targetChar = '\0';
+    char srcChar = source[index];
+
+    // If index given is invalid and is
+    // not an opening paren, bracket, or brace.
+    if (srcChar == '(')
+    {
+        targetChar = ')';
+    }
+
+    if (srcChar == '[')
+    {
+        targetChar = ']';
+    }
+
+    if (srcChar == '{')
+    {
+        targetChar = '}';
+    }
+
+    if (targetChar == '\0')
+    {
+        wxString msg = wxString::Format("Error: %s failed:", __FUNCTION__);
+        msg << source << ", " << srcChar << ", " << index << ": -1";
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return -1;
+    }
+
+    // Traverse through string starting from
+    // given index.
+    for (i = index; i < (int)source.length(); i++)
+    {
+        // If current character is an
+        // opening bracket push it in stack.
+        if (source[i] == srcChar)
+        {
+            st.push_back(source[i]);
+        }
+        // If current character is a closing
+        // char, pop from stack. If stack
+        // is empty, then this closing
+        // char is the closing char.
+        else
+            if (source[i] == targetChar)
+            {
+                st.pop_back();
+
+                if (st.empty())
+                {
+                    return i;
+                }
+            }
+    }
+
+    // If no matching closing bracket is found.
+    wxString msg = wxString::Format("Error: %s failed:", __FUNCTION__);
+    msg << source << ", " << srcChar << ", " << index << ": -1\n";
+    Manager::Get()->GetLogManager()->DebugLog(msg);
+    return -1;
 }
 
 //    #if (This_Version_Causes_Errors)
@@ -224,6 +368,9 @@ bool stdFound(size_t result)
 {
     return result != std::string::npos;
 }
+
+static wxMutex m_MutexInputBufGuard; //jsonread buffer guard
+
 
 }//end namespace
 // ----------------------------------------------------------------------------
@@ -748,7 +895,9 @@ void ProcessLanguageClient::writeClientLog(const std::string & logmsg)
         logcr = "\n";
     }
 
-    lspClientLogFile.Write("\n" + GetTime_in_HH_MM_SS_MMM() + " " + logmsg + logcr);
+    //-lspClientLogFile.Write("\n" + GetTime_in_HH_MM_SS_MMM() + " " + logmsg + logcr);
+    std::string out = "\n" + GetTime_in_HH_MM_SS_MMM() + " " + logmsg + logcr;
+    lspClientLogFile.Write(out.c_str(), out.size());
     lspClientLogFile.Flush();
 }
 // ----------------------------------------------------------------------------
@@ -760,7 +909,7 @@ void ProcessLanguageClient::writeServerLog(const std::string & logmsg)
         return;
     }
 
-    lspServerLogFile.Write(logmsg);
+    lspServerLogFile.Write(logmsg.c_str(), logmsg.size());
     lspServerLogFile.Flush();
 
     //(ph 2022/02/16)
@@ -1129,7 +1278,10 @@ int ProcessLanguageClient::ReadLSPinputLength()
 
                 // Length in LSP data header was wrong. Should have seen a '}' at end of data.
                 //cbAssertNonFatal(m_std_LSP_IncomingStr[jdataPosn + jdataLength-1] == '}'); // **Debugging**
-                std::string msg = StdString_Format("Error:%s invalid LSP dataLth[%d]\n%s", __FUNCTION__, int(jdataLength), m_std_LSP_IncomingStr.c_str());
+                LogManager * pLogMgr = Manager::Get()->GetLogManager();
+                std::string msg = StdString_Format("Error:%s() invalid LSP dataLth[%d]", __FUNCTION__, int(jdataLength));
+                pLogMgr->DebugLogError(msg);
+                msg = StdString_Format("Error:%s() invalid LSP dataLth[%d]\n%s", __PRETTY_FUNCTION__, int(jdataLength), m_std_LSP_IncomingStr.c_str());
                 writeClientLog(msg);
                 // Must return the length even if invalid else the data gets stuck in the buffer.
                 // Try for valid length by looking for next LSP data entry
@@ -1138,8 +1290,25 @@ int ProcessLanguageClient::ReadLSPinputLength()
                 if (stdFound(actualLength))
                 {
                     jdataLength = actualLength - jdataPosn;
+                    // FIXME (ph#): After debugging, remove "Error" of  DebugLog()
+                    pLogMgr->DebugLogError(wxString::Format("\tCorrectd data length is %d:", jdataLength));
+                    return jdataLength;
+                }
+                else // try to match beginning '{' with ending '}' to get actual length //(ph 2022/10/10)
+                {
+                    int idx = StdString_FindClosingEnclosureChar(&m_std_LSP_IncomingStr[jdataPosn], 0);
+
+                    if (idx > 0)
+                    {
+                        // FIXME (ph#): After debugging, remove "Error" from DebugLog()
+                        pLogMgr->DebugLogError(wxString::Format("\tCorrected data length is %d", idx + 1));
+                        return idx + 1;
+                    }
                 }
 
+                // Must return the length even if invalid else the data gets stuck in the buffer
+                // FIXME (ph#): After debugging, remove "Error" from DebugLog()
+                pLogMgr->DebugLogError("\tCannot correct data length.");
                 return jdataLength;
             }
             else // all data not in yet.
@@ -1362,16 +1531,22 @@ bool ProcessLanguageClient::writeJson(json & json)
 bool ProcessLanguageClient::WriteHdr(const std::string & in)
 // ----------------------------------------------------------------------------
 {
-    // write json header and data string to the log
-    wxString limitedLogOut(in.c_str(), wxConvUTF8);
-    wxString out(in.c_str(), wxConvUTF8);
+    // write json header and data string to the log then write it to clangd
+    // Data to the log is snipped to 512 bytes to save disk space.
+    std::string limitedLogOut(in);
+    std::string out(in);
 
     // limit "text" output to log at 512 chars
-    if (limitedLogOut.Contains("\"textDocument/didOpen\"")
-            or limitedLogOut.Contains("\"textDocument/didChange\""))
+    if (StdString_Contains(limitedLogOut, "\"textDocument/didOpen\"")
+            or StdString_Contains(limitedLogOut, "\"textDocument/didChange\""))
     {
-        int posnText = limitedLogOut.Find("\"text\":");
-        int posnUri =  limitedLogOut.Find("\"uri\":");
+        size_t posnText = limitedLogOut.find("\"text\":");
+        size_t posnUri =  limitedLogOut.find("\"uri\":");
+
+        if ((not stdFound(posnText)) or (not stdFound(posnUri)))
+        {
+            cbAssert(0 && "Badly formated log out data WriteHdr()");
+        }
 
         // if uri follows text, make adjustments
         if (posnUri > posnText)
@@ -1382,23 +1557,23 @@ bool ProcessLanguageClient::WriteHdr(const std::string & in)
 
             if (txtLen > 512)
             {
-                wxString tmpStr = limitedLogOut.Left((txtBeg + 120)) + "<...SNIP...>" + limitedLogOut.Right(120);
-                tmpStr.Append(limitedLogOut.Mid(posnUri - 8)); //append uri to end
+                std::string tmpStr = limitedLogOut.substr(0, txtBeg + 120) + "<...SNIP...>" + limitedLogOut.substr(limitedLogOut.size() - 120);
+                tmpStr.append(limitedLogOut.substr(posnUri - 8)); //append uri to end
                 limitedLogOut = tmpStr;
             }
         }
         else
         {
-            limitedLogOut = wxString::Format("<<< Write():\n%s", wxString(in)).Mid(0, 512) + "<...DATA SNIPED BY LOG WRITE()...>";
+            limitedLogOut = "<<< Write():\n" + in.substr(0, 512) + "<...DATA SNIPPED BY LOG WRITE()...>" ;
         }
     }//endif contains didOpen
 
-    if (not limitedLogOut.StartsWith("<<< "))
+    if (not StdString_StartsWith(limitedLogOut, "<<< "))
     {
-        limitedLogOut.Prepend("<<< ");
+        limitedLogOut.insert(0, "<<< ");
     }
 
-    writeClientLog(limitedLogOut.ToStdString());
+    writeClientLog(limitedLogOut);
     // Write raw data to clangd server
 #if defined(_WIN32)
     bool ok = m_pServerProcess->WriteRaw(out);   //windows
@@ -1411,7 +1586,8 @@ bool ProcessLanguageClient::WriteHdr(const std::string & in)
 
 #else
     // unix just posts the msg to an output thread queue, so no return code.
-    m_pServerProcess->Write(fileUtils.ToStdString(out));              //unix
+    //-m_pServerProcess->Write( fileUtils.ToStdString(out) );            //unix
+    m_pServerProcess->Write(out);              //unix
 #endif
     return true;
 }//end WriteHdr()

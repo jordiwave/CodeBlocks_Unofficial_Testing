@@ -254,6 +254,7 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         void OnLSP_SelectedFileReparse(wxCommandEvent & event); //(ph 2021/05/13)
         void OnEditorFileReparse(wxCommandEvent & event);       //(ph 2021/11/16)
         void OnLSP_EditorFileReparse(wxCommandEvent & event);   //(ph 2021/11/16)
+        void ClearReparseConditions();
 
         // event handlers for the standard events sent from sdk core
         /** SDK event when application has started up */
@@ -282,6 +283,7 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         void OnDebuggerFinished(CodeBlocksEvent & event);
         void OnCompilerStarted(CodeBlocksEvent & event);
         void OnCompilerFinished(CodeBlocksEvent & event);
+        void OnCompilerMenuSelected(wxCommandEvent & event);
 
         void OnEditorActivatedCallback(wxString filename, bool IsOpening = false); //(ph 2022/04/25)
 
@@ -882,6 +884,9 @@ class ClgdCompletion : public cbCodeCompletionPlugin
         bool m_OldCC_enabled = true;
         // Initial condition of Clangd_Client at ctor (enabled/disabled);
         bool m_ctorClientStartupStatusEnabled = false;
+
+        // FIXME (ph#): This is unecessary after a nightly for rev 12975 //(ph 2022/10/13)
+        cbPlugin * m_pCompilerPlugin =  nullptr;
 
         // ----------------------------------------------------------------------------
         void SetClangdClient_Disabled()

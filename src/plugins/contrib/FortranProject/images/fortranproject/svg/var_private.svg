@@ -1,14 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467">
-    <defs>
-        <linearGradient xlink:href="#a" id="b" x1="1.72" y1="290.782" x2="5.027" y2="294.09" gradientUnits="userSpaceOnUse" gradientTransform="matrix(.88235 0 0 .88236 1.198 34.675)"/>
-        <linearGradient id="a">
-            <stop style="stop-color:#7dd084;stop-opacity:1" offset="0"/>
-            <stop style="stop-color:#2ebc3b;stop-opacity:1" offset="1"/>
-        </linearGradient>
-    </defs>
-    <g transform="translate(0 -288.533)">
-        <rect style="fill:url(#b);fill-opacity:1;stroke:#067c11;stroke-width:.26458332;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" width="3.969" height="3.969" x="2.249" y="290.782" ry=".7" rx="0"/>
-        <circle style="fill:red;fill-opacity:1;stroke:red;stroke-width:.26458332;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="4.233" cy="292.767" r=".926"/>
-        <image y="289.856" x="-7.497" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A /wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sEFxIaJB/v5r4AAAD6SURBVDjL 7ZKxSgNREEXPJv6CksVCxMZKOwuRgIXBQizzLXYi+BspbCSgXcDKxkIQRBstRLBOoSD7Qty3782b sbAQk8D6AbnNwIU53OEOzJXNMrfP98ySIl4QH4njCMDz0X1WC9jpd2x3vY1YwsmIQhwu/czXmxeG x29/dhYmAapGRoOtizs2Bg8kU27bOWfd5ZknTAFSJThxbA4eWX0aAiAm9Lo5ik4BGpOGfEWK5EiW flOhRA2IpvoEsYwUMuJ6fwUxQVGuOi28egKhHvA+/mBJWlwe5vQPFgkWKJPHUKpU/a/G/GTNmlkT UUEQYoqU5gmnn9n886f1DUrvg1GeXSTtAAAAAElFTkSuQmCC" style="image-rendering:optimizeSpeed" preserveAspectRatio="none" height="5.644" width="5.644"/>
-    </g>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.467 8.467" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="b" x1="1.72" x2="5.027" y1="290.8" y2="294.1" gradientTransform="matrix(.8824 0 0 .8824 1.198 34.68)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7dd084" offset="0"/>
+      <stop stop-color="#2ebc3b" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0 -288.5)" stroke-width=".2646">
+    <rect x="2.249" y="290.8" width="3.969" height="3.969" rx="0" ry=".7" fill="url(#b)" stroke="#067c11"/>
+    <circle cx="4.233" cy="292.8" r=".926" fill="red" stroke="red"/>
+  </g>
 </svg>

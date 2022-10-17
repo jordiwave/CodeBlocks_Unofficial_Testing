@@ -1,8 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467">
-    <g transform="translate(0 -288.533)">
-        <circle style="fill:red;fill-opacity:1;stroke:red;stroke-width:.1984375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="1.058" cy="294.883" r=".695"/>
-        <circle style="fill:red;fill-opacity:1;stroke:red;stroke-width:.1984375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="4.233" cy="294.883" r=".695"/>
-        <circle style="fill:red;fill-opacity:1;stroke:red;stroke-width:.1984375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="7.408" cy="294.883" r=".695"/>
-        <image y="288.269" x="-10.054" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A /wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sFCAUdC9cMlqwAAABWSURBVDjL 7dEhDoAwEETRVy6D5AZIbtMborgBnptAsphiSJrUgehPxnyxO8nQ6fyBFIxYcGJNHNDqBTmIkvxc bvXDq9FVaVr1KZgwF7El9vKpyX+/wg3IJSrGiRLa8gAAAABJRU5ErkJggg==" preserveAspectRatio="none" height="8.467" width="8.467"/>
-    </g>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.467 8.467" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(0 -288.5)" fill="red" stroke="red" stroke-width=".1984">
+    <circle cx="1.058" cy="294.9" r=".695"/>
+    <circle cx="4.233" cy="294.9" r=".695"/>
+    <circle cx="7.408" cy="294.9" r=".695"/>
+  </g>
 </svg>

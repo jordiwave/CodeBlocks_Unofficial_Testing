@@ -1,14 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 8.467 8.467" shape-rendering="crispEdges">
-    <defs>
-        <linearGradient id="a">
-            <stop style="stop-color:#2eab26;stop-opacity:1" offset="0"/>
-            <stop style="stop-color:#9ded99;stop-opacity:1" offset="1"/>
-        </linearGradient>
-        <linearGradient xlink:href="#a" id="b" x1="6.449" y1="294.222" x2="1.962" y2="292.767" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.08247 0 0 1.00024 -.404 -.599)"/>
-    </defs>
-    <g transform="translate(0 -288.533)">
-        <image y="288.666" x="-9.26" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A /wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oIBhEPE3SoFaIAAAAZdEVYdENv bW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAABMElEQVQ4y8WSPUoDURDHf6shCsEDiWIjeAO/ EDSVjSCIegFrq5RaBY3oCQQhdcCg3sITuLvuzHtvLHZXXTYrGAunmWF483+/+YA/WgTQOWxbmYh7 Ev1GYKYMjg62pyL4FPAhTCXQKgNx742POsdtIwCeKO7JZILwE0GAvd0uzGKNBN48AAtnc4aPwBsm YAFMDeeEja11bl5vLbvzUU0gK1o42TlFnUODkEqKeiWVhFhi1Ctr+6s8MDRaUZQN3LcWCgJ1inr5 8l4Rr0gQNOTxUncRnFmVQLP8DuQN9e7zZw1KkiW4kOcSSRhfP1G2UZvBRf+SYuKYGlb4lc1l1Avj wTMTZxBcvoX4vH6J892Wic8Y9R8rxdVDiq1xi5Yao6txrbhKoM0CkwprBPfDF/7FPgCBbMpQMYby rgAAAABJRU5ErkJggg==" style="image-rendering:optimizeSpeed" preserveAspectRatio="none" height="8.467" width="8.467"/>
-        <path style="fill:url(#b);fill-opacity:1;fill-rule:evenodd;stroke:#064f03;stroke-width:.26357847;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M4.895 290.782h.264l2.594 2.115-2.594 2.119h-.264v-1.058h-2.91v-2.117h2.91z"/>
-        <path style="fill:#65cb45;fill-opacity:1;stroke:#064f03;stroke-width:.26458335;stroke-opacity:1" d="M.661 289.195h1.323v7.144H.661z"/>
-    </g>
+<svg width="32" height="32" shape-rendering="crispEdges" version="1.1" viewBox="0 0 8.467 8.467" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="b" x1="6.449" x2="1.962" y1="294.2" y2="292.8" gradientTransform="matrix(1.082 0 0 1 -.404 -.599)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2eab26" offset="0"/>
+      <stop stop-color="#9ded99" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0 -288.5)" stroke="#064f03">
+    <path d="m4.895 290.8h0.264l2.594 2.115-2.594 2.119h-0.264v-1.058h-2.91v-2.117h2.91z" fill="url(#b)" fill-rule="evenodd" stroke-width=".2636"/>
+    <path d="M.661 289.195h1.323v7.144H.661z" fill="#65cb45" stroke-width=".2646"/>
+  </g>
 </svg>

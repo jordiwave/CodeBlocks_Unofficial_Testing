@@ -5,8 +5,8 @@
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 VS_VERSION_INFO        VERSIONINFO
-  FILEVERSION          0,2,2
-  PRODUCTVERSION       2022,05,28,65
+  FILEVERSION          0,2,46
+  PRODUCTVERSION       2022,10,15,84
   FILEFLAGSMASK        0x3fL // VS_FFI_FILEFLAGSMASK
   // FILEFLAGS Can be a combination of the following OR'ed flags:
   //    VS_FF_DEBUG,        VS_FF_PATCHED,      VS_FF_PRERELEASE,
@@ -26,18 +26,18 @@ VS_VERSION_INFO        VERSIONINFO
   {
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
-      VALUE "Build",             "28-May-2022 SVN 65"
+      VALUE "Build",             "15-oct-2022 SVN 84"
       VALUE "Comments",          "This plugin provides a symbols browser for your projects and code-completion inside the editor. Note: Only C/C++ language is supported by this plugin (currently)..."
       VALUE "CompanyName",       "Yiannis An. Mandravellos (Modified for clangd by Pecan and AndrewCo)"
       VALUE "Developer",         "Yiannis An. Mandravellos (Modified for clangd by Pecan and AndrewCo)"
-      VALUE "FileVersion",       "0.2.28"
+      VALUE "FileVersion",       "0.2.46"
       VALUE "InternalName",      "clangd_client"
       VALUE "LegalCopyright",    "GPL"
       VALUE "LegalTrademarks",   "All rights reserved."
       VALUE "OriginalFilename",  "clangd_client.dll"
       VALUE "PrivateBuild",      ""
       VALUE "ProductName",       "clangd_client"
-      VALUE "ProductVersion",    "0.2.28"
+      VALUE "ProductVersion",    "0.2.46"
       VALUE "SpecialBuild",      ""
       VALUE "Support",           "https://sourceforge.net/p/cb-clangd-client"
       VALUE "Users",             ""
