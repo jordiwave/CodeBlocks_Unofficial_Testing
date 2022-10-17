@@ -7,7 +7,7 @@
 // CB include files
 #include <sdk.h> // Code::Blocks SDK
 #include "cbworkspace.h"
-//#include "compilerfactory.h"
+#include "compilerfactory.h"
 #include "editormanager.h"
 #include "filemanager.h"
 #include "logmanager.h"
@@ -619,12 +619,6 @@ void CMakeListsExporter::ExportGlobalVariables()
         m_ContentCMakeListGlobalVariables.append(wxString::Format("# Root directory configuration%s", EOL));
         m_ContentCMakeListGlobalVariables.append(wxString::Format("set(CB_SRC_ROOT_DIR_WINDOWS \"%s\")%s", m_CBProjectRootDir, EOL));
         m_ContentCMakeListGlobalVariables.append(wxString::Format("set(CB_SRC_ROOT_DIR_LINUX \"%s\")%s%s", UnixFilename(m_CBProjectRootDir, wxPATH_UNIX), EOL, EOL));
-        m_ContentCMakeListGlobalVariables.append(wxString::Format("# -------------------------------------------------------------------------------------------------%s", EOL));
-        m_ContentCMakeListGlobalVariables.append(wxString::Format("if (UNIX OR APPLE)                   %s", EOL));
-        m_ContentCMakeListGlobalVariables.append(wxString::Format("    set(CB_PLUGIN_PREFIX \"lib\")    %s", EOL));
-        m_ContentCMakeListGlobalVariables.append(wxString::Format("else()                               %s", EOL));
-        m_ContentCMakeListGlobalVariables.append(wxString::Format("    set(CB_PLUGIN_PREFIX \"\")       %s", EOL));
-        m_ContentCMakeListGlobalVariables.append(wxString::Format("endif()                              %s", EOL));
         m_ContentCMakeListGlobalVariables.append(wxString::Format("# -------------------------------------------------------------------------------------------------%s%s", EOL, EOL));
 
         if (!wxsFileName.IsEmpty())
@@ -699,16 +693,24 @@ void CMakeListsExporter::ExportBuildTarget(cbProject * project, ProjectBuildTarg
     wxString projectTopLevelPathLinux = UnixFilename(project->GetCommonTopLevelPath(), wxPATH_UNIX);
     wxString targetTitle = ValidateFilename(buildTarget->GetTitle());
     wxString targetOutPutName = RemLib(wxFileName(buildTarget->GetOutputFilename()).GetName());
+    wxString targetOutPutFullName = wxFileName(buildTarget->GetOutputFilename()).GetFullName();
+
+    TargetFilenameGenerationPolicy targetPrefixPolicy;
+    TargetFilenameGenerationPolicy targetExtensionPolicy;
+    buildTarget->GetTargetFilenameGenerationPolicy(targetPrefixPolicy, targetExtensionPolicy);
+
     m_ContentCMakeListTarget.Clear();
     m_ContentCMakeListTarget.append(wxString::Format("cmake_minimum_required(VERSION %s) %s", CMAKE_MIN_VERSION_REQUIRED, EOL));
     m_ContentCMakeListTarget.append(EOL);
     m_ContentCMakeListTarget.append(wxString::Format("project(\"%s\")%s", targetTitle, EOL));
     m_ContentCMakeListTarget.append(wxString::Format("set(TARGET_OUTPUTNAME \"%s\")%s", targetOutPutName, EOL));
     m_ContentCMakeListTarget.append(wxString::Format("# Target Title: %s%s", targetTitle, EOL));
-    m_ContentCMakeListTarget.append(wxString::Format("# Target Output name : %s%s",  targetOutPutName, EOL));
-    m_ContentCMakeListTarget.append(wxString::Format("# Target Output full path: %s%s",  buildTarget->GetOutputFilename(), EOL));
+    m_ContentCMakeListTarget.append(wxString::Format("# Target targetOutPutFullName: %s%s",  targetOutPutFullName, EOL));
+    m_ContentCMakeListTarget.append(wxString::Format("# Target prefix_auto: %s%s",  (targetPrefixPolicy == tgfpPlatformDefault)? "True(1)":"False(0)", EOL));
+    m_ContentCMakeListTarget.append(wxString::Format("# Target extension_auto: %s%s",  (targetExtensionPolicy == tgfpPlatformDefault)? "True(1)":"False(0)", EOL));
     m_ContentCMakeListTarget.append(wxString::Format("# Project Compiler: %s%s", project->GetCompilerID(), EOL));
     m_ContentCMakeListTarget.append(wxString::Format("# Target Compiler:  %s%s", buildTarget->GetCompilerID(), EOL));
+
 
     if (platform::windows)
     {
@@ -764,6 +766,11 @@ void CMakeListsExporter::ExportBuildTarget(cbProject * project, ProjectBuildTarg
     m_ContentCMakeListTarget.append(wxString::Format("#                 projectLibDirsRelation: %s%s",             GetHumanReadableOptionRelation(buildTarget, ortLibDirs), EOL));
     m_ContentCMakeListTarget.append(wxString::Format("#                 projectResourceIncludeDirsRelation: %s%s", GetHumanReadableOptionRelation(buildTarget, ortResDirs), EOL));
     m_ContentCMakeListTarget.append(EOL);
+    // ====================================================================================
+    m_ContentCMakeListTarget.append(wxString::Format("# -------------------------------------------------------------------------------------------------%s", EOL));
+    m_ContentCMakeListTarget.append(EOL);
+    // ====================================================================================
+
     // ====================================================================================
     m_ContentCMakeListTarget.append(wxString::Format("# -------------------------------------------------------------------------------------------------%s", EOL));
     m_ContentCMakeListTarget.append(EOL);
@@ -1094,15 +1101,37 @@ void CMakeListsExporter::ExportBuildTarget(cbProject * project, ProjectBuildTarg
 
         case ttStaticLib:
         case ttDynamicLib:
-            m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${TARGET_OUTPUTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY \"${PROJECT_TOP_LEVEL_PATH_LINUX}\%s\")%s", wxsOutputDir, EOL));
+            // m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${TARGET_OUTPUTNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY \"${PROJECT_TOP_LEVEL_PATH_LINUX}\%s\")%s", wxsOutputDir, EOL));
             m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${TARGET_OUTPUTNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY \"${PROJECT_TOP_LEVEL_PATH_LINUX}\%s\")%s", wxsOutputDir, EOL));
             break;
 
         default:
             break;
     }
+    // Start of set_target_properties
+    m_ContentCMakeListTarget.append("set_target_properties(${TARGET_OUTPUTNAME} PROPERTIES ");
+    if ((targetPrefixPolicy != tgfpPlatformDefault) || (targetExtensionPolicy != tgfpPlatformDefault))
+    {
+        if ((targetPrefixPolicy == tgfpNone) && (targetExtensionPolicy == tgfpNone))
+        {
+            m_ContentCMakeListTarget.append(wxString::Format(" OUTPUT_NAME \"%s\" ",  targetOutPutFullName));
+        }
+        else
+        {
+            m_ContentCMakeListTarget.append(wxString::Format(" OUTPUT_NAME \"%s\" ",  targetOutPutName));
+        }
+        if (targetPrefixPolicy != tgfpPlatformDefault)
+        {
+            m_ContentCMakeListTarget.append(" PREFIX \"\" ");
+        }
+        if (targetExtensionPolicy != tgfpPlatformDefault)
+        {
+            m_ContentCMakeListTarget.append(" SUFFIX \"\" ");
+        }
+    }
+    m_ContentCMakeListTarget.append(wxString::Format(" RUNTIME_OUTPUT_DIRECTORY \"${PROJECT_TOP_LEVEL_PATH_LINUX}\%s\")%s", wxsOutputDir, EOL));
+    // end if set_target_properties
 
-    m_ContentCMakeListTarget.append(wxString::Format("set_target_properties(${TARGET_OUTPUTNAME} PROPERTIES PREFIX \"${CB_PLUGIN_PREFIX}\" RUNTIME_OUTPUT_DIRECTORY \"${PROJECT_TOP_LEVEL_PATH_LINUX}\%s\")%s", wxsOutputDir, EOL));
     m_ContentCMakeListTarget.append(EOL);
     m_ContentCMakeListTarget.append(wxString::Format("unset(SOURCE_FILES)%s", EOL));
     m_ContentCMakeListTarget.append(EOL);
@@ -1462,55 +1491,6 @@ void CMakeListsExporter::RunExport()
     wxArrayString tmpArrayA, tmpArrayB, tmpArrayC;
     ProjectManager * prjManager = Manager::Get()->GetProjectManager();
     ProjectsArray * prjArr = prjManager->GetProjects();
-    m_mapTargetOuputs.clear();
-
-    for (unsigned int i = 0; i < prjArr->GetCount(); ++i)
-    {
-        cbProject * project = prjArr->Item(i);
-
-        if (!project)
-        {
-            continue;
-        }
-
-        wxString tgtStr(project->GetActiveBuildTarget());
-
-        if (tgtStr.IsEmpty())
-        {
-            tgtStr = project->GetFirstValidBuildTargetName();    // last-chance default
-        }
-
-        wxArrayString tmpArrayVBT = project->GetExpandedVirtualBuildTargetGroup(tgtStr);
-        unsigned int icountVBT = tmpArrayVBT.GetCount();
-        unsigned int icountPRJ = tmpArrayVBT.GetCount();
-
-        if (icountPRJ == 0)
-        {
-            icountPRJ = project->GetBuildTargetsCount();
-        }
-
-        ProjectBuildTarget * buildTarget;
-
-        for (unsigned int i = 0; i < icountPRJ; i++)
-        {
-            if (icountVBT == 0)
-            {
-                buildTarget = project->GetBuildTarget(i);
-            }
-            else
-            {
-                buildTarget = project->GetBuildTarget(tmpArrayVBT[i]);
-            }
-
-            if (!buildTarget)
-            {
-                continue;
-            }
-
-            wxString targetOutPutName = RemLib(wxFileName(buildTarget->GetOutputFilename()).GetName());
-            m_mapTargetOuputs.insert(std::pair<wxString, wxString>(targetOutPutName, targetOutPutName));
-        }
-    }
 
     wxString sCMakeProjectListTopLevelCommands;
 
