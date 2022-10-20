@@ -953,7 +953,7 @@ wxFontEncoding DetectEncodingAndConvert(const char * strIn, wxString & strOut, w
             wxCSConv conv(possibleEncoding);
             strOut = wxString(strIn, conv);
 
-            if (strOut.Length() == 0)
+            if (strOut.empty())
             {
                 // oops! wrong encoding...
 
@@ -964,24 +964,24 @@ wxFontEncoding DetectEncodingAndConvert(const char * strIn, wxString & strOut, w
                     strOut = wxString(strIn, wxConvUTF8);
                 }
 
-                // check again: if still not right, try system encoding, default encoding and then iso8859-1 to iso8859-15
-                if (strOut.Length() == 0)
+                // check again: if still not right, try system encoding and then iso8859-1 to iso8859-15
+                if (strOut.empty())
                 {
                     for (int i = wxFONTENCODING_SYSTEM; i < wxFONTENCODING_ISO8859_MAX; ++i)
                     {
                         encoding = (wxFontEncoding)i;
 
+                        // skip if same as what was asked
                         if (encoding == possibleEncoding)
                         {
-                            continue;    // skip if same as what was asked
+                            continue;
                         }
 
-                        wxCSConv csconv(encoding);
-                        strOut = wxString(strIn, csconv);
+                        strOut = wxString(strIn, (encoding == wxFONTENCODING_DEFAULT) ? wxConvLocal : wxCSConv(encoding));
 
-                        if (strOut.Length() != 0)
+                        if (!strOut.empty())
                         {
-                            break;    // got it!
+                            break; // got it!
                         }
                     }
                 }
@@ -1500,7 +1500,6 @@ wxBitmapBundle cbLoadBitmapBundleFromSVG(const wxString & filename, const wxSize
         Manager::Get()->GetLogManager()->DebugLogError(msg);
         Manager::Get()->GetLogManager()->LogError(msg);
     }
-
 
 #else
 #warning The port does not provide raw bitmap accessvia wxPixelData, so SVG loading will fail

@@ -5,8 +5,8 @@
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 VS_VERSION_INFO        VERSIONINFO
-  FILEVERSION          0,4,0
-  PRODUCTVERSION       2022,8,4,12857
+  FILEVERSION          0,6,0
+  PRODUCTVERSION       2022,10,20,12985
   FILEFLAGSMASK        0x3fL // VS_FFI_FILEFLAGSMASK
   // FILEFLAGS Can be a combination of the following OR'ed flags:
   //    VS_FF_DEBUG,        VS_FF_PATCHED,      VS_FF_PRERELEASE,
@@ -26,18 +26,18 @@ VS_VERSION_INFO        VERSIONINFO
   {
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
-      VALUE "Build",             "04-Aug-2022 SVN12857"
+      VALUE "Build",             "20-Oct-2022 SVN12985"
       VALUE "Comments",          "Exports the active project.  Supported targets are Autotools, Bakefile, Premake4 script and CMakeList.txt."
       VALUE "CompanyName",       "Alpha"
       VALUE "Developer",         "Alpha"
-      VALUE "FileVersion",       "0.4.0"
+      VALUE "FileVersion",       "0.6.0"
       VALUE "InternalName",      "ProjectExporter"
       VALUE "LegalCopyright",    "GPL"
       VALUE "LegalTrademarks",   "All rights reserved."
       VALUE "OriginalFilename",  "ProjectExporter.dll"
       VALUE "PrivateBuild",      ""
       VALUE "ProductName",       "ProjectExporter"
-      VALUE "ProductVersion",    "0.4.0"
+      VALUE "ProductVersion",    "0.6.0"
       VALUE "SpecialBuild",      ""
       VALUE "Support",           "http://wiki.codeblocks.org/index.php?title=Project_Exporter"
       VALUE "Users",             ""

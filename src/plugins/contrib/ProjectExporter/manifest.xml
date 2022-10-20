@@ -3,7 +3,7 @@
     <SdkVersion major="2" minor="16" release="0" />
     <Plugin name="ProjectExporter">
         <Value title="Project Exporter" />
-        <Value version="0.4.0" />
+        <Value version="0.6.0" />
         <Value description="Exports the active project.  Supported targets are Autotools, Bakefile, Premake4 script and CMakeList.txt." />
         <Value author="Alpha" />
         <Value authorEmail="" />
